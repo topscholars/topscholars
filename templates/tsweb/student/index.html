@@ -1,0 +1,263 @@
+﻿{% load staticfiles %}
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8"/> 
+	<link rel="stylesheet" type="text/css" href="{% static 'tsweb/css/Prototype.css' %}" />
+	<link rel="stylesheet" type="text/css" href="{% static 'tsweb/css/smoothness/jquery-ui-1.10.3.custom.min.css' %}" />
+	<link rel="stylesheet" type="text/css" href="{% static 'tsweb/css/smoothness/jquery-ui-1.10.3.custom-edited.css' %}" />
+	<script src="{% static 'tsweb/js/jQuery1.10.1.js' %}"></script>
+	<script src="{% static 'tsweb/js/jquery-ui-1.10.3.custom.min.js' %}"></script>
+<style>
+.trhover2 {
+background-color:#D8E5F6;
+height:25px;
+}
+.trhover1 {
+background-color:white;
+height:25px;
+}
+.trhover1:hover,.trhover2:hover{
+background-color:#EAEAEA;
+}
+	</style>
+</head>
+
+<body>
+<script>
+$(function(){
+	$( "#tabs" ).tabs();
+	$( "#tabs2" ).tabs();
+});
+</script>
+<div class="placeholder">
+<div class="header">
+<div class="headertext">
+<h1>Application Name - My Desk</h1>
+</div>
+<div class="headerbutton">
+<a href="{% url 'tsweb:logout' %}"><img src="{% static 'tsweb/image/logout.png' %}"/></a>
+<a href=""><img src="{% static 'tsweb/image/userdetails.png' %}" /></a>
+<a href=""><img src="{% static 'tsweb/image/username.png' %}" style="margin-top:12px;" /></a>
+</div>
+</div>
+<div style="width:720px;position:relative;float:left;top:40px;margin-left:10px;padding-bottom:52px;">
+<img src="{% static 'tsweb/image/anonymous-large.png' %}" style="width:162px;height:162px;" />
+<div style="width:520px;height:167px;border:1px #666666 solid;position:relative;float:right;">
+<span style="font-size:34px;line-height:36px;margin-left:10px;margin-top:10px;;float:left;position:relative;width:480px;">James McCracken</span>
+<table style="margin-left:10px;">
+<tr>
+<td>Email:</td>
+<td>mccracken.james@gmail.com</td>
+</tr>
+<tr>
+<td>Current Grade:</td>
+<td>9</td>
+</tr>
+<tr>
+<td>Class Enrolled:</td>
+<td>English, History, Maths</td>
+</tr>
+<tr>
+<td>Teachers:</td>
+<td>Mr. Lastname, Mrs. Lastname</td>
+</tr>
+<tr>
+<td>Timeliness:</td>
+<td>-% of Assignments Completed on Time</td>
+</tr>
+</table>
+</div>
+<div id="tabs" class="clear" style="margin-top:10px;">
+  <ul>
+    <li><a href="#tabs-1">Overview</a></li>
+    <li><a href="#tabs-2">Developmental</a></li>
+    <li><a href="#tabs-3">Structural</a></li>
+    <li><a href="#tabs-4">Style</a></li>
+    <li><a href="#tabs-5">Usage</a></li>
+    <li><a href="#tabs-6">Words&nbsp;&amp;&nbsp;Phrases</a></li>
+    <li><a href="#tabs-7">Grammar</a></li>
+  </ul>
+  <div id="tabs-1" style="height:308px;">
+  	<br/>
+    <div>
+    <div style="float:left;">
+    <span style="font-weight:bold;font-size:medium;">Next up on Writability...</span><br/><br/>
+    <b>Wordiness</b><br/><br/>
+    Emphasis<br/><br/>
+    Sentence variety
+    </div>
+    <textarea style="width:433px;height:228px;float:right;">
+Two roads diverged in a yellow wood,
+And sorry I could not travel both,
+And be one traveler, long I stood,
+To where one bent in the undergrowth.
+
+Then took the othe just as fair,
+And having perhaps the better claim
+Because it was grassy and wanted wear,
+Though as for that the passing there,
+Had worn them really about the same.
+
+And both that morning equally lay,
+In leaves no step had trodden black.
+Oh, I kept the first for another day!
+Yet, knowing how way leads on to way,
+I doubted if I should ever come back.
+
+I shall be telling this with a sigh,
+Somewhere ages and ages hence.
+Two roads diverege in a wood,
+And I, I, took the road less traveled by,
+And that has made all the difference.
+-Robert Frost, 1916
+    </textarea>
+    </div>
+  </div>
+  <div id="tabs-2" style="height:308px;">
+  	<br/>
+    Missing evidence<br/><br/>
+    Thesis<br/><br/>
+    Ideas<br/><br/>
+    Voice
+  </div>
+  <div id="tabs-3" style="height:308px;">
+  	<br/>
+    Circular reasoning<br/><br/>
+    Faulty assumptions<br/><br/>
+    Transitions between paragraphs<br/><br/>
+    Ad hominen argument<br/><br/>
+    Narrative - Time<br/><br/>
+    Rebuttal
+  </div>
+  <div id="tabs-4" style="height:308px;">
+  	<br/>
+  	<table style="border:1px #CCCCCC solid;border-collapse:collapse;width:158px;float:left;">
+  		<tr style="height:25px;">
+  			<td style="font-weight:bold;background-color:#C0D5EF;padding-left:5px;">Topic Areas</td>
+  		</tr>
+  		<tr class="trhover1">
+  			<td style="padding-left:5px;">Wordiness</td>
+  		</tr>
+  		<tr class="trhover2">
+  			<td style="padding-left:5px;">Emphasis</td>
+  		</tr>
+  		<tr class="trhover1">
+  			<td style="padding-left:5px;">Sentence variety</td>
+  		</tr>
+  		<tr class="trhover2">
+  			<td style="padding-left:5px;">Figure of speech</td>
+  		</tr>
+  		<tr class="trhover1">
+  			<td style="padding-left:5px;">Stylistic fragments</td>
+  		</tr>
+  		<tr class="trhover2">
+  			<td style="padding-left:5px;">Cliched</td>
+  		</tr>
+  	</table>
+  	<img src="{% static 'tsweb/image/wordiness.png' %}" style="float:left;margin-left:35px;">
+  	<div style="float:right;width:320px;">
+	  	<b>WORDINESS</b><br/><br/>
+	  	<textarea style="width:320px;height:129px;">
+	  	Overuse of lots of words to describe something that could be done without using as many
+words as the previous attempt
+	  	</textarea>
+	  	<br/><br/>
+	  	<input type="button" value="Lesson" class="button" style="width:80px;height:35px;">&nbsp;
+	  	<input type="button" value="Example" class="button" style="width:80px;height:35px;">&nbsp;
+	  	<input type="button" value="Quiz" class="button" style="width:80px;height:35px;">
+  	</div>
+  </div>
+  <div id="tabs-5" style="height:308px;">
+  	<br/>
+  	Alumni, alumnus, alumna, alumnae<br/><br/>
+  	Colloquialisms<br/><br/>
+  	As far as<br/><br/>
+  	Avenge versus revenge<br/><br/>
+  	Gender versus sex<br/><br/>
+  	Résumé
+  </div>
+  <div id="tabs-6" style="height:308px;">
+  	<br/>
+  	Idioms<br/><br/>
+  	Ironic<br/><br/>
+  	Affect versus Effect<br/><br/>
+  	Admission versus admittance<br/><br/>
+  	Assure, ensure, insure
+  </div>
+  <div id="tabs-7" style="height:308px;">
+  	<br/>
+  	Parts of Speech<br/><br/>
+  	Subject Verb Agreement<br/><br/>
+  	Verb Tenses<br/><br/>
+  	Fragments<br/><br/>
+  	Parallel Structure
+  </div>
+</div>
+</div>
+<div style="width:270px;position:relative;float:right;top:40px;margin-right:10px;">
+<span style="text-decoration:underline;font-weight:bold;">Assigment List</span>
+<div style="margin-top:5px;">
+<div style="border:1px #0090CA solid;height:50px;">
+	<img src="{% static 'tsweb/image/assignmenttype.png' %}" style="margin:10px;width:25px;float:left;">
+	<div style="float:right;text-align:right;margin:10px 30px;font-size:13px;">
+		<a href="" style="color:black;">Assignment-0001</a><br/>
+		Due Date: 17-Sep-2013
+	</div>
+</div>
+<div style="border:1px #0090CA solid;height:50px;">
+	<img src="{% static 'tsweb/image/assignmenttype.png' %}" style="margin:10px;width:25px;float:left;">
+	<div style="float:right;text-align:right;margin:10px 30px;font-size:13px;">
+		<span style="text-decoration:underline;">Assignment-0002</span><br/>
+		Due Date: 20-Sep-2013
+	</div>
+</div>
+<div style="border:1px #0090CA solid;height:50px;">
+	<img src="{% static 'tsweb/image/assignmenttype.png' %}" style="margin:10px;width:25px;float:left;">
+	<div style="float:right;text-align:right;margin:10px 30px;font-size:13px;">
+		<span style="text-decoration:underline;">Assignment-0003</span><br/>
+		Due Date: 22-Sep-2013
+	</div>
+</div>
+<div style="border:1px #0090CA solid;height:50px;">
+	<img src="{% static 'tsweb/image/assignmenttype.png' %}" style="margin:10px;width:25px;float:left;">
+	<div style="float:right;text-align:right;margin:10px 30px;font-size:13px;">
+		<span style="text-decoration:underline;">Assignment-0004</span><br/>
+		Due Date: 28-Sep-2013
+	</div>
+</div>
+<div style="border:1px #0090CA solid;height:50px;">
+	<img src="{% static 'tsweb/image/assignmenttype.png' %}" style="margin:10px;width:25px;float:left;">
+	<div style="float:right;text-align:right;margin:10px 30px;font-size:13px;">
+		<span style="text-decoration:underline;">Assignment-0005</span><br/>
+		Due Date: 03-Oct-2013
+	</div>
+</div>
+</div>
+<div id="tabs2" class="clear" style="margin-top:10px;">
+  <ul>
+    <li><a href="#tabs-11">Grades</a></li>
+    <li><a href="#tabs-12">Comment(s)</a></li>
+  </ul>
+  <div id="tabs-11" style="height:190px;">
+    <img src="{% static 'tsweb/image/grade.png' %}" style="height:190px;width:240px;">
+  </div>
+  <div id="tabs-12" style="height:190px;">
+    <div style="width:215px;height:42px;line-height:42px;padding-left:10px;background-color:#FFFFC6;border:1px #CCCCCC solid;box-shadow:4px 4px #DCDCDC;">
+    	Comment 1
+    </div>
+    <div style="width:215px;height:42px;line-height:42px;padding-left:10px;margin-top:10px;background-color:#FFFFC6;border:1px #CCCCCC solid;box-shadow:4px 4px #DCDCDC;">
+    	Comment 2
+    </div>
+    <div style="width:215px;height:42px;line-height:42px;padding-left:10px;margin-top:10px;background-color:#FFFFC6;border:1px #CCCCCC solid;box-shadow:4px 4px #DCDCDC;">
+    	Comment 3
+    </div>
+  </div>
+</div>
+</div>
+<div class="clear" style="height:52px;position:relative;margin-top:716px;background-color:#555555;"></div>
+</div>
+</body>
+
+</html>

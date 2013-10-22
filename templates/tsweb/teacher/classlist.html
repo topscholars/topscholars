@@ -1,0 +1,336 @@
+﻿{% load staticfiles %}
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8"/> 
+	<link rel="stylesheet" type="text/css" href="{% static 'tsweb/css/smoothness/jquery-ui-1.10.3.custom.css' %}" />
+	<link rel="stylesheet" type="text/css" href="{% static 'tsweb/css/Prototype.css' %}" />
+	<link rel="stylesheet" type="text/css" href="{% static 'tsweb/css/jquery.datepick.css' %}" />
+	<link rel="stylesheet" type="text/css" href="{% static 'tsweb/css/jquery.ui.timepicker.css' %}" />
+	<link rel="stylesheet" type="text/css" href="{% static 'tsweb/css/jquery.multiselect.css' %}" />
+	<script src="{% static 'tsweb/js/jQuery1.10.1.js' %}"></script>
+	<script src="{% static 'tsweb/js/WaterMark.js' %}"></script>
+	<script src="{% static 'tsweb/js/jquery-ui-1.10.3.custom.min.js' %}"></script>
+	<script src="{% static 'tsweb/js/util.js' %}"></script>
+	<script src="{% static 'tsweb/js/jquery.datepick.js' %}"></script>
+	<script src="{% static 'tsweb/js/jquery.ui.timepicker.js' %}"></script>
+	<script src="{% static 'tsweb/js/jquery.multiselect.js' %}"></script>
+</head>
+
+<body>
+<script>
+EDITTABLE.prototype = new GridBase();
+
+function EDITTABLE(){
+	var thisClass = this;
+	var url = "{% url 'tsweb:tprocessajax' %}";
+	var evalClass = 'CLASSLIST';
+	var tableClassAjax = 'TCLASSLISTAJAX'
+	
+	this.pagename = $(".pagename").text();
+	
+	this.showEditTable = function(){
+		$(".pagename").text(thisClass.pagename + " - Edit");
+		
+		$("#editField").show();
+		
+		$(".tablelist").hide();
+		$(".listnewbutton").hide();
+		$("#txtSearch").hide();
+		$(".searchboximg").hide();
+	}
+	
+	this.hideEditTable =function(){
+		$(".pagename").text(thisClass.pagename);
+		
+		$("#editField").hide();
+		
+		$(".tablelist").show();
+		$(".listnewbutton").show();
+		$("#txtSearch").show();
+		$(".searchboximg").show();
+	}
+	
+	this.editTable = function(id){
+		$.ajax({
+			url: url,
+			type: 'GET',
+			data: { class: evalClass,
+					id: id 
+				},
+			datatype : 'json',
+			success: function(res){
+				$.each(res, function(ini,val){
+					thisClass.seperateElement($("#ele_"+ini), val);
+				});
+				
+				$("#ele_dayofweek").multiselect('refresh'); 
+				
+				thisClass.showEditTable();
+			}
+		});
+		return false;
+	}
+
+	this.iniEventEditor = function(){
+		thisClass.UIHover("#btnSave");
+		thisClass.UIHover("#btnBack");
+		
+		$("#btnBack").click(function(){
+			thisClass.hideEditTable();
+			thisClass.getData('');
+		});
+	}
+	
+	this.selectTeacher = function(){
+		var html ='';
+		$.ajax({
+			url: url,
+			type: 'GET',
+			data: { class: evalClass,
+					method: 'getTeacher'
+			},
+			success: function(res){
+				$.each(res, function(ini,val){
+					if(val.middlename == null){
+						html += "<option value='"+val.id+"'>"+val.firstname+" "+val.lastname+"</option>";
+					}else{
+						html += "<option value='"+val.id+"'>"+val.firstname+" "+val.middlename+" "+val.lastname+"</option>";
+					}
+				});
+				$("#ele_teacherid").append(html);
+			}	
+		});
+	}
+	
+	this.selectClass = function(){
+		var html ='';
+		$.ajax({
+			url: url,
+			type: 'GET',
+			data: { class: evalClass,
+					method: 'getClass'
+			},
+			success: function(res){
+				$.each(res, function(ini,val){
+						html += "<option value='"+val.id+"'>"+val.classname+"</option>";
+				});
+				$("#ele_classid").append(html);
+			}	
+		});
+	}
+	
+	this.getData = function(description) {
+		$("#list").html("<div style='width:100%;position=relative;text-align:center;'><img src='{% static 'tsweb/image/ajax-loader.gif' %}' alt='' style='margin:auto;width=100px;height=100px;position=relative;' /></div>");
+		$.get("{% url 'tsweb:tprocessajax' %}?class="+tableClassAjax,
+		{ description : description },
+		function(result){
+		      $("#list").html(result);
+		}
+		)
+		.error(function(xhr, status, error) {
+		    $("#list").html("<img src='{% static 'tsweb/image/notificationcross.gif' %}' alt='' style='width:30px;' />&nbsp;Error: "+xhr.status+": "+xhr.statusText);
+		});
+	}
+	
+	this.Search = function(ele,event)
+	{
+		if (event.keyCode == 13) {
+			thisClass.getData($('#txtSearch').val());
+		}
+		else
+			ele.onKeyPress=event.keyCode;
+	}
+	
+	this.save = function(){
+		var odata;
+		if($("#ele_id").val() == ""){
+		 	odata = { class: evalClass, method: 'add'};
+		}else{
+			odata = { class: evalClass, method: 'save'};
+		}
+		odata = thisClass.oData(odata);
+		$.ajax({
+			url: url,
+			type: 'GET',
+			data: odata,
+			success: function(res){
+				
+			}	
+		});
+	}
+	
+	this.iniControl = function(){
+		thisClass.getData('');
+		Watermark('txtSearch', 'Search', 'noclass');
+		 
+		$("#editField").hide();
+		$( "#ele_startdate").datepicker({ dateFormat: 'dd-mm-yy' });
+		$( "#ele_enddate").datepicker({ dateFormat: 'dd-mm-yy' });
+		$("#ele_starttime").timepicker();
+		$("#ele_endtime").timepicker();
+		$("#ele_dayofweek").multiselect();
+		
+		$('#txtSearch').keypress(function(event) {
+			thisClass.Search(this,event);
+		});
+		
+		$("#btnSave").click(function(){
+			thisClass.save();
+		});
+		
+		$(".listnewbutton").click(function(){
+			thisClass.showEditTable();
+			$("[id^='ele_']").each(function(){
+				$(this).val('');
+			});
+			$("#ele_dayofweek").multiselect('refresh'); 
+		});
+		
+		thisClass.iniEventEditor();
+		thisClass.selectTeacher();
+		thisClass.selectClass();
+	}
+}
+$(function() {
+	var gen = new EDITTABLE();
+	gen.iniControl();
+});
+</script>
+<div class="placeholder">
+<div class="header">
+<div class="headertext">
+<h1>Teacher Name - My Classroom</h1>
+</div>
+<div class="headerbutton">
+<a href="{% url 'tsweb:logout' %}"><img src="{% static 'tsweb/image/logout.png' %}"/></a>
+<a href=""><img src="{% static 'tsweb/image/userdetails.png' %}" /></a>
+<a href=""><img src="{% static 'tsweb/image/username.png' %}" style="margin-top:12px;" /></a>
+</div>
+</div>
+<h1 class="pagename">Class List</h1>
+<input id="txtSearch" class="searchbox searchboxnofilter" type="text"/>
+<img src="{% static 'tsweb/image/searchbox.png' %}" class="searchboximg searchboximgnofilter" />
+<div class="clear"></div>
+<br/>
+<div class="leftnav">
+<div class="active">
+	<table>
+		<tr>
+			<td class="tdimg"><img src="{% static 'tsweb/image/classlist.png' %}"/></td>
+			<td><a href="{% url 'tsweb:tclasslist' %}">Class List</a></td>
+		</tr>
+	</table>
+</div>
+<div>
+	<table>
+		<tr>
+			<td class="tdimg"><img src="{% static 'tsweb/image/assignmentlist.png' %}"/></td>
+			<td><a href="{% url 'tsweb:tassignmentlist' %}">Assignment List</a></td>
+		</tr>
+	</table>
+</div>
+<div>
+	<table>
+		<tr>
+			<td class="tdimg"><img src="{% static 'tsweb/image/studentlist.png' %}"/></td>
+			<td><a href="{% url 'tsweb:tstudentlist' %}">Student List</a></td>
+		</tr>
+	</table>
+</div>
+<div>
+	<table>
+		<tr>
+			<td class="tdimg"><img src="{% static 'tsweb/image/rubriclist.png' %}"/></td>
+			<td><a href="{% url 'tsweb:trubriclist' %}">Rubric List</a></td>
+		</tr>
+	</table>
+</div>
+<div>
+	<table>
+		<tr>
+			<td class="tdimg"><img src="{% static 'tsweb/image/submissionlist.png' %}"/></td>
+			<td><a href="{% url 'tsweb:tsubmissionlist' %}">Submission List</a></td>
+		</tr>
+	</table>
+</div>
+</div>
+<div class="content">
+<div id="list"></div>
+<div id="editField">
+	<form>
+	<table class="editor">
+		<tr>
+			<td class="col">Class Id</td>
+			<td>
+				<select id="ele_classid" name='classid'></select>
+				<input type="hidden" id="ele_id" name="id" value="" />
+			</td>
+		</tr>
+		<tr>
+			<td class="col">Code</td>
+			<td><input type="text" id="ele_code" name="code" class="text" value="" /></td>
+		</tr>
+		<tr>
+			<td class="col">Subcode</td>
+			<td><input type="text" id="ele_subcode" name="subcode" class="text" value="" /></td>
+		</tr>
+		<tr>
+			<td class="col">Teacher Name</td>
+			<td>
+				<select id="ele_teacherid" name="teacherid">
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td class="col">Start Date</td>
+			<td><input type="text" id="ele_startdate" name="startdate" class="text" value="" /></td>
+		</tr>
+		<tr>
+			<td class="col">End Date</td>
+			<td><input type="text" id="ele_enddate" name="enddate" class="text" value="" /></td>
+		</tr>
+		<tr>
+			<td class="col">Start Time</td>
+			<td><input type="text" id="ele_starttime" name="starttime" class="text" value="" /></td>
+		</tr>
+		<tr>
+			<td class="col">End Time</td>
+			<td><input type="text" id="ele_endtime" name="endtime" class="text" value="" /></td>
+		</tr>
+		<tr>
+			<td class="col">Day of week</td>
+			<td>
+				<select id="ele_dayofweek" name="dayofweek" multiple>
+					<option value="Mon">Monday</option>
+					<option value="Tue">Tuesday</option>
+					<option value="Wed">Wednesday</option>
+					<option value="Thu">Thursday</option>
+					<option value="Fri">Friday</option>
+					<option value="Sat">Saturday</option>
+					<option value="Sun">Sunday</option>
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td class="col">Disable</td>
+			<td><input type="checkbox" id="ele_disabled" name="disabled" /></td>
+		</tr>
+		<tr>
+			<td>&nbsp;</td>
+		</tr>
+		<tr>
+			<td><div id="btnBack"><span class="ui-icon ui-icon-arrowreturnthick-1-w" style="float:left;"></span>back</div></td>
+			<td style="float:right;"><div id="btnSave"><span class="ui-icon ui-icon-disk" style="float:left;"></span>Save</div></td>
+		</tr>
+	</table>
+	</form>
+</div>
+<input type="button" value="New Class" class="button listnewbutton"/>
+</div>
+<div style="clear:both"></div>
+</div>
+</body>
+
+</html>

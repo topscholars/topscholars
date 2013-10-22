@@ -1,0 +1,336 @@
+﻿{% load staticfiles %}
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8"/> 
+	<link rel="stylesheet" type="text/css" href="{% static 'tsweb/css/smoothness/jquery-ui-1.10.3.custom.css' %}" />
+	<link rel="stylesheet" type="text/css" href="{% static 'tsweb/css/Prototype.css' %}" />
+	<script src="{% static 'tsweb/js/jQuery1.10.1.js' %}"></script>
+	<script src="{% static 'tsweb/js/util.js' %}"></script>
+	<script src="{% static 'tsweb/js/WaterMark.js' %}"></script>
+</head>
+
+<body>
+<script>
+EDITTABLE.prototype = new GridBase();
+function EDITTABLE(){
+	var thisClass = this;
+	var url = "{% url 'tsweb:tprocessajax' %}";
+	var evalClass = 'ASSSIGNMENTLIST';
+	var tableClassAjax = 'TASSIGNMENTLISTAJAX'
+	
+	this.pagename = $(".pagename").text();
+	
+	this.showEditTable = function(){
+		$(".pagename").text(thisClass.pagename + " - Edit");
+		
+		$("#editField").show();
+		
+		$(".filter").hide();
+		$(".tablelist").hide();
+		$(".listnewbutton").hide();
+		$("#txtSearch").hide();
+		$(".searchboximg").hide();
+	}
+	
+	this.hideEditTable =function(){
+		$(".pagename").text(thisClass.pagename);
+		
+		$("#editField").hide();
+		
+		$(".filter").show();
+		$(".tablelist").show();
+		$(".listnewbutton").show();
+		$("#txtSearch").show();
+		$(".searchboximg").show();
+	}
+	
+	this.editTable = function(id){
+		$.ajax({
+			url: url,
+			type: 'GET',
+			data: { class: evalClass,
+					id: id 
+				},
+			datatype : 'json',
+			success: function(res){
+				console.log(res)
+				$.each(res, function(ini,val){
+					thisClass.seperateElement($("#ele_"+ini), val);
+				});
+				
+				thisClass.showEditTable();
+			}
+		});
+		return false;
+	}
+
+	this.iniEventEditor = function(){
+		thisClass.UIHover("#btnSave");
+		thisClass.UIHover("#btnBack");
+		
+		$("#btnBack").click(function(){
+			thisClass.hideEditTable();
+			thisClass.getData('','');
+		});
+	}
+	
+	this.selectTeacher = function(){
+		var html ='';
+		$.ajax({
+			url: url,
+			type: 'GET',
+			data: { class: evalClass,
+					method: 'getTeacher'
+			},
+			success: function(res){
+				$.each(res, function(ini,val){
+					if(val.middlename == null){
+						html += "<option value='"+val.id+"'>"+val.firstname+" "+val.lastname+"</option>";
+					}else{
+						html += "<option value='"+val.id+"'>"+val.firstname+" "+val.middlename+" "+val.lastname+"</option>";
+					}
+				});
+				$("#ele_teacherid").append(html);
+			}	
+		});
+	}
+	
+	this.selectRubric = function(){
+		var html ='';
+		$.ajax({
+			url: url,
+			type: 'GET',
+			data: { class: evalClass,
+					method: 'getRubricIdAssignment'
+			},
+			success: function(res){
+				$.each(res, function(ini,val){
+						html += "<option value='"+val.id+"'>"+val.name+"</option>";
+				});
+				$("#ele_rubricid").append(html);
+				
+			}	
+		});
+	}
+	
+	this.getData = function(assignmentname ,classid) {
+		$("#list").html("<div style='width:100%;position=relative;text-align:center;'><img src='{% static 'tsweb/image/ajax-loader.gif' %}' alt='' style='margin:auto;width=100px;height=100px;position=relative;' /></div>");
+		$.get("{% url 'tsweb:tprocessajax' %}?class="+tableClassAjax,
+		{ assignmentname : assignmentname ,
+  		classid : classid},
+		function(result){
+		      $("#list").html(result);
+		}
+		)
+		.error(function(xhr, status, error) {
+		    $("#list").html("<img src='{% static 'tsweb/image/notificationcross.gif' %}' alt='' style='width:30px;' />&nbsp;Error: "+xhr.status+": "+xhr.statusText);
+		});
+	}
+	
+	this.Search = function(ele,event)
+	{
+		if (event.keyCode == 13) {
+			thisClass.getData($('#txtSearch').val(), '');
+		}
+		else
+			ele.onKeyPress=event.keyCode;
+	}
+	
+	this.save = function(){
+		var odata;
+		if($("#ele_id").val() == ""){
+		 	odata = { class: evalClass, method: 'add'};
+		}else{
+			odata = { class: evalClass, method: 'save'};
+		}
+		odata = thisClass.oData(odata);
+		$.ajax({
+			url: url,
+			type: 'GET',
+			data: odata,
+			success: function(res){
+				
+			}	
+		});
+	}
+	
+	this.iniControl = function(){
+		thisClass.getData('','');
+		Watermark('txtSearch', 'Search', 'noclass');
+		
+		$('#lstClassid').change(function() {
+			thisClass.getData('', $('#lstClassid').val());
+		});
+		
+		$('#txtSearch').keypress(function(event) {
+			thisClass.Search(this,event);
+		});
+		
+		$('#btnSetup').click(function(){
+			window.location = "{% url 'tsweb:trubriclist' %}";
+		});
+		
+		$("#btnSave").click(function(){
+			thisClass.save();
+		});
+		
+		$(".listnewbutton").click(function(){
+			thisClass.showEditTable();
+			$("[id^='ele_']").each(function(){
+				$(this).val('');
+			});
+		});		
+		
+		thisClass.hideEditTable();
+		thisClass.iniEventEditor();
+		thisClass.selectRubric();
+	}
+}
+$(function() {
+	var gen = new EDITTABLE();
+	gen.iniControl();
+});
+$(function() {
+
+	CloseEdit();
+	$('#btnCancel').click(function(){
+		CloseEdit();
+	});
+	$('#btnSave').click(function(){
+		CloseEdit();	
+	});
+
+	$('#btnCloseEdit').attr("href", "JavaScript:CloseEdit();");
+
+});
+
+function ShowEdit(id) {
+	$('#editassignment').show();
+	$('#editassignmentbackground').show();
+}
+
+function CloseEdit() {
+	$('#editassignment').hide();
+	$('#editassignmentbackground').hide();
+}
+</script>
+<div class="placeholder">
+<div class="header">
+<div class="headertext">
+<h1>Teacher Name - My Classroom</h1>
+</div>
+<div class="headerbutton">
+<a href="{% url 'tsweb:logout' %}"><img src="{% static 'tsweb/image/logout.png' %}"/></a>
+<a href=""><img src="{% static 'tsweb/image/userdetails.png' %}" /></a>
+<a href=""><img src="{% static 'tsweb/image/username.png' %}" style="margin-top:12px;" /></a>
+</div>
+</div>
+<h1 class="pagename">Assignment List</h1>
+<div class="clear"></div>
+<div class="searchlist">
+<div class="filter">
+Class Filter:&nbsp;
+<select class="selection " id="lstClassid" >
+	<option value="">Please Select</option>
+{% for class in classlist %}
+	<option value="{{ class.id  }}">{{ class.id }} - {{ class.classname }}</option>
+{% endfor %}
+</select>
+</div>
+<input id="txtSearch" class="searchbox" type="text"/>
+<img src="{% static 'tsweb/image/searchbox.png' %}" class="searchboximg" />
+</div>
+<div class="leftnav">
+<div>
+	<table>
+		<tr>
+			<td class="tdimg"><img src="{% static 'tsweb/image/classlist.png' %}"/></td>
+			<td><a href="{% url 'tsweb:tclasslist' %}">Class List</a></td>
+		</tr>
+	</table>
+</div>
+<div class="active">
+	<table>
+		<tr>
+			<td class="tdimg"><img src="{% static 'tsweb/image/assignmentlist.png' %}"/></td>
+			<td><a href="{% url 'tsweb:tassignmentlist' %}">Assignment List</a></td>
+		</tr>
+	</table>
+</div>
+<div>
+	<table>
+		<tr>
+			<td class="tdimg"><img src="{% static 'tsweb/image/studentlist.png' %}"/></td>
+			<td><a href="{% url 'tsweb:tstudentlist' %}">Student List</a></td>
+		</tr>
+	</table>
+</div>
+<div>
+	<table>
+		<tr>
+			<td class="tdimg"><img src="{% static 'tsweb/image/rubriclist.png' %}"/></td>
+			<td><a href="{% url 'tsweb:trubriclist' %}">Rubric List</a></td>
+		</tr>
+	</table>
+</div>
+<div>
+	<table>
+		<tr>
+			<td class="tdimg"><img src="{% static 'tsweb/image/submissionlist.png' %}"/></td>
+			<td><a href="{% url 'tsweb:tsubmissionlist' %}">Submission List</a></td>
+		</tr>
+	</table>
+</div>
+</div>
+<div class="content">
+<div id="list"></div>
+<div id="editField">
+	<form>
+	<table class="editor">
+		<tr>
+			<td class="col">Assignment Name</td>
+			<td>
+				<input type="text" id="ele_name" name="name" class="text" value="" />
+				<input type="hidden" id="ele_id" name="id" value="" />
+			</td>
+		</tr>
+		<tr>
+			<td class="col">Description</td>
+			<td><input type="text" id="ele_description" name="description" class="text" value="" /></td>
+		</tr>
+		<tr>
+			<td class="col">Rubric ID</td>
+			<td><select id="ele_rubricid" name="rubricid"></select></td>
+		</tr>
+		<tr>
+			<td class="col">Maximum Word</td>
+			<td><input type="text" id="ele_maxwords" name="maxwords" class="text" value="" /></td>
+		</tr>
+		<tr>
+			<td class="col">Disable</td>
+			<td><input type="checkbox" id="ele_disabled" name="disabled" /></td>
+		</tr>
+		<!--
+		<tr>
+			<td><input id="btnSetup" type="button" value="Setup" class="button" style="width:80px;height:24px;cursor:pointer;"></td>
+		</tr>
+		-->
+		<tr>
+			<td>&nbsp;</td>
+		</tr>
+		<tr>
+			<td><div id="btnBack"><span class="ui-icon ui-icon-arrowreturnthick-1-w" style="float:left;"></span>back</div></td>
+			<td style="float:right;"><div id="btnSave"><span class="ui-icon ui-icon-disk" style="float:left;"></span>Save</div></td>
+		</tr>
+	</table>
+	</form>
+</div>
+<input type="button" value="New Assignment" class="button listnewbutton"/>
+</div>
+<div style="clear:both"></div>
+</div>
+</body>
+
+</html>

@@ -39,6 +39,10 @@ function EDITTABLE(){
 		$(".listnewbutton").hide();
 		$("#txtSearch").hide();
 		$(".searchboximg").hide();
+		
+		var classid = $('#ele_id').val();
+		thisClass.getStudentData(classid);
+		thisClass.getStudentAddData(classid);
 	}
 	
 	this.hideEditTable =function(){
@@ -131,6 +135,57 @@ function EDITTABLE(){
 		)
 		.error(function(xhr, status, error) {
 		    $("#list").html("<img src='{% static 'tsweb/image/notificationcross.gif' %}' alt='' style='width:30px;' />&nbsp;Error: "+xhr.status+": "+xhr.statusText);
+		});
+	}
+	
+	this.getStudentData = function(classid){
+		$("#list_student").html("<div style='width:100%;position=relative;text-align:center;'><img src='{% static 'tsweb/image/ajax-loader.gif' %}' alt='' style='margin:auto;width=100px;height=100px;position=relative;' /></div>");
+		$.get("{% url 'tsweb:tprocessajax' %}?class="+evalClass+"&method=getTStudentList",
+		{classid: classid},
+		function(result){
+		      $("#list_student").html(result);
+		}
+		)
+		.error(function(xhr, status, error) {
+		    $("#list_student").html("<img src='{% static 'tsweb/image/notificationcross.gif' %}' alt='' style='width:30px;' />&nbsp;Error: "+xhr.status+": "+xhr.statusText);
+		});
+	}
+	
+	this.getStudentAddData = function(classid){
+		$.ajax({
+			url: url,
+			type: 'GET',
+			data: { class: evalClass,
+					method: 'getTStudentAddList',
+					classid: classid 
+				},
+			datatype : 'html',
+			success: function(result){
+				$("#list_add_student").html(result);
+				$(".addStudent").click(function(){
+					var valAdd = $(this).attr("text");
+					thisClass.addStudentInClassschedule(valAdd);
+				});
+			}
+		});
+	}
+	
+	this.addStudentInClassschedule = function(studentid){
+		var classid = $('#ele_id').val();
+		$.ajax({
+			url: url,
+			type: 'GET',
+			datatype : 'json',
+			data: { class: evalClass,
+					method: 'addStudentInClass',
+					classid: classid,
+					studentid: studentid 
+			},
+			success: function(res){
+				console.log(res);
+				thisClass.getStudentData(classid);
+				thisClass.getStudentAddData(classid);
+			}
 		});
 	}
 	
@@ -326,6 +381,8 @@ $(function() {
 		</tr>
 	</table>
 	</form>
+	<div id="list_student"></div>
+	<div id="list_add_student"></div>
 </div>
 <input type="button" value="New Class" class="button listnewbutton"/>
 </div>

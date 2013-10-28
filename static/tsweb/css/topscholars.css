@@ -1,0 +1,13 @@
+@font-face {
+	font-family: "Satisfy";
+	src: "fonts/Satisfy-Regular.ttf";
+	
+}
+
+body{
+	background-color: #cccccc;
+}
+.logo{
+	font-family: "Satisfy";
+	font-size: 2em;
+}

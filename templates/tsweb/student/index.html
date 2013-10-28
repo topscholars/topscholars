@@ -4,26 +4,21 @@
 
 <head>
 	<meta charset="UTF-8"/> 
-	<link rel="stylesheet" type="text/css" href="{% static 'tsweb/css/Prototype.css' %}" />
-	<link rel="stylesheet" type="text/css" href="{% static 'tsweb/css/smoothness/jquery-ui-1.10.3.custom.min.css' %}" />
+	<!--<link rel="stylesheet" type="text/css" href="{% static 'tsweb/css/Prototype.css' %}" />-->
+<!--	<link rel="stylesheet" type="text/css" href="{% static 'tsweb/css/smoothness/jquery-ui-1.10.3.custom.min.css' %}" />
 	<link rel="stylesheet" type="text/css" href="{% static 'tsweb/css/smoothness/jquery-ui-1.10.3.custom-edited.css' %}" />
 	<link rel="stylesheet" type="text/css" href="{% static 'tsweb/css/bootstrap.css' %}" />
+	<link rel="stylesheet" type="text/css" href="{% static 'tsweb/css/topscholars.css' %}" />-->
+	
+	<link rel="stylesheet" href="../../../static/tsweb/css/bootstrap.css" type="text/css" />
+	<link rel="stylesheet" href="../../../static/tsweb/css/topscholars.css" type="text/css" />
+	
 	<script src="{% static 'tsweb/js/jQuery1.10.1.js' %}"></script>
 	<script src="{% static 'tsweb/js/jquery-ui-1.10.3.custom.min.js' %}"></script>
 	<script src="{% static 'tsweb/js/bootstrap.js' %}"></script>
-<style>
-.trhover2 {
-background-color:#D8E5F6;
-height:25px;
-}
-.trhover1 {
-background-color:white;
-height:25px;
-}
-.trhover1:hover,.trhover2:hover{
-background-color:#EAEAEA;
-}
-	</style>
+	
+	<script src="" type="text/javascript"></script>
+
 </head>
 
 <body>
@@ -33,44 +28,46 @@ $(function(){
 	$( "#tabs2" ).tabs();
 });
 </script>
-<div class="placeholder">
-<div class="header">
-<div class="headertext">
-<h1>Application Name - My Desk</h1>
-</div>
-<div class="headerbutton">
-<a href="{% url 'tsweb:logout' %}"><img src="{% static 'tsweb/image/logout.png' %}"/></a>
-<a href=""><img src="{% static 'tsweb/image/userdetails.png' %}" /></a>
-<a href=""><img src="{% static 'tsweb/image/username.png' %}" style="margin-top:12px;" /></a>
-</div>
-</div>
-<div style="width:720px;position:relative;float:left;top:40px;margin-left:10px;padding-bottom:52px;">
-<img src="{% static 'tsweb/image/anonymous-large.png' %}" style="width:162px;height:162px;" />
-<div style="width:520px;height:167px;border:1px #666666 solid;position:relative;float:right;">
-<span style="font-size:34px;line-height:36px;margin-left:10px;margin-top:10px;;float:left;position:relative;width:480px;">James McCracken</span>
-<table style="margin-left:10px;">
-<tr>
-<td>Email:</td>
-<td>mccracken.james@gmail.com</td>
-</tr>
-<tr>
-<td>Current Grade:</td>
-<td>9</td>
-</tr>
-<tr>
-<td>Class Enrolled:</td>
-<td>English, History, Maths</td>
-</tr>
-<tr>
-<td>Teachers:</td>
-<td>Mr. Lastname, Mrs. Lastname</td>
-</tr>
-<tr>
-<td>Timeliness:</td>
-<td>-% of Assignments Completed on Time</td>
-</tr>
-</table>
-</div>
+<div class="container">
+	<div class="header">
+		<div class="headertext">
+			<h1 class="logo">Application Name - My Desk</h1>
+		</div>
+		<div class="headerbutton">
+			<a href="{% url 'tsweb:logout' %}"><img src="{% static 'tsweb/image/logout.png' %}"/></a>
+			<a href=""><img src="{% static 'tsweb/image/userdetails.png' %}" /></a>
+			<a href=""><img src="{% static 'tsweb/image/username.png' %}" style="margin-top:12px;" /></a>
+		</div>
+	</div>
+	
+	<div style="width:720px;position:relative;float:left;top:40px;margin-left:10px;padding-bottom:52px;">
+		<img src="{% static 'tsweb/image/anonymous-large.png' %}" style="width:162px;height:162px;" />
+	<div style="width:520px;height:167px;border:1px #666666 solid;position:relative;float:right;">
+	<span style="font-size:34px;line-height:36px;margin-left:10px;margin-top:10px;;float:left;position:relative;width:480px;">James McCracken</span>
+		<table style="margin-left:10px;">
+			<tr>
+				<td>Email:</td>
+				<td>mccracken.james@gmail.com</td>
+			</tr>
+			<tr>
+				<td>Current Grade:</td>
+				<td>9</td>
+			</tr>
+			<tr>
+				<td>Class Enrolled:</td>
+				<td>English, History, Maths</td>
+			</tr>
+			<tr>
+				<td>Teachers:</td>
+				<td>Mr. Lastname, Mrs. Lastname</td>
+			</tr>
+			<tr>
+				<td>Timeliness:</td>
+				<td>-% of Assignments Completed on Time</td>
+			</tr>
+		</table>
+	</div>
+	
 <div id="tabs" class="clear" style="margin-top:10px;">
   <ul>
     <li><a href="#tabs-1">Overview</a></li>
@@ -85,35 +82,35 @@ $(function(){
   	<br/>
     <div>
     <div style="float:left;">
-    <span style="font-weight:bold;font-size:medium;">Next up on Writability...</span><br/><br/>
-    <b>Wordiness</b><br/><br/>
-    Emphasis<br/><br/>
-    Sentence variety
+	    <span style="font-weight:bold;font-size:medium;">Next up on Writability...</span><br/><br/>
+	    <b>Wordiness</b><br/><br/>
+	    Emphasis<br/><br/>
+	    Sentence variety
     </div>
     <textarea style="width:433px;height:228px;float:right;">
-Two roads diverged in a yellow wood,
-And sorry I could not travel both,
-And be one traveler, long I stood,
-To where one bent in the undergrowth.
-
-Then took the othe just as fair,
-And having perhaps the better claim
-Because it was grassy and wanted wear,
-Though as for that the passing there,
-Had worn them really about the same.
-
-And both that morning equally lay,
-In leaves no step had trodden black.
-Oh, I kept the first for another day!
-Yet, knowing how way leads on to way,
-I doubted if I should ever come back.
-
-I shall be telling this with a sigh,
-Somewhere ages and ages hence.
-Two roads diverege in a wood,
-And I, I, took the road less traveled by,
-And that has made all the difference.
--Robert Frost, 1916
+			Two roads diverged in a yellow wood,
+			And sorry I could not travel both,
+			And be one traveler, long I stood,
+			To where one bent in the undergrowth.
+			
+			Then took the othe just as fair,
+			And having perhaps the better claim
+			Because it was grassy and wanted wear,
+			Though as for that the passing there,
+			Had worn them really about the same.
+			
+			And both that morning equally lay,
+			In leaves no step had trodden black.
+			Oh, I kept the first for another day!
+			Yet, knowing how way leads on to way,
+			I doubted if I should ever come back.
+			
+			I shall be telling this with a sigh,
+			Somewhere ages and ages hence.
+			Two roads diverege in a wood,
+			And I, I, took the road less traveled by,
+			And that has made all the difference.
+			-Robert Frost, 1916
     </textarea>
     </div>
   </div>

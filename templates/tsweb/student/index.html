@@ -46,7 +46,7 @@ $(function(){
 					</ul>
 				</li>
 				<li class="dropdown">
-					<a href="{% static 'tsweb/' %}" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-file-o fa-2x"></i></a>
+					<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-file-o fa-2x"></i></a>
 					<ul class="dropdown-menu">
 						<li class="dropdown-title">Assignments</li>
 						<li><a href="#">Link Text</a></li>
@@ -57,25 +57,39 @@ $(function(){
 					</ul>
 				</li>
 				
-				<li><a href="{% static 'tsweb/' %}"><i class="fa fa-tags fa-2x"></i></a></li>
-				
 				<li class="dropdown">
-					<a href="#" class="dropdown-toggle" data-toggle="dropdown">Student Name <i class="fa fa-reorder"></i></a>
+					<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-bullhorn fa-2x notification"></i></a>
 					<ul class="dropdown-menu">
 						<li><a href="#">Link Text</a></li>
 					</ul>
 				</li>
+				
+				<li class="dropdown">
+					<a href="#" class="dropdown-toggle student-name" data-toggle="dropdown">Student Name</a>
+					<ul class="dropdown-menu">
+						<li><a href="#"><i class="fa fa-user"></i> Profile</a></li>
+					</ul>
+				</li>
 			</ul>
-			<form class="navbar-form navbar-left" role="search">
-	      <div class="form-group col-lg-3 col-offset-4">
-	        <input type="text" class="form-control" placeholder="Search">
-	      </div>
-	      <button type="submit" class="btn btn-default">Search</button>
+			
+			<form class="navbar-form navbar-left" role="search" id="search-form" method="" action="null">
+				<div class="input-group col-lg-3 col-offset-4">
+					<input type="text" class="form-control">
+		      <span class="input-group-btn">
+		        <input class="btn btn-default" type="submit" value="Search">
+		      </span>
+		    </div><!-- /input-group -->
 	    </form>
+	    
 		</div>
 	</nav>
 	
-	<div style="width:720px;position:relative;float:left;top:40px;margin-left:10px;padding-bottom:52px;">
+	<div class="container">
+		<h2>Class - {% class_name %}</h2>
+	</div>
+	
+	
+	<!--<div style="width:720px;position:relative;float:left;top:40px;margin-left:10px;padding-bottom:52px;">
 		<img src="{% static 'tsweb/image/anonymous-large.png' %}" style="width:162px;height:162px;" />
 	<div style="width:520px;height:167px;border:1px #666666 solid;position:relative;float:right;">
 	<span style="font-size:34px;line-height:36px;margin-left:10px;margin-top:10px;;float:left;position:relative;width:480px;">James McCracken</span>
@@ -291,7 +305,7 @@ words as the previous attempt
 </div>
 </div>
 <div class="clear" style="height:52px;position:relative;margin-top:716px;background-color:#555555;"></div>
-
+-->
 
 
 </body>

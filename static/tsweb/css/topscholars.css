@@ -1,8 +1,61 @@
 @font-face {
 	font-family: "Satisfy";
 	src: "fonts/Satisfy-Regular.ttf";
-	
 }
+@-webkit-keyframes pulse {
+    0% { -webkit-transform: scale(1); }	
+	50% { -webkit-transform: scale(1.4); }
+    100% { -webkit-transform: scale(1); }
+}
+@-moz-keyframes pulse {
+    0% { -moz-transform: scale(1); }	
+	50% { -moz-transform: scale(1.1); }
+    100% { -moz-transform: scale(1); }
+}
+@-o-keyframes pulse {
+    0% { -o-transform: scale(1); }	
+	50% { -o-transform: scale(1.1); }
+    100% { -o-transform: scale(1); }
+}
+@keyframes pulse {
+    0% { transform: scale(1); }	
+	50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+.pulse {
+	-webkit-animation-name: pulse;
+	-moz-animation-name: pulse;
+	-o-animation-name: pulse;
+	animation-name: pulse;
+}
+@-webkit-keyframes flash {
+	0%, 50%, 100% {opacity: 1;}	
+	25%, 75% {opacity: 0;}
+}
+
+@-moz-keyframes flash {
+	0%, 50%, 100% {opacity: 1;}	
+	25%, 75% {opacity: 0;}
+}
+
+@-o-keyframes flash {
+	0%, 50%, 100% {opacity: 1;}	
+	25%, 75% {opacity: 0;}
+}
+
+@keyframes flash {
+	0%, 50%, 100% {opacity: 1;}	
+	25%, 75% {opacity: 0;}
+}
+
+.flash {
+	-webkit-animation-name: flash;
+	-moz-animation-name: flash;
+	-o-animation-name: flash;
+	animation-name: flash;
+}
+
 
 body{
 	background-color: #cccccc;
@@ -45,5 +98,47 @@ body{
 }
 .dropdown-menu li a{
 	color: #666666;
-	
+}
+.student-name{
+	font-size: 1.4em;
+	margin-top: 5px;
+}
+.notification{
+	-webkit-animation: flash 2s ease-in-out 0s 3 alternate;
+	-moz-animation: flash 2s ease-in-out 0s 3 alternate;
+	animation: flash 2s ease-in-out 0s 3 alternate;
+}
+
+.page-title{
+	color: #444;
+	padding-bottom: 20px;
+}
+
+.block-cell{
+	top: 0!important;
+	position: relative;
+	width: 30%;
+	display: inline-block;
+	margin: 0 auto;
+	vertical-align: top;
+	margin-left: 10px;
+	margin-right: 10px;
+	height: auto;
+	background-color: #fff;
+	border: 1px solid #999999;
+}
+.block-body{
+	height: auto;
+	padding: 8px;
+}
+.block-header{
+	background-color: #ff6633;
+	margin-top: -20px;
+}
+.block-header h3{
+	top: 0;
+	color: #ffffff;
+	font-weight: lighter;
+	text-align: center;
+	padding: 10px;
 }

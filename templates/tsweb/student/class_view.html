@@ -1,0 +1,132 @@
+<!--{% load staticfiles %}-->
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8"/> 
+	<!--<link rel="stylesheet" type="text/css" href="{% static 'tsweb/css/Prototype.css' %}" />-->
+<!--	<link rel="stylesheet" type="text/css" href="{% static 'tsweb/css/smoothness/jquery-ui-1.10.3.custom.min.css' %}" />
+	<link rel="stylesheet" type="text/css" href="{% static 'tsweb/css/smoothness/jquery-ui-1.10.3.custom-edited.css' %}" />
+	<link rel="stylesheet" type="text/css" href="{% static 'tsweb/css/bootstrap.css' %}" />
+	<link rel="stylesheet" type="text/css" href="{% static 'tsweb/css/topscholars.css' %}" />-->
+	
+	<link rel="stylesheet" href="../../../static/tsweb/css/bootstrap.css" type="text/css" />
+	<link rel="stylesheet" href="../../../static/tsweb/css/bootstrap-glyphicons.css" type="text/css" />
+	<link rel="stylesheet" href="../../../static/tsweb/css/topscholars.css" type="text/css" />
+	<link href="//netdna.bootstrapcdn.com/font-awesome/4.0.1/css/font-awesome.css" rel="stylesheet">
+	
+<!--	<script src="{% static 'tsweb/js/jQuery1.10.1.js' %}"></script>
+	<script src="{% static 'tsweb/js/jquery-ui-1.10.3.custom.min.js' %}"></script>-->
+	
+	<script src="../../../static/tsweb/js/jQuery1.10.1.js" type="text/javascript"></script>
+	<script src="../../../static/tsweb/js/bootstrap.js" type="text/javascript"></script>
+
+</head>
+
+<body>
+<script>
+$(function(){
+	$( "#tabs" ).tabs();
+	$( "#tabs2" ).tabs();
+});
+</script>
+	<nav class="navbar" role="navigation">
+		<div class="container">
+			<h1 class="logo">Writability - My Desk</h1>
+			<!--<p class="navbar-text pull-right"><a href="#" class="navbar-link">Student Name <span class="fa fa-reorder fa-2x"></span></a></p>-->
+			<ul class="nav navbar-nav pull-right student-nav" >
+				<li><a href="{% static 'tsweb/' %}"><i class="fa fa-dashboard fa-2x"></i></a></li>
+				<li class="dropdown">
+					<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-book fa-2x"></i></a>
+					<ul class="dropdown-menu">
+						<li class="dropdown-title">Classes</li>
+						<li><a href="#">Link Text</a></li>
+						<li><a href="#">Link Text</a></li>
+						<li><a href="#">Link Text</a></li>
+					</ul>
+				</li>
+				<li class="dropdown">
+					<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-file-o fa-2x"></i></a>
+					<ul class="dropdown-menu">
+						<li class="dropdown-title">Assignments</li>
+						<li><a href="#">Link Text</a></li>
+						<li><a href="#">Link Text</a></li>
+						<li><a href="#">Link Text</a></li>
+						<li><a href="#">Link Text</a></li>
+						
+					</ul>
+				</li>
+				
+				<li class="dropdown">
+					<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-bullhorn fa-2x notification"></i></a>
+					<ul class="dropdown-menu">
+						<li class="dropdown-title">Notifications</li>
+						<li><a href="#">Link Text</a></li>
+					</ul>
+				</li>
+				
+				<li class="dropdown">
+					<a href="#" class="dropdown-toggle student-name" data-toggle="dropdown">Student Name</a>
+					<ul class="dropdown-menu">
+						<li><a href="#"><i class="fa fa-user"></i> Profile</a></li>
+					</ul>
+				</li>
+			</ul>
+			
+			<form class="navbar-form navbar-left" role="search" id="search-form" method="" action="null">
+				<div class="input-group col-lg-3 col-offset-4">
+					<input type="text" class="form-control">
+		      <span class="input-group-btn">
+		        <input class="btn btn-default" type="submit" value="Search">
+		      </span>
+		    </div><!-- /input-group -->
+	    </form>
+	    
+		</div>
+	</nav>
+	
+	<div class="container">
+		<h2 class="page-title">Class - {% class_name %}</h2>
+	
+	
+	
+		<div class="block-cell">
+			<div class="block-header">
+				<h3>Class Overview</h3>
+			</div>
+			
+			<div class="block-body">
+				<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+			</div>
+			
+		</div>
+		
+		<div class="block-cell">
+			<div class="block-header">
+				<h3>Assignments</h3>
+			</div>
+			
+			<div class="block-body block-list">
+				<ul class="class-assignment-list">
+					<li>Assignment 1</li>
+					<li>Assignment 2</li>
+					<li>Assignment 3</li>
+				</ul>
+			</div>
+			
+		</div>
+		
+		<div class="block-cell">
+			<div class="block-header">
+				<h3>Assignment Details</h3>
+			</div>
+			
+			<div class="block-body">
+			
+			</div>
+			
+		</div>
+		
+	</div> <!--End Container-->
+</body>
+</html>

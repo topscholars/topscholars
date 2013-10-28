@@ -2650,7 +2650,6 @@ button.close {
   padding-left: 15px;
   margin-bottom: 20px;
   background-color: #eeeeee;
-  border-radius: 4px;
 }
 
 .navbar:before,
@@ -2688,14 +2687,14 @@ button.close {
 
 .navbar-nav > li > a:hover,
 .navbar-nav > li > a:focus {
-  color: #333333;
+  color: #ff6633;
   background-color: transparent;
 }
 
 .navbar-nav > .active > a,
 .navbar-nav > .active > a:hover,
 .navbar-nav > .active > a:focus {
-  color: #555555;
+  color: #bf380a;
   background-color: #d5d5d5;
 }
 
@@ -2818,8 +2817,8 @@ button.close {
 .navbar-nav > .open > a,
 .navbar-nav > .open > a:hover,
 .navbar-nav > .open > a:focus {
-  color: #555555;
-  background-color: #d5d5d5;
+  color: #bf380a;
+  background-color: transparent;
 }
 
 .navbar-nav > .open > a .caret,

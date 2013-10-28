@@ -10,4 +10,40 @@ body{
 .logo{
 	font-family: "Satisfy";
 	font-size: 2em;
+	color: #ffffff;
+	position: absolute;
+}
+.navbar{
+	background-color: #3366cc;
+	border-radius: none!important;
+	box-shadow: 0px 5px 0px rgba(102,102,102, .5);
+}
+.navbar .container p a{
+	color: white;
+	padding-left: 10px;
+}
+.navbar .navbar-name{
+	font-size: ;
+}
+.navbar-form{
+	margin-top: 15px;
+}
+.student-nav li a{
+	color: white;
+}
+.dropdown-menu{
+	border-radius: 5px!important;
+	padding: 0px;
+}
+.dropdown-menu .dropdown-title{
+	color: #ffffff;
+	padding: 5px;
+	background-color: #70c174;
+	
+	border-top-left-radius: 4px;
+	border-top-right-radius: 4px;
+}
+.dropdown-menu li a{
+	color: #666666;
+	
 }

@@ -73,6 +73,7 @@ body{
 	background-color: #3366cc;
 	border-radius: none!important;
 	box-shadow: 0px 5px 0px rgba(102,102,102, .5);
+	height: 58px;
 }
 .navbar .container p a{
 	color: white;
@@ -83,6 +84,10 @@ body{
 }
 .navbar-form{
 	margin-top: 15px;
+}
+.nav-text{
+	margin-top: 5px;
+	font-size: 1.4em;
 }
 .student-nav li a{
 	color: white;
@@ -111,7 +116,49 @@ body{
 	-moz-animation: flash 2s ease-in-out 0s 3 alternate;
 	animation: flash 2s ease-in-out 0s 3 alternate;
 }
+form{
+	color: #444;
+}
+.form-login{
+	margin-top: 30px;
+}
+.form-login legend{
+	font-size: 2em;
+	color: #444;
+}
+#login-form{
+	margin: 0 auto;
+	left: 0;
+	right: 0;
+	position: relative;
+	width: 40%;
 
+}
+#login-form .fa-circle{
+	/*font-size: .6em;*/
+	margin-left: 2px;
+}
+#login-form #login-btn{
+	/*margin-left: 45px;*/
+}
+#signinButton{
+	background-color: rgb(231, 75, 57);
+	border-color: rgb(231, 75, 57);
+	border: none;
+	font-weight: normal;
+}
+#signinButton:hover, #signinButton:active{
+	background-color: rgb(220, 60, 40);
+	border-color: rgb(200, 50, 30);
+	
+}
+#forget-password-form{
+	margin: 0 auto;
+	left: 0;
+	right: 0;
+	position: relative;
+	width: 40%;
+}
 .page-title{
 	color: #444;
 	padding-bottom: 20px;

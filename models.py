@@ -583,13 +583,6 @@ class Classassignment(models.Model):
     class Meta:
         db_table = 'classassignment'
 
-class Studentassignment(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='ID') # Field name made lowercase.
-    studentid = models.ForeignKey(Classlist,related_name="Studentassignmenttostudentlist", db_column='StudentID') # Field name made lowercase.
-    assignmentid = models.ForeignKey(Assignment,related_name="Studentassignmenttoassignment", db_column='AssignmentID') # Field name made lowercase.
-    class Meta:
-        db_table = 'studentassignment'
-
 class TagEntity(models.Model):
     id = models.IntegerField(primary_key=True, db_column='ID') # Field name made lowercase.
     tagid = models.ForeignKey(Classlist,related_name="Tagentitytotag", db_column='TagId') # Field name made lowercase.

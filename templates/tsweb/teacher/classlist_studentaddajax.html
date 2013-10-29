@@ -13,8 +13,8 @@
 	<td class="cellitem">{{ student.id }}</td>
 	<td class="cellitem">{{ student.firstname }}</td>
 	<td class="cellitem">{{ student.lastname }}</td>
-	<td class="cellitem">{{ student.startdate }}</td>
-	<td class="cellitem">{{ student.startdate }}</td>
+	<td class="cellitem">{{ student.getStudentPreviousClass }}</td>
+	<td class="cellitem">{{ student.getStudentGrade }}</td>
 	<td class="cellitem"><input type="button" class="button addStudent" style="width:50px;" text="{{ student.id }}" value="add" style="display: block;"></td>
 	</tr>
 {% endfor %}

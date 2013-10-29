@@ -209,9 +209,10 @@ function EDITTABLE(){
 			type: 'GET',
 			data: { class: evalClass,
 					method: 'addClassToAssignment',
+					assignmentid: assignmentid,
 					id: id
 			},
-			datatype : 'json',
+			//datatype : 'json',
 			success: function(res){
 				console.log(res);
 				thisClass.showAssignmentClass(assignmentid);

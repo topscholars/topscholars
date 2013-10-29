@@ -155,13 +155,15 @@ class ASSSIGNMENTLIST():
     def tClassAssignlist(self,request):
         try:
             userid = request.session['userid']
-            id = request.GET.get('id', False)
-            classassignid = Classassignment.objects.get(id=id)
-        except KeyError:
-            return HttpResponse('error', mimetype='application/json')
-        else:
             login = Login.objects.get(id=userid)
             clientid = login.clientid
+            id = request.GET.get('id', False)
+            classassignid = Classassignment.objects.get(id=id)
+        except Classassignment.DoesNotExist:
+            classlist = Classschedule.objects.filter(Q(disabled=0,deleted=0,clientid=clientid))
+            context = {'classlist': classlist}
+            return render(request, 'tsweb/teacher/assignmentlist_classschedulelist.html',context)
+        else:
             classid = classassignid.classid.id
             classlist = Classschedule.objects.filter(~Q(id=classid), Q(disabled=0,deleted=0,clientid=clientid))
             #return HttpResponse(classlist, mimetype='application/json')
@@ -172,15 +174,19 @@ class ASSSIGNMENTLIST():
         try:
             userid = request.session['userid']
             id = request.GET.get('id', False)
+            assignmentid = request.GET.get('assignmentid', False)
         except KeyError:
             return HttpResponse('error', mimetype='application/json')
         else:   
             login = Login.objects.get(id=userid)
             clientid = login.clientid
-            classlist = Classlist.objects.get(id=id)
+            classlist = Classschedule.objects.get(id=id)
+            assignmentlist = Assignment.objects.get(id=assignmentid)
             classassignment = Classassignment()
             classassignment.classid = classlist
-            return HttpResponse('success', mimetype='application/json')
+            classassignment.assignmentid = assignmentlist
+            classassignment.save()
+            return HttpResponse('success')
         
 class TASSIGNMENTLISTAJAX():
     def get(self,request):

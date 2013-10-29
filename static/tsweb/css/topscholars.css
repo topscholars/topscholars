@@ -66,6 +66,9 @@ body{
 	color: #ffffff;
 	position: absolute;
 }
+.light-text{
+	font-weight: lighter;
+}
 .navbar{
 	background-color: #3366cc;
 	border-radius: none!important;
@@ -126,14 +129,13 @@ body{
 	height: auto;
 	background-color: #fff;
 	border: 1px solid #999999;
-}
-.block-body{
-	height: auto;
-	padding: 8px;
+	box-shadow: 0px 5px 0px rgba(102,102,102, .5);
+	
 }
 .block-header{
 	background-color: #ff6633;
 	margin-top: -20px;
+	position:static;
 }
 .block-header h3{
 	top: 0;
@@ -141,4 +143,19 @@ body{
 	font-weight: lighter;
 	text-align: center;
 	padding: 10px;
+}
+.block-body{
+	height: auto;
+	padding: 8px;
+	overflow: scroll;
+	height: 300px;
+}
+.block-body button{
+	font-size: 1.2em;
+	margin: 10px auto;
+	position: relative;
+	left: 0;
+	right: 0;
+	text-align: center;
+	float: right;
 }

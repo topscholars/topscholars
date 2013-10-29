@@ -96,7 +96,7 @@ $(function(){
 			</div>
 			
 			<div class="block-body">
-				<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+				<p id="classDetails">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
 			</div>
 			
 		</div>
@@ -107,11 +107,24 @@ $(function(){
 			</div>
 			
 			<div class="block-body block-list">
-				<ul class="class-assignment-list">
-					<li>Assignment 1</li>
-					<li>Assignment 2</li>
-					<li>Assignment 3</li>
-				</ul>
+				<table class="table table-hover">
+					<thead>
+						<tr>
+							<th>Name</th>
+							<th>Due Date</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td><a href="#">Assignment 1</a></td>
+							<td>10-10-2013</td>
+						</tr>
+						<tr>
+							<td><a href="#">Assignment 2</a></td>
+							<td>10-13-2013</td>
+						</tr>	
+					</tbody>
+				</table>
 			</div>
 			
 		</div>
@@ -122,11 +135,14 @@ $(function(){
 			</div>
 			
 			<div class="block-body">
-			
+				<p id="assignmentDetails">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+				
+				<button class="btn btn-success light-text" id="startAssignment">Start Assignment</button>
 			</div>
 			
 		</div>
 		
-	</div> <!--End Container-->
+	</div>  <!--End Container-->
+
 </body>
 </html>

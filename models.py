@@ -432,6 +432,13 @@ class Studentlist(models.Model):
         row = cursor.fetchone()
         return row[0]
     
+    def getStudentCurrentClass(self):
+        stdid=self.id
+        cursor = connection.cursor()
+        cursor.execute('select cs.code from studentlist as st join studentclass as sc on st.id = sc.studentid join classschedule as cs on sc.classscheduleid = cs.id where st.id = %s and cs.createddt = (select max(cs.createddt) from studentclass as sc join classschedule as cs on sc.classscheduleid = cs.id where sc.studentid = %s )',[stdid,stdid])
+        row = cursor.fetchone()
+        return row[0]
+    
     class Meta:
         db_table = 'studentlist'
 
@@ -477,6 +484,7 @@ class Submission(models.Model):
             return 0
     
     class Meta:
+        unique_together = (('studentid', 'teacherid', 'assignmentid'),)
         db_table = 'submission'
 
 class Submissionversion(models.Model):

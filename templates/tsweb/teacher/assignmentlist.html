@@ -6,9 +6,12 @@
 	<meta charset="UTF-8"/> 
 	<link rel="stylesheet" type="text/css" href="{% static 'tsweb/css/smoothness/jquery-ui-1.10.3.custom.css' %}" />
 	<link rel="stylesheet" type="text/css" href="{% static 'tsweb/css/Prototype.css' %}" />
+	<link rel="stylesheet" type="text/css" href="{% static 'tsweb/css/jquery.datepick.css' %}" />
 	<script src="{% static 'tsweb/js/jQuery1.10.1.js' %}"></script>
+	<script src="{% static 'tsweb/js/jquery-ui-1.10.3.custom.min.js' %}"></script>
 	<script src="{% static 'tsweb/js/util.js' %}"></script>
 	<script src="{% static 'tsweb/js/WaterMark.js' %}"></script>
+	<script src="{% static 'tsweb/js/jquery.datepick.js' %}"></script>
 </head>
 
 <body>
@@ -191,18 +194,21 @@ function EDITTABLE(){
 			},
 			success: function(res){
 				$("#list_by_select").html(res);
-				
+				$(".datepicker").datepicker({ dateFormat: 'dd-mm-yy'});
+				$(".datepicker").datepicker("setDate", new Date());
 				if(select == 'tClassAssignlist'){
 					$(".addClassassignment").click(function(){
 						var id = $(this).attr('text');
-						thisClass.addClassToAssignment(id);
+						var date = $(".datepicker").attr('text', id).val();
+						thisClass.addClassToAssignment(id, date);
+						
 					});
 				}
 			}
 		});
 	}
 	
-	this.addClassToAssignment = function(id){	
+	this.addClassToAssignment = function(id, date){	
 		var assignmentid = $("#ele_id").val();
 		$.ajax({
 			url: url,
@@ -210,14 +216,14 @@ function EDITTABLE(){
 			data: { class: evalClass,
 					method: 'addClassToAssignment',
 					assignmentid: assignmentid,
-					id: id
+					id: id,
+					date: date
 			},
 			//datatype : 'json',
 			success: function(res){
 				console.log(res);
 				thisClass.showAssignmentClass(assignmentid);
 				thisClass.showSelectAssignment();
-				
 			}
 		});
 	}
@@ -384,7 +390,7 @@ Class Filter:&nbsp;
 	</style>
 	<div id="listAssignmentClass" style="float:left;"></div>
 	<div id="listAssignmentStudent" style="float:left;padding-left: 20px;"></div>
-	<div id="selectAssignmentHeader">
+	<div id="selectAssignmentHeader" style="padding-top: 10px; padding-bottom: 10px;">
 		<ul>
 			<li>Select For Assignment : </li>
 			<li>
@@ -395,7 +401,6 @@ Class Filter:&nbsp;
 			</li>
 		</ul>
 	</div>
-	<br><br>
 	<div id="list_by_select"></div>
 </div>
 <input type="button" value="New Assignment" class="button listnewbutton"/>

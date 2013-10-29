@@ -108,12 +108,12 @@ class ASSSIGNMENTLIST():
             login = Login.objects.get(id=userid)
             clientid = login.clientid
             id = request.GET.get('id', False)
-            classassignid = Classassignment.objects.get(id=id)
+            classassignid = Classassignment.objects.filter(assignmentid=id).values_list('classid')
         except Classassignment.DoesNotExist:
             return render(request, 'tsweb/teacher/assignmentlist_assignmentclass.html')
         else:
-            classid = classassignid.classid.id
-            classlist = Classschedule.objects.filter(id=classid,disabled=0,deleted=0,clientid=clientid)
+            #classid = classassignid.classid.id
+            classlist = Classschedule.objects.filter(id__in=classassignid,disabled=0,deleted=0,clientid=clientid)
             #return HttpResponse(classassignid, mimetype='application/json')
             context = {'classlist': classlist}
             return render(request, 'tsweb/teacher/assignmentlist_assignmentclass.html', context)
@@ -121,22 +121,17 @@ class ASSSIGNMENTLIST():
     def tAssignmentStudent(self,request):
         try:
             userid = request.session['userid']
-        except KeyError:
-            return HttpResponse('error', mimetype='application/json')
-        else:
+            id = request.GET.get('id', False)
             login = Login.objects.get(id=userid)
             clientid = login.clientid
-            id = request.GET.get('id', False)
-            if id == False:
-                return render(request, 'tsweb/teacher/assignmentlist_assignmentstudent.html')
-            else:
-                classassignid = Classassignment.objects.get(id=id)
-                classid = classassignid.classid.id
-                classlist = Classschedule.objects.filter(classid=classid,disabled=0,deleted=0,clientid=clientid)
-                
-                #return HttpResponse(classlist.id, mimetype='application/json')
-                context = {'classlist': classlist}
-                return render(request, 'tsweb/teacher/assignmentlist_assignmentstudent.html', context)
+            classassignid = Classassignment.objects.get(classid=id)
+        except Classassignment.DoesNotExist:
+            return render(request, 'tsweb/teacher/assignmentlist_assignmentstudent.html')
+        else:
+            submissionlist = Submission.objects.filter(assignmentid=classassignid,disabled=0,deleted=0)
+            #return HttpResponse(classlist.id, mimetype='application/json')
+            context = {'submissionlist': submissionlist}
+            return render(request, 'tsweb/teacher/assignmentlist_assignmentstudent.html', context)
         
     def tStudentAssignlist(self,request):
         try:
@@ -145,12 +140,11 @@ class ASSSIGNMENTLIST():
         except KeyError:
             return HttpResponse('error', mimetype='application/json')
         else:
-            login = Login.objects.get(id=userid)
-            clientid = login.clientid
-            classlist = Classschedule.objects.filter(Q(classid=classid), Q(disabled=0,deleted=0,clientid=clientid))
-            studentlist = Studentlist.objects.filter(id__in=studentid)
+            studentid = Submission.objects.filter(assignmentid=id).values_list('studentid')
+            
+            studentlist = Studentlist.objects.filter(~Q(id__in=studentid))
             context = {'studentlist': studentlist}
-            return render(request, 'tsweb/teacher/classlist_studentlistajax.html', context)
+            return render(request, 'tsweb/teacher/assignmentlist_studentlist.html', context)
         
     def tClassAssignlist(self,request):
         try:
@@ -158,14 +152,14 @@ class ASSSIGNMENTLIST():
             login = Login.objects.get(id=userid)
             clientid = login.clientid
             id = request.GET.get('id', False)
-            classassignid = Classassignment.objects.get(id=id)
+            classassignid = Classassignment.objects.filter(assignmentid=id).values_list('classid')
         except Classassignment.DoesNotExist:
             classlist = Classschedule.objects.filter(Q(disabled=0,deleted=0,clientid=clientid))
             context = {'classlist': classlist}
             return render(request, 'tsweb/teacher/assignmentlist_classschedulelist.html',context)
         else:
-            classid = classassignid.classid.id
-            classlist = Classschedule.objects.filter(~Q(id=classid), Q(disabled=0,deleted=0,clientid=clientid))
+            #classid = classassignid.classid.id
+            classlist = Classschedule.objects.filter(~Q(id__in=classassignid), Q(disabled=0,deleted=0,clientid=clientid))
             #return HttpResponse(classlist, mimetype='application/json')
             context = {'classlist': classlist}
             return render(request, 'tsweb/teacher/assignmentlist_classschedulelist.html', context)
@@ -174,18 +168,35 @@ class ASSSIGNMENTLIST():
         try:
             userid = request.session['userid']
             id = request.GET.get('id', False)
+            duedate = request.GET.get('date', False)
             assignmentid = request.GET.get('assignmentid', False)
+            DATE_FORMAT = "%d-%m-%Y" 
         except KeyError:
             return HttpResponse('error', mimetype='application/json')
         else:   
             login = Login.objects.get(id=userid)
             clientid = login.clientid
             classlist = Classschedule.objects.get(id=id)
+            teacherid = classlist.teacherid
             assignmentlist = Assignment.objects.get(id=assignmentid)
-            classassignment = Classassignment()
-            classassignment.classid = classlist
-            classassignment.assignmentid = assignmentlist
-            classassignment.save()
+            classassignment = Classassignment.objects.get_or_create(classid=classlist, assignmentid=assignmentlist)
+            #classassignment.save()
+            studentclass = Studentclass.objects.filter(classscheduleid=id).values_list('studentid')
+            for row in studentclass:
+                studentlist = Studentlist.objects.get(id=row[0])
+                userlist = Userlist.objects.get(id=teacherid)
+                submission, created = Submission.objects.get_or_create(studentid=studentlist
+                    ,teacherid=userlist
+                    ,assignmentid=assignmentlist
+                    ,duedate = datetime.strptime(duedate,DATE_FORMAT)
+                    ,progress = 0
+                    ,createddt = datetime.now()
+                    ,createdby = userid
+                    ,modifieddt = datetime.now()
+                    ,modifiedby = userid
+                    ,deleted = 0
+                    ,disabled = 0)
+                
             return HttpResponse('success')
         
 class TASSIGNMENTLISTAJAX():

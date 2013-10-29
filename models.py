@@ -425,6 +425,13 @@ class Studentlist(models.Model):
         row = cursor.fetchone()
         return row[0]
     
+    def getStudentPreviousClass(self):
+        stdid=self.id
+        cursor = connection.cursor()
+        cursor.execute('select cs.code from studentlist as st join studentclass as sc on st.id = sc.studentid join classschedule as cs on sc.classscheduleid = cs.id where st.id = %s and cs.startdate = (select max(cs.startdate) from studentclass as sc join classschedule as cs on sc.classscheduleid = cs.id where sc.studentid = %s )',[stdid,stdid])
+        row = cursor.fetchone()
+        return row[0]
+    
     class Meta:
         db_table = 'studentlist'
 
@@ -578,17 +585,10 @@ class Usertype(models.Model):
 
 class Classassignment(models.Model):
     id = models.IntegerField(primary_key=True, db_column='ID') # Field name made lowercase.
-    classid = models.ForeignKey(Classlist,related_name="Classassignmenttoclasslist", db_column='ClassId') # Field name made lowercase.
+    classid = models.ForeignKey(Classschedule,related_name="Classassignmenttoclassschedule", db_column='ClassId') # Field name made lowercase.
     assignmentid = models.ForeignKey(Assignment,related_name="Classassignmenttoassignment", db_column='AssignmentId') # Field name made lowercase.
     class Meta:
         db_table = 'classassignment'
-
-class Studentassignment(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='ID') # Field name made lowercase.
-    studentid = models.ForeignKey(Classlist,related_name="Studentassignmenttostudentlist", db_column='StudentID') # Field name made lowercase.
-    assignmentid = models.ForeignKey(Assignment,related_name="Studentassignmenttoassignment", db_column='AssignmentID') # Field name made lowercase.
-    class Meta:
-        db_table = 'studentassignment'
 
 class TagEntity(models.Model):
     id = models.IntegerField(primary_key=True, db_column='ID') # Field name made lowercase.

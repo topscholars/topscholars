@@ -61,3 +61,15 @@ class SUBMISSIONREVIEW():
             
             data = simplejson.dumps(data_json)
             return HttpResponse(data, mimetype='application/json')
+        
+    def getSubmissionVersionHighlightList(self,request):
+        try:
+            userid = request.session['userid']
+            versionid = request.GET.get('versionid', False)
+        except KeyError:
+            return HttpResponse('error', mimetype='application/json')
+        else:
+            data_json = ''
+            submissionversionhighlightlist = list(Submissionversionhighlight.objects.filter(submissionversionid = versionid).values('id','hightlighttext'))
+            data = simplejson.dumps(submissionversionhighlightlist)
+            return HttpResponse(data, mimetype='application/json')

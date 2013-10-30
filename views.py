@@ -5,12 +5,13 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.core.urlresolvers import reverse
 
 from tsweb.models import *
-#from tsweb.ajaxs import *
+from tsweb.ajaxs import *
 from ajax.classajax import *
 from ajax.assignmentajax import *
 from ajax.studentajax import *
 from ajax.rubricajax import *
 from ajax.submissionajax import *
+from ajax.submissionreviewajax import *
 
 #Login View
 def login(request):
@@ -74,8 +75,6 @@ def tstudentlist(request):
         context= {'classlist' : classlist}
         return render(request, 'tsweb/teacher/studentlist.html', context)
 
-
-
 def trubriclist(request):
     try:
         userid = request.session['userid']
@@ -90,6 +89,7 @@ def tsubmissionlist(request):
     except KeyError:
         return HttpResponseRedirect(reverse('tsweb:login'))
     else:
+        
         return render(request, 'tsweb/teacher/submissionlist.html', '')
 
 def tsubmissionreview(request, id):
@@ -98,7 +98,13 @@ def tsubmissionreview(request, id):
     except KeyError:
         return HttpResponseRedirect(reverse('tsweb:login'))
     else:
-        return render(request, 'tsweb/teacher/submissionreview.html', '')
+        submissionversionlist = Submissionversion.objects.filter(submissionid=id)
+        submission = Submission.objects.get(id=id)
+        studentname = submission.studentid.getFullName()
+        context= {'id' : id,
+                  'studentname' : studentname,
+                  'submissionversionlist' : submissionversionlist }
+        return render(request, 'tsweb/teacher/submissionreview.html', context)
     
 def tprocessajax(request):
     txtclass = request.GET.get('class',False)

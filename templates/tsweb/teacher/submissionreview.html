@@ -14,6 +14,8 @@
 <script>
 function EDITTABLE(){
 	var thisClass = this;
+	var essay;
+	
 	this.setProgressBar = function(progress) {
 		$( "#progressbar" ).progressbar({
 	      value: progress
@@ -32,11 +34,29 @@ function EDITTABLE(){
 				$.each(result, function(ini,val){
 					if(ini == "submissionprogress")
 						thisClass.setProgressBar(val);
-					else if($('#ele_' + ini).is("span"))
+					else if($('#ele_' + ini).is("span") || $('#ele_' + ini).is("div"))
 						$('#ele_' + ini).html(val);
 					else 
 						$('#ele_' + ini).val(val);
 				});
+				
+				essay = $('#ele_submissionversionessay').html();
+				
+				$.getJSON(
+					url,
+					{	'class' :  'SUBMISSIONREVIEW',
+						'method' : 'getSubmissionVersionHighlightList',
+						'versionid' : $('#ele_submissionversionid').val() },
+					function(result1){ 
+						for (var i=0;i<result1.length;i++) {
+							var essayhtml = $('#ele_submissionversionessay').html();
+							essayhtml = essayhtml .replace(result1[i].hightlighttext, '<span id="' + result1[i].id + '" style="background: red;" class="essayhighlight" onClick="openHighlightDialog(' + result1[i].id + ');">' + result1[i].hightlighttext + '</span>');
+							$('#ele_submissionversionessay').html(essayhtml);
+						}
+					})
+					.error(function(xhr, status, error) {
+			    		alert('Error occur. Please contact the administrator.');
+			    	});
 			})
 			.error(function(xhr, status, error) {
 			    alert('Error occur. Please contact the administrator.');
@@ -46,21 +66,62 @@ function EDITTABLE(){
 	this.save = function() {
 		window.location = "{% url 'tsweb:tsubmissionlist' %}";
 	}
+	
+	this.getSelectionCharOffsetsWithin = function(element) {
+	    var start = 0, end = 0;
+	    var sel, range, priorRange;
+	    if (typeof window.getSelection != "undefined") {
+	        range = window.getSelection().getRangeAt(0);
+	        priorRange = range.cloneRange();
+	        priorRange.selectNodeContents(element);
+	        priorRange.setEnd(range.startContainer, range.startOffset);
+	        start = priorRange.toString().length;
+	        end = start + range.toString().length;
+	    } else if (typeof document.selection != "undefined" &&
+	            (sel = document.selection).type != "Control") {
+	        range = sel.createRange();
+	        priorRange = document.body.createTextRange();
+	        priorRange.moveToElementText(element);
+	        priorRange.setEndPoint("EndToStart", range);
+	        start = priorRange.text.length;
+	        end = start + range.text.length;
+	    }
+	    return {
+	        start: start,
+	        end: end
+	    };
+	}
 
+	this.openHighlightDialog = function(highlightid) {
+		alert(highlightid);
+	}
+	
 	this.initContent = function(){
+		thisClass.getData($('#ele_submissionid').val(),'');
+		
+		$('#ele_submissionversionessay').mouseup(function() {
+			var node = this;
+			if(thisClass.getSelectionCharOffsetsWithin(node).start != thisClass.getSelectionCharOffsetsWithin(node).end)
+			{
+				var start = thisClass.getSelectionCharOffsetsWithin(node).start;
+				var end = thisClass.getSelectionCharOffsetsWithin(node).end;
+				var htxt = essay;
+				htxt = htxt .substring(start,end);
+				
+			}
+		});
+
 		$('#btnReturn').click(function() {
 			window.location = "{% url 'tsweb:tsubmissionlist' %}";
 		});
 		
-		$('#btnSave').click(function() {
+		$('#btnSubmit').click(function() {
 			thisClass.save();
 		});
 		
 		$('#ele_submissionversionversion').change(function() {
 			thisClass.getData($('#ele_submissionid').val(),$('#ele_submissionversionversion').val());
-		});
-		
-		thisClass.getData($('#ele_submissionid').val(),'');
+		});	
 	}
 }
 
@@ -68,6 +129,11 @@ $(function() {
 	var gen = new EDITTABLE();
 	gen.initContent();
 });
+
+function openHighlightDialog(highlightid){
+	var gen = new EDITTABLE();
+	gen.openHighlightDialog(highlightid);
+}
 </script>
 <input type="hidden" id="ele_submissionid" value="{{ id }}">
 <input type="hidden" id="ele_submissionversionid">
@@ -98,23 +164,10 @@ $(function() {
 </select>
 <input type="button" class="button" style="width:80px;height:26px;position:relative;float:right;" value="Return" id="btnReturn">
 <input type="button" class="button" style="width:80px;height:26px;position:relative;float:right;margin-right:10px;" value="Submit" id="btnSubmit">
-<input type="button" class="button" style="width:80px;height:26px;position:relative;float:right;margin-right:10px;" value="Save" id="btnSave">
 </div>
 <div class="clear"></div>
 <div style="margin-top:10px;">
-<div style="width:538px;height:32px;border:1px black solid;">
-<a href="" style="display:inline-block;color:white;height:100%;"><img src="{% static 'tsweb/image/save.png' %}" style="margin-top:2px;" /></a>
-<a href="" style="display:inline-block;color:white;height:100%;"><img src="{% static 'tsweb/image/indent-right.png' %}" style="margin-top:2px;" /></a>
-<a href="" style="display:inline-block;color:white;height:100%;"><img src="{% static 'tsweb/image/indent-left.png' %}" style="margin-top:2px;" /></a>
-<a href="" style="display:inline-block;color:white;height:100%;"><img src="{% static 'tsweb/image/justify-left.png' %}" style="margin-top:2px;" /></a>
-<a href="" style="display:inline-block;color:white;height:100%;"><img src="{% static 'tsweb/image/justify-right.png' %}" style="margin-top:2px;" /></a>
-<a href="" style="display:inline-block;color:white;height:100%;"><img src="{% static 'tsweb/image/bold.png' %}" style="margin-top:2px;" /></a>
-<a href="" style="display:inline-block;color:white;height:100%;"><img src="{% static 'tsweb/image/italic.png' %}" style="margin-top:2px;" /></a>
-<a href="" style="display:inline-block;color:white;height:100%;"><img src="{% static 'tsweb/image/strike.png' %}" style="margin-top:2px;" /></a>
-<a href="" style="display:inline-block;color:white;height:100%;"><img src="{% static 'tsweb/image/underline.png' %}" style="margin-top:2px;" /></a>
-</div>
-<textarea id="ele_submissionversionessay" style="width:536px;height:518px;border:1px #B9B9B9 solid;overflow:scroll;">
-</textarea>
+<div id="ele_submissionversionessay" style="width:536px;height:540px;border:1px #B9B9B9 solid;overflow:scroll;"></div>
 </div>
 </div>
 <div style="width:270px;position:relative;float:left;top:40px;margin-left:20px;">

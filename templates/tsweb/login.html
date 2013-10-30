@@ -67,7 +67,7 @@
 	
 	<nav class="navbar" role="navigation">
 		<div class="container">
-			<h1 class="logo">Writability - My Desk</h1>
+			<h1 class="logo"><a href="#">Writability - My Desk</a></h1>
 			<!--<p class="navbar-text pull-right"><a href="#" class="navbar-link">Student Name <span class="fa fa-reorder fa-2x"></span></a></p>-->
 			<ul class="nav navbar-nav pull-right student-nav nav-text" >
 				<li><a href="#">Register</a></li>
@@ -76,8 +76,8 @@
 		</div>
 	</nav>
 	
-	<div class="container">
-		<div class="form-login">
+	<div class="container page-container">
+		<div class="form-centered">
 			<form method="post" action="{% url 'tsweb:login' %}" class="form-horizontal" role="form" id="login-form">
 			<legend>Login</legend>
 				<div class="form-group">
@@ -148,6 +148,12 @@
 			</form>
 		</div>
 	</div> <!--End Container-->
+	
+	<footer class="footer">
+		<div class="container">
+			<p>&copy; TopScholars 2013</p>
+		</div>
+	</footer>
 
 
 	<script type="text/javascript">

@@ -60,11 +60,35 @@
 body{
 	background-color: #cccccc;
 }
+.container{
+	height: auto!important;
+}
+.page-container{
+	padding-bottom: 50px;
+}
+.footer{
+	height: 50px;
+	margin-top: 50px;
+	bottom: 0;
+	position: fixed;
+	width: 100%;
+	background-color: #eee;
+}
+.footer .container{
+	padding: 15px 15px;
+}
 .logo{
 	font-family: "Satisfy";
 	font-size: 2em;
 	color: #ffffff;
 	position: absolute;
+}
+h1 a{
+	color: #ffffff;
+}
+h1 a:hover{
+	color: #ffffff;
+	text-decoration: none;
 }
 .light-text{
 	font-weight: lighter;
@@ -74,6 +98,9 @@ body{
 	border-radius: none!important;
 	box-shadow: 0px 5px 0px rgba(102,102,102, .5);
 	height: 58px;
+}
+.navbar-nav .fa{
+	margin-top: 10px;
 }
 .navbar .container p a{
 	color: white;
@@ -88,6 +115,9 @@ body{
 .nav-text{
 	margin-top: 5px;
 	font-size: 1.4em;
+}
+.active-nav{
+	color: ;
 }
 .student-nav li a{
 	color: white;
@@ -119,14 +149,14 @@ body{
 form{
 	color: #444;
 }
-.form-login{
+.form-centered{
 	margin-top: 30px;
 }
-.form-login legend{
+.form-centered legend{
 	font-size: 2em;
 	color: #444;
 }
-#login-form{
+#login-form, #register-form{
 	margin: 0 auto;
 	left: 0;
 	right: 0;
@@ -134,7 +164,7 @@ form{
 	width: 40%;
 
 }
-#login-form .fa-circle{
+#login-form .fa-circle, #register-form .fa-circle, #register-form .fa-circle-o{
 	/*font-size: .6em;*/
 	margin-left: 2px;
 }

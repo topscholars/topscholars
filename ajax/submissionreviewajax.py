@@ -73,3 +73,41 @@ class SUBMISSIONREVIEW():
             submissionversionhighlightlist = list(Submissionversionhighlight.objects.filter(submissionversionid = versionid).values('id','hightlighttext'))
             data = simplejson.dumps(submissionversionhighlightlist)
             return HttpResponse(data, mimetype='application/json')
+
+    def getSubmissionVersionHighlight(self,request):
+        try:
+            userid = request.session['userid']
+            highlightid = request.GET.get('highlightid', False)
+        except KeyError:
+            return HttpResponse('error', mimetype='application/json')
+        else:
+            data_json = ''
+            if highlightid != False and highlightid != '':
+                submissionversionhighlight = Submissionversionhighlight.objects.get(id=highlightid)
+                data_json = {
+                        'highlightComment': submissionversionhighlight.comment,
+                        }
+            else:
+                return HttpResponse('not found', mimetype='application/json')
+
+            data = simplejson.dumps(data_json)
+            return HttpResponse(data, mimetype='application/json')
+        
+    def getSubmissionVersionHighlightTags(self,request):
+        try:
+            userid = request.session['userid']
+            highlightid = request.GET.get('highlightid', False)
+        except KeyError:
+            return HttpResponse('error', mimetype='application/json')
+        else:
+            data_json = []
+            if highlightid != False and highlightid != '':
+                cursor = connection.cursor()
+                cursor.execute('select Taglink.id,Tag.name from Taglink left join Tag on Taglink.tagid = Tag.id left join TagEntity on Tag.id = TagEntity.tagid where Taglink.recid = %s and TagEntity.entityid = 5',[highlightid])
+                
+                for row in cursor.fetchall():
+                    data_json.append({ "id": str(row[0]), "name": row[1] })
+                    data = simplejson.dumps(data_json)
+                    return HttpResponse(data, mimetype='application/json')
+            else:
+                return HttpResponse('not found', mimetype='application/json')

@@ -105,6 +105,24 @@ def tsubmissionreview(request, id):
                   'studentname' : studentname,
                   'submissionversionlist' : submissionversionlist }
         return render(request, 'tsweb/teacher/submissionreview.html', context)
+
+def gettags(request, entityid):
+    try:
+        userid = request.session['userid']
+        term = request.GET.get('term', False)
+    except KeyError:
+        return HttpResponseRedirect(reverse('tsweb:login'))
+    else:
+        data_json = []
+        tagentity = ''
+        if term != False and term != '':
+            tagentity = TagEntity.objects.filter(entityid=entityid,tagid__name__contains=term)
+        else:
+            tagentity = TagEntity.objects.filter(entityid=entityid)
+        for row in tagentity:
+            data_json.append({ "id": str(row.tagid.id), "label": row.tagid.name, "value": row.tagid.name })
+        data = simplejson.dumps(data_json)
+        return HttpResponse(data, mimetype='application/json')
     
 def tprocessajax(request):
     txtclass = request.GET.get('class',False)

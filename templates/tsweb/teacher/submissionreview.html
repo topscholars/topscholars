@@ -6,15 +6,21 @@
 	<meta charset="UTF-8"/> 
 	<link rel="stylesheet" type="text/css" href="{% static 'tsweb/css/Prototype.css' %}" />
 	<link rel="stylesheet" type="text/css" href="{% static 'tsweb/css/smoothness/jquery-ui-1.10.3.custom.min.css' %}" />
+	<link rel="stylesheet" type="text/css" href="{% static 'tsweb/css/jquery.tagedit.css' %}" />
 	<script src="{% static 'tsweb/js/jQuery1.10.1.js' %}"></script>
 	<script src="{% static 'tsweb/js/jquery-ui-1.10.3.custom.min.js' %}"></script>
+	<script src="{% static 'tsweb/js/jquery.autoGrowInput.js' %}"></script>
+	<script src="{% static 'tsweb/js/jquery.tagedit.js' %}"></script>
 </head>
 
 <body>
 <script>
+var tagList;
+
 function EDITTABLE(){
 	var thisClass = this;
 	var essay;
+	var url = "{% url 'tsweb:tprocessajax' %}";
 	
 	this.setProgressBar = function(progress) {
 		$( "#progressbar" ).progressbar({
@@ -22,8 +28,25 @@ function EDITTABLE(){
 	    });
 	}
 	
+	this.highlightEssay = function() {
+		$.getJSON(
+		url,
+		{	'class' :  'SUBMISSIONREVIEW',
+			'method' : 'getSubmissionVersionHighlightList',
+			'versionid' : $('#ele_submissionversionid').val() },
+		function(result1){ 
+			for (var i=0;i<result1.length;i++) {
+				var essayhtml = $('#ele_submissionversionessay').html();
+				essayhtml = essayhtml .replace(result1[i].hightlighttext, '<span id="' + result1[i].id + '" style="background: red;" class="essayhighlight" onClick="openHighlightDialog(' + result1[i].id + ');">' + result1[i].hightlighttext + '</span>');
+				$('#ele_submissionversionessay').html(essayhtml);
+			}
+		})
+		.error(function(xhr, status, error) {
+    		alert('Error occur. Please contact the administrator.');
+    	});
+	}
+	
 	this.getData = function(submissionid, versionid) {
-		var url = "{% url 'tsweb:tprocessajax' %}";
 		$.getJSON(
 			url,
 			{	'class' :  'SUBMISSIONREVIEW',
@@ -42,21 +65,7 @@ function EDITTABLE(){
 				
 				essay = $('#ele_submissionversionessay').html();
 				
-				$.getJSON(
-					url,
-					{	'class' :  'SUBMISSIONREVIEW',
-						'method' : 'getSubmissionVersionHighlightList',
-						'versionid' : $('#ele_submissionversionid').val() },
-					function(result1){ 
-						for (var i=0;i<result1.length;i++) {
-							var essayhtml = $('#ele_submissionversionessay').html();
-							essayhtml = essayhtml .replace(result1[i].hightlighttext, '<span id="' + result1[i].id + '" style="background: red;" class="essayhighlight" onClick="openHighlightDialog(' + result1[i].id + ');">' + result1[i].hightlighttext + '</span>');
-							$('#ele_submissionversionessay').html(essayhtml);
-						}
-					})
-					.error(function(xhr, status, error) {
-			    		alert('Error occur. Please contact the administrator.');
-			    	});
+				thisClass.highlightEssay();
 			})
 			.error(function(xhr, status, error) {
 			    alert('Error occur. Please contact the administrator.');
@@ -91,13 +100,83 @@ function EDITTABLE(){
 	        end: end
 	    };
 	}
+	
+	this.getHighlightDataTag = function(highlightid) {
+		$.getJSON(
+			url,
+			{	'class' :  'SUBMISSIONREVIEW',
+				'method' : 'getSubmissionVersionHighlightTags',
+				'highlightid' : highlightid },
+			function(result){
+				for (var i=0;i<result.length;i++) {
+					var tagitem = '<li class="tagedit-listelement tagedit-listelement-old"><span dir="ltr">' + result[i].name + '</span><input type="hidden" name="tag[' + result[i].id + '-a]" value="' + result[i].name + '"><a class="tagedit-close" title="Remove from list.">x</a></li>'
+					$(tagitem).insertBefore('.tagedit-listelement-new');
+				}
+		})
+		.error(function(xhr, status, error) {
+    		alert('Error occur. Please contact the administrator.');
+    	});
+	}
 
-	this.openHighlightDialog = function(highlightid) {
-		alert(highlightid);
+	this.getHighlightData = function(highlightid) {
+		$('#ele_highlightid').val(highlightid);
+		
+		$.getJSON(
+			url,
+			{	'class' :  'SUBMISSIONREVIEW',
+				'method' : 'getSubmissionVersionHighlight',
+				'highlightid' : highlightid },
+			function(result){
+				$.each(result, function(ini,val){
+					if($('#ele_' + ini).is("span") || $('#ele_' + ini).is("div"))
+						$('#ele_' + ini).html(val);
+					else 
+						$('#ele_' + ini).val(val);
+				});
+				
+				thisClass.getHighlightDataTag(highlightid);
+				thisClass.showHighlightDialog(true);
+		})
+		.error(function(xhr, status, error) {
+    		alert('Error occur. Please contact the administrator.');
+    	});
 	}
 	
+	this.showHighlightDialog = function(show) {
+		if(show) {
+			$('#diveditbg').show();
+			$('#divedithighlight').show();
+			thisClass.editHighlightDialog(false);
+		}
+		else {
+			$('#diveditbg').hide();
+			$('#divedithighlight').hide();
+			$('#ele_highlightid').val('');
+			$('#ele_highlighttext').val('');
+			$('.tagedit-listelement-old').remove();
+			$('#ele_highlightComment').val('');
+		}
+	}
+	
+	this.editHighlightDialog = function(edit) {
+		if(edit) {
+			$('.edithighlight').show();
+			$('.viewhighlight').hide();
+			$('#ele_highlightTag').removeAttr("disabled"); 
+			$('#ele_highlightComment').removeAttr("disabled"); 
+		}
+		else {
+			$('.edithighlight').hide();
+			$('.viewhighlight').show();
+			$('#ele_highlightTag').attr("disabled", "disabled");
+			$('#ele_highlightComment').attr("disabled", "disabled");
+		}
+	}
+			
 	this.initContent = function(){
 		thisClass.getData($('#ele_submissionid').val(),'');
+		
+		thisClass.showHighlightDialog(false);
 		
 		$('#ele_submissionversionessay').mouseup(function() {
 			var node = this;
@@ -106,9 +185,33 @@ function EDITTABLE(){
 				var start = thisClass.getSelectionCharOffsetsWithin(node).start;
 				var end = thisClass.getSelectionCharOffsetsWithin(node).end;
 				var htxt = essay;
-				htxt = htxt .substring(start,end);
-				
+				htxt = htxt.substring(start,end);
+				$('#ele_highlighttext').val(htxt);
+				thisClass.showHighlightDialog(true);
 			}
+		});
+		
+		$('#btnedithighlight').click(function() {
+			thisClass.editHighlightDialog(true);
+		});
+		
+		$('#btncloseedithighlight').click(function() {
+			thisClass.showHighlightDialog(false);
+		});
+		
+		$('#btnsavehighlight').click(function() {
+			thisClass.editHighlightDialog(false);
+			$('input[name*="-a"]').each(function(index) {
+				alert($(this).attr('name'));
+			});
+		});
+		
+		$('#btndeletehighlight').click(function() {
+			thisClass.showHighlightDialog(false);
+		});
+		
+		$('#btncancelhighlight').click(function() {
+			thisClass.editHighlightDialog(false);
 		});
 
 		$('#btnReturn').click(function() {
@@ -122,6 +225,12 @@ function EDITTABLE(){
 		$('#ele_submissionversionversion').change(function() {
 			thisClass.getData($('#ele_submissionid').val(),$('#ele_submissionversionversion').val());
 		});	
+		
+		$( '#tdtag input.tag' ).tagedit({
+			autocompleteURL: "{% url 'tsweb:gettags' 5 %}",
+			autocompleteOptions: {minLength: 3},
+			allowEdit:false
+		});
 	}
 }
 
@@ -132,11 +241,41 @@ $(function() {
 
 function openHighlightDialog(highlightid){
 	var gen = new EDITTABLE();
-	gen.openHighlightDialog(highlightid);
+	gen.getHighlightData(highlightid);
 }
 </script>
 <input type="hidden" id="ele_submissionid" value="{{ id }}">
 <input type="hidden" id="ele_submissionversionid">
+<div id="diveditbg" style="background-color:gray;z-index:1;width:100%;height:100%;position:absolute;opacity:0.4;"></div>
+<div id="divedithighlight" style="z-index:2;width:500px;position:absolute;background-color:white;margin-top:10%;margin-left:35%;padding:10px;">
+	<input id="ele_highlightid" type="hidden">
+	<input id="ele_highlighttext" type="hidden">
+	<table style="width:100%;">
+		<tr>
+			<td>Tag:</td>
+			<td id="tdtag">
+			<input id="ele_highlightTag" type="text" name="tag[]" value="" class="tag" style="width:420px;"/>
+			</td>
+		</tr>
+		<tr>
+			<td style="vertical-align:top;">Comment:</td>
+			<td><textarea id="ele_highlightComment" style="width:420px;height:100px;resize:none;"></textarea></td>
+		</tr>
+		<tr>
+			<td colspan="2" class="viewhighlight" style="text-align:center;">
+				<input id="btnedithighlight" type="button" class="button" style="width:80px;height:26px;" value="Edit">&nbsp;
+				<input id="btncloseedithighlight" type="button" class="button" style="width:80px;height:26px;" value="Close">
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2" class="edithighlight" style="text-align:center;">
+				<input id="btnsavehighlight" type="button" class="button" style="width:80px;height:26px;" value="Save">&nbsp;
+				<input id="btndeletehighlight" type="button" class="button" style="width:80px;height:26px;" value="Delete">&nbsp;
+				<input id="btncancelhighlight" type="button" class="button" style="width:80px;height:26px;" value="Cancel">
+			</td>
+		</tr>
+	</table>
+</div>
 <div class="placeholder">
 <div class="header">
 <div class="headertext">
@@ -167,7 +306,7 @@ function openHighlightDialog(highlightid){
 </div>
 <div class="clear"></div>
 <div style="margin-top:10px;">
-<div id="ele_submissionversionessay" style="width:536px;height:540px;border:1px #B9B9B9 solid;overflow:scroll;"></div>
+<div id="ele_submissionversionessay" style="width:536px;height:540px;border:1px #B9B9B9 solid;overflow-y:scroll;"></div>
 </div>
 </div>
 <div style="width:270px;position:relative;float:left;top:40px;margin-left:20px;">
@@ -183,7 +322,7 @@ function openHighlightDialog(highlightid){
 </tr>
 <tr>
 <td colspan="2">
-<textarea id="ele_assignmentdesc" style="width:257px;height:58px;color:#282828;background-color:#E2E2E2;border:0px;" readonly="readonly"></textarea>
+<textarea id="ele_assignmentdesc" style="width:257px;height:58px;color:#282828;background-color:#E2E2E2;border:0px;resize:none;" readonly="readonly"></textarea>
 </td>
 </tr>
 <tr>
@@ -217,7 +356,7 @@ function openHighlightDialog(highlightid){
 <input type="text" id="tag" name="tag[]" value="" class="tag"/>
 </div>
 <span style="text-decoration:underline;font-weight:bold;">Tag Comment</span><br/>
-<textarea style="width:264px;height:98px;background-color:#E2E2E2;margin-top:5px;"></textarea>
+<textarea style="width:264px;height:98px;background-color:#E2E2E2;margin-top:5px;resize:none;"></textarea>
 </div>
 <div class="clear" style="height:52px;position:relative;margin-top:716px;background-color:#555555;"></div>
 </div>

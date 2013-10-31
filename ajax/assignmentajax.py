@@ -162,7 +162,7 @@ class ASSSIGNMENTLIST():
             if id == False:
                 return render(request, 'tsweb/teacher/assignmentlist_assignmentstudent.html')
             else: 
-                classassignment = Classassignment.objects.get(classid=id)
+                classassignment = Classassignment.objects.get(classid=id, assignmentid=assignmentid)
                 classid = classassignment.classid
                 studentid = Studentclass.objects.filter(classscheduleid=classid, clientid=clientid,disabled=0,deleted=0).values_list('studentid')
                 submissionlist = Submission.objects.filter(studentid__in=studentid,assignmentid=assignmentid,disabled=0,deleted=0)
@@ -172,6 +172,16 @@ class ASSSIGNMENTLIST():
                 classid = classassignment.classid
                 studentid = Studentclass.objects.filter(classscheduleid=classid, clientid=clientid,disabled=0,deleted=0).values_list('studentid')
                 submissionlist = Submission.objects.filter(~Q(studentid__in=studentid),Q(assignmentid=assignmentid),Q(disabled=0),Q(deleted=0))
+            except Classassignment.MultipleObjectsReturned:
+                try:
+                    classassignment = Classassignment.objects.filter(assignmentid=assignmentid).values_list('classid')
+                    studentid = Studentclass.objects.filter(classscheduleid__in=classassignment, clientid=clientid,disabled=0,deleted=0).values_list('studentid')
+                    submissionlist = Submission.objects.filter(~Q(studentid__in=studentid),Q(assignmentid=assignmentid),Q(disabled=0),Q(deleted=0))
+                except Submission.DoesNotExist:
+                    return render(request, 'tsweb/teacher/assignmentlist_assignmentstudent.html')
+                else:
+                    context = {'submissionlist': submissionlist}
+                    return render(request, 'tsweb/teacher/assignmentlist_assignmentstudent.html', context)
             except Submission.DoesNotExist:
                 return render(request, 'tsweb/teacher/assignmentlist_assignmentstudent.html')
             else:

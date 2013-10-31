@@ -167,11 +167,13 @@ function EDITTABLE(){
 	}
 	
 	this.showAssignmentStudent = function(id){
+		var assignmentid = $("#ele_id").val();
 		$.ajax({
 			url: url,
 			type: 'GET',
 			data: { class: evalClass,
 					method: 'tAssignmentStudent',
+					assignmentid : assignmentid,
 					id: id
 			},
 			success: function(res){
@@ -203,6 +205,13 @@ function EDITTABLE(){
 						thisClass.addClassToAssignment(id, date);
 						
 					});
+				}else if(select == 'tStudentAssignlist'){
+					$(".addStudentassignment").click(function(){
+						var id = $(this).attr('text');
+						var date = $(".datepicker").attr('text', id).val();
+						thisClass.addStudentToAssignment(id, date);
+						
+					});
 				}
 			}
 		});
@@ -220,6 +229,25 @@ function EDITTABLE(){
 					date: date
 			},
 			//datatype : 'json',
+			success: function(res){
+				console.log(res);
+				thisClass.showAssignmentClass(assignmentid);
+				thisClass.showSelectAssignment();
+			}
+		});
+	}
+	
+	this.addStudentToAssignment = function(id, date){	
+		var assignmentid = $("#ele_id").val();
+		$.ajax({
+			url: url,
+			type: 'GET',
+			data: { class: evalClass,
+					method: 'addStudentToAssignment',
+					assignmentid: assignmentid,
+					id: id,
+					date: date
+			},
 			success: function(res){
 				console.log(res);
 				thisClass.showAssignmentClass(assignmentid);

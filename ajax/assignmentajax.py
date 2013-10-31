@@ -162,11 +162,7 @@ class ASSSIGNMENTLIST():
             if id == False:
                 return render(request, 'tsweb/teacher/assignmentlist_assignmentstudent.html')
             else: 
-<<<<<<< HEAD
                 classassignment = Classassignment.objects.get(classid=id, assignmentid=assignmentid)
-=======
-                classassignment = Classassignment.objects.get(classid=id)
->>>>>>> origin/master
                 classid = classassignment.classid
                 studentid = Studentclass.objects.filter(classscheduleid=classid, clientid=clientid,disabled=0,deleted=0).values_list('studentid')
                 submissionlist = Submission.objects.filter(studentid__in=studentid,assignmentid=assignmentid,disabled=0,deleted=0)
@@ -176,7 +172,6 @@ class ASSSIGNMENTLIST():
                 classid = classassignment.classid
                 studentid = Studentclass.objects.filter(classscheduleid=classid, clientid=clientid,disabled=0,deleted=0).values_list('studentid')
                 submissionlist = Submission.objects.filter(~Q(studentid__in=studentid),Q(assignmentid=assignmentid),Q(disabled=0),Q(deleted=0))
-<<<<<<< HEAD
             except Classassignment.MultipleObjectsReturned:
                 try:
                     classassignment = Classassignment.objects.filter(assignmentid=assignmentid).values_list('classid')
@@ -187,8 +182,6 @@ class ASSSIGNMENTLIST():
                 else:
                     context = {'submissionlist': submissionlist}
                     return render(request, 'tsweb/teacher/assignmentlist_assignmentstudent.html', context)
-=======
->>>>>>> origin/master
             except Submission.DoesNotExist:
                 return render(request, 'tsweb/teacher/assignmentlist_assignmentstudent.html')
             else:

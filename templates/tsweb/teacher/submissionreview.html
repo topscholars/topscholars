@@ -108,10 +108,15 @@ function EDITTABLE(){
 				'method' : 'getSubmissionVersionHighlightTags',
 				'highlightid' : highlightid },
 			function(result){
+				var displaytxt = '';
 				for (var i=0;i<result.length;i++) {
 					var tagitem = '<li class="tagedit-listelement tagedit-listelement-old"><span dir="ltr">' + result[i].name + '</span><input type="hidden" name="tag[' + result[i].id + '-a]" value="' + result[i].name + '"><a class="tagedit-close" title="Remove from list.">x</a></li>'
 					$(tagitem).insertBefore('.tagedit-listelement-new');
+					if (displaytxt != '')
+						 displaytxt = displaytxt + ', '
+					displaytxt = displaytxt + result[i].name;
 				}
+				$('#ele_highlightTagDisplay').text(displaytxt);
 		})
 		.error(function(xhr, status, error) {
     		alert('Error occur. Please contact the administrator.');
@@ -146,13 +151,23 @@ function EDITTABLE(){
 		if(show) {
 			$('#diveditbg').show();
 			$('#divedithighlight').show();
-			thisClass.editHighlightDialog(false);
+			if($('#ele_highlightid').val() != '')
+			{
+				thisClass.editHighlightDialog(false);
+				$('#btndeletehighlight').show();
+			}
+			else
+			{
+				thisClass.editHighlightDialog(true);
+				$('#btndeletehighlight').hide();
+			}
 		}
 		else {
 			$('#diveditbg').hide();
 			$('#divedithighlight').hide();
 			$('#ele_highlightid').val('');
 			$('#ele_highlighttext').val('');
+			$('#ele_highlightTagDisplay').text('');
 			$('.tagedit-listelement-old').remove();
 			$('#ele_highlightComment').val('');
 		}
@@ -160,17 +175,42 @@ function EDITTABLE(){
 	
 	this.editHighlightDialog = function(edit) {
 		if(edit) {
-			$('.edithighlight').show();
-			$('.viewhighlight').hide();
+			$('#edithighlight').show();
+			$('#viewhighlight').hide();
+			$('#tdtagdisplay').hide();
+			$('#tdtag').show();
 			$('#ele_highlightTag').removeAttr("disabled"); 
 			$('#ele_highlightComment').removeAttr("disabled"); 
+			$('.tagedit-list').removeAttr("disabled"); 
 		}
 		else {
-			$('.edithighlight').hide();
-			$('.viewhighlight').show();
+			$('#edithighlight').hide();
+			$('#viewhighlight').show();
+			$('#tdtagdisplay').show();
+			$('#tdtag').hide();
 			$('#ele_highlightTag').attr("disabled", "disabled");
 			$('#ele_highlightComment').attr("disabled", "disabled");
 		}
+	}
+	
+	this.save = function(){
+		var highlightid = $('#ele_highlightid').val();
+		//get tag list
+		$('input[name*="-a"]').each(function(index) {
+			//alert($(this).attr('name'));
+		});
+		if (highlightid != '') {
+			//insert
+		}
+		else {
+			//update
+		}
+		
+		thisClass.getHighlightData(highlightid);
+	}
+	
+	this.del = function(){
+		//delete
 	}
 			
 	this.initContent = function(){
@@ -200,18 +240,24 @@ function EDITTABLE(){
 		});
 		
 		$('#btnsavehighlight').click(function() {
+			thisClass.save();
 			thisClass.editHighlightDialog(false);
-			$('input[name*="-a"]').each(function(index) {
-				alert($(this).attr('name'));
-			});
 		});
 		
 		$('#btndeletehighlight').click(function() {
+			thisClass.del();
 			thisClass.showHighlightDialog(false);
 		});
 		
 		$('#btncancelhighlight').click(function() {
-			thisClass.editHighlightDialog(false);
+			if($('#ele_highlightid').val() != '')
+			{
+				var highlightid = $('#ele_highlightid').val();
+				thisClass.getHighlightData(highlightid);
+				thisClass.editHighlightDialog(false);
+			}
+			else
+				thisClass.showHighlightDialog(false);
 		});
 
 		$('#btnReturn').click(function() {
@@ -254,21 +300,24 @@ function openHighlightDialog(highlightid){
 		<tr>
 			<td>Tag:</td>
 			<td id="tdtag">
-			<input id="ele_highlightTag" type="text" name="tag[]" value="" class="tag" style="width:420px;"/>
+				<input id="ele_highlightTag" type="text" name="tag[]" value="" class="tag" style="width:420px;"/>
+			</td>
+			<td id="tdtagdisplay">
+				<label id="ele_highlightTagDisplay"></label>
 			</td>
 		</tr>
 		<tr>
 			<td style="vertical-align:top;">Comment:</td>
 			<td><textarea id="ele_highlightComment" style="width:420px;height:100px;resize:none;"></textarea></td>
 		</tr>
-		<tr>
-			<td colspan="2" class="viewhighlight" style="text-align:center;">
+		<tr id="viewhighlight">
+			<td colspan="2" style="text-align:center;">
 				<input id="btnedithighlight" type="button" class="button" style="width:80px;height:26px;" value="Edit">&nbsp;
 				<input id="btncloseedithighlight" type="button" class="button" style="width:80px;height:26px;" value="Close">
 			</td>
 		</tr>
-		<tr>
-			<td colspan="2" class="edithighlight" style="text-align:center;">
+		<tr id="edithighlight">
+			<td colspan="2" style="text-align:center;">
 				<input id="btnsavehighlight" type="button" class="button" style="width:80px;height:26px;" value="Save">&nbsp;
 				<input id="btndeletehighlight" type="button" class="button" style="width:80px;height:26px;" value="Delete">&nbsp;
 				<input id="btncancelhighlight" type="button" class="button" style="width:80px;height:26px;" value="Cancel">

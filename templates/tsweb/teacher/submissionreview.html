@@ -6,38 +6,137 @@
 	<meta charset="UTF-8"/> 
 	<link rel="stylesheet" type="text/css" href="{% static 'tsweb/css/Prototype.css' %}" />
 	<link rel="stylesheet" type="text/css" href="{% static 'tsweb/css/smoothness/jquery-ui-1.10.3.custom.min.css' %}" />
-	<link rel="stylesheet" type="text/css" href="{% static 'tsweb/css/jquery.tagedit.css' %}" />
 	<script src="{% static 'tsweb/js/jQuery1.10.1.js' %}"></script>
 	<script src="{% static 'tsweb/js/jquery-ui-1.10.3.custom.min.js' %}"></script>
-	<script src="{% static 'tsweb/js/jquery.tagedit.js' %}"></script>
 </head>
 
 <body>
 <script>
-
-$(function() {
-	$('#tag').tagedit({
-//  		autocompleteURL: 'path/to/your/server' 
-	});
-
-	$( "#progressbar" ).progressbar({
-      value: 77
-    });
-    
-	$('#btnReturn').click(function() {
-		window.location = "{% url 'tsweb:tsubmissionlist' %}";
-	});
+function EDITTABLE(){
+	var thisClass = this;
+	var essay;
 	
-	$('#btnSave').click(function() {
-		Save();
-	});
-});
+	this.setProgressBar = function(progress) {
+		$( "#progressbar" ).progressbar({
+	      value: progress
+	    });
+	}
+	
+	this.getData = function(submissionid, versionid) {
+		var url = "{% url 'tsweb:tprocessajax' %}";
+		$.getJSON(
+			url,
+			{	'class' :  'SUBMISSIONREVIEW',
+				'method' : 'getSubmissionVersion',
+				'submissionid' : submissionid,
+				'versionid' : versionid },
+			function(result){
+				$.each(result, function(ini,val){
+					if(ini == "submissionprogress")
+						thisClass.setProgressBar(val);
+					else if($('#ele_' + ini).is("span") || $('#ele_' + ini).is("div"))
+						$('#ele_' + ini).html(val);
+					else 
+						$('#ele_' + ini).val(val);
+				});
+				
+				essay = $('#ele_submissionversionessay').html();
+				
+				$.getJSON(
+					url,
+					{	'class' :  'SUBMISSIONREVIEW',
+						'method' : 'getSubmissionVersionHighlightList',
+						'versionid' : $('#ele_submissionversionid').val() },
+					function(result1){ 
+						for (var i=0;i<result1.length;i++) {
+							var essayhtml = $('#ele_submissionversionessay').html();
+							essayhtml = essayhtml .replace(result1[i].hightlighttext, '<span id="' + result1[i].id + '" style="background: red;" class="essayhighlight" onClick="openHighlightDialog(' + result1[i].id + ');">' + result1[i].hightlighttext + '</span>');
+							$('#ele_submissionversionessay').html(essayhtml);
+						}
+					})
+					.error(function(xhr, status, error) {
+			    		alert('Error occur. Please contact the administrator.');
+			    	});
+			})
+			.error(function(xhr, status, error) {
+			    alert('Error occur. Please contact the administrator.');
+		});
+	}
+	
+	this.save = function() {
+		window.location = "{% url 'tsweb:tsubmissionlist' %}";
+	}
+	
+	this.getSelectionCharOffsetsWithin = function(element) {
+	    var start = 0, end = 0;
+	    var sel, range, priorRange;
+	    if (typeof window.getSelection != "undefined") {
+	        range = window.getSelection().getRangeAt(0);
+	        priorRange = range.cloneRange();
+	        priorRange.selectNodeContents(element);
+	        priorRange.setEnd(range.startContainer, range.startOffset);
+	        start = priorRange.toString().length;
+	        end = start + range.toString().length;
+	    } else if (typeof document.selection != "undefined" &&
+	            (sel = document.selection).type != "Control") {
+	        range = sel.createRange();
+	        priorRange = document.body.createTextRange();
+	        priorRange.moveToElementText(element);
+	        priorRange.setEndPoint("EndToStart", range);
+	        start = priorRange.text.length;
+	        end = start + range.text.length;
+	    }
+	    return {
+	        start: start,
+	        end: end
+	    };
+	}
 
-function Save() {
-	window.location = "{% url 'tsweb:tsubmissionlist' %}";
+	this.openHighlightDialog = function(highlightid) {
+		alert(highlightid);
+	}
+	
+	this.initContent = function(){
+		thisClass.getData($('#ele_submissionid').val(),'');
+		
+		$('#ele_submissionversionessay').mouseup(function() {
+			var node = this;
+			if(thisClass.getSelectionCharOffsetsWithin(node).start != thisClass.getSelectionCharOffsetsWithin(node).end)
+			{
+				var start = thisClass.getSelectionCharOffsetsWithin(node).start;
+				var end = thisClass.getSelectionCharOffsetsWithin(node).end;
+				var htxt = essay;
+				htxt = htxt .substring(start,end);
+				
+			}
+		});
+
+		$('#btnReturn').click(function() {
+			window.location = "{% url 'tsweb:tsubmissionlist' %}";
+		});
+		
+		$('#btnSubmit').click(function() {
+			thisClass.save();
+		});
+		
+		$('#ele_submissionversionversion').change(function() {
+			thisClass.getData($('#ele_submissionid').val(),$('#ele_submissionversionversion').val());
+		});	
+	}
 }
 
+$(function() {
+	var gen = new EDITTABLE();
+	gen.initContent();
+});
+
+function openHighlightDialog(highlightid){
+	var gen = new EDITTABLE();
+	gen.openHighlightDialog(highlightid);
+}
 </script>
+<input type="hidden" id="ele_submissionid" value="{{ id }}">
+<input type="hidden" id="ele_submissionversionid">
 <div class="placeholder">
 <div class="header">
 <div class="headertext">
@@ -54,42 +153,21 @@ function Save() {
 </div>
 <div style="width:540px;position:relative;float:left;top:40px;margin-left:40px;padding-bottom:52px;">
 <div style="border:1px #666666 solid;height:63px;">
-<span style="font-size:34px;line-height:63px;margin-left:10px;float:left;position:relative;width:480px;">James McCracken</span>
+<span style="font-size:34px;line-height:63px;margin-left:10px;float:left;position:relative;width:480px;">{{ studentname }}</span>
 <img src="{% static 'tsweb/image/downarrow-gray.png' %}" style="float:right;position:relative;top:20px;right:20px;" />
 </div>
 <div style="margin-top:10px;">
-<select class="selection" style="position:relative;float:left;">
-<option>Revision #</option>
-<option>Revision 1</option>
-<option>Revision 2</option>
+<select id="ele_submissionversionversion" class="selection" style="position:relative;float:left;">
+{% for row in submissionversionlist %}
+	<option value="{{ row.id }}">Revision {{ row.version }}</option>
+{% endfor %}
 </select>
 <input type="button" class="button" style="width:80px;height:26px;position:relative;float:right;" value="Return" id="btnReturn">
-<input type="button" class="button" style="width:80px;height:26px;position:relative;float:right;margin-right:10px;" value="Save" id="btnSave">
+<input type="button" class="button" style="width:80px;height:26px;position:relative;float:right;margin-right:10px;" value="Submit" id="btnSubmit">
 </div>
 <div class="clear"></div>
 <div style="margin-top:10px;">
-<div style="width:538px;height:32px;border:1px black solid;">
-<a href="" style="display:inline-block;color:white;height:100%;"><img src="{% static 'tsweb/image/save.png' %}" style="margin-top:2px;" /></a>
-<a href="" style="display:inline-block;color:white;height:100%;"><img src="{% static 'tsweb/image/indent-right.png' %}" style="margin-top:2px;" /></a>
-<a href="" style="display:inline-block;color:white;height:100%;"><img src="{% static 'tsweb/image/indent-left.png' %}" style="margin-top:2px;" /></a>
-<a href="" style="display:inline-block;color:white;height:100%;"><img src="{% static 'tsweb/image/justify-left.png' %}" style="margin-top:2px;" /></a>
-<a href="" style="display:inline-block;color:white;height:100%;"><img src="{% static 'tsweb/image/justify-right.png' %}" style="margin-top:2px;" /></a>
-<a href="" style="display:inline-block;color:white;height:100%;"><img src="{% static 'tsweb/image/bold.png' %}" style="margin-top:2px;" /></a>
-<a href="" style="display:inline-block;color:white;height:100%;"><img src="{% static 'tsweb/image/italic.png' %}" style="margin-top:2px;" /></a>
-<a href="" style="display:inline-block;color:white;height:100%;"><img src="{% static 'tsweb/image/strike.png' %}" style="margin-top:2px;" /></a>
-<a href="" style="display:inline-block;color:white;height:100%;"><img src="{% static 'tsweb/image/underline.png' %}" style="margin-top:2px;" /></a>
-</div>
-<textarea id="txtarea" style="width:536px;height:518px;border:1px #B9B9B9 solid;overflow:scroll;">
- 	Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras non velit eu elit venenatis venenatis. Cras est elit, gravida vel sollicitudin vitae, consectetur eu odio. Vestibulum ut quam eu arcu facilisis pellentesque. Donec suscipit magna at urna venenatis varius. Nulla in diam vel purus congue vehicula non ut ante. Etiam id gravida velit, in pellentesque justo. Etiam vulputate nisi id molestie fermentum. Duis ut cursus lacus.
-
-        Vestibulum augue erat, lobortis ac elementum gravida, pellentesque a felis. Phasellus ac neque ipsum. Duis vel tortor lorem. Sed pretium aliquam urna, id convallis mauris tempus eu. Pellentesque iaculis, lorem in lobortis volutpat, urna erat laoreet velit, eget imperdiet enim quam sollicitudin justo. Nunc at metus eleifend, malesuada turpis a, faucibus nulla. Nullam malesuada condimentum sollicitudin. Cras porta mauris nec dapibus tincidunt. Nam sed odio et est molestie lobortis. Quisque ultricies cursus velit, ac sodales dui dignissim non. Morbi suscipit eleifend blandit. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Cras quam nulla, adipiscing non vestibulum convallis, tristique vel augue. Aliquam tristique feugiat imperdiet. Etiam nec ullamcorper libero.
-
-        Morbi vitae ante felis. Quisque vitae odio a dolor mattis auctor. Nam tempus in eros nec convallis. Integer non lorem tristique lorem lacinia laoreet. Curabitur in sapien et ante interdum tincidunt a vitae ipsum. Suspendisse eget sem consectetur, commodo lacus sit amet, ornare arcu. Curabitur pulvinar auctor justo, et euismod mauris rutrum a. Ut cursus sem est, vitae fringilla nunc aliquet eu.
-
-        Donec viverra placerat purus, vitae adipiscing sem pulvinar in. Ut volutpat facilisis gravida. Maecenas varius erat quis metus feugiat dapibus. Vivamus pretium purus tincidunt auctor pharetra. Suspendisse id placerat dolor. Nullam sem felis, bibendum sit amet blandit eu, varius sit amet tortor. Vivamus dignissim neque vel mi fermentum lobortis. Proin eu molestie purus, sed vulputate dui. Vestibulum ac sodales lacus. Aenean tempus, eros ac ornare consequat, enim eros interdum arcu, at aliquam orci magna et massa. Morbi eu nibh id enim dictum porttitor. Sed a sapien neque. Nunc in aliquet turpis. Etiam varius pharetra ante, quis pharetra velit porttitor nec. Nam sed neque condimentum, fringilla nisi in, sagittis velit. Fusce nec varius erat, vel faucibus neque.
-
-Pellentesque vel neque lacinia, egestas nunc id, consectetur dui. Pellentesque fringilla tempus augue quis dapibus. Quisque eget mattis massa, at iaculis nunc. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc iaculis imperdiet sollicitudin. Cras aliquet arcu nunc, vitae dignissim mauris ornare nec. Proin quis lorem velit. Suspendisse dignissim lorem orci, vel cursus eros vehicula sed. Proin diam diam, iaculis at pretium at, elementum luctus eros. Aenean porttitor metus non eros porta, a placerat magna tempor. Integer auctor turpis vel ligula mollis cursus. Pellentesque imperdiet sem nec lacus placerat, sed lacinia dolor vehicula.
-</textarea>
+<div id="ele_submissionversionessay" style="width:536px;height:540px;border:1px #B9B9B9 solid;overflow:scroll;"></div>
 </div>
 </div>
 <div style="width:270px;position:relative;float:left;top:40px;margin-left:20px;">
@@ -97,7 +175,7 @@ Pellentesque vel neque lacinia, egestas nunc id, consectetur dui. Pellentesque f
 <table>
 <tr>
 <td style="width:100px;">Name:</td>
-<td>&nbsp;Assignment-0001&nbsp;r #: 2</td>
+<td><span id="ele_assignmentname"></span>&nbsp;r #: <span id="ele_submissionversionversion"></span></td>
 </tr>
 <tr>
 <td>Description:</td>
@@ -105,26 +183,25 @@ Pellentesque vel neque lacinia, egestas nunc id, consectetur dui. Pellentesque f
 </tr>
 <tr>
 <td colspan="2">
-<textarea style="width:257px;height:58px;color:#282828;background-color:#E2E2E2;border:0px;">
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras non velit eu elit venenatis venenatis. Cras est elit, gravida vel sollicitudin vitae,
-</textarea>
+<textarea id="ele_assignmentdesc" style="width:257px;height:58px;color:#282828;background-color:#E2E2E2;border:0px;" readonly="readonly"></textarea>
 </td>
 </tr>
 <tr>
-<td>Max points:</td>
-<td>&nbsp;out of 100</td>
+<td>Max Words:</td>
+<td><span id="ele_assignmentmaxword"></span></td>
 </tr>
-<tr>
+<!--<tr>
 <td>Category:</td>
 <td>&nbsp;Homework</td>
 </tr>
+-->
 <tr>
-<td>Grading criteria:</td>
-<td>&nbsp;Rubric name</td>
+<td>Grading Criteria:</td>
+<td><span id="ele_assignmentrubric"></span></td>
 </tr>
 <tr>
 <td>Due Date:</td>
-<td>&nbsp;17-Sep-2013</td>
+<td><span id="ele_submissionduedate"></span></td>
 </tr>
 <tr>
 <td>Completion %:</td>

@@ -11,6 +11,7 @@ from itertools import chain
 from datetime import datetime
 import time
 
+
 class ASSSIGNMENTLIST():
     def get(self,request):
         cursor = connection.cursor()
@@ -103,18 +104,51 @@ class ASSSIGNMENTLIST():
         return HttpResponse('success', mimetype='application/json')
     
     def tAssignmentClass(self,request):
+#         data_json ={}
+        classdict ={}
         try:
             userid = request.session['userid']
             login = Login.objects.get(id=userid)
             clientid = login.clientid
             id = request.GET.get('id', False)
-            classassignid = Classassignment.objects.filter(assignmentid=id).values_list('classid')
-        except Classassignment.DoesNotExist:
+            cursor = connection.cursor()
+            #cursor.execute('select sb.assignmentid, sb.studentid ,ifnull (sc.classscheduleid, 0), cs.code from submission as sb left join studentclass as sc on sc.studentid = sb.studentid left join classschedule as cs on cs.id = sc.classscheduleid where sb.assignmentid = %s',[id])
+            #cursor.execute('select sb.assignmentid, sb.studentid ,ifnull (sc.classscheduleid, 0), cs.code from submission as sb left join studentclass as sc on sc.studentid = sb.studentid and sc.classscheduleid in (select classid from classassignment where assignmentid = %s) left join classschedule as cs on cs.id = sc.classscheduleid where sb.assignmentid = %s',[id,id])
+            cursor.execute('select ifnull (sc.classscheduleid, 0) as codeid, cs.code, count(*) from submission as sb left join studentclass as sc on sc.studentid = sb.studentid and sc.classscheduleid in (select classid from classassignment where assignmentid = %s) left join classschedule as cs on cs.id = sc.classscheduleid where sb.assignmentid = %s group by codeid',[id,id])
+            
+            results = cursor.fetchall() 
+            #submission = Submission.objects.filter(assignmentid=id,disabled=0,deleted=0).values_list('studentid')
+        except results.DoesNotExist:
             return render(request, 'tsweb/teacher/assignmentlist_assignmentclass.html')
         else:
-            #classid = classassignid.classid.id
-            classlist = Classschedule.objects.filter(id__in=classassignid,disabled=0,deleted=0,clientid=clientid)
-            #return HttpResponse(classassignid, mimetype='application/json')
+            for r in results:
+                classdict[r[0]] = {}
+                classdict[r[0]]['id'] = r[0]
+                classdict[r[0]]['code'] = r[1]
+                classdict[r[0]]['number'] = r[2]
+#             i = 0
+#             for r in results:
+#                 data_json[i] = {}
+#                 data_json[i]['studentid'] = r[1]
+#                 data_json[i]['classid'] = r[2]
+#                 data_json[i]['code'] = r[3]
+#                 if data_json[i].has_key('number'):
+#                     data_json[i]['number'] += 1
+#                 else:
+#                     data_json[i]['number'] = 1
+#                 i +=1
+#             classdict = {}
+#             for index in range(len(data_json)):
+#                 classid = data_json[index]['classid']
+#                 classdict[classid] = {}
+#                 classdict[classid]['id'] = data_json[index]['classid']
+#                 classdict[classid]['code'] = data_json[index]['code']
+#                 try:
+#                     classdict[classid]['number'] +=1
+#                 except KeyError:
+#                     classdict[classid]['number'] = data_json[index]['number']
+                    
+            classlist = classdict.values()
             context = {'classlist': classlist}
             return render(request, 'tsweb/teacher/assignmentlist_assignmentclass.html', context)
         
@@ -122,14 +156,28 @@ class ASSSIGNMENTLIST():
         try:
             userid = request.session['userid']
             id = request.GET.get('id', False)
+            assignmentid = request.GET.get('assignmentid', False)
             login = Login.objects.get(id=userid)
             clientid = login.clientid
-            classassignid = Classassignment.objects.get(classid=id)
+            if id == False:
+                return render(request, 'tsweb/teacher/assignmentlist_assignmentstudent.html')
+            else: 
+                classassignment = Classassignment.objects.get(classid=id)
+                classid = classassignment.classid
+                studentid = Studentclass.objects.filter(classscheduleid=classid, clientid=clientid,disabled=0,deleted=0).values_list('studentid')
+                submissionlist = Submission.objects.filter(studentid__in=studentid,assignmentid=assignmentid,disabled=0,deleted=0)
         except Classassignment.DoesNotExist:
-            return render(request, 'tsweb/teacher/assignmentlist_assignmentstudent.html')
+            try:
+                classassignment = Classassignment.objects.get(assignmentid=assignmentid)
+                classid = classassignment.classid
+                studentid = Studentclass.objects.filter(classscheduleid=classid, clientid=clientid,disabled=0,deleted=0).values_list('studentid')
+                submissionlist = Submission.objects.filter(~Q(studentid__in=studentid),Q(assignmentid=assignmentid),Q(disabled=0),Q(deleted=0))
+            except Submission.DoesNotExist:
+                return render(request, 'tsweb/teacher/assignmentlist_assignmentstudent.html')
+            else:
+                context = {'submissionlist': submissionlist}
+                return render(request, 'tsweb/teacher/assignmentlist_assignmentstudent.html', context)
         else:
-            submissionlist = Submission.objects.filter(assignmentid=classassignid,disabled=0,deleted=0)
-            #return HttpResponse(classlist.id, mimetype='application/json')
             context = {'submissionlist': submissionlist}
             return render(request, 'tsweb/teacher/assignmentlist_assignmentstudent.html', context)
         
@@ -171,34 +219,86 @@ class ASSSIGNMENTLIST():
             duedate = request.GET.get('date', False)
             assignmentid = request.GET.get('assignmentid', False)
             DATE_FORMAT = "%d-%m-%Y" 
+            userlist = Userlist.objects.get(id=userid)
         except KeyError:
             return HttpResponse('error', mimetype='application/json')
         else:   
             login = Login.objects.get(id=userid)
             clientid = login.clientid
             classlist = Classschedule.objects.get(id=id)
-            teacherid = classlist.teacherid
             assignmentlist = Assignment.objects.get(id=assignmentid)
-            classassignment = Classassignment.objects.get_or_create(classid=classlist, assignmentid=assignmentlist)
-            #classassignment.save()
+            Classassignment.objects.get_or_create(classid=classlist, assignmentid=assignmentlist)
             studentclass = Studentclass.objects.filter(classscheduleid=id).values_list('studentid')
             for row in studentclass:
                 studentlist = Studentlist.objects.get(id=row[0])
-                userlist = Userlist.objects.get(id=teacherid)
-                submission, created = Submission.objects.get_or_create(studentid=studentlist
-                    ,teacherid=userlist
-                    ,assignmentid=assignmentlist
-                    ,duedate = datetime.strptime(duedate,DATE_FORMAT)
-                    ,progress = 0
-                    ,createddt = datetime.now()
-                    ,createdby = userid
-                    ,modifieddt = datetime.now()
-                    ,modifiedby = userid
-                    ,deleted = 0
-                    ,disabled = 0)
-                
+                try: 
+                    submission = Submission.objects.get(Q(studentid=studentlist),Q(assignmentid=assignmentlist),~Q(progress=100))
+                except Submission.DoesNotExist:
+                    submission = Submission()
+                    submission.studentid = studentlist
+                    submission.teacherid=userlist
+                    submission.assignmentid=assignmentlist
+                    submission.duedate=datetime.strptime(duedate,DATE_FORMAT)
+                    submission.progress=0
+                    submission.createddt=datetime.now()
+                    submission.createdby=userid
+                    submission.modifieddt=datetime.now()
+                    submission.modifiedby=userid
+                    submission.deleted=0
+                    submission.disabled=0
+                    submission.save()
             return HttpResponse('success')
         
+    def addStudentToAssignment(self,request):
+        try:
+            userid = request.session['userid']
+            id = request.GET.get('id', False)
+            duedate = request.GET.get('date', False)
+            assignmentid = request.GET.get('assignmentid', False)
+            DATE_FORMAT = "%d-%m-%Y" 
+            studentlist = Studentlist.objects.get(id=id)
+            assignmentlist = Assignment.objects.get(id=assignmentid)
+            userlist = Userlist.objects.get(id=userid)
+        except KeyError:
+            return HttpResponse('error', mimetype='application/json')
+        else:   
+            try:
+                studentclasslist = Studentclass.objects.get(studentid=id)
+            except Studentclass.DoesNotExist:
+                submission = Submission()
+                submission.studentid=studentlist
+                submission.teacherid=userlist
+                submission.assignmentid=assignmentlist
+                submission.duedate=datetime.strptime(duedate,DATE_FORMAT)
+                submission.progress=0
+                submission.createddt=datetime.now()
+                submission.createdby=userid
+                submission.modifieddt=datetime.now()
+                submission.modifiedby=userid
+                submission.deleted=0
+                submission.disabled=0
+                submission.save()
+            else:
+                try:
+                    submissionlist = Submission.objects.get(studentid=id,assignmentid=assignmentid)
+                except Submission.DoesNotExist:
+                    submission = Submission()
+                    submission.studentid=studentlist
+                    submission.teacherid=userlist
+                    submission.assignmentid=assignmentlist
+                    submission.duedate=datetime.strptime(duedate,DATE_FORMAT)
+                    submission.progress=0
+                    submission.createddt=datetime.now()
+                    submission.createdby=userid
+                    submission.modifieddt=datetime.now()
+                    submission.modifiedby=userid
+                    submission.deleted=0
+                    submission.disabled=0
+                    submission.save()
+        return HttpResponse('success')
+
+
+
 class TASSIGNMENTLISTAJAX():
     def get(self,request):
         try:

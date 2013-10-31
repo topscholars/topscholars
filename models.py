@@ -600,8 +600,8 @@ class Classassignment(models.Model):
 
 class TagEntity(models.Model):
     id = models.IntegerField(primary_key=True, db_column='ID') # Field name made lowercase.
-    tagid = models.ForeignKey(Classlist,related_name="Tagentitytotag", db_column='TagId') # Field name made lowercase.
-    entityid = models.ForeignKey(Assignment,related_name="Tagentitytoentity", db_column='EntityId') # Field name made lowercase.
+    tagid = models.ForeignKey(Tag,related_name="Tagentitytotag", db_column='TagId') # Field name made lowercase.
+    entityid = models.ForeignKey(Entity,related_name="Tagentitytoentity", db_column='EntityId') # Field name made lowercase.
     class Meta:
         db_table = 'TagEntity'
 

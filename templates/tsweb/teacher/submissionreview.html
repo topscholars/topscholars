@@ -10,6 +10,7 @@
 	<script src="{% static 'tsweb/js/jQuery1.10.1.js' %}"></script>
 	<script src="{% static 'tsweb/js/jquery-ui-1.10.3.custom.min.js' %}"></script>
 	<script src="{% static 'tsweb/js/jquery.cookie.js' %}"></script>
+	<script src="{% static 'tsweb/js/jquery.json-2.4.min.js' %}"></script>
 	<script src="{% static 'tsweb/js/util.js' %}"></script>
 	<script src="{% static 'tsweb/js/jquery.autoGrowInput.js' %}"></script>
 	<script src="{% static 'tsweb/js/jquery.tagedit.js' %}"></script>
@@ -195,10 +196,18 @@ function EDITTABLE(){
 	
 	this.save = function(){
 		var highlightid = $('#ele_highlightid').val();
-		//get tag list
+		
+		var tagids = new Array();
+		var i=0;
 		$('input[name*="-a"]').each(function(index) {
-			alert($(this).val());
+			var name = $(this).attr('name');
+			name = name.replace('tag[','');
+			name = name.replace('-a]', '');
+			tagids[i] = name;
+			i++;
 		});
+//		var test = tagids.join(',');
+		
 		if (highlightid != '') {
 			//insert
 		}

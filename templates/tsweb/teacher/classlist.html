@@ -12,6 +12,7 @@
 	<script src="{% static 'tsweb/js/jQuery1.10.1.js' %}"></script>
 	<script src="{% static 'tsweb/js/WaterMark.js' %}"></script>
 	<script src="{% static 'tsweb/js/jquery-ui-1.10.3.custom.min.js' %}"></script>
+	<script src="{% static 'tsweb/js/jquery.cookie.js' %}"></script>
 	<script src="{% static 'tsweb/js/util.js' %}"></script>
 	<script src="{% static 'tsweb/js/jquery.datepick.js' %}"></script>
 	<script src="{% static 'tsweb/js/jquery.ui.timepicker.js' %}"></script>
@@ -20,6 +21,7 @@
 
 <body>
 <script>
+
 EDITTABLE.prototype = new GridBase();
 
 function EDITTABLE(){
@@ -198,21 +200,29 @@ function EDITTABLE(){
 	}
 	
 	this.save = function(){
-		var odata;
+		var odata,urlajax;
 		if($("#ele_id").val() == ""){
-		 	odata = { class: evalClass, method: 'add'};
+		 	urlajax = url+"?class="+evalClass+"&method=add";
 		}else{
-			odata = { class: evalClass, method: 'save'};
+			urlajax = url+"?class="+evalClass+"&method=save";
 		}
+		odata = {};
 		odata = thisClass.oData(odata);
-		$.ajax({
-			url: url,
-			type: 'GET',
-			data: odata,
-			success: function(res){
+		$.post(urlajax, odata,
+			function(result){
 				
-			}	
-		});
+			})
+		.error(function(xhr, status, error) {
+    		alert('Error occur. Please contact the administrator.');
+    	});
+		// $.ajax({
+			// url: url,
+			// type: 'GET',
+			// data: odata,
+			// success: function(res){
+// 				
+			// }	
+		// });
 	}
 	
 	this.iniControl = function(){
@@ -251,6 +261,8 @@ $(function() {
 	var gen = new EDITTABLE();
 	gen.iniControl();
 });
+
+
 </script>
 <div class="placeholder">
 <div class="header">

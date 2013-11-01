@@ -124,7 +124,7 @@ def gettags(request, entityid):
         else:
             tagentity = TagEntity.objects.filter(entityid=entityid)
         for row in tagentity:
-            data_json.append({ "id": str(row.tagid.id), "label": row.tagid.name, "value": row.tagid.id })
+            data_json.append({ "id": str(row.tagid.id), "label": row.tagid.name, "value": row.tagid.name })
         data = simplejson.dumps(data_json)
         return HttpResponse(data, mimetype='application/json')
     

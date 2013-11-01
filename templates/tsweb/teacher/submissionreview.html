@@ -10,7 +10,6 @@
 	<script src="{% static 'tsweb/js/jQuery1.10.1.js' %}"></script>
 	<script src="{% static 'tsweb/js/jquery-ui-1.10.3.custom.min.js' %}"></script>
 	<script src="{% static 'tsweb/js/jquery.cookie.js' %}"></script>
-	<script src="{% static 'tsweb/js/jquery.json-2.4.min.js' %}"></script>
 	<script src="{% static 'tsweb/js/jquery.autoGrowInput.js' %}"></script>
 	<script src="{% static 'tsweb/js/jquery.tagedit.js' %}"></script>
 </head>
@@ -215,30 +214,14 @@ function EDITTABLE(){
 		//delete
 		var highlightid = $('#ele_highlightid').val();
 		
-		$.getJSON(
-			url,
+		$.post(url,
 			{	'class' :  'SUBMISSIONREVIEW',
-				'method' : 'getSubmissionVersionHighlightTags',
+				'method' : 'delete',
 				'highlightid' : highlightid },
 			function(result){
-				var tagids = new Array;
-				for (var i=0;i<result.length;i++) {
-					tagids[i] = result[i].id;
-				}
-				
-				$.post(url,
-					{	'class' :  'SUBMISSIONREVIEW',
-						'method' : 'delete',
-						'highlightid' : highlightid,
-						'tagids' : $.toJSON( tagids ) },
-					function(result){
-						thisClass.showHighlightDialog(false);
-						thisClass.getData($('#ele_submissionid').val(), $('#ele_submissionversionid').val());
-					})
-				.error(function(xhr, status, error) {
-		    		alert('Error occur. Please contact the administrator.');
-		    	});
-		})
+				thisClass.showHighlightDialog(false);
+				thisClass.getData($('#ele_submissionid').val(), $('#ele_submissionversionid').val());
+			})
 		.error(function(xhr, status, error) {
     		alert('Error occur. Please contact the administrator.');
     	});

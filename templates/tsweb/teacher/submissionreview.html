@@ -9,13 +9,15 @@
 	<link rel="stylesheet" type="text/css" href="{% static 'tsweb/css/jquery.tagedit.css' %}" />
 	<script src="{% static 'tsweb/js/jQuery1.10.1.js' %}"></script>
 	<script src="{% static 'tsweb/js/jquery-ui-1.10.3.custom.min.js' %}"></script>
+	<script src="{% static 'tsweb/js/jquery.cookie.js' %}"></script>
+	<script src="{% static 'tsweb/js/jquery.json-2.4.min.js' %}"></script>
 	<script src="{% static 'tsweb/js/jquery.autoGrowInput.js' %}"></script>
 	<script src="{% static 'tsweb/js/jquery.tagedit.js' %}"></script>
 </head>
 
 <body>
 <script>
-var tagList;
+var csrftoken = $.cookie('csrftoken');
 
 function EDITTABLE(){
 	var thisClass = this;
@@ -211,6 +213,35 @@ function EDITTABLE(){
 	
 	this.del = function(){
 		//delete
+		var highlightid = $('#ele_highlightid').val();
+		
+		$.getJSON(
+			url,
+			{	'class' :  'SUBMISSIONREVIEW',
+				'method' : 'getSubmissionVersionHighlightTags',
+				'highlightid' : highlightid },
+			function(result){
+				var tagids = new Array;
+				for (var i=0;i<result.length;i++) {
+					tagids[i] = result[i].id;
+				}
+				
+				$.post(url,
+					{	'class' :  'SUBMISSIONREVIEW',
+						'method' : 'delete',
+						'highlightid' : highlightid,
+						'tagids' : $.toJSON( tagids ) },
+					function(result){
+						thisClass.showHighlightDialog(false);
+						thisClass.getData($('#ele_submissionid').val(), $('#ele_submissionversionid').val());
+					})
+				.error(function(xhr, status, error) {
+		    		alert('Error occur. Please contact the administrator.');
+		    	});
+		})
+		.error(function(xhr, status, error) {
+    		alert('Error occur. Please contact the administrator.');
+    	});
 	}
 			
 	this.initContent = function(){
@@ -226,6 +257,7 @@ function EDITTABLE(){
 				var end = thisClass.getSelectionCharOffsetsWithin(node).end;
 				var htxt = essay;
 				htxt = htxt.substring(start,end);
+				//alert(htxt);
 				$('#ele_highlighttext').val(htxt);
 				thisClass.showHighlightDialog(true);
 			}
@@ -246,7 +278,6 @@ function EDITTABLE(){
 		
 		$('#btndeletehighlight').click(function() {
 			thisClass.del();
-			thisClass.showHighlightDialog(false);
 		});
 		
 		$('#btncancelhighlight').click(function() {
@@ -289,6 +320,19 @@ function openHighlightDialog(highlightid){
 	var gen = new EDITTABLE();
 	gen.getHighlightData(highlightid);
 }
+
+function csrfSafeMethod(method) {
+    // these HTTP methods do not require CSRF protection
+    return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+}
+$.ajaxSetup({
+    crossDomain: false, // obviates need for sameOrigin test
+    beforeSend: function(xhr, settings) {
+        if (!csrfSafeMethod(settings.type)) {
+            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+        }
+    }
+});
 </script>
 <input type="hidden" id="ele_submissionid" value="{{ id }}">
 <input type="hidden" id="ele_submissionversionid">

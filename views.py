@@ -111,7 +111,11 @@ def gettags(request, entityid):
         userid = request.session['userid']
         term = request.GET.get('term', False)
     except KeyError:
-        return HttpResponseRedirect(reverse('tsweb:login'))
+        data_json = {
+                    'status': 'user not logged in',
+                    }
+        data = simplejson.dumps(data_json)
+        return HttpResponse(data, mimetype='application/json')
     else:
         data_json = []
         tagentity = ''
@@ -120,7 +124,7 @@ def gettags(request, entityid):
         else:
             tagentity = TagEntity.objects.filter(entityid=entityid)
         for row in tagentity:
-            data_json.append({ "id": str(row.tagid.id), "label": row.tagid.name, "value": row.tagid.name })
+            data_json.append({ "id": str(row.tagid.id), "label": row.tagid.name, "value": row.tagid.id })
         data = simplejson.dumps(data_json)
         return HttpResponse(data, mimetype='application/json')
     
@@ -128,7 +132,13 @@ def tprocessajax(request):
     txtclass = request.GET.get('class',False)
     txtmethod = request.GET.get('method',False)
 
-    className = eval(txtclass)()
+    if (txtclass != False) and (txtclass != ''):
+        className = eval(txtclass)()
+    else:
+        txtclass = request.POST.get('class',False)
+        txtmethod = request.POST.get('method',False)
+
+        className = eval(txtclass)()
     if txtmethod == False:
         methodToCall = getattr(className, 'get')
         #method = className.getJson(request)

@@ -102,7 +102,9 @@ class CLASSLIST():
             classschedule.modifieddt = datetime.now()
             classschedule.modifiedby = userid
             classschedule.save()
-        return HttpResponse('success', mimetype='application/json')
+            data_json = { 'status': 'success', }
+            data = simplejson.dumps(data_json)
+            return HttpResponse(data, mimetype='application/json')
     
     def add(self,request):
         DATE_FORMAT = "%d-%m-%Y" 
@@ -214,8 +216,8 @@ class CLASSLIST():
     def addStudentInClass(self,request):
         try:
             userid = request.session['userid']
-            classid = request.GET.get('classid', False)
-            studentid = request.GET.get('studentid', False)
+            classid = request.POST.get('classid', False)
+            studentid = request.POST.get('studentid', False)
         except KeyError:
             return HttpResponse('error', mimetype='application/json')
         else:
@@ -238,7 +240,9 @@ class CLASSLIST():
             studentclass.deleted = 0
             studentclass.clientid = clientid
             studentclass.save()
-            return HttpResponse('success')
+            data_json = { 'status': 'success', }
+            data = simplejson.dumps(data_json)
+            return HttpResponse(data, mimetype='application/json')
         
 class TCLASSLISTAJAX():
     def get(self,request):

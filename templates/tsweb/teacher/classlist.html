@@ -59,23 +59,22 @@ function EDITTABLE(){
 	}
 	
 	this.editTable = function(id){
-		$.ajax({
-			url: url,
-			type: 'GET',
-			data: { class: evalClass,
-					id: id 
-				},
-			datatype : 'json',
-			success: function(res){
-				$.each(res, function(ini,val){
+		$.getJSON(
+			url,
+			{	class: evalClass,
+				id: id  },
+			function(result){
+				$.each(result, function(ini,val){
 					thisClass.seperateElement($("#ele_"+ini), val);
 				});
 				
 				$("#ele_dayofweek").multiselect('refresh'); 
 				
 				thisClass.showEditTable();
-			}
-		});
+		})
+		.error(function(xhr, status, error) {
+    		alert('Error occur. Please contact the administrator.');
+    	});
 		return false;
 	}
 
@@ -91,14 +90,11 @@ function EDITTABLE(){
 	
 	this.selectTeacher = function(){
 		var html ='';
-		$.ajax({
-			url: url,
-			type: 'GET',
-			data: { class: evalClass,
-					method: 'getTeacher'
-			},
-			success: function(res){
-				$.each(res, function(ini,val){
+		$.getJSON( url,
+			{	class: evalClass,
+				method: 'getTeacher'  },
+			function(result){
+				$.each(result, function(ini,val){
 					if(val.middlename == null){
 						html += "<option value='"+val.id+"'>"+val.firstname+" "+val.lastname+"</option>";
 					}else{
@@ -106,25 +102,26 @@ function EDITTABLE(){
 					}
 				});
 				$("#ele_teacherid").append(html);
-			}	
-		});
+		})
+		.error(function(xhr, status, error) {
+    		alert('Error occur. Please contact the administrator.');
+    	});
 	}
 	
 	this.selectClass = function(){
 		var html ='';
-		$.ajax({
-			url: url,
-			type: 'GET',
-			data: { class: evalClass,
-					method: 'getClass'
-			},
-			success: function(res){
-				$.each(res, function(ini,val){
+		$.getJSON( url,
+			{	class: evalClass,
+				method: 'getClass'  },
+			function(result){
+				$.each(result, function(ini,val){
 						html += "<option value='"+val.id+"'>"+val.classname+"</option>";
 				});
 				$("#ele_classid").append(html);
-			}	
-		});
+		})
+		.error(function(xhr, status, error) {
+    		alert('Error occur. Please contact the administrator.');
+    	});
 	}
 	
 	this.getData = function(description) {
@@ -154,40 +151,37 @@ function EDITTABLE(){
 	}
 	
 	this.getStudentAddData = function(classid){
-		$.ajax({
-			url: url,
-			type: 'GET',
-			data: { class: evalClass,
-					method: 'getTStudentAddList',
-					classid: classid 
-				},
-			datatype : 'html',
-			success: function(result){
+		var html ='';
+		$.get( url,
+			{	class: evalClass,
+				method: 'getTStudentAddList',
+				classid: classid   },
+			function(result){
 				$("#list_add_student").html(result);
 				$(".addStudent").click(function(){
 					var valAdd = $(this).attr("text");
 					thisClass.addStudentInClassschedule(valAdd);
 				});
-			}
-		});
+		})
+		.error(function(xhr, status, error) {
+    		alert('Error occur. Please contact the administrator.');
+    	});
 	}
 	
 	this.addStudentInClassschedule = function(studentid){
 		var classid = $('#ele_id').val();
-		$.ajax({
-			url: url,
-			type: 'GET',
-			datatype : 'json',
-			data: { class: evalClass,
-					method: 'addStudentInClass',
-					classid: classid,
-					studentid: studentid 
-			},
-			success: function(res){
+		$.post( url,
+			{	class: evalClass,
+				method: 'addStudentInClass',
+				classid: classid,
+				studentid: studentid },
+			function(result){
 				thisClass.getStudentData(classid);
 				thisClass.getStudentAddData(classid);
-			}
-		});
+		})
+		.error(function(xhr, status, error) {
+    		alert('Error occur. Please contact the administrator.');
+    	});
 	}
 	
 	this.Search = function(ele,event)
@@ -200,29 +194,21 @@ function EDITTABLE(){
 	}
 	
 	this.save = function(){
-		var odata,urlajax;
+		var odata;
 		if($("#ele_id").val() == ""){
-		 	urlajax = url+"?class="+evalClass+"&method=add";
+			odata = {'class' :  evalClass, 'method' : "add" };
 		}else{
-			urlajax = url+"?class="+evalClass+"&method=save";
+			odata = {'class' :  evalClass, 'method' : "save" };
 		}
-		odata = {};
 		odata = thisClass.oData(odata);
-		$.post(urlajax, odata,
+		$.post(url,odata,
 			function(result){
-				
+
 			})
 		.error(function(xhr, status, error) {
     		alert('Error occur. Please contact the administrator.');
     	});
-		// $.ajax({
-			// url: url,
-			// type: 'GET',
-			// data: odata,
-			// success: function(res){
-// 				
-			// }	
-		// });
+
 	}
 	
 	this.iniControl = function(){

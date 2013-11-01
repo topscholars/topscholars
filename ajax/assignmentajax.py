@@ -172,6 +172,10 @@ class ASSSIGNMENTLIST():
                 classid = classassignment.classid
                 studentid = Studentclass.objects.filter(classscheduleid=classid, clientid=clientid,disabled=0,deleted=0).values_list('studentid')
                 submissionlist = Submission.objects.filter(~Q(studentid__in=studentid),Q(assignmentid=assignmentid),Q(disabled=0),Q(deleted=0))
+            except Classassignment.DoesNotExist:
+                submissionlist = Submission.objects.filter(Q(assignmentid=assignmentid),Q(disabled=0),Q(deleted=0))
+                context = {'submissionlist': submissionlist}
+                return render(request, 'tsweb/teacher/assignmentlist_assignmentstudent.html', context)
             except Classassignment.MultipleObjectsReturned:
                 try:
                     classassignment = Classassignment.objects.filter(assignmentid=assignmentid).values_list('classid')
@@ -225,9 +229,9 @@ class ASSSIGNMENTLIST():
     def addClassToAssignment(self,request):
         try:
             userid = request.session['userid']
-            id = request.GET.get('id', False)
-            duedate = request.GET.get('date', False)
-            assignmentid = request.GET.get('assignmentid', False)
+            id = request.POST.get('id', False)
+            duedate = request.POST.get('date', False)
+            assignmentid = request.POST.get('assignmentid', False)
             DATE_FORMAT = "%d-%m-%Y" 
             userlist = Userlist.objects.get(id=userid)
         except KeyError:
@@ -257,14 +261,16 @@ class ASSSIGNMENTLIST():
                     submission.deleted=0
                     submission.disabled=0
                     submission.save()
-            return HttpResponse('success')
+            data_json = { 'status': 'success', }
+            data = simplejson.dumps(data_json)
+            return HttpResponse(data, mimetype='application/json')
         
     def addStudentToAssignment(self,request):
         try:
             userid = request.session['userid']
-            id = request.GET.get('id', False)
-            duedate = request.GET.get('date', False)
-            assignmentid = request.GET.get('assignmentid', False)
+            id = request.POST.get('id', False)
+            duedate = request.POST.get('date', False)
+            assignmentid = request.POST.get('assignmentid', False)
             DATE_FORMAT = "%d-%m-%Y" 
             studentlist = Studentlist.objects.get(id=id)
             assignmentlist = Assignment.objects.get(id=assignmentid)
@@ -273,8 +279,8 @@ class ASSSIGNMENTLIST():
             return HttpResponse('error', mimetype='application/json')
         else:   
             try:
-                studentclasslist = Studentclass.objects.get(studentid=id)
-            except Studentclass.DoesNotExist:
+                submissionlist = Submission.objects.get(studentid=id,assignmentid=assignmentid)
+            except Submission.DoesNotExist:
                 submission = Submission()
                 submission.studentid=studentlist
                 submission.teacherid=userlist
@@ -288,24 +294,9 @@ class ASSSIGNMENTLIST():
                 submission.deleted=0
                 submission.disabled=0
                 submission.save()
-            else:
-                try:
-                    submissionlist = Submission.objects.get(studentid=id,assignmentid=assignmentid)
-                except Submission.DoesNotExist:
-                    submission = Submission()
-                    submission.studentid=studentlist
-                    submission.teacherid=userlist
-                    submission.assignmentid=assignmentlist
-                    submission.duedate=datetime.strptime(duedate,DATE_FORMAT)
-                    submission.progress=0
-                    submission.createddt=datetime.now()
-                    submission.createdby=userid
-                    submission.modifieddt=datetime.now()
-                    submission.modifiedby=userid
-                    submission.deleted=0
-                    submission.disabled=0
-                    submission.save()
-        return HttpResponse('success')
+            data_json = { 'status': 'success', }
+            data = simplejson.dumps(data_json)
+            return HttpResponse(data, mimetype='application/json')
 
 
 

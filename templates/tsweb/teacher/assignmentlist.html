@@ -9,6 +9,7 @@
 	<link rel="stylesheet" type="text/css" href="{% static 'tsweb/css/jquery.datepick.css' %}" />
 	<script src="{% static 'tsweb/js/jQuery1.10.1.js' %}"></script>
 	<script src="{% static 'tsweb/js/jquery-ui-1.10.3.custom.min.js' %}"></script>
+	<script src="{% static 'tsweb/js/jquery.cookie.js' %}"></script>
 	<script src="{% static 'tsweb/js/util.js' %}"></script>
 	<script src="{% static 'tsweb/js/WaterMark.js' %}"></script>
 	<script src="{% static 'tsweb/js/jquery.datepick.js' %}"></script>
@@ -50,15 +51,12 @@ function EDITTABLE(){
 	}
 	
 	this.editTable = function(id){
-		$.ajax({
-			url: url,
-			type: 'GET',
-			data: { class: evalClass,
-					id: id 
-				},
-			datatype : 'json',
-			success: function(res){
-				$.each(res, function(ini,val){
+		$.getJSON(
+			url,
+			{	class: evalClass,
+				id: id  },
+			function(result){
+				$.each(result, function(ini,val){
 					thisClass.seperateElement($("#ele_"+ini), val);
 				});
 				
@@ -66,9 +64,10 @@ function EDITTABLE(){
 				thisClass.showAssignmentClass(id);
 				thisClass.showAssignmentStudent();
 				thisClass.showSelectAssignment();
-			}
-		});
-		
+		})
+		.error(function(xhr, status, error) {
+    		alert('Error occur. Please contact the administrator.');
+    	});
 		return false;
 	}
 
@@ -88,20 +87,19 @@ function EDITTABLE(){
 	
 	this.selectRubric = function(){
 		var html ='';
-		$.ajax({
-			url: url,
-			type: 'GET',
-			data: { class: evalClass,
-					method: 'getRubricIdAssignment'
-			},
-			success: function(res){
-				$.each(res, function(ini,val){
+		$.getJSON(
+			url,
+			{	class: evalClass,
+				method: 'getRubricIdAssignment' },
+			function(result){
+				$.each(result, function(ini,val){
 						html += "<option value='"+val.id+"'>"+val.name+"</option>";
 				});
 				$("#ele_rubricid").append(html);
-				
-			}	
-		});
+		})
+		.error(function(xhr, status, error) {
+    		alert('Error occur. Please contact the administrator.');
+    	});
 	}
 	
 	this.getData = function(assignmentname ,classid) {
@@ -130,72 +128,67 @@ function EDITTABLE(){
 	this.save = function(){
 		var odata;
 		if($("#ele_id").val() == ""){
-		 	odata = { class: evalClass, method: 'add'};
+			odata = {'class' :  evalClass, 'method' : "add" };
 		}else{
-			odata = { class: evalClass, method: 'save'};
+			odata = {'class' :  evalClass, 'method' : "save" };
 		}
 		odata = thisClass.oData(odata);
-		$.ajax({
-			url: url,
-			type: 'GET',
-			data: odata,
-			success: function(res){
-				
-			}	
-		});
+		$.post(url,odata,
+			function(result){
+
+			})
+		.error(function(xhr, status, error) {
+    		alert('Error occur. Please contact the administrator.');
+    	});
 	}
 	
 	this.showAssignmentClass = function(id){
-		$.ajax({
-			url: url,
-			type: 'GET',
-			data: { class: evalClass,
-					method: 'tAssignmentClass',
-					id: id
-			},
-			success: function(res){
+		$.get( url,
+			{	class: evalClass,
+				method: 'tAssignmentClass',
+				id: id  },
+			function(result){
 				var editFieldWidth = $("#editField").width();
 				$("#listAssignmentClass").width(editFieldWidth/2 - 10);
-				$("#listAssignmentClass").html(res);
+				$("#listAssignmentClass").html(result);
 				
 				$(".classitem").click(function(){
 					var id = $(this).attr('id');
 					thisClass.showAssignmentStudent(id);
 				});
-			}
-		});
+		})
+		.error(function(xhr, status, error) {
+    		alert('Error occur. Please contact the administrator.');
+    	});
 	}
 	
 	this.showAssignmentStudent = function(id){
 		var assignmentid = $("#ele_id").val();
-		$.ajax({
-			url: url,
-			type: 'GET',
-			data: { class: evalClass,
-					method: 'tAssignmentStudent',
-					assignmentid : assignmentid,
-					id: id
-			},
-			success: function(res){
+		
+		$.get( url,
+			{	class: evalClass,
+				method: 'tAssignmentStudent',
+				assignmentid : assignmentid,
+				id: id  },
+			function(result){
 				var editFieldWidth = $("#editField").width();
 				$("#listAssignmentStudent").width(editFieldWidth/2 - 10);
-				$("#listAssignmentStudent").html(res);
-			}
-		});
+				$("#listAssignmentStudent").html(result);
+		})
+		.error(function(xhr, status, error) {
+    		alert('Error occur. Please contact the administrator.');
+    	});
 	}
 	
 	this.showSelectAssignment = function(){
 		var id = $("#ele_id").val();
 		var select = $("#select_assignment").val();
-		$.ajax({
-			url: url,
-			type: 'GET',
-			data: { class: evalClass,
-					method: select,
-					id: id
-			},
-			success: function(res){
-				$("#list_by_select").html(res);
+		$.get( url,
+			{	class: evalClass,
+				method: select,
+				id: id  },
+			function(result){
+				$("#list_by_select").html(result);
 				$(".datepicker").datepicker({ dateFormat: 'dd-mm-yy'});
 				$(".datepicker").datepicker("setDate", new Date());
 				if(select == 'tClassAssignlist'){
@@ -213,47 +206,46 @@ function EDITTABLE(){
 						
 					});
 				}
-			}
-		});
+		})
+		.error(function(xhr, status, error) {
+    		alert('Error occur. Please contact the administrator.');
+    	});
 	}
 	
 	this.addClassToAssignment = function(id, date){	
 		var assignmentid = $("#ele_id").val();
-		$.ajax({
-			url: url,
-			type: 'GET',
-			data: { class: evalClass,
-					method: 'addClassToAssignment',
-					assignmentid: assignmentid,
-					id: id,
-					date: date
+		$.post(url,
+			{ class: evalClass,
+				method: 'addClassToAssignment',
+				assignmentid: assignmentid,
+				id: id,
+				date: date
 			},
-			//datatype : 'json',
-			success: function(res){
-				console.log(res);
+			function(result){
 				thisClass.showAssignmentClass(assignmentid);
 				thisClass.showSelectAssignment();
-			}
-		});
+			})
+		.error(function(xhr, status, error) {
+    		alert('Error occur. Please contact the administrator.');
+    	});
 	}
 	
 	this.addStudentToAssignment = function(id, date){	
 		var assignmentid = $("#ele_id").val();
-		$.ajax({
-			url: url,
-			type: 'GET',
-			data: { class: evalClass,
-					method: 'addStudentToAssignment',
-					assignmentid: assignmentid,
-					id: id,
-					date: date
+		$.post(url,
+			{ class: evalClass,
+				method: 'addStudentToAssignment',
+				assignmentid: assignmentid,
+				id: id,
+				date: date
 			},
-			success: function(res){
-				console.log(res);
+			function(result){
 				thisClass.showAssignmentClass(assignmentid);
 				thisClass.showSelectAssignment();
-			}
-		});
+			})
+		.error(function(xhr, status, error) {
+    		alert('Error occur. Please contact the administrator.');
+    	});
 	}
 	
 	this.iniControl = function(){

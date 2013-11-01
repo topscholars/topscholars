@@ -469,7 +469,7 @@ class Submission(models.Model):
     def getLatestVersion(self):
         submissionid=self.id
         cursor = connection.cursor()
-        cursor.execute('select version from Submissionversion where submissionid = %s and version = (select max(version) from Submissionversion where submissionid = %s)',[submissionid,submissionid])
+        cursor.execute('select version from Submissionversion where submissionid = %s and version = (select max(version) from Submissionversion where submissionid = %s and deleted = 0)',[submissionid,submissionid])
         row = cursor.fetchone()
         if row is not None:
             return row[0]
@@ -551,7 +551,7 @@ class Taglink(models.Model):
     modifiedby = models.IntegerField(db_column='ModifiedBy') # Field name made lowercase.
     deleted = models.IntegerField(db_column='Deleted') # Field name made lowercase.
     clientid = models.IntegerField(db_column='ClientId') # Field name made lowercase.
-    tagid = models.IntegerField(db_column='TagId') # Field name made lowercase.
+    tagid = models.ForeignKey(Tag,related_name="Taglinktotag",db_column='TagId') # Field name made lowercase.
     class Meta:
         db_table = 'taglink'
 

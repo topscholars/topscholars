@@ -10,14 +10,13 @@
 	<script src="{% static 'tsweb/js/jQuery1.10.1.js' %}"></script>
 	<script src="{% static 'tsweb/js/jquery-ui-1.10.3.custom.min.js' %}"></script>
 	<script src="{% static 'tsweb/js/jquery.cookie.js' %}"></script>
+	<script src="{% static 'tsweb/js/util.js' %}"></script>
 	<script src="{% static 'tsweb/js/jquery.autoGrowInput.js' %}"></script>
 	<script src="{% static 'tsweb/js/jquery.tagedit.js' %}"></script>
 </head>
 
 <body>
 <script>
-var csrftoken = $.cookie('csrftoken');
-
 function EDITTABLE(){
 	var thisClass = this;
 	var essay;
@@ -198,7 +197,7 @@ function EDITTABLE(){
 		var highlightid = $('#ele_highlightid').val();
 		//get tag list
 		$('input[name*="-a"]').each(function(index) {
-			//alert($(this).attr('name'));
+			alert($(this).val());
 		});
 		if (highlightid != '') {
 			//insert
@@ -211,7 +210,6 @@ function EDITTABLE(){
 	}
 	
 	this.del = function(){
-		//delete
 		var highlightid = $('#ele_highlightid').val();
 		
 		$.post(url,
@@ -221,6 +219,21 @@ function EDITTABLE(){
 			function(result){
 				thisClass.showHighlightDialog(false);
 				thisClass.getData($('#ele_submissionid').val(), $('#ele_submissionversionid').val());
+			})
+		.error(function(xhr, status, error) {
+    		alert('Error occur. Please contact the administrator.');
+    	});
+	}
+	
+	this.submit = function() {
+		var submissionversionid = $('#ele_submissionversionid').val();
+		
+		$.post(url,
+			{	'class' :  'SUBMISSIONREVIEW',
+				'method' : 'submit',
+				'submissionversionid' : submissionversionid },
+			function(result){
+				window.location = "{% url 'tsweb:tsubmissionlist' %}";
 			})
 		.error(function(xhr, status, error) {
     		alert('Error occur. Please contact the administrator.');
@@ -279,7 +292,7 @@ function EDITTABLE(){
 		});
 		
 		$('#btnSubmit').click(function() {
-			thisClass.save();
+			thisClass.submit();
 		});
 		
 		$('#ele_submissionversionversion').change(function() {
@@ -303,19 +316,6 @@ function openHighlightDialog(highlightid){
 	var gen = new EDITTABLE();
 	gen.getHighlightData(highlightid);
 }
-
-function csrfSafeMethod(method) {
-    // these HTTP methods do not require CSRF protection
-    return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
-}
-$.ajaxSetup({
-    crossDomain: false, // obviates need for sameOrigin test
-    beforeSend: function(xhr, settings) {
-        if (!csrfSafeMethod(settings.type)) {
-            xhr.setRequestHeader("X-CSRFToken", csrftoken);
-        }
-    }
-});
 </script>
 <input type="hidden" id="ele_submissionid" value="{{ id }}">
 <input type="hidden" id="ele_submissionversionid">

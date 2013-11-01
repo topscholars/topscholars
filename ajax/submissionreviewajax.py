@@ -126,13 +126,12 @@ class SUBMISSIONREVIEW():
         else:
             data_json = []
             if highlightid != False and highlightid != '':
-                cursor = connection.cursor()
-                cursor.execute('select Taglink.id,Tag.name from Taglink left join Tag on Taglink.tagid = Tag.id left join TagEntity on Tag.id = TagEntity.tagid where Taglink.recid = %s and TagEntity.entityid = 5',[highlightid])
+                taglinklist = Taglink.objects.filter(recid=highlightid,entityid=5,deleted=0)
+                for row in taglinklist:
+                    data_json.append({ "id": str(row.id), "name": row.tagid.name })
                 
-                for row in cursor.fetchall():
-                    data_json.append({ "id": str(row[0]), "name": row[1] })
-                    data = simplejson.dumps(data_json)
-                    return HttpResponse(data, mimetype='application/json')
+                data = simplejson.dumps(data_json)
+                return HttpResponse(data, mimetype='application/json')
             else:
                 data_json = {
                             'status': 'no key passed',
@@ -157,15 +156,31 @@ class SUBMISSIONREVIEW():
             submissionhl.modifieddt = datetime.now()
             submissionhl.save()
 
-            tagids = []
-            cursor = connection.cursor()
-            cursor.execute('select Taglink.id from Taglink left join Tag on Taglink.tagid = Tag.id left join TagEntity on Tag.id = TagEntity.tagid where Taglink.recid = %s and TagEntity.entityid = 5',[highlightid])
+            Taglink.objects.filter(recid=highlightid,entityid=5,deleted=0).update(deleted=1,modifiedby=userid,modifieddt = datetime.now())
             
-            for row in cursor.fetchall():
-                tagids.append(row[0])
+            data_json = {
+                        'status': 'success',
+                        }
+            data = simplejson.dumps(data_json)
+            return HttpResponse(data, mimetype='application/json')
 
-            Taglink.objects.filter(id__in=tagids).update(deleted=1,modifiedby=userid,modifieddt = datetime.now())
-            
+    def submit(self,request):
+        try:
+            userid = request.session['userid']
+            submissionversionid = request.POST.get('submissionversionid', False)
+        except KeyError:
+            data_json = {
+                        'status': 'user not logged in',
+                        }
+            data = simplejson.dumps(data_json)
+            return HttpResponse(data, mimetype='application/json')
+        else:
+            submissionvs = Submissionversion.objects.get(id=submissionversionid)
+            submissionvs.deleted = 1
+            submissionvs.modifiedby = userid
+            submissionvs.modifieddt = datetime.now()
+            submissionvs.save()
+
             data_json = {
                         'status': 'success',
                         }

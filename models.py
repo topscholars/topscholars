@@ -544,6 +544,7 @@ class Tagcategory(models.Model):
 
 class Taglink(models.Model):
     id = models.IntegerField(primary_key=True, db_column='ID') # Field name made lowercase.
+    entityid = models.ForeignKey(Entity,related_name="Taglinktoentity", db_column='EntityId') # Field name made lowercase.
     recid = models.IntegerField(db_column='RecId') # Field name made lowercase.
     createddt = models.DateTimeField(db_column='CreatedDT') # Field name made lowercase.
     createdby = models.IntegerField(db_column='CreatedBy') # Field name made lowercase.

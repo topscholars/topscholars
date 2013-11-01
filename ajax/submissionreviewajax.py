@@ -144,7 +144,6 @@ class SUBMISSIONREVIEW():
         try:
             userid = request.session['userid']
             highlightid = request.POST.get('highlightid', False)
-            tagids = request.POST.get('tagids', False)
         except KeyError:
             data_json = {
                         'status': 'user not logged in',
@@ -157,6 +156,13 @@ class SUBMISSIONREVIEW():
             submissionhl.modifiedby = userid
             submissionhl.modifieddt = datetime.now()
             submissionhl.save()
+
+            tagids = []
+            cursor = connection.cursor()
+            cursor.execute('select Taglink.id from Taglink left join Tag on Taglink.tagid = Tag.id left join TagEntity on Tag.id = TagEntity.tagid where Taglink.recid = %s and TagEntity.entityid = 5',[highlightid])
+            
+            for row in cursor.fetchall():
+                tagids.append(row[0])
 
             Taglink.objects.filter(id__in=tagids).update(deleted=1,modifiedby=userid,modifieddt = datetime.now())
             

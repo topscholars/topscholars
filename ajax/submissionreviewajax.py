@@ -186,3 +186,56 @@ class SUBMISSIONREVIEW():
                         }
             data = simplejson.dumps(data_json)
             return HttpResponse(data, mimetype='application/json')
+
+    def addSubmissionversionHighlight(self,request):
+        try:
+            userid = request.session['userid']
+            login = Login.objects.get(id=userid)
+            clientid = login.clientid
+            submissionversionid = request.POST.get('submissionversionid', False)
+            startposition = request.POST.get('start', False)
+            hightlighttext = request.POST.get('highlighttext', False)
+            comment = request.POST.get('highlightComment', False)
+            tagids = request.POST.getlist('tagids[]', False)
+        except KeyError:
+            data_json = { 'status': 'error', }
+            data = simplejson.dumps(data_json)
+            return HttpResponse(data, mimetype='application/json')
+        else:
+
+#             data=simplejson.dumps(tagids)
+#             return HttpResponse(data, mimetype='application/json')
+            submissionvshg = Submissionversionhighlight()
+            submissionvshg.submissionversionid = submissionversionid
+            submissionvshg.startposition = startposition
+            submissionvshg.hightlighttext = hightlighttext
+            submissionvshg.comment = comment
+            submissionvshg.weight = 0
+            submissionvshg.createddt = datetime.now()
+            submissionvshg.createdby = userid
+            submissionvshg.modifieddt = datetime.now()
+            submissionvshg.modifiedby = userid
+            submissionvshg.disabled = 0
+            submissionvshg.deleted = 0
+            submissionvshg.save()
+            recid = Submissionversionhighlight.objects.latest('id').id
+            
+            for tagid in tagids:
+                taglist = Tag.objects.get(id=tagid)
+                entitylist = Entity.objects.get(id=5)
+                taglink = Taglink()
+                taglink.tagid = taglist
+                taglink.entityid = entitylist
+                taglink.recid = recid
+                taglink.createddt = datetime.now()
+                taglink.createdby = userid
+                taglink.modifieddt = datetime.now()
+                taglink.modifiedby = userid
+                taglink.deleted = 0
+                taglink.clientid = clientid
+                taglink.save()
+                
+            data_json = { 'recid': recid, }
+            data = simplejson.dumps(data_json)
+            return HttpResponse(data, mimetype='application/json')
+            

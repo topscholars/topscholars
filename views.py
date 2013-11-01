@@ -129,16 +129,15 @@ def gettags(request, entityid):
         return HttpResponse(data, mimetype='application/json')
     
 def tprocessajax(request):
-    txtclass = request.GET.get('class',False)
-    txtmethod = request.GET.get('method',False)
-
-    if (txtclass != False) and (txtclass != ''):
-        className = eval(txtclass)()
-    else:
+    if request.method == 'GET':
+        txtclass = request.GET.get('class',False)
+        txtmethod = request.GET.get('method',False)
+    elif request.method == 'POST':
         txtclass = request.POST.get('class',False)
         txtmethod = request.POST.get('method',False)
-
-        className = eval(txtclass)()
+        
+    className = eval(txtclass)()
+        
     if txtmethod == False:
         methodToCall = getattr(className, 'get')
         #method = className.getJson(request)

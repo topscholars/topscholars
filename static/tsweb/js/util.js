@@ -102,13 +102,9 @@ function GridBase(){
 		return obj;
 	}
 }
-<<<<<<< HEAD
-var csrftoken = $.cookie('csrftoken');
-=======
 
 var csrftoken = $.cookie('csrftoken');
 
->>>>>>> origin/master
 function csrfSafeMethod(method) {
     // these HTTP methods do not require CSRF protection
     return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
@@ -121,7 +117,3 @@ $.ajaxSetup({
         }
     }
 });
-<<<<<<< HEAD
-=======
-
->>>>>>> origin/master

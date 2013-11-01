@@ -20,8 +20,10 @@
 <script>
 function EDITTABLE(){
 	var thisClass = this;
+	var evalClass = 'SUBMISSIONREVIEW';
 	var essay;
 	var url = "{% url 'tsweb:tprocessajax' %}";
+	this.startHighlightPositon = '';
 	
 	this.setProgressBar = function(progress) {
 		$( "#progressbar" ).progressbar({
@@ -196,23 +198,44 @@ function EDITTABLE(){
 	
 	this.save = function(){
 		var highlightid = $('#ele_highlightid').val();
-		
-		var tagids = new Array();
+		var submissionversionid = $('#ele_submissionversionid').val();
+		var tagids = [];
+		//var tagids = new Array();
 		var i=0;
 		$('input[name*="-a"]').each(function(index) {
 			var name = $(this).attr('name');
 			name = name.replace('tag[','');
 			name = name.replace('-a]', '');
-			tagids[i] = name;
-			i++;
+			tagids.push(name);
+			//tagids[i] = "{'id': '"+name+"'}";
+			//i++;
 		});
 //		var test = tagids.join(',');
 		
 		if (highlightid != '') {
-			//insert
+			//update
 		}
 		else {
-			//update
+			//insert
+			$.post( url,
+			{	class: evalClass,
+				method: 'addSubmissionversionHighlight',
+				submissionversionid: submissionversionid,
+				start : thisClass.startHighlightPositon,
+				highlighttext : $('#ele_highlighttext').val(),
+				highlightComment : $('#ele_highlightComment').val(),
+				tagids: tagids
+			},
+			function(result){
+				$('#ele_highlightid').val(result.recid);
+				thisClass.editHighlightDialog(false);
+				thisClass.getHighlightData(result.recid);
+				thisClass.getData($('#ele_submissionid').val(),$('#ele_submissionversionversion').val());
+				thisClass.getHighlightData(result.recid);
+			})
+			.error(function(xhr, status, error) {
+	    		alert('Error occur. Please contact the administrator.');
+	    	});
 		}
 		
 		thisClass.getHighlightData(highlightid);
@@ -263,6 +286,7 @@ function EDITTABLE(){
 				var htxt = essay;
 				htxt = htxt.substring(start,end);
 				//alert(htxt);
+				thisClass.startHighlightPositon = start;
 				$('#ele_highlighttext').val(htxt);
 				thisClass.showHighlightDialog(true);
 			}

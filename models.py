@@ -508,6 +508,7 @@ class Submissionversion(models.Model):
 class Submissionversionhighlight(models.Model):
     id = models.IntegerField(primary_key=True, db_column='ID') # Field name made lowercase.
     submissionversionid = models.IntegerField(db_column='SubmissionVersionId') # Field name made lowercase.
+    startposition = models.IntegerField(db_column='StartPosition') # Field name made lowercase.
     hightlighttext = models.TextField(db_column='HightlightText') # Field name made lowercase.
     comment = models.TextField(db_column='Comment', blank=True) # Field name made lowercase.
     weight = models.IntegerField(db_column='Weight') # Field name made lowercase.

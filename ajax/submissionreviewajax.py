@@ -18,7 +18,11 @@ class SUBMISSIONREVIEW():
             submissionid = request.GET.get('submissionid', False)
             versionid = request.GET.get('versionid', False)
         except KeyError:
-            return HttpResponse('error', mimetype='application/json')
+            data_json = {
+                        'status': 'user not logged in',
+                        }
+            data = simplejson.dumps(data_json)
+            return HttpResponse(data, mimetype='application/json')
         else:
             DATE_FORMAT = "%d-%m-%Y" 
             data_json = ''
@@ -31,7 +35,7 @@ class SUBMISSIONREVIEW():
                         'assignmentdesc': submissionversion.submissionid.assignmentid.description,
                         'assignmentmaxword': submissionversion.submissionid.assignmentid.maxwords,
                         'assignmentrubric': submissionversion.submissionid.assignmentid.rubricid.name,
-                        'submissionduedate': submissionversion.submissionid.duedate,
+                        'submissionduedate': submissionversion.submissionid.duedate.strftime(DATE_FORMAT),
                         'submissionprogress': submissionversion.submissionid.progress,
                         'submissioncomment': submissionversion.submissionid.comment,
                         'submissionversionstage': submissionversion.stage,
@@ -56,7 +60,11 @@ class SUBMISSIONREVIEW():
                         'submissionversioncomment': submissionversion.comment,
                         }
             else:
-                return HttpResponse('not found', mimetype='application/json')
+                data_json = {
+                            'status': 'no key passed',
+                            }
+                data = simplejson.dumps(data_json)
+                return HttpResponse(data, mimetype='application/json')
 
             
             data = simplejson.dumps(data_json)
@@ -67,10 +75,14 @@ class SUBMISSIONREVIEW():
             userid = request.session['userid']
             versionid = request.GET.get('versionid', False)
         except KeyError:
-            return HttpResponse('error', mimetype='application/json')
+            data_json = {
+                        'status': 'user not logged in',
+                        }
+            data = simplejson.dumps(data_json)
+            return HttpResponse(data, mimetype='application/json')
         else:
             data_json = ''
-            submissionversionhighlightlist = list(Submissionversionhighlight.objects.filter(submissionversionid = versionid).values('id','hightlighttext'))
+            submissionversionhighlightlist = list(Submissionversionhighlight.objects.filter(submissionversionid = versionid,deleted=0).values('id','hightlighttext'))
             data = simplejson.dumps(submissionversionhighlightlist)
             return HttpResponse(data, mimetype='application/json')
 
@@ -79,16 +91,24 @@ class SUBMISSIONREVIEW():
             userid = request.session['userid']
             highlightid = request.GET.get('highlightid', False)
         except KeyError:
-            return HttpResponse('error', mimetype='application/json')
+            data_json = {
+                        'status': 'user not logged in',
+                        }
+            data = simplejson.dumps(data_json)
+            return HttpResponse(data, mimetype='application/json')
         else:
             data_json = ''
             if highlightid != False and highlightid != '':
-                submissionversionhighlight = Submissionversionhighlight.objects.get(id=highlightid)
+                submissionversionhighlight = Submissionversionhighlight.objects.get(id=highlightid,deleted=0)
                 data_json = {
                         'highlightComment': submissionversionhighlight.comment,
                         }
             else:
-                return HttpResponse('not found', mimetype='application/json')
+                data_json = {
+                            'status': 'no key passed',
+                            }
+                data = simplejson.dumps(data_json)
+                return HttpResponse(data, mimetype='application/json')
 
             data = simplejson.dumps(data_json)
             return HttpResponse(data, mimetype='application/json')
@@ -98,7 +118,11 @@ class SUBMISSIONREVIEW():
             userid = request.session['userid']
             highlightid = request.GET.get('highlightid', False)
         except KeyError:
-            return HttpResponse('error', mimetype='application/json')
+            data_json = {
+                        'status': 'user not logged in',
+                        }
+            data = simplejson.dumps(data_json)
+            return HttpResponse(data, mimetype='application/json')
         else:
             data_json = []
             if highlightid != False and highlightid != '':
@@ -110,4 +134,34 @@ class SUBMISSIONREVIEW():
                     data = simplejson.dumps(data_json)
                     return HttpResponse(data, mimetype='application/json')
             else:
-                return HttpResponse('not found', mimetype='application/json')
+                data_json = {
+                            'status': 'no key passed',
+                            }
+                data = simplejson.dumps(data_json)
+                return HttpResponse(data, mimetype='application/json')
+
+    def delete(self,request):
+        try:
+            userid = request.session['userid']
+            highlightid = request.POST.get('highlightid', False)
+            tagids = request.POST.get('tagids', False)
+        except KeyError:
+            data_json = {
+                        'status': 'user not logged in',
+                        }
+            data = simplejson.dumps(data_json)
+            return HttpResponse(data, mimetype='application/json')
+        else:
+            submissionhl = Submissionversionhighlight.objects.get(id=highlightid)
+            submissionhl.deleted = 1
+            submissionhl.modifiedby = userid
+            submissionhl.modifieddt = datetime.now()
+            submissionhl.save()
+
+            Taglink.objects.filter(id__in=tagids).update(deleted=1,modifiedby=userid,modifieddt = datetime.now())
+            
+            data_json = {
+                        'status': 'success',
+                        }
+            data = simplejson.dumps(data_json)
+            return HttpResponse(data, mimetype='application/json')

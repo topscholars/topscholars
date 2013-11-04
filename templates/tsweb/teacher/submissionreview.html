@@ -111,7 +111,9 @@ function EDITTABLE(){
 				'method' : 'getSubmissionVersionHighlightTags',
 				'highlightid' : highlightid },
 			function(result){
+				$(".tagedit-listelement-old").remove();
 				var displaytxt = '';
+				console.log(result);
 				for (var i=0;i<result.length;i++) {
 					var tagitem = '<li class="tagedit-listelement tagedit-listelement-old"><span dir="ltr">' + result[i].name + '</span><input type="hidden" name="tag[' + result[i].id + '-a]" value="' + result[i].name + '"><a class="tagedit-close" title="Remove from list.">x</a></li>'
 					$(tagitem).insertBefore('.tagedit-listelement-new');
@@ -196,9 +198,65 @@ function EDITTABLE(){
 		}
 	}
 	
+	this.tagHighlightList = function(){
+		$.getJSON(
+			url,
+			{	'class' :  evalClass,
+				'method' : 'tagHighlightList',
+				'submissionversionid' : $('#ele_submissionversionid').val() },
+			function(result){
+				$("<ul>").attr("id", "tagList").appendTo("#tagBox");
+				$.each(result, function(i, val) {
+						var li = $("<li>");
+						
+						//create link
+						$("<a>").text(val.name).attr({"data-id":val.id, href:"#", class:"tagClickHighlightList"}).appendTo(li);
+						
+						//set tag size
+						if(val.parentid == 0){
+							li.children().css({'font-size':'2em', 'font-weight':'bold'});
+						}else{
+							li.children().css({'font-size':'1.7em'});
+						}
+						
+						//add to list
+						li.appendTo("#tagList");
+				});
+				
+				$(".tagClickHighlightList").click(function(){
+					var id = $(this).data("id");
+					thisClass.tagClickHighlightList(id);
+					return false;
+				});
+		}).error(function(xhr, status, error) {
+    		alert('Error occur. Please contact the administrator.');
+    	});
+	}
+	
+	this.tagClickHighlightList = function(id){
+		var highlightid;
+		var textComment = '';
+		$.getJSON(
+			url,
+			{	'class' :  evalClass,
+				'method' : 'tagClickHighlightList',
+				'taglinkid' : id,
+				'submissionversionid' : $('#ele_submissionversionid').val() },
+			function(result){
+			$(".essayhighlight").css({'background':'red'});
+			$.each(result, function(i, val) {
+				highlightid = val.id;
+				$("#"+highlightid+".essayhighlight").css({'background':'yellow'});
+				textComment += "- " + val.comment + "\n";
+			});
+			$("#commentArea").val(textComment);
+		}).error(function(xhr, status, error) {
+    		alert('Error occur. Please contact the administrator.');
+    	});
+	}
+	
 	this.save = function(){
 		var highlightid = $('#ele_highlightid').val();
-		var submissionversionid = $('#ele_submissionversionid').val();
 		var tagids = [];
 		//var tagids = new Array();
 		var i=0;
@@ -207,25 +265,41 @@ function EDITTABLE(){
 			name = name.replace('tag[','');
 			name = name.replace('-a]', '');
 			tagids.push(name);
-			//tagids[i] = "{'id': '"+name+"'}";
-			//i++;
 		});
-//		var test = tagids.join(',');
-		
+
 		if (highlightid != '') {
 			//update
+			thisClass.saveEditTags(tagids,'save');
 		}
 		else {
 			//insert
-			$.post( url,
-			{	class: evalClass,
+			thisClass.saveEditTags(tagids,'add');
+		}
+	}
+	
+	this.saveEditTags = function(tagids, method){
+		var odata;
+		if(method == 'add')
+		{
+			odata = {	class: evalClass,
 				method: 'addSubmissionversionHighlight',
-				submissionversionid: submissionversionid,
+				submissionversionid: $('#ele_submissionversionid').val(),
 				start : thisClass.startHighlightPositon,
 				highlighttext : $('#ele_highlighttext').val(),
 				highlightComment : $('#ele_highlightComment').val(),
 				tagids: tagids
-			},
+			};
+		}else if(method == 'save'){
+			odata = {	class: evalClass,
+				method: 'saveSubmissionversionHighlight',
+				highlightid : $('#ele_highlightid').val(),
+				submissionversionid: $('#ele_submissionversionid').val(),
+				highlightComment : $('#ele_highlightComment').val(),
+				tagids: tagids
+			};
+		}
+		
+		$.post( url, odata,
 			function(result){
 				$('#ele_highlightid').val(result.recid);
 				thisClass.editHighlightDialog(false);
@@ -236,9 +310,6 @@ function EDITTABLE(){
 			.error(function(xhr, status, error) {
 	    		alert('Error occur. Please contact the administrator.');
 	    	});
-		}
-		
-		thisClass.getHighlightData(highlightid);
 	}
 	
 	this.del = function(){
@@ -276,6 +347,8 @@ function EDITTABLE(){
 		thisClass.getData($('#ele_submissionid').val(),'');
 		
 		thisClass.showHighlightDialog(false);
+		
+		thisClass.tagHighlightList();
 		
 		$('#ele_submissionversionessay').mouseup(function() {
 			var node = this;
@@ -457,15 +530,31 @@ function openHighlightDialog(highlightid){
 </tr>
 </table>
 <span style="text-decoration:underline;font-weight:bold;">Tagging</span><br/>
-<div style="height:42px;margin-top:5px;border:1px #666666 solid;">
-<input type="text" style="width:219px;height:20px;margin-top:8px;margin-left:5px;">
-<img src="{% static 'tsweb/image/magnify.png' %}" style="float:right;position:relative;top:8px;right:5px;" />
+<div>
+	
 </div>
-<div style="height:212px;border:1px #666666 solid;">
-<input type="text" id="tag" name="tag[]" value="" class="tag"/>
-</div>
+<style>
+#tagBox { 
+	background-color:#575454;
+ 	text-align:center;
+ 	padding:5px;
+ 	overflow:auto;
+ 	font-size:70%;
+ 	font-family:arial;
+}
+#tagBox h2 { 
+	color:#ffffff; 
+	font-size:2.5em; 
+	margin:0 0 10px -150px; 
+}
+#tagList { margin:0; padding:0; }
+#tagList li { list-style-type:none; float:left; margin:0 10px; height:35px; }
+#tagList li a { text-decoration:none; color:#ffffff; }
+#tagList li a:hover { text-decoration:underline; }
+</style>
+<div id="tagBox"></div>
 <span style="text-decoration:underline;font-weight:bold;">Tag Comment</span><br/>
-<textarea style="width:264px;height:98px;background-color:#E2E2E2;margin-top:5px;resize:none;"></textarea>
+<textarea id="commentArea" style="width:264px;height:98px;background-color:#E2E2E2;margin-top:5px;resize:none;"></textarea>
 </div>
 <div class="clear" style="height:52px;position:relative;margin-top:716px;background-color:#555555;"></div>
 </div>

@@ -3,8 +3,47 @@
 <head>
 	<meta charset="UTF-8"/> 
 	<!--<link rel="stylesheet" type="text/css" href="{% static 'tsweb/css/player.css' %}" />-->
+	<script src="{% static 'tsweb/js/jQuery1.10.1.js' %}"></script>
+	<script src="{% static 'tsweb/js/jQuery1.10.1.js' %}"></script>
+	<script src="{% static 'tsweb/js/jquery-ui-1.10.3.custom.min.js' %}"></script>
+	<script src="{% static 'tsweb/js/jquery.cookie.js' %}"></script>
+	<script src="{% static 'tsweb/js/util.js' %}"></script>
 </head>
 <body style="background-color:#D6D6D6;margin:0;padding:0;">
+<script>
+function EDITTABLE(){
+	var thisClass = this;
+	var url = "{% url 'tsweb:tprocessajax' %}";
+	
+	this.SendHint = function() {
+		$.post(url,
+			{	'class' :  'LOGINAJAX',
+				'method' : 'sendhint',
+				'username' : $('#txtUsername').val() },
+			function(result){
+				$('#lblError').val(result.status);
+			})
+		.error(function(xhr, status, error) {
+    		alert('Error occur. Please contact the administrator.');
+    	});
+	}
+	
+	this.initContent = function() {
+		$('#btnReset').click(function() {
+			$('#txtUsername').val('');
+			$('#txtPassword').val('');
+		});
+		
+		$('#btnSendHint').attr('href', 'javascript:var gen = new EDITTABLE();gen.SendHint();');
+	}
+}
+
+$(function() {
+	var gen = new EDITTABLE();
+	gen.initContent();
+});
+</script>
+
 <div style="margin:auto;background-color:white;width:1024px;height:768px;">
 <div style="margin:auto;background-color:#0090CA;width:569px;height:254px;border-radius:20px;top:145px;position:relative;color:white;">
 <form action="{% url 'tsweb:login' %}" method="post">
@@ -31,10 +70,12 @@
 </td>
 </tr>
 <tr>
-<td colspan="2" style="text-align:right;"><a href="" style="text-decoration:underline;color:white;">Forgot Password</a></td>
+<td colspan="2" style="text-align:right;"><a id="btnSendHint" style="text-decoration:underline;color:white;">Forgot Password</a></td>
+</tr>
+<tr>
+<td colspan="2"><label id="lblError" style="text-decoration:underline;color:white;">{{errmsg}}</label></td>
 </tr>
 </table>
-{{errmsg}}
 </form>
 </div>
 </div>

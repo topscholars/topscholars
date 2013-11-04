@@ -12,6 +12,7 @@ from ajax.studentajax import *
 from ajax.rubricajax import *
 from ajax.submissionajax import *
 from ajax.submissionreviewajax import *
+from ajax.loginajax import *
 
 #Login View
 def login(request):
@@ -21,13 +22,19 @@ def login(request):
         return render(request, 'tsweb/login.html', {'username':'','errmsg':''})
     else:
         try:
-            user= Login.objects.get(loginname=username)
+            user= Login.objects.get(loginname=username,deleted=0)
         except (KeyError, Login.DoesNotExist):
             return render(request, 'tsweb/login.html', {'username':username, 'errmsg':'Invalid username.',})
         else:
             if user.password == password:
                 request.session['userid'] = user.id
-                return HttpResponseRedirect(reverse('tsweb:tclasslist'))
+                if user.usertypeid == 1:
+                    return HttpResponseRedirect(reverse('tsweb:tclasslist'))
+                elif user.usertypeid == 2:
+                    return HttpResponseRedirect(reverse('tsweb:sindex'))
+                else:
+                    del request.session['userid']
+                    return HttpResponseRedirect(reverse('tsweb:login'))
             else:
                 return render(request, 'tsweb/login.html', {'username':username, 'errmsg':'Invalid password.',})
 
@@ -37,7 +44,7 @@ def logout(request):
     except KeyError:
         pass
     return HttpResponseRedirect(reverse('tsweb:login'))
-
+        
 #Student Views
 def sindex(request):
     return render(request, 'tsweb/student/index.html', '')
@@ -129,16 +136,15 @@ def gettags(request, entityid):
         return HttpResponse(data, mimetype='application/json')
     
 def tprocessajax(request):
-    txtclass = request.GET.get('class',False)
-    txtmethod = request.GET.get('method',False)
-
-    if (txtclass != False) and (txtclass != ''):
-        className = eval(txtclass)()
-    else:
+    if request.method == 'GET':
+        txtclass = request.GET.get('class',False)
+        txtmethod = request.GET.get('method',False)
+    elif request.method == 'POST':
         txtclass = request.POST.get('class',False)
         txtmethod = request.POST.get('method',False)
-
-        className = eval(txtclass)()
+        
+    className = eval(txtclass)()
+        
     if txtmethod == False:
         methodToCall = getattr(className, 'get')
         #method = className.getJson(request)

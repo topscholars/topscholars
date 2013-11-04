@@ -196,7 +196,9 @@ form{
 	margin-bottom: 30px;
 	padding-bottom: 20px;
 }
-
+#side-panel{
+	margin-top: -30px;
+}
 .block-cell{
 	top: 0!important;
 	position: relative;
@@ -232,9 +234,7 @@ form{
 	height: auto!important;
 }
 .block-header{
-	background-color: #ff6633;
-	margin-top: -46px;
-	position:static;
+	background-color: #ff6633!important;
 }
 .block-header h3{
 	top: 0;
@@ -265,7 +265,7 @@ form{
 	width: 100%!;
 }
 .block-list li a{
-	/*color: #888;*/
+	font-size: 1.2em;
 }
 .block-body button{
 	font-size: 1.2em;
@@ -277,21 +277,24 @@ form{
 	display: inherit;
 }
 .overview-nav{
-	margin-top: -45px;
-	width: 100%;
-	background-color: #808080;
+	background-color: #808080;	
+	width: 65%;
+	float: right;
+	margin-top: -80px;
+	margin-right: 60px;
 }
 .overview-nav ul{
 	list-style: none;
 	width: 100%;
 	padding-left: 0px;
-	
+	margin-bottom: 0px;
+	text-align: center;
 }
 .overview-nav ul li{
 	display: inline-block;
 	padding: 10px 27px;
 	color: #ffffff;
-	text-align: center;
+	text-align: justify;
 	vertical-align: middle;
 }
 .overview-nav ul li:hover{
@@ -300,4 +303,10 @@ form{
 .active-white{
 	background-color: white;
 	color: #888888!important;
+}
+.category-text{
+	margin-top: -100px;
+	max-height: 350px;
+	height: auto;
+	overflow: scroll;
 }

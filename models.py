@@ -425,6 +425,20 @@ class Studentlist(models.Model):
         row = cursor.fetchone()
         return row[0]
     
+    def getStudentPreviousClass(self):
+        stdid=self.id
+        cursor = connection.cursor()
+        cursor.execute('select cs.code from studentlist as st join studentclass as sc on st.id = sc.studentid join classschedule as cs on sc.classscheduleid = cs.id where st.id = %s and cs.startdate = (select max(cs.startdate) from studentclass as sc join classschedule as cs on sc.classscheduleid = cs.id where sc.studentid = %s )',[stdid,stdid])
+        row = cursor.fetchone()
+        return row[0]
+    
+    def getStudentCurrentClass(self):
+        stdid=self.id
+        cursor = connection.cursor()
+        cursor.execute('select cs.code from studentlist as st join studentclass as sc on st.id = sc.studentid join classschedule as cs on sc.classscheduleid = cs.id where st.id = %s and cs.createddt = (select max(cs.createddt) from studentclass as sc join classschedule as cs on sc.classscheduleid = cs.id where sc.studentid = %s )',[stdid,stdid])
+        row = cursor.fetchone()
+        return row[0]
+    
     class Meta:
         db_table = 'studentlist'
 
@@ -462,7 +476,7 @@ class Submission(models.Model):
     def getLatestVersion(self):
         submissionid=self.id
         cursor = connection.cursor()
-        cursor.execute('select version from Submissionversion where submissionid = %s and version = (select max(version) from Submissionversion where submissionid = %s)',[submissionid,submissionid])
+        cursor.execute('select version from Submissionversion where submissionid = %s and version = (select max(version) from Submissionversion where submissionid = %s and deleted = 0)',[submissionid,submissionid])
         row = cursor.fetchone()
         if row is not None:
             return row[0]
@@ -470,6 +484,7 @@ class Submission(models.Model):
             return 0
     
     class Meta:
+        unique_together = (('studentid', 'teacherid', 'assignmentid'),)
         db_table = 'submission'
 
 class Submissionversion(models.Model):
@@ -493,6 +508,7 @@ class Submissionversion(models.Model):
 class Submissionversionhighlight(models.Model):
     id = models.IntegerField(primary_key=True, db_column='ID') # Field name made lowercase.
     submissionversionid = models.IntegerField(db_column='SubmissionVersionId') # Field name made lowercase.
+    startposition = models.IntegerField(db_column='StartPosition') # Field name made lowercase.
     hightlighttext = models.TextField(db_column='HightlightText') # Field name made lowercase.
     comment = models.TextField(db_column='Comment', blank=True) # Field name made lowercase.
     weight = models.IntegerField(db_column='Weight') # Field name made lowercase.
@@ -537,6 +553,7 @@ class Tagcategory(models.Model):
 
 class Taglink(models.Model):
     id = models.IntegerField(primary_key=True, db_column='ID') # Field name made lowercase.
+    entityid = models.ForeignKey(Entity,related_name="Taglinktoentity", db_column='EntityId') # Field name made lowercase.
     recid = models.IntegerField(db_column='RecId') # Field name made lowercase.
     createddt = models.DateTimeField(db_column='CreatedDT') # Field name made lowercase.
     createdby = models.IntegerField(db_column='CreatedBy') # Field name made lowercase.
@@ -544,7 +561,7 @@ class Taglink(models.Model):
     modifiedby = models.IntegerField(db_column='ModifiedBy') # Field name made lowercase.
     deleted = models.IntegerField(db_column='Deleted') # Field name made lowercase.
     clientid = models.IntegerField(db_column='ClientId') # Field name made lowercase.
-    tagid = models.IntegerField(db_column='TagId') # Field name made lowercase.
+    tagid = models.ForeignKey(Tag,related_name="Taglinktotag",db_column='TagId') # Field name made lowercase.
     class Meta:
         db_table = 'taglink'
 
@@ -578,22 +595,15 @@ class Usertype(models.Model):
 
 class Classassignment(models.Model):
     id = models.IntegerField(primary_key=True, db_column='ID') # Field name made lowercase.
-    classid = models.ForeignKey(Classlist,related_name="Classassignmenttoclasslist", db_column='ClassId') # Field name made lowercase.
+    classid = models.ForeignKey(Classschedule,related_name="Classassignmenttoclassschedule", db_column='ClassId') # Field name made lowercase.
     assignmentid = models.ForeignKey(Assignment,related_name="Classassignmenttoassignment", db_column='AssignmentId') # Field name made lowercase.
     class Meta:
         db_table = 'classassignment'
 
-class Studentassignment(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='ID') # Field name made lowercase.
-    studentid = models.ForeignKey(Classlist,related_name="Studentassignmenttostudentlist", db_column='StudentID') # Field name made lowercase.
-    assignmentid = models.ForeignKey(Assignment,related_name="Studentassignmenttoassignment", db_column='AssignmentID') # Field name made lowercase.
-    class Meta:
-        db_table = 'studentassignment'
-
 class TagEntity(models.Model):
     id = models.IntegerField(primary_key=True, db_column='ID') # Field name made lowercase.
-    tagid = models.ForeignKey(Classlist,related_name="Tagentitytotag", db_column='TagId') # Field name made lowercase.
-    entityid = models.ForeignKey(Assignment,related_name="Tagentitytoentity", db_column='EntityId') # Field name made lowercase.
+    tagid = models.ForeignKey(Tag,related_name="Tagentitytotag", db_column='TagId') # Field name made lowercase.
+    entityid = models.ForeignKey(Entity,related_name="Tagentitytoentity", db_column='EntityId') # Field name made lowercase.
     class Meta:
         db_table = 'TagEntity'
 

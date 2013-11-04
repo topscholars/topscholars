@@ -6,9 +6,13 @@
 	<meta charset="UTF-8"/> 
 	<link rel="stylesheet" type="text/css" href="{% static 'tsweb/css/smoothness/jquery-ui-1.10.3.custom.css' %}" />
 	<link rel="stylesheet" type="text/css" href="{% static 'tsweb/css/Prototype.css' %}" />
+	<link rel="stylesheet" type="text/css" href="{% static 'tsweb/css/jquery.datepick.css' %}" />
 	<script src="{% static 'tsweb/js/jQuery1.10.1.js' %}"></script>
+	<script src="{% static 'tsweb/js/jquery-ui-1.10.3.custom.min.js' %}"></script>
+	<script src="{% static 'tsweb/js/jquery.cookie.js' %}"></script>
 	<script src="{% static 'tsweb/js/util.js' %}"></script>
 	<script src="{% static 'tsweb/js/WaterMark.js' %}"></script>
+	<script src="{% static 'tsweb/js/jquery.datepick.js' %}"></script>
 </head>
 
 <body>
@@ -47,22 +51,23 @@ function EDITTABLE(){
 	}
 	
 	this.editTable = function(id){
-		$.ajax({
-			url: url,
-			type: 'GET',
-			data: { class: evalClass,
-					id: id 
-				},
-			datatype : 'json',
-			success: function(res){
-				console.log(res)
-				$.each(res, function(ini,val){
+		$.getJSON(
+			url,
+			{	class: evalClass,
+				id: id  },
+			function(result){
+				$.each(result, function(ini,val){
 					thisClass.seperateElement($("#ele_"+ini), val);
 				});
 				
 				thisClass.showEditTable();
-			}
-		});
+				thisClass.showAssignmentClass(id);
+				thisClass.showAssignmentStudent();
+				thisClass.showSelectAssignment();
+		})
+		.error(function(xhr, status, error) {
+    		alert('Error occur. Please contact the administrator.');
+    	});
 		return false;
 	}
 
@@ -74,45 +79,27 @@ function EDITTABLE(){
 			thisClass.hideEditTable();
 			thisClass.getData('','');
 		});
-	}
-	
-	this.selectTeacher = function(){
-		var html ='';
-		$.ajax({
-			url: url,
-			type: 'GET',
-			data: { class: evalClass,
-					method: 'getTeacher'
-			},
-			success: function(res){
-				$.each(res, function(ini,val){
-					if(val.middlename == null){
-						html += "<option value='"+val.id+"'>"+val.firstname+" "+val.lastname+"</option>";
-					}else{
-						html += "<option value='"+val.id+"'>"+val.firstname+" "+val.middlename+" "+val.lastname+"</option>";
-					}
-				});
-				$("#ele_teacherid").append(html);
-			}	
+		
+		$("#select_assignment").change(function(){
+			thisClass.showSelectAssignment();
 		});
 	}
 	
 	this.selectRubric = function(){
 		var html ='';
-		$.ajax({
-			url: url,
-			type: 'GET',
-			data: { class: evalClass,
-					method: 'getRubricIdAssignment'
-			},
-			success: function(res){
-				$.each(res, function(ini,val){
+		$.getJSON(
+			url,
+			{	class: evalClass,
+				method: 'getRubricIdAssignment' },
+			function(result){
+				$.each(result, function(ini,val){
 						html += "<option value='"+val.id+"'>"+val.name+"</option>";
 				});
 				$("#ele_rubricid").append(html);
-				
-			}	
-		});
+		})
+		.error(function(xhr, status, error) {
+    		alert('Error occur. Please contact the administrator.');
+    	});
 	}
 	
 	this.getData = function(assignmentname ,classid) {
@@ -141,19 +128,124 @@ function EDITTABLE(){
 	this.save = function(){
 		var odata;
 		if($("#ele_id").val() == ""){
-		 	odata = { class: evalClass, method: 'add'};
+			odata = {'class' :  evalClass, 'method' : "add" };
 		}else{
-			odata = { class: evalClass, method: 'save'};
+			odata = {'class' :  evalClass, 'method' : "save" };
 		}
 		odata = thisClass.oData(odata);
-		$.ajax({
-			url: url,
-			type: 'GET',
-			data: odata,
-			success: function(res){
+		$.post(url,odata,
+			function(result){
+
+			})
+		.error(function(xhr, status, error) {
+    		alert('Error occur. Please contact the administrator.');
+    	});
+	}
+	
+	this.showAssignmentClass = function(id){
+		$.get( url,
+			{	class: evalClass,
+				method: 'tAssignmentClass',
+				id: id  },
+			function(result){
+				var editFieldWidth = $("#editField").width();
+				$("#listAssignmentClass").width(editFieldWidth/2 - 10);
+				$("#listAssignmentClass").html(result);
 				
-			}	
-		});
+				$(".classitem").click(function(){
+					var id = $(this).attr('id');
+					thisClass.showAssignmentStudent(id);
+				});
+		})
+		.error(function(xhr, status, error) {
+    		alert('Error occur. Please contact the administrator.');
+    	});
+	}
+	
+	this.showAssignmentStudent = function(id){
+		var assignmentid = $("#ele_id").val();
+		
+		$.get( url,
+			{	class: evalClass,
+				method: 'tAssignmentStudent',
+				assignmentid : assignmentid,
+				id: id  },
+			function(result){
+				var editFieldWidth = $("#editField").width();
+				$("#listAssignmentStudent").width(editFieldWidth/2 - 10);
+				$("#listAssignmentStudent").html(result);
+		})
+		.error(function(xhr, status, error) {
+    		alert('Error occur. Please contact the administrator.');
+    	});
+	}
+	
+	this.showSelectAssignment = function(){
+		var id = $("#ele_id").val();
+		var select = $("#select_assignment").val();
+		$.get( url,
+			{	class: evalClass,
+				method: select,
+				id: id  },
+			function(result){
+				$("#list_by_select").html(result);
+				$(".datepicker").datepicker({ dateFormat: 'dd-mm-yy'});
+				$(".datepicker").datepicker("setDate", new Date());
+				if(select == 'tClassAssignlist'){
+					$(".addClassassignment").click(function(){
+						var id = $(this).attr('text');
+						var date = $(".datepicker").attr('text', id).val();
+						thisClass.addClassToAssignment(id, date);
+						
+					});
+				}else if(select == 'tStudentAssignlist'){
+					$(".addStudentassignment").click(function(){
+						var id = $(this).attr('text');
+						var date = $(".datepicker").attr('text', id).val();
+						thisClass.addStudentToAssignment(id, date);
+						
+					});
+				}
+		})
+		.error(function(xhr, status, error) {
+    		alert('Error occur. Please contact the administrator.');
+    	});
+	}
+	
+	this.addClassToAssignment = function(id, date){	
+		var assignmentid = $("#ele_id").val();
+		$.post(url,
+			{ class: evalClass,
+				method: 'addClassToAssignment',
+				assignmentid: assignmentid,
+				id: id,
+				date: date
+			},
+			function(result){
+				thisClass.showAssignmentClass(assignmentid);
+				thisClass.showSelectAssignment();
+			})
+		.error(function(xhr, status, error) {
+    		alert('Error occur. Please contact the administrator.');
+    	});
+	}
+	
+	this.addStudentToAssignment = function(id, date){	
+		var assignmentid = $("#ele_id").val();
+		$.post(url,
+			{ class: evalClass,
+				method: 'addStudentToAssignment',
+				assignmentid: assignmentid,
+				id: id,
+				date: date
+			},
+			function(result){
+				thisClass.showAssignmentClass(assignmentid);
+				thisClass.showSelectAssignment();
+			})
+		.error(function(xhr, status, error) {
+    		alert('Error occur. Please contact the administrator.');
+    	});
 	}
 	
 	this.iniControl = function(){
@@ -192,29 +284,7 @@ $(function() {
 	var gen = new EDITTABLE();
 	gen.iniControl();
 });
-$(function() {
 
-	CloseEdit();
-	$('#btnCancel').click(function(){
-		CloseEdit();
-	});
-	$('#btnSave').click(function(){
-		CloseEdit();	
-	});
-
-	$('#btnCloseEdit').attr("href", "JavaScript:CloseEdit();");
-
-});
-
-function ShowEdit(id) {
-	$('#editassignment').show();
-	$('#editassignmentbackground').show();
-}
-
-function CloseEdit() {
-	$('#editassignment').hide();
-	$('#editassignmentbackground').hide();
-}
 </script>
 <div class="placeholder">
 <div class="header">
@@ -326,6 +396,32 @@ Class Filter:&nbsp;
 		</tr>
 	</table>
 	</form>
+	<style>
+		#selectAssignmentHeader li{
+			list-style: none;
+			float: left;
+			padding-right: 20px;
+			font-weight: bold;
+		}
+		
+		#selectAssignmentHeader{
+			clear: both;
+		}
+	</style>
+	<div id="listAssignmentClass" style="float:left;"></div>
+	<div id="listAssignmentStudent" style="float:left;padding-left: 20px;"></div>
+	<div id="selectAssignmentHeader" style="padding-top: 10px; padding-bottom: 10px;">
+		<ul>
+			<li>Select For Assignment : </li>
+			<li>
+				<select id="select_assignment">
+					<option value="tClassAssignlist">class</option>
+					<option value="tStudentAssignlist">student</option>
+				</select>
+			</li>
+		</ul>
+	</div>
+	<div id="list_by_select"></div>
 </div>
 <input type="button" value="New Assignment" class="button listnewbutton"/>
 </div>

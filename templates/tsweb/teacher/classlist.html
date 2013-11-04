@@ -12,6 +12,7 @@
 	<script src="{% static 'tsweb/js/jQuery1.10.1.js' %}"></script>
 	<script src="{% static 'tsweb/js/WaterMark.js' %}"></script>
 	<script src="{% static 'tsweb/js/jquery-ui-1.10.3.custom.min.js' %}"></script>
+	<script src="{% static 'tsweb/js/jquery.cookie.js' %}"></script>
 	<script src="{% static 'tsweb/js/util.js' %}"></script>
 	<script src="{% static 'tsweb/js/jquery.datepick.js' %}"></script>
 	<script src="{% static 'tsweb/js/jquery.ui.timepicker.js' %}"></script>
@@ -20,6 +21,7 @@
 
 <body>
 <script>
+
 EDITTABLE.prototype = new GridBase();
 
 function EDITTABLE(){
@@ -39,6 +41,10 @@ function EDITTABLE(){
 		$(".listnewbutton").hide();
 		$("#txtSearch").hide();
 		$(".searchboximg").hide();
+		
+		var classid = $('#ele_id').val();
+		thisClass.getStudentData(classid);
+		thisClass.getStudentAddData(classid);
 	}
 	
 	this.hideEditTable =function(){
@@ -53,23 +59,22 @@ function EDITTABLE(){
 	}
 	
 	this.editTable = function(id){
-		$.ajax({
-			url: url,
-			type: 'GET',
-			data: { class: evalClass,
-					id: id 
-				},
-			datatype : 'json',
-			success: function(res){
-				$.each(res, function(ini,val){
+		$.getJSON(
+			url,
+			{	class: evalClass,
+				id: id  },
+			function(result){
+				$.each(result, function(ini,val){
 					thisClass.seperateElement($("#ele_"+ini), val);
 				});
 				
 				$("#ele_dayofweek").multiselect('refresh'); 
 				
 				thisClass.showEditTable();
-			}
-		});
+		})
+		.error(function(xhr, status, error) {
+    		alert('Error occur. Please contact the administrator.');
+    	});
 		return false;
 	}
 
@@ -85,14 +90,11 @@ function EDITTABLE(){
 	
 	this.selectTeacher = function(){
 		var html ='';
-		$.ajax({
-			url: url,
-			type: 'GET',
-			data: { class: evalClass,
-					method: 'getTeacher'
-			},
-			success: function(res){
-				$.each(res, function(ini,val){
+		$.getJSON( url,
+			{	class: evalClass,
+				method: 'getTeacher'  },
+			function(result){
+				$.each(result, function(ini,val){
 					if(val.middlename == null){
 						html += "<option value='"+val.id+"'>"+val.firstname+" "+val.lastname+"</option>";
 					}else{
@@ -100,25 +102,26 @@ function EDITTABLE(){
 					}
 				});
 				$("#ele_teacherid").append(html);
-			}	
-		});
+		})
+		.error(function(xhr, status, error) {
+    		alert('Error occur. Please contact the administrator.');
+    	});
 	}
 	
 	this.selectClass = function(){
 		var html ='';
-		$.ajax({
-			url: url,
-			type: 'GET',
-			data: { class: evalClass,
-					method: 'getClass'
-			},
-			success: function(res){
-				$.each(res, function(ini,val){
+		$.getJSON( url,
+			{	class: evalClass,
+				method: 'getClass'  },
+			function(result){
+				$.each(result, function(ini,val){
 						html += "<option value='"+val.id+"'>"+val.classname+"</option>";
 				});
 				$("#ele_classid").append(html);
-			}	
-		});
+		})
+		.error(function(xhr, status, error) {
+    		alert('Error occur. Please contact the administrator.');
+    	});
 	}
 	
 	this.getData = function(description) {
@@ -134,6 +137,53 @@ function EDITTABLE(){
 		});
 	}
 	
+	this.getStudentData = function(classid){
+		$("#list_student").html("<div style='width:100%;position=relative;text-align:center;'><img src='{% static 'tsweb/image/ajax-loader.gif' %}' alt='' style='margin:auto;width=100px;height=100px;position=relative;' /></div>");
+		$.get("{% url 'tsweb:tprocessajax' %}?class="+evalClass+"&method=getTStudentList",
+		{classid: classid},
+		function(result){
+		      $("#list_student").html(result);
+		}
+		)
+		.error(function(xhr, status, error) {
+		    $("#list_student").html("<img src='{% static 'tsweb/image/notificationcross.gif' %}' alt='' style='width:30px;' />&nbsp;Error: "+xhr.status+": "+xhr.statusText);
+		});
+	}
+	
+	this.getStudentAddData = function(classid){
+		var html ='';
+		$.get( url,
+			{	class: evalClass,
+				method: 'getTStudentAddList',
+				classid: classid   },
+			function(result){
+				$("#list_add_student").html(result);
+				$(".addStudent").click(function(){
+					var valAdd = $(this).attr("text");
+					thisClass.addStudentInClassschedule(valAdd);
+				});
+		})
+		.error(function(xhr, status, error) {
+    		alert('Error occur. Please contact the administrator.');
+    	});
+	}
+	
+	this.addStudentInClassschedule = function(studentid){
+		var classid = $('#ele_id').val();
+		$.post( url,
+			{	class: evalClass,
+				method: 'addStudentInClass',
+				classid: classid,
+				studentid: studentid },
+			function(result){
+				thisClass.getStudentData(classid);
+				thisClass.getStudentAddData(classid);
+		})
+		.error(function(xhr, status, error) {
+    		alert('Error occur. Please contact the administrator.');
+    	});
+	}
+	
 	this.Search = function(ele,event)
 	{
 		if (event.keyCode == 13) {
@@ -146,19 +196,19 @@ function EDITTABLE(){
 	this.save = function(){
 		var odata;
 		if($("#ele_id").val() == ""){
-		 	odata = { class: evalClass, method: 'add'};
+			odata = {'class' :  evalClass, 'method' : "add" };
 		}else{
-			odata = { class: evalClass, method: 'save'};
+			odata = {'class' :  evalClass, 'method' : "save" };
 		}
 		odata = thisClass.oData(odata);
-		$.ajax({
-			url: url,
-			type: 'GET',
-			data: odata,
-			success: function(res){
-				
-			}	
-		});
+		$.post(url,odata,
+			function(result){
+
+			})
+		.error(function(xhr, status, error) {
+    		alert('Error occur. Please contact the administrator.');
+    	});
+
 	}
 	
 	this.iniControl = function(){
@@ -197,6 +247,8 @@ $(function() {
 	var gen = new EDITTABLE();
 	gen.iniControl();
 });
+
+
 </script>
 <div class="placeholder">
 <div class="header">
@@ -326,6 +378,8 @@ $(function() {
 		</tr>
 	</table>
 	</form>
+	<div id="list_student"></div>
+	<div id="list_add_student"></div>
 </div>
 <input type="button" value="New Class" class="button listnewbutton"/>
 </div>

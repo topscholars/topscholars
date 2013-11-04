@@ -6,6 +6,13 @@ from django.core.urlresolvers import reverse
 
 from tsweb.models import *
 from tsweb.ajaxs import *
+from ajax.classajax import *
+from ajax.assignmentajax import *
+from ajax.studentajax import *
+from ajax.rubricajax import *
+from ajax.submissionajax import *
+from ajax.submissionreviewajax import *
+from ajax.loginajax import *
 
 #Login View
 def login(request):
@@ -15,13 +22,19 @@ def login(request):
         return render(request, 'tsweb/login.html', {'username':'','errmsg':''})
     else:
         try:
-            user= Login.objects.get(loginname=username)
+            user= Login.objects.get(loginname=username,deleted=0)
         except (KeyError, Login.DoesNotExist):
             return render(request, 'tsweb/login.html', {'username':username, 'errmsg':'Invalid username.',})
         else:
             if user.password == password:
                 request.session['userid'] = user.id
-                return HttpResponseRedirect(reverse('tsweb:tclasslist'))
+                if user.usertypeid == 1:
+                    return HttpResponseRedirect(reverse('tsweb:tclasslist'))
+                elif user.usertypeid == 2:
+                    return HttpResponseRedirect(reverse('tsweb:sindex'))
+                else:
+                    del request.session['userid']
+                    return HttpResponseRedirect(reverse('tsweb:login'))
             else:
                 return render(request, 'tsweb/login.html', {'username':username, 'errmsg':'Invalid password.',})
 
@@ -31,7 +44,7 @@ def logout(request):
     except KeyError:
         pass
     return HttpResponseRedirect(reverse('tsweb:login'))
-
+        
 #Student Views
 def sindex(request):
     return render(request, 'tsweb/student/index.html', '')
@@ -69,8 +82,6 @@ def tstudentlist(request):
         context= {'classlist' : classlist}
         return render(request, 'tsweb/teacher/studentlist.html', context)
 
-
-
 def trubriclist(request):
     try:
         userid = request.session['userid']
@@ -85,6 +96,7 @@ def tsubmissionlist(request):
     except KeyError:
         return HttpResponseRedirect(reverse('tsweb:login'))
     else:
+        
         return render(request, 'tsweb/teacher/submissionlist.html', '')
 
 def tsubmissionreview(request, id):
@@ -93,13 +105,46 @@ def tsubmissionreview(request, id):
     except KeyError:
         return HttpResponseRedirect(reverse('tsweb:login'))
     else:
-        return render(request, 'tsweb/teacher/submissionreview.html', '')
+        submissionversionlist = Submissionversion.objects.filter(submissionid=id)
+        submission = Submission.objects.get(id=id)
+        studentname = submission.studentid.getFullName()
+        context= {'id' : id,
+                  'studentname' : studentname,
+                  'submissionversionlist' : submissionversionlist }
+        return render(request, 'tsweb/teacher/submissionreview.html', context)
+
+def gettags(request, entityid):
+    try:
+        userid = request.session['userid']
+        term = request.GET.get('term', False)
+    except KeyError:
+        data_json = {
+                    'status': 'user not logged in',
+                    }
+        data = simplejson.dumps(data_json)
+        return HttpResponse(data, mimetype='application/json')
+    else:
+        data_json = []
+        tagentity = ''
+        if term != False and term != '':
+            tagentity = TagEntity.objects.filter(entityid=entityid,tagid__name__contains=term)
+        else:
+            tagentity = TagEntity.objects.filter(entityid=entityid)
+        for row in tagentity:
+            data_json.append({ "id": str(row.tagid.id), "label": row.tagid.name, "value": row.tagid.name })
+        data = simplejson.dumps(data_json)
+        return HttpResponse(data, mimetype='application/json')
     
 def tprocessajax(request):
-    txtclass = request.GET.get('class',False)
-    txtmethod = request.GET.get('method',False)
-
+    if request.method == 'GET':
+        txtclass = request.GET.get('class',False)
+        txtmethod = request.GET.get('method',False)
+    elif request.method == 'POST':
+        txtclass = request.POST.get('class',False)
+        txtmethod = request.POST.get('method',False)
+        
     className = eval(txtclass)()
+        
     if txtmethod == False:
         methodToCall = getattr(className, 'get')
         #method = className.getJson(request)

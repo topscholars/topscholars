@@ -128,7 +128,7 @@ class SUBMISSIONREVIEW():
             if highlightid != False and highlightid != '':
                 taglinklist = Taglink.objects.filter(recid=highlightid,entityid=5,deleted=0)
                 for row in taglinklist:
-                    data_json.append({ "id": str(row.id), "name": row.tagid.name })
+                    data_json.append({ "id": str(row.tagid.id), "name": row.tagid.name })
                 
                 data = simplejson.dumps(data_json)
                 return HttpResponse(data, mimetype='application/json')
@@ -238,4 +238,92 @@ class SUBMISSIONREVIEW():
             data_json = { 'recid': recid, }
             data = simplejson.dumps(data_json)
             return HttpResponse(data, mimetype='application/json')
+        
+    def saveSubmissionversionHighlight(self,request):
+        try:
+            userid = request.session['userid']
+            login = Login.objects.get(id=userid)
+            clientid = login.clientid
+            highlightid = request.POST.get('highlightid', False)
+            submissionversionid = request.POST.get('submissionversionid', False)
+            comment = request.POST.get('highlightComment', False)
+            tagids = request.POST.getlist('tagids[]', False)
+        except KeyError:
+            data_json = { 'status': 'error', }
+            data = simplejson.dumps(data_json)
+            return HttpResponse(data, mimetype='application/json')
+        else:
+            submissionvshg = Submissionversionhighlight.objects.get(id=highlightid)
+            submissionvshg.submissionversionid = submissionversionid
+            submissionvshg.comment = comment
+            submissionvshg.modifieddt = datetime.now()
+            submissionvshg.modifiedby = userid
+            submissionvshg.save()
             
+            Taglink.objects.filter(recid=highlightid,entityid=5,deleted=0).update(deleted=1,modifiedby=userid,modifieddt = datetime.now())
+            
+            for tagid in tagids:
+                try:
+                    taglist = Tag.objects.get(id=tagid)
+                    entitylist = Entity.objects.get(id=5)
+                    taglink = Taglink.objects.get(recid=highlightid,entityid=5,tagid=tagid)
+                except Taglink.DoesNotExist:
+                    taglink = Taglink()
+                    taglink.tagid = taglist
+                    taglink.entityid = entitylist
+                    taglink.recid = highlightid
+                    taglink.createddt = datetime.now()
+                    taglink.createdby = userid
+                    taglink.modifieddt = datetime.now()
+                    taglink.modifiedby = userid
+                    taglink.deleted = 0
+                    taglink.clientid = clientid
+                    taglink.save()
+                else:
+                    taglink.tagid = taglist
+                    taglink.entityid = entitylist
+                    taglink.recid = highlightid
+                    taglink.modifieddt = datetime.now()
+                    taglink.modifiedby = userid
+                    taglink.deleted = 0
+                    taglink.clientid = clientid
+                    taglink.save()
+                 
+            data_json = { 'recid': highlightid, }
+            data = simplejson.dumps(data_json)
+            return HttpResponse(data, mimetype='application/json')
+        
+    def tagHighlightList(self,request):
+        try:
+            userid = request.session['userid']
+            login = Login.objects.get(id=userid)
+            clientid = login.clientid
+            submissionversionid = request.GET.get('submissionversionid', False)
+            submissionvshgid = Submissionversionhighlight.objects.filter(submissionversionid=submissionversionid,disabled=0,deleted=0).values_list('id')
+        except KeyError:
+            data_json = { 'status': 'error', }
+            data = simplejson.dumps(data_json)
+            return HttpResponse(data, mimetype='application/json')
+        else:
+            taglinklist = Taglink.objects.filter(recid__in=submissionvshgid,entityid=5,deleted=0,clientid=clientid).values_list('tagid')
+            taglist = list(Tag.objects.filter(id__in=taglinklist,disabled=0,deleted=0,clientid=clientid).values('id','name','parentid'))
+            data = simplejson.dumps(taglist)
+            return HttpResponse(data, mimetype='application/json')
+
+    def tagClickHighlightList(self,request):
+        try:
+            userid = request.session['userid']
+            login = Login.objects.get(id=userid)
+            clientid = login.clientid
+            taglinkid = request.GET.get('taglinkid', False)
+            submissionversionid = request.GET.get('submissionversionid', False)
+            taglinklist = Taglink.objects.filter(tagid=taglinkid,entityid=5,deleted=0,clientid=clientid).values_list('recid')
+            
+        except KeyError:
+            data_json = { 'status': 'error', }
+            data = simplejson.dumps(data_json)
+            return HttpResponse(data, mimetype='application/json')
+        else:
+            submissionvshglist= list(Submissionversionhighlight.objects.filter(submissionversionid=submissionversionid,id__in=taglinklist,disabled=0,deleted=0).values('id','comment'))
+            data = simplejson.dumps(submissionvshglist)
+            return HttpResponse(data, mimetype='application/json')    

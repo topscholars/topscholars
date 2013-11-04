@@ -2248,22 +2248,25 @@ a.list-group-item.active .list-group-item-text {
 }
 
 .panel {
+	padding-bottom: 0px;
   padding: 15px;
   margin-bottom: 20px;
   background-color: #ffffff;
   border: 1px solid #dddddd;
-  border-radius: 4px;
+  /*border-radius: 4px;*/
   -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
           box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+  display: inherit!important;
+  height: auto;
+  min-height: 0px;
 }
 
 .panel-heading {
   padding: 10px 15px;
-  margin: -15px -15px 15px;
+  margin: -15px -16px 15px;
   background-color: #f5f5f5;
-  border-bottom: 1px solid #dddddd;
-  border-top-right-radius: 3px;
-  border-top-left-radius: 3px;
+/*  border-top-right-radius: 3px;
+  border-top-left-radius: 3px;*/
 }
 
 .panel-title {

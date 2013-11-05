@@ -68,7 +68,9 @@ function EDITTABLE(){
 				
 				essay = $('#ele_submissionversionessay').html();
 				
-				thisClass.highlightEssay();
+				thisClass.highlightEssay();		
+				thisClass.tagHighlightList();
+				thisClass.getSubmitRubric();
 			})
 			.error(function(xhr, status, error) {
 			    alert('Error occur. Please contact the administrator.');
@@ -113,7 +115,6 @@ function EDITTABLE(){
 			function(result){
 				$(".tagedit-listelement-old").remove();
 				var displaytxt = '';
-				console.log(result);
 				for (var i=0;i<result.length;i++) {
 					var tagitem = '<li class="tagedit-listelement tagedit-listelement-old"><span dir="ltr">' + result[i].name + '</span><input type="hidden" name="tag[' + result[i].id + '-a]" value="' + result[i].name + '"><a class="tagedit-close" title="Remove from list.">x</a></li>'
 					$(tagitem).insertBefore('.tagedit-listelement-new');
@@ -206,22 +207,26 @@ function EDITTABLE(){
 				'submissionversionid' : $('#ele_submissionversionid').val() },
 			function(result){
 				$("<ul>").attr("id", "tagList").appendTo("#tagBox");
-				$.each(result, function(i, val) {
-						var li = $("<li>");
-						
-						//create link
-						$("<a>").text(val.name).attr({"data-id":val.id, href:"#", class:"tagClickHighlightList"}).appendTo(li);
-						
-						//set tag size
-						if(val.parentid == 0){
-							li.children().css({'font-size':'2em', 'font-weight':'bold'});
-						}else{
-							li.children().css({'font-size':'1.7em'});
-						}
-						
-						//add to list
-						li.appendTo("#tagList");
-				});
+				if(result.length > 0){
+					$.each(result, function(i, val) {
+							var li = $("<li>");
+							
+							//create link
+							$("<a>").text(val.name).attr({"data-id":val.id, href:"#", class:"tagClickHighlightList"}).appendTo(li);
+							
+							//set tag size
+							if(val.parentid == 0){
+								li.children().css({'font-size':'2em', 'font-weight':'bold'});
+							}else{
+								li.children().css({'font-size':'1.7em'});
+							}
+							
+							//add to list
+							li.appendTo("#tagList");
+					});
+				}else{
+					$("#tagList").height('50');
+				}
 				
 				$(".tagClickHighlightList").click(function(){
 					var id = $(this).data("id");
@@ -328,17 +333,103 @@ function EDITTABLE(){
     	});
 	}
 	
+	this.showSubmitDialog = function(show) {
+		if(show) {
+			$('#diveditbg').show();
+			$('#submitpopup').show();
+		}
+		else {
+			$('#diveditbg').hide();
+			$('#submitpopup').hide();
+		}
+	}
+	
 	this.submit = function() {
+		var criteriaid =[]; 
+		var criteriaval = [];
+		var value,odata;
 		var submissionversionid = $('#ele_submissionversionid').val();
+		thisClass.showSubmitDialog(true);
 		
-		$.post(url,
-			{	'class' :  'SUBMISSIONREVIEW',
-				'method' : 'submit',
-				'submissionversionid' : submissionversionid },
+		$(".submit_criteria").each(function(){
+			id = $(this).attr('id');
+			value = $(this).val();
+			
+			criteriaid.push(id);
+			criteriaval.push(value);
+		});
+		odata = {'class' :  'SUBMISSIONREVIEW',
+ 			 'method' : 'submit',
+ 			 'submissionversionid' : submissionversionid,
+ 			 'stage' : $("#submit_stage").val(),
+ 			 'comment' : $("#submit_comment").val(),
+ 			 'progress' : $("#submit_progress").val(),
+ 			 'criteriaid': criteriaid,
+ 			 'criteriaval': criteriaval
+ 			 };
+
+		$.post(url,odata,
 			function(result){
-				window.location = "{% url 'tsweb:tsubmissionlist' %}";
+				thisClass.showSubmitDialog();
 			})
 		.error(function(xhr, status, error) {
+    		alert('Error occur. Please contact the administrator.');
+    	});
+	}
+	
+	this.getSelectStage = function(){
+		var option = '';
+		$.getJSON(
+			url,
+			{	'class' :  evalClass,
+				'method' : 'getSelectStage'
+			},
+			function(result){
+				$.each(result, function(ini,val){
+					option += '<option value="'+val.selectionvalue+'">'+val.selectionname+'</option>';
+				});
+				$("#submit_stage").append(option);
+		}).error(function(xhr, status, error) {
+    		alert('Error occur. Please contact the administrator.');
+    	});
+	}
+	
+	this.getSubmitRubric = function(){
+		var html = '';
+		$.getJSON(
+			url,
+			{	'class' :  evalClass,
+				'method' : 'getSubmitRubric',
+				'submissionid' : $("#ele_submissionid").val()
+			},
+			function(result){
+			$.each(result,function(ini, val){
+				html += '<tr><td>'+val.criteria+' :</td><td>';
+				html += '<select class="submit_criteria" id="'+val.id+'" name="'+val.criteria+'">';
+				html += '</select>';
+				html += '</td></tr>';
+				thisClass.getSelectRubricCriteria(val.id, val.rubricid); 
+			});
+			$(html).insertBefore("#editSubmit");
+		}).error(function(xhr, status, error) {
+    		alert('Error occur. Please contact the administrator.');
+    	});
+	}
+	
+	this.getSelectRubricCriteria = function(id,rubricid){
+		var html = '';
+		$.getJSON(
+			url,
+			{	'class' :  evalClass,
+				'method' : 'getSelectRubricCriteria',
+				'rubricid' : rubricid
+			},
+			function(result){
+			$.each(result,function(ini, val){
+				html += '<option value="'+val.id+'">'+val.scale+'</option>';
+			});
+			$('#'+id+'.submit_criteria').append(html);
+		}).error(function(xhr, status, error) {
     		alert('Error occur. Please contact the administrator.');
     	});
 	}
@@ -348,8 +439,8 @@ function EDITTABLE(){
 		
 		thisClass.showHighlightDialog(false);
 		
-		thisClass.tagHighlightList();
-		
+		thisClass.getSelectStage();
+
 		$('#ele_submissionversionessay').mouseup(function() {
 			var node = this;
 			if(thisClass.getSelectionCharOffsetsWithin(node).start != thisClass.getSelectionCharOffsetsWithin(node).end)
@@ -398,6 +489,14 @@ function EDITTABLE(){
 		});
 		
 		$('#btnSubmit').click(function() {
+			thisClass.showSubmitDialog(true);
+		});
+		
+		$("#btncancelsubmit").click(function(){
+			thisClass.showSubmitDialog();
+		});
+		
+		$("#btnsavesubmit").click(function(){
 			thisClass.submit();
 		});
 		
@@ -426,6 +525,30 @@ function openHighlightDialog(highlightid){
 <input type="hidden" id="ele_submissionid" value="{{ id }}">
 <input type="hidden" id="ele_submissionversionid">
 <div id="diveditbg" style="background-color:gray;z-index:1;width:100%;height:100%;position:absolute;opacity:0.4;"></div>
+<div id="submitpopup" style="z-index:2;width:500px;position:absolute;background-color:white;margin-top:10%;margin-left:35%;padding:10px;display:none;">
+<table style="width:100%;">
+<tr>
+	<td>Stage :</td>
+	<td><select id="submit_stage"></select></td>	
+</tr>
+<tr>
+	<td>Comment :</td>
+	<td>
+		<textarea id="submit_comment"></textarea>
+	</td>
+</tr>
+<tr>
+	<td>Progress :</td>
+	<td><input type="text" id="submit_progress"></td>
+</tr>
+<tr id="editSubmit">
+	<td colspan="2" style="text-align:center;">
+		<input id="btnsavesubmit" type="button" class="button" style="width:80px;height:26px;" value="Save">&nbsp;
+		<input id="btncancelsubmit" type="button" class="button" style="width:80px;height:26px;" value="Cancel">
+	</td>
+</tr>
+</table>
+</div>
 <div id="divedithighlight" style="z-index:2;width:500px;position:absolute;background-color:white;margin-top:10%;margin-left:35%;padding:10px;">
 	<input id="ele_highlightid" type="hidden">
 	<input id="ele_highlighttext" type="hidden">
@@ -529,10 +652,9 @@ function openHighlightDialog(highlightid){
 <td><div id="progressbar" style="height:12px;width:144px;"></div></td>
 </tr>
 </table>
+<span style="text-decoration:underline;font-weight:bold;">Comment</span><br/>
+<textarea id="ele_submissioncomment" style="width:264px;height:98px;background-color:#E2E2E2;margin-top:5px;resize:none;"></textarea>
 <span style="text-decoration:underline;font-weight:bold;">Tagging</span><br/>
-<div>
-	
-</div>
 <style>
 #tagBox { 
 	background-color:#575454;

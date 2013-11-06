@@ -209,44 +209,46 @@ function EDITTABLE(){
 			$('#ele_highlightComment').attr("disabled", "disabled");
 		}
 	}
-	
-	this.tagHighlightList = function(){
-		$.getJSON(
+
+	this.tagHighlightList = function () {
+	    $.getJSON(
 			url,
-			{	'class' :  evalClass,
-				'method' : 'tagHighlightList',
-				'submissionversionid' : $('#ele_submissionversionid').val() },
-			function(result){
-				$("<ul>").attr("id", "tagList").appendTo("#tagBox");
-				if(result.length > 0){
-					$.each(result, function(i, val) {
-							var li = $("<li>");
-							
-							//create link
-							$("<a>").text(val.name).attr({"data-id":val.id, href:"#", class:"tagClickHighlightList"}).appendTo(li);
-							
-							//set tag size
-							if(val.parentid == 0){
-								li.children().css({'font-size':'2em', 'font-weight':'bold'});
-							}else{
-								li.children().css({'font-size':'1.7em'});
-							}
-							
-							//add to list
-							li.appendTo("#tagList");
-					});
-				}else{
-					$("#tagList").height('50');
-				}
-				
-				$(".tagClickHighlightList").click(function(){
-					var id = $(this).data("id");
-					thisClass.tagClickHighlightList(id);
-					return false;
-				});
-		}).error(function(xhr, status, error) {
-    		alert('Error occur. Please contact the administrator.');
-    	});
+			{ 'class': evalClass,
+			    'method': 'tagHighlightList',
+			    'submissionversionid': $('#ele_submissionversionid').val()
+			},
+			function (result) {
+			    $("#tagBox").html(''); ;
+			    $("<ul>").attr("id", "tagList").appendTo("#tagBox");
+			    if (result.length > 0) {
+			        $.each(result, function (i, val) {
+			            var li = $("<li>");
+
+			            //create link
+			            $("<a>").text(val.name).attr({ "data-id": val.id, href: "#", class: "tagClickHighlightList" }).appendTo(li);
+
+			            //set tag size
+			            if (val.parentid == 0) {
+			                li.children().css({ 'font-size': '2em', 'font-weight': 'bold' });
+			            } else {
+			                li.children().css({ 'font-size': '1.7em' });
+			            }
+
+			            //add to list
+			            li.appendTo("#tagList");
+			        });
+			    } else {
+			        $("#tagList").height('50');
+			    }
+
+			    $(".tagClickHighlightList").click(function () {
+			        var id = $(this).data("id");
+			        thisClass.tagClickHighlightList(id);
+			        return false;
+			    });
+			}).error(function (xhr, status, error) {
+			    alert('Error occur. Please contact the administrator.');
+			});
 	}
 	
 	this.tagClickHighlightList = function(id){

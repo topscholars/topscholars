@@ -48,33 +48,44 @@ function EDITTABLE(){
     		alert('Error occur. Please contact the administrator.');
     	});
 	}
-	
-	this.getData = function(submissionid, versionid) {
-		$.getJSON(
+
+	this.getData = function (submissionid, versionid) {
+	    $.getJSON(
 			url,
-			{	'class' :  'SUBMISSIONREVIEW',
-				'method' : 'getSubmissionVersion',
-				'submissionid' : submissionid,
-				'versionid' : versionid },
-			function(result){
-				$.each(result, function(ini,val){
-					if(ini == "submissionprogress")
-						thisClass.setProgressBar(val);
-					else if($('#ele_' + ini).is("span") || $('#ele_' + ini).is("div"))
-						$('#ele_' + ini).html(val);
-					else 
-						$('#ele_' + ini).val(val);
-				});
-				
-				essay = $('#ele_submissionversionessay').html();
-				
-				thisClass.highlightEssay();		
-				thisClass.tagHighlightList();
-				thisClass.getSubmitRubric();
+			{ 'class': 'SUBMISSIONREVIEW',
+			    'method': 'getSubmissionVersion',
+			    'submissionid': submissionid,
+			    'versionid': versionid
+			},
+			function (result) {
+			    $.each(result, function (ini, val) {
+			        if (ini == "submissionprogress")
+			            thisClass.setProgressBar(val);
+			        else if (ini == "currentversion") {
+			            if (val == 'y') {
+			                $('#btnedithighlight').show();
+			                $('#btnSubmit').show();
+			            }
+			            else {
+			                $('#btnedithighlight').hide();
+			                $('#btnSubmit').hide();
+			            }
+			        }
+			        else if ($('#ele_' + ini).is("span") || $('#ele_' + ini).is("div"))
+			            $('#ele_' + ini).html(val);
+			        else
+			            $('#ele_' + ini).val(val);
+			    });
+
+			    essay = $('#ele_submissionversionessay').html();
+
+			    thisClass.highlightEssay();
+			    thisClass.tagHighlightList();
+			    thisClass.getSubmitRubric();
 			})
-			.error(function(xhr, status, error) {
+			.error(function (xhr, status, error) {
 			    alert('Error occur. Please contact the administrator.');
-		});
+			});
 	}
 	
 	this.save = function() {

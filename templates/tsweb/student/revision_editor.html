@@ -79,11 +79,16 @@
 		<h2 class="page-title">Revision Mode</h2>
 		
 		<div class="assignment-edit-section">
+			 <div class="block-cell block-wide">
 			 
+			 </div>
 		</div>
 		
-		<div class="panel-group side-panel" id="revision-side-panel">
-		
+		<div class="hide-panel" id="hide-panel">
+			<a href="#">Hide Menu</a>
+		</div>
+		<div class="panel-group side-panel" id="side-panel">
+			
 			<div class="panel panel-default block-cell block-thin">
 				<div class="panel-heading block-header">
 					<h3 class="panel-title">
@@ -100,6 +105,7 @@
 			</div>
 				  
 		  <div class="panel panel-default block-cell block-thin">
+		  	
 		    <div class="panel-heading block-header">
 		      <h3 class="panel-title">
 		        <a data-toggle="collapse" data-parent="#side-panel" href="#collapseTwo">
@@ -131,6 +137,39 @@
 		    </div>
 		  </div>
 		</div> <!--End Side Panel-->
+		
+		<script>
+			$(document).ready(function () {
+//				$('.hide-panel a').mouseup(function () { 
+//					$('.side-panel').animate({
+//						left: '-=250'
+//						},{
+//						duration: 500,
+//						step: function (now, fx) {
+//							$('.side-panel').css('left', now);
+//							}
+//						});
+//					$('.hide-panel a i').css('-webkit-transition', 'rotate(180deg)');
+//				});
+				$('#hide-panel').click(function () {
+					$('.side-panel').toggle().animate({left: '+=0'}, 2000, function () {});
+				});
+				jQuery.fn.extend({
+				        toggleText: function (a, b){
+				            var isClicked = false;
+				            var that = this;
+				            this.click(function (){
+				                if (isClicked) { that.text(a); isClicked = false; }
+				                else { that.text(b); isClicked = true; }
+				            });
+				            return this;
+				        }
+				    });
+				
+				$('#hide-panel a').toggleText("Hide Menu", "Show Menu");
+			});
+			
+		</script>
 	</div> <!--End Page Container-->
 	
 </body>

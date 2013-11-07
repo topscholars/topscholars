@@ -203,7 +203,11 @@ form{
 	margin-top: -29px;
 	margin-left: -11px;
 	position: absolute;
-	width: 100%;
+	width: 330px;
+}
+.hide-panel{
+	position: relative;
+	top: -35px;
 }
 .block-cell{
 	top: 0!important;
@@ -222,8 +226,9 @@ form{
 .no-padding .block-body{
 	padding: 0!important;
 }
+
 .block-thin{
-	width: 25%!important;
+	width: 320px;
 	box-shadow: none!important;
 }
 .block-wide{

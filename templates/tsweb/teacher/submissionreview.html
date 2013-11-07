@@ -218,7 +218,8 @@ function EDITTABLE(){
 			    'submissionversionid': $('#ele_submissionversionid').val()
 			},
 			function (result) {
-			    $("#tagBox").html(''); ;
+			    $("#tagBox").html('');
+			    $("#commentArea").val('');
 			    $("<ul>").attr("id", "tagList").appendTo("#tagBox");
 			    if (result.length > 0) {
 			        $.each(result, function (i, val) {

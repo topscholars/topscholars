@@ -22,8 +22,8 @@ class CLASSLIST():
         else:
             #classlist = Classschedule.objects.filter(id=id)
             cursor.execute("SELECT id,code,subcode,classid,teacherid,startdate,enddate,starttime,endtime,disabled,dayofweek FROM classschedule  WHERE id = %s", [id])
-                   
-            results = cursor.fetchall() 
+            
+            results = cursor.fetchall()
             for r in results:
                 data_json = {
                         'id': r[0],

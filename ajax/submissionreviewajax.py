@@ -28,6 +28,11 @@ class SUBMISSIONREVIEW():
             data_json = ''
             if versionid != False and versionid != '':
                 submissionversion = Submissionversion.objects.get(id=versionid)
+                currentversion = ''
+                if submissionversion.version == submissionversion.submissionid.getLatestVersion():
+                    currentversion = 'y'
+                else:
+                    currentversion = 'n'
                 data_json = {
                         'submissionversionid': submissionversion.id,
                         'submissionversionversion': submissionversion.version,
@@ -41,10 +46,15 @@ class SUBMISSIONREVIEW():
                         'submissionversionstage': submissionversion.stage,
                         'submissionversionessay': submissionversion.essay,
                         'submissionversioncomment': submissionversion.comment,
+                        'currentversion': currentversion,
                         }
             elif submissionid != False and submissionid != '':
                 submission = Submission.objects.get(id=submissionid)
                 submissionversion = Submissionversion.objects.get(submissionid=submission.id,version=submission.getLatestVersion)
+                if submissionversion.version == submissionversion.submissionid.getLatestVersion():
+                    currentversion = 'y'
+                else:
+                    currentversion = 'n'
                 data_json = {
                         'submissionversionid': submissionversion.id,
                         'submissionversionversion': submissionversion.version,
@@ -58,6 +68,7 @@ class SUBMISSIONREVIEW():
                         'submissionversionstage': submissionversion.stage,
                         'submissionversionessay': submissionversion.essay,
                         'submissionversioncomment': submissionversion.comment,
+                        'currentversion': currentversion,
                         }
             else:
                 data_json = {

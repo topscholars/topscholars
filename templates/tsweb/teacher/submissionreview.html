@@ -48,33 +48,44 @@ function EDITTABLE(){
     		alert('Error occur. Please contact the administrator.');
     	});
 	}
-	
-	this.getData = function(submissionid, versionid) {
-		$.getJSON(
+
+	this.getData = function (submissionid, versionid) {
+	    $.getJSON(
 			url,
-			{	'class' :  'SUBMISSIONREVIEW',
-				'method' : 'getSubmissionVersion',
-				'submissionid' : submissionid,
-				'versionid' : versionid },
-			function(result){
-				$.each(result, function(ini,val){
-					if(ini == "submissionprogress")
-						thisClass.setProgressBar(val);
-					else if($('#ele_' + ini).is("span") || $('#ele_' + ini).is("div"))
-						$('#ele_' + ini).html(val);
-					else 
-						$('#ele_' + ini).val(val);
-				});
-				
-				essay = $('#ele_submissionversionessay').html();
-				
-				thisClass.highlightEssay();		
-				thisClass.tagHighlightList();
-				thisClass.getSubmitRubric();
+			{ 'class': 'SUBMISSIONREVIEW',
+			    'method': 'getSubmissionVersion',
+			    'submissionid': submissionid,
+			    'versionid': versionid
+			},
+			function (result) {
+			    $.each(result, function (ini, val) {
+			        if (ini == "submissionprogress")
+			            thisClass.setProgressBar(val);
+			        else if (ini == "currentversion") {
+			            if (val == 'y') {
+			                $('#btnedithighlight').show();
+			                $('#btnSubmit').show();
+			            }
+			            else {
+			                $('#btnedithighlight').hide();
+			                $('#btnSubmit').hide();
+			            }
+			        }
+			        else if ($('#ele_' + ini).is("span") || $('#ele_' + ini).is("div"))
+			            $('#ele_' + ini).html(val);
+			        else
+			            $('#ele_' + ini).val(val);
+			    });
+
+			    essay = $('#ele_submissionversionessay').html();
+
+			    thisClass.highlightEssay();
+			    thisClass.tagHighlightList();
+			    thisClass.getSubmitRubric();
 			})
-			.error(function(xhr, status, error) {
+			.error(function (xhr, status, error) {
 			    alert('Error occur. Please contact the administrator.');
-		});
+			});
 	}
 	
 	this.save = function() {
@@ -198,44 +209,47 @@ function EDITTABLE(){
 			$('#ele_highlightComment').attr("disabled", "disabled");
 		}
 	}
-	
-	this.tagHighlightList = function(){
-		$.getJSON(
+
+	this.tagHighlightList = function () {
+	    $.getJSON(
 			url,
-			{	'class' :  evalClass,
-				'method' : 'tagHighlightList',
-				'submissionversionid' : $('#ele_submissionversionid').val() },
-			function(result){
-				$("<ul>").attr("id", "tagList").appendTo("#tagBox");
-				if(result.length > 0){
-					$.each(result, function(i, val) {
-							var li = $("<li>");
-							
-							//create link
-							$("<a>").text(val.name).attr({"data-id":val.id, href:"#", class:"tagClickHighlightList"}).appendTo(li);
-							
-							//set tag size
-							if(val.parentid == 0){
-								li.children().css({'font-size':'2em', 'font-weight':'bold'});
-							}else{
-								li.children().css({'font-size':'1.7em'});
-							}
-							
-							//add to list
-							li.appendTo("#tagList");
-					});
-				}else{
-					$("#tagList").height('50');
-				}
-				
-				$(".tagClickHighlightList").click(function(){
-					var id = $(this).data("id");
-					thisClass.tagClickHighlightList(id);
-					return false;
-				});
-		}).error(function(xhr, status, error) {
-    		alert('Error occur. Please contact the administrator.');
-    	});
+			{ 'class': evalClass,
+			    'method': 'tagHighlightList',
+			    'submissionversionid': $('#ele_submissionversionid').val()
+			},
+			function (result) {
+			    $("#tagBox").html('');
+			    $("#commentArea").val('');
+			    $("<ul>").attr("id", "tagList").appendTo("#tagBox");
+			    if (result.length > 0) {
+			        $.each(result, function (i, val) {
+			            var li = $("<li>");
+
+			            //create link
+			            $("<a>").text(val.name).attr({ "data-id": val.id, href: "#", class: "tagClickHighlightList" }).appendTo(li);
+
+			            //set tag size
+			            if (val.parentid == 0) {
+			                li.children().css({ 'font-size': '2em', 'font-weight': 'bold' });
+			            } else {
+			                li.children().css({ 'font-size': '1.7em' });
+			            }
+
+			            //add to list
+			            li.appendTo("#tagList");
+			        });
+			    } else {
+			        $("#tagList").height('50');
+			    }
+
+			    $(".tagClickHighlightList").click(function () {
+			        var id = $(this).data("id");
+			        thisClass.tagClickHighlightList(id);
+			        return false;
+			    });
+			}).error(function (xhr, status, error) {
+			    alert('Error occur. Please contact the administrator.');
+			});
 	}
 	
 	this.tagClickHighlightList = function(id){

@@ -8,13 +8,13 @@
 <td class="cellitem">Due Date</td>
 </tr>
 {% for row in submissionlist %}
-<tr id="{{ row.id }}" 
+<tr id="{{ row.submissionid.id }}" 
 {% if row.submissionid.getLatestVersion == 0 %} 
 	>
 {% else %} 
 	class="rowitem">
 {% endif %} 
-<td class="cellitem">{{ row.id }}</td>
+<td class="cellitem">{{ row.submissionid.id }}</td>
 <td class="cellitem">{{ row.submissionid.studentid.getFullName }}</td>
 <td class="cellitem">{{ row.submissionid.assignmentid.name }}</td>
 <td class="cellitem">{{ row.submissionid.getLatestVersion }}</td>
@@ -26,7 +26,7 @@
 <script>
 urlMap = {
 	{% for row in submissionlist %}
-		'{{ row.id }}' : '{% url "tsweb:tsubmissionreview" row.id %}'
+		'{{ row.submissionid.id }}' : '{% url "tsweb:tsubmissionreview" row.submissionid.id %}'
 	{% endfor %}
 };
 

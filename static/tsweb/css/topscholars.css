@@ -200,7 +200,7 @@ form{
 	padding-bottom: 20px;
 }
 .side-panel{
-	margin-top: -29px;
+	/*top: 135px;*/
 	margin-left: -11px;
 	position: absolute;
 	width: 330px;
@@ -208,6 +208,30 @@ form{
 .hide-panel{
 	position: relative;
 	top: -35px;
+	left: 20px;
+}
+#hide-nav{
+	margin-top: 10px;
+}
+.hide-panel:focus, #hide-nav:focus{
+	outline: none;
+}
+.hide-panel, #hide-nav {
+	color: rgba(255, 255, 255, .85);
+}
+.hide-panel:hover, #hide-nav:hover{
+	text-decoration: none;
+}
+
+.nav-border{
+	background-color: #478ECF;
+	width: 100%;
+	height: 5px;
+	top: 0;
+	margin-bottom: 10px!important;
+	position: absolute;
+	box-shadow: 0px 5px 0px rgba(102,102,102, .5);
+	z-index: -1;
 }
 .block-cell{
 	top: 0!important;

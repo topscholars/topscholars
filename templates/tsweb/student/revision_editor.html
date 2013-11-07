@@ -25,12 +25,7 @@
 </head>
 
 <body>
-<script>
-$(function(){
-	$( "#tabs" ).tabs();
-	$( "#tabs2" ).tabs();
-});
-</script>
+
 	<nav class="navbar" role="navigation">
 		<div class="container">
 			<h1 class="logo"><a href="#">Writability - My Desk</a></h1>
@@ -81,3 +76,62 @@ $(function(){
 		</div>
 	</nav> <!-- End Nav -->
 	<div class="page-container">
+		<h2 class="page-title">Revision Mode</h2>
+		
+		<div class="assignment-edit-section">
+			 
+		</div>
+		
+		<div class="panel-group side-panel" id="revision-side-panel">
+		
+			<div class="panel panel-default block-cell block-thin">
+				<div class="panel-heading block-header">
+					<h3 class="panel-title">
+						<a data-toggle="collapse" data-parent="#side-panel" href="#profileCollapse">
+							Assignment Info
+						</a>
+					</h3>
+				</div>
+				<div id="profileCollapse" class="panel-collapse collapse">
+					<div class="block-body">
+						
+					</div>
+				</div>
+			</div>
+				  
+		  <div class="panel panel-default block-cell block-thin">
+		    <div class="panel-heading block-header">
+		      <h3 class="panel-title">
+		        <a data-toggle="collapse" data-parent="#side-panel" href="#collapseTwo">
+		          Tagging
+		        </a>
+		      </h3>
+		    </div>
+		    <div id="collapseTwo" class="panel-collapse collapse">
+		      <div class="block-body">
+		        <ul class="block-list" id="classesList">
+		        	<li class="tag" id="tag"><a href="#">Tag</a></li>
+		        </ul>
+		      </div>
+		    </div>
+		  </div>
+	
+		  <div class="panel panel-default block-cell block-thin">
+		    <div class="panel-heading block-header">
+		      <h3 class="panel-title">
+		        <a data-toggle="collapse" data-parent="#side-panel" href="#collapseThree">
+		          Comments
+		        </a>
+		      </h3>
+		    </div>
+		    <div id="collapseThree" class="panel-collapse collapse">
+		      <div class="block-body">
+		       	
+		      </div>
+		    </div>
+		  </div>
+		</div> <!--End Side Panel-->
+	</div> <!--End Page Container-->
+	
+</body>
+</html>

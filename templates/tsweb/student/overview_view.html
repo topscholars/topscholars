@@ -64,7 +64,7 @@
 					</ul>
 				</li>
 			</ul>
-			
+
 			<form class="navbar-form navbar-left" role="search" id="search-form" method="" action="null">
 				<div class="input-group col-lg-3 col-offset-4">
 					<input type="text" class="form-control">
@@ -76,13 +76,14 @@
 	    
 		</div>
 	</nav> <!-- End Nav -->
+	<script>
+		$(document).ready(function () {
+			$('.navbar').slideUp
+		});
+	</script>
 	
-	<div class=" page-container">
+	<div class="page-container">
 		<h2 class="page-title">Course Overview</h2>
-		
-		
-		
-		
 		
 		<div class="overview-nav">
 			<ul>
@@ -107,7 +108,7 @@
 			
 		</div>
 		
-		<div class="panel-group" id="side-panel">
+		<div class="panel-group side-panel" id="overview-side-panel">
 		
 			<div class="panel panel-default block-cell block-thin">
 				<div class="panel-heading block-header">
@@ -153,9 +154,7 @@
 		      </div>
 		    </div>
 		  </div>
-		  
-		  
-		  
+  
 		  <div class="panel panel-default block-cell block-thin">
 		    <div class="panel-heading block-header">
 		      <h3 class="panel-title">
@@ -166,11 +165,12 @@
 		    </div>
 		    <div id="collapseThree" class="panel-collapse collapse">
 		      <div class="block-body">
-		       	<table class="table table-hover">
+		       	<table class="table table-hover" id="assignment-table">
 		       		<thead>
 		       			<tr>
 		       				<th>Name</th>
 		       				<th>Due Date</th>
+		       				<th></th>
 		       			</tr>
 		       		</thead>
 		       		<tbody>
@@ -186,6 +186,7 @@
 		       					</a>
 		       				</td>
 		       				<td>{% due-date %}</td>
+		       				<td><a href="#"><i class="fa fa-chevron-circle-right fa-lg"></i></a></td>
 		       			</tr>
 		       		</tbody>
 		       	</table>
@@ -194,11 +195,17 @@
 		  </div>
 		</div> <!--End Side Panel-->
 		<script>
+		$(document).ready(function () {
+
+			// Overview nav
 			$(".overview-nav ul li").click(function () {
 				$(this).addClass('active-white');
 				$(this).parent().children('li').not(this).removeClass('active-white');
 			});
+			
+			// Show popover information 
 			$("[rel=popover]").popover();
+		});
 		</script>
 		
 			

@@ -28,6 +28,11 @@ class SUBMISSIONREVIEW():
             data_json = ''
             if versionid != False and versionid != '':
                 submissionversion = Submissionversion.objects.get(id=versionid)
+                currentversion = ''
+                if submissionversion.version == submissionversion.submissionid.getLatestVersion():
+                    currentversion = 'y'
+                else:
+                    currentversion = 'n'
                 data_json = {
                         'submissionversionid': submissionversion.id,
                         'submissionversionversion': submissionversion.version,
@@ -41,10 +46,15 @@ class SUBMISSIONREVIEW():
                         'submissionversionstage': submissionversion.stage,
                         'submissionversionessay': submissionversion.essay,
                         'submissionversioncomment': submissionversion.comment,
+                        'currentversion': currentversion,
                         }
             elif submissionid != False and submissionid != '':
                 submission = Submission.objects.get(id=submissionid)
                 submissionversion = Submissionversion.objects.get(submissionid=submission.id,version=submission.getLatestVersion)
+                if submissionversion.version == submissionversion.submissionid.getLatestVersion():
+                    currentversion = 'y'
+                else:
+                    currentversion = 'n'
                 data_json = {
                         'submissionversionid': submissionversion.id,
                         'submissionversionversion': submissionversion.version,
@@ -58,6 +68,7 @@ class SUBMISSIONREVIEW():
                         'submissionversionstage': submissionversion.stage,
                         'submissionversionessay': submissionversion.essay,
                         'submissionversioncomment': submissionversion.comment,
+                        'currentversion': currentversion,
                         }
             else:
                 data_json = {
@@ -168,6 +179,12 @@ class SUBMISSIONREVIEW():
         try:
             userid = request.session['userid']
             submissionversionid = request.POST.get('submissionversionid', False)
+            stage = request.POST.get('stage', False)
+            progress = request.POST.get('progress', False)
+            comment = request.POST.get('comment', False)
+            criteriaid = request.POST.getlist('criteriaid[]', False)
+            criteriaval = request.POST.getlist('criteriaval[]', False)
+            criteriaval[0]
         except KeyError:
             data_json = {
                         'status': 'user not logged in',
@@ -176,13 +193,33 @@ class SUBMISSIONREVIEW():
             return HttpResponse(data, mimetype='application/json')
         else:
             submissionvs = Submissionversion.objects.get(id=submissionversionid)
-            submissionvs.deleted = 1
+            
+            submissionid = submissionvs.submissionid.id
+            submission = Submission.objects.get(id=submissionid)
+            submission.progress = progress
+            submission.save()
+            
+            submissionvs.teacherstatus = 1
+            submissionvs.stage = stage
+            submissionvs.comment = comment
             submissionvs.modifiedby = userid
             submissionvs.modifieddt = datetime.now()
             submissionvs.save()
 
+
+            i=0
+            for criteria in criteriaid:
+                entity = Entity.objects.get(id=5)
+                rubricklink = Rubriclink()
+                rubricklink.entityid = entity
+                rubricklink.recid = submissionversionid
+                rubricklink.rubiccriteriaid = criteria
+                rubricklink.rubricscaleid = criteriaval[i]
+                rubricklink.save()
+                i += 1
+
             data_json = {
-                        'status': 'success',
+                        'status': criteriaval[0],
                         }
             data = simplejson.dumps(data_json)
             return HttpResponse(data, mimetype='application/json')
@@ -326,4 +363,49 @@ class SUBMISSIONREVIEW():
         else:
             submissionvshglist= list(Submissionversionhighlight.objects.filter(submissionversionid=submissionversionid,id__in=taglinklist,disabled=0,deleted=0).values('id','comment'))
             data = simplejson.dumps(submissionvshglist)
-            return HttpResponse(data, mimetype='application/json')    
+            return HttpResponse(data, mimetype='application/json')
+    
+    def getSelectStage(self,request):
+        try:
+            selectionlist = list(Selectionlist.objects.filter(selectiongroupid=4, disabled=0, deleted=0).values('selectionname', 'selectionvalue'))
+        except Selectionlist.DoesNotExist:
+            data_json = { 'status': 'error', }
+            data = simplejson.dumps(data_json)
+            return HttpResponse(data, mimetype='application/json')
+        else:
+            data = simplejson.dumps(selectionlist)
+            return HttpResponse(data, mimetype='application/json')
+        
+    def getSubmitRubric(self,request):
+        try:
+            userid = request.session['userid']
+            login = Login.objects.get(id=userid)
+            clientid = login.clientid
+            submissionid = request.GET.get('submissionid', False)
+            submission = Submission.objects.get(id=submissionid)
+            
+            rubric = submission.assignmentid.rubricid
+            rubricid = rubric.id
+            rubriccriterialist = list(Rubriccriteria.objects.filter(rubricid=rubricid,disabled=0,deleted=0,clientid=clientid).values('id','rubricid', 'criteria'))
+        except Submission.DoesNotExist:
+            data_json = { 'status': 'error', }
+            data = simplejson.dumps(data_json)
+            return HttpResponse(data, mimetype='application/json')
+        else:
+            data = simplejson.dumps(rubriccriterialist)
+            return HttpResponse(data, mimetype='application/json')
+        
+    def getSelectRubricCriteria(self,request):
+        try:
+            userid = request.session['userid']
+            login = Login.objects.get(id=userid)
+            clientid = login.clientid
+            rubricid = request.GET.get('rubricid', False)
+            rubricscalelist = list(Rubricscale.objects.filter(rubricid=rubricid,disabled=0,deleted=0,clientid=clientid).values('id','scale'))
+        except Rubricscale.DoesNotExist:
+            data_json = { 'status': 'error', }
+            data = simplejson.dumps(data_json)
+            return HttpResponse(data, mimetype='application/json')
+        else:
+            data = simplejson.dumps(rubricscalelist)
+            return HttpResponse(data, mimetype='application/json')

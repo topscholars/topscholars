@@ -329,14 +329,6 @@ class Rubriccriteria(models.Model):
     class Meta:
         db_table = 'rubriccriteria'
 
-class Rubriclink(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='ID') # Field name made lowercase.
-    recid = models.IntegerField(db_column='RecId') # Field name made lowercase.
-    rubiccriteriaid = models.IntegerField(db_column='RubicCriteriaId') # Field name made lowercase.
-    rubricscaleid = models.IntegerField(db_column='RubricScaleId') # Field name made lowercase.
-    class Meta:
-        db_table = 'rubriclink'
-
 class Rubricscale(models.Model):
     id = models.IntegerField(primary_key=True, db_column='ID') # Field name made lowercase.
     rubricid = models.IntegerField(db_column='RubricId') # Field name made lowercase.
@@ -351,6 +343,15 @@ class Rubricscale(models.Model):
     order = models.IntegerField(db_column='Order') # Field name made lowercase.
     class Meta:
         db_table = 'rubricscale'
+
+class Rubriclink(models.Model):
+    id = models.IntegerField(primary_key=True, db_column='ID') # Field name made lowercase.
+    entityid = models.ForeignKey(Entity,related_name="Rubriclinktoentity", db_column='EntityId') # Field name made lowercase.
+    recid = models.IntegerField(db_column='RecId') # Field name made lowercase.
+    rubiccriteriaid = models.ForeignKey(Rubriccriteria,related_name="Rubriclinktorubriccriteria",db_column='RubicCriteriaId') # Field name made lowercase.
+    rubricscaleid = models.ForeignKey(Rubricscale,related_name="Rubriclinktorubricscale",db_column='RubricScaleId') # Field name made lowercase.
+    class Meta:
+        db_table = 'rubriclink'
 
 class Security(models.Model):
     id = models.IntegerField(primary_key=True, db_column='ID') # Field name made lowercase.

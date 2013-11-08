@@ -94,6 +94,9 @@ h1 a:hover{
 .light-text{
 	font-weight: lighter;
 }
+button:focus{
+	outline: none!important;
+}
 .navbar{
 	/*background-color: #3366cc;*/
 	/*background-color: #3383CC;*/
@@ -200,18 +203,28 @@ form{
 	padding-bottom: 20px;
 }
 .side-panel{
-	/*top: 135px;*/
+	top: 135px;
 	margin-left: -11px;
 	position: absolute;
 	width: 330px;
 }
+.panel-revision{
+	top: 93px!important;	
+}
 .hide-panel{
-	position: relative;
-	top: -35px;
-	left: 20px;
+	position: absolute;
+	left: 10px;
+	top: 100px;
+	background-color: rgba(0, 0, 0, .2);
+	z-index: 4;
+	
 }
 #hide-nav{
-	margin-top: 10px;
+	position: absolute;
+	right: 10px;
+	top: 15px;
+	z-index: 4;
+	background-color: rgba(0, 0, 0, .2);
 }
 .hide-panel:focus, #hide-nav:focus{
 	outline: none;
@@ -222,7 +235,20 @@ form{
 .hide-panel:hover, #hide-nav:hover{
 	text-decoration: none;
 }
-
+.fa-arrow-up{
+	position: relative;
+	content: '';
+}
+.fa-arrow-up:after{
+	-webkit-transform: rotate(0deg);
+	-moz-transform: rotate(0deg);
+	transform: rotate(0deg);
+}
+.fa-arrow-up.up-down:after{
+	-webkit-transform: rotate(-180deg);
+	-moz-transform: rotate(-180deg);
+	transform: rotate(-180deg);
+}
 .nav-border{
 	background-color: #478ECF;
 	width: 100%;
@@ -264,12 +290,21 @@ form{
 	margin-top: -29px;
 	padding: 5px;
 }
+.block-revision{
+	width: 74.4%;
+	height: 480px;
+	position: relative;
+	float: right;
+	margin-top: 15px;
+	/*margin-right: -83px;*/
+}
 .block-tall{
 	min-height: 300px;
 	height: auto!important;
 }
 .block-header{
-	background-color: #ff6633!important;
+	/*background-color: #ff6633!important;*/
+	background-color: #919191!important;
 }
 .block-header h3{
 	top: 0;
@@ -348,3 +383,32 @@ form{
 #assignment-table{
 	font-size: 0.9em;
 }
+.lesson-btn{
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	display: block;
+	margin: 0 auto;
+	color: white;
+	z-index: 3;
+}
+.lesson-section{
+	position: absolute;
+	bottom: 0;
+	margin: 0 auto;
+	left: 0;
+	right: 0;
+	width: 100%;
+	height: auto;
+	border: 1px groove #999;
+	background-color: rgba(255, 255, 255, .75);
+	box-shadow: 0px -5px 10px rgba(0,0,0,.2);
+	z-index: 2;
+}
+
+.lesson-section-one, .lesson-section-two, .lesson-section-three{
+	width: 30%;
+	border: inset 1px solid #999;
+}
+.lesson-section .lesson-body .lesson-section

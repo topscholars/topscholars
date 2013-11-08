@@ -29,7 +29,7 @@
 
 	<nav class="navbar" role="navigation">
 		<div class="container">
-			<h1 class="logo"><a href="#">Writability - My Desk</a></h1>
+			<h1 class="logo"><a href="#">Writability - Revision</a></h1>
 			<!--<p class="navbar-text pull-right"><a href="#" class="navbar-link">Student Name <span class="fa fa-reorder fa-lg"></span></a></p>-->
 			<ul class="nav navbar-nav pull-right student-nav" >
 				<li><a href="{% static 'tsweb/' %}"><i class="fa fa-dashboard fa-lg"></i></a></li>
@@ -78,33 +78,30 @@
 		
 	</nav> <!-- End Nav -->
 	<div class="nav-border" style="display: none;"></div>
-	<button id="hide-nav" type="button" class="btn btn-small pull-right">Show Nav</button>
-	
-	
+		<button id="hide-nav" type="button" class="btn btn-small pull-right"><i class="fa fa-arrow-up"></i></button>
 	<div class="page-container">
-		<h2 class="page-title">Revision Mode</h2>
 		
 		<div class="assignment-edit-section">
-			 <div class="block-cell block-wide">
-			 
+			 <div class="block-cell block-revision">
+			 		
 			 </div>
 		</div>
 		
-		<button type="button" class="btn btn-small hide-panel" id="hide-panel">Hide Menu</button>
+		<button type="button" class="btn btn-small hide-panel" id="hide-panel"><i class="fa fa-arrow-left"></i></button>
 
-		<div class="panel-group side-panel" id="side-panel">
+		<div class="panel-group side-panel panel-revision" id="side-panel">
 			
 			<div class="panel panel-default block-cell block-thin">
 				<div class="panel-heading block-header">
 					<h3 class="panel-title">
-						<a data-toggle="collapse" data-parent="#side-panel" href="#profileCollapse">
+						<a data-toggle="collapse" data-parent="#side-panel" href="#collapseOne">
 							Assignment Info
 						</a>
 					</h3>
 				</div>
-				<div id="profileCollapse" class="panel-collapse collapse">
+				<div id="collapseOne" class="panel-collapse collapse">
 					<div class="block-body">
-						
+						<p>{% assignment_info %}</p>
 					</div>
 				</div>
 			</div>
@@ -141,41 +138,83 @@
 		      </div>
 		    </div>
 		  </div>
+		  
+		  <div class="panel panel-default block-cell block-thin">
+		  	<div class="panel-heading block-header">
+		  		<h3 class="panel-title">
+		  			<a data-toggle="collapse" data-parent="#side-panel" href="#collapseFour">
+		  				Rubric
+		  			</a>
+		  		</h3>
+		  	</div>
+		  	<div id="collapseFour" class="panel-collapse collapse">
+		  		<div class="block-body">
+		  			<p>{% rubric %}</p>
+		  		</div>
+		  	</div>
+		  </div>
 		</div> <!--End Side Panel-->
 		
-		<script>
-			$(document).ready(function () {
-				$('#hide-panel').click(function () {
-					$('.side-panel').toggle('slide','easeOutExpo',300);
-				});
-				jQuery.fn.extend({
-				        toggleText: function (a, b){
-				            var isClicked = false;
-				            var that = this;
-				            this.click(function (){
-				                if (isClicked) { that.text(a); isClicked = false; }
-				                else { that.text(b); isClicked = true; }
-				            });
-				            return this;
-				        }
-				    });
-				
-				$('#hide-panel').toggleText("Hide Menu", "Show Menu");
-				
-				
+		
+	</div> <!--End Page Container-->
+	
+	<button class="btn lesson-btn"><i class="fa fa-arrow-up"></i></button>
+	<div class="lesson-section">
+	
+		<div class="lesson-body">
+			<div class="lesson-section-one"> here is some black text</div>
+			
+			<div class="lesson-section-two"></div>
+			
+			<div class="lesson-section-three"></div>
+		</div>
+	</div>
+	
+	
+	<script>
+		$(document).ready(function () {
+			$('#hide-panel').click(function () {
+				$('.side-panel').toggle('slide','easeOutExpo',300);
 			});
-			$(window).load(function () {
-				$('.navbar').toggle();
+			
 				$('.nav-border').css('display', 'block');
 				$('#hide-nav').click(function () {
 					$('.navbar').toggle();
 					$('.nav-border').css('display', 'block');
 				});
 				
-				$('#hide-nav').toggleText("Show Nav", "Hide Nav");
+				$('#hide-nav').click(function (e) {
+					if ($('#hide-nav i').hasClass('fa-arrow-up')) {
+						$('#hide-nav i').removeClass('fa-arrow-up').addClass('fa-arrow-down');
+					} else {
+						$('#hide-nav i').removeClass('fa-arrow-down').addClass('fa-arrow-up');
+					}
+				});
+				
+				$('.hide-panel').click(function (e) {
+					if ($('.hide-panel i').hasClass('fa-arrow-left')) {
+						$('.hide-panel i').removeClass('fa-arrow-left').addClass('fa-arrow-right');
+					} else {
+						$('.hide-panel i').removeClass('fa-arrow-right').addClass('fa-arrow-left');
+					}
+				});
+				
+				$('.lesson-btn i').mouseover(function () {$(this).text(' Lesson');});
+				
+				$('.lesson-btn').click(function (e) {
+					$('.lesson-section').slideToggle('fast', function () {
+						$('.lesson-section').css('display', 'block');
+					});
+					if ($('.lesson-btn i').hasClass('fa-arrow-up')) {
+						$('.lesson-btn i').removeClass('fa-arrow-up').addClass('fa-arrow-down');
+					} else {
+						$('.lesson-btn i').removeClass('fa-arrow-down').addClass('fa-arrow-up');
+					}
+				});
+				
 			});
-		</script>
-	</div> <!--End Page Container-->
+			
+	</script>
 	
 </body>
 </html>

@@ -432,7 +432,7 @@ form{
 	background: -ms-linear-gradient(left, rgba(214, 159, 99, 0) 97.7%, #c2e617 97.9%) rgba(70, 172, 183, 0);
 	background: linear-gradient(to right, rgba(214, 159, 99, 0) 97.7%, #c2e617 97.9%) rgba(70, 172, 183, 0);
 }
-#new_class_btn{
+.new-btn{
 	position: absolute;
 	right: 130px;
 }
@@ -442,5 +442,9 @@ form{
 .rowheader{
 	background-color: #81BB84;
 	color: #ffffff;
+}
+.searchlist{
+	position: absolute;
+	left: 340px;
 }
 /*End*/

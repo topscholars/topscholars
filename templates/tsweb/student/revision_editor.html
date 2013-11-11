@@ -77,8 +77,10 @@
 		</div>
 		
 	</nav> <!-- End Nav -->
+	
 	<div class="nav-border" style="display: none;"></div>
-		<button id="hide-nav" type="button" class="btn btn-small pull-right"><i class="fa fa-arrow-up"></i></button>
+	<button id="hide-nav" type="button" class="btn btn-small pull-right"><i class="fa fa-arrow-up"></i></button>
+	
 	<div class="page-container">
 		
 		<div class="assignment-edit-section">
@@ -117,8 +119,15 @@
 		    </div>
 		    <div id="collapseTwo" class="panel-collapse collapse">
 		      <div class="block-body">
-		        <ul class="block-list" id="classesList">
-		        	<li class="tag" id="tag"><a href="#">Tag</a></li>
+		        <ul class="block-list" id="tagList">
+		        	<li class="tag"><a href="#">Tag</a></li>
+		        	<li class="tag"><a href="#">Tag</a></li>
+		        	<li class="tag"><a href="#">Tag</a></li>
+		        	<li class="tag"><a href="#">Tag</a></li>
+		        	<li class="tag"><a href="#">Tag</a></li>
+		        	<li class="tag"><a href="#">Tag</a></li>
+		        	<li class="tag"><a href="#">Tag</a></li>
+		        	<li class="tag"><a href="#">Tag</a></li>
 		        </ul>
 		      </div>
 		    </div>
@@ -164,9 +173,9 @@
 		<div class="lesson-body">
 			<div class="lesson-section-one"> here is some black text</div>
 			
-			<div class="lesson-section-two"></div>
+			<div class="lesson-section-two"> here is more text</div>
 			
-			<div class="lesson-section-three"></div>
+			<div class="lesson-section-three">and finally something else...</div>
 		</div>
 	</div>
 	
@@ -199,7 +208,6 @@
 					}
 				});
 				
-				$('.lesson-btn i').mouseover(function () {$(this).text(' Lesson');});
 				
 				$('.lesson-btn').click(function (e) {
 					$('.lesson-section').slideToggle('fast', function () {
@@ -211,6 +219,8 @@
 						$('.lesson-btn i').removeClass('fa-arrow-down').addClass('fa-arrow-up');
 					}
 				});
+				
+				$(".lesson-section").slideToggle();
 				
 			});
 			

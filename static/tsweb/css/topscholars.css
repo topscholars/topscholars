@@ -122,9 +122,6 @@ button:focus{
 	margin-top: 5px;
 	font-size: 1.4em;
 }
-.active-nav{
-	color: ;
-}
 .student-nav li a{
 	color: white;
 }
@@ -135,7 +132,7 @@ button:focus{
 .dropdown-menu .dropdown-title{
 	color: #ffffff;
 	padding: 5px;
-	background-color: #70c174;
+	background-color: #81BB84;
 	
 	border-top-left-radius: 4px;
 	border-top-right-radius: 4px;
@@ -309,7 +306,7 @@ form{
 .block-header h3{
 	top: 0;
 	color: #ffffff;
-	font-weight: lighter;
+	font-weight: normal;
 	text-align: center;
 }
 .block-header h3 a{
@@ -330,6 +327,12 @@ form{
 	padding: 0!important;
 	list-style: none;
 }
+.block-list .tag{
+	display: inline-block;
+	background-color: rgba(239, 250, 40, 0.50);
+	padding: 2px;
+	border-radius: 3px;
+}
 .block-list li{
 	
 	width: 100%!;
@@ -347,7 +350,7 @@ form{
 	display: inherit;
 }
 .overview-nav{
-	background-color: #808080;	
+	background-color: #bf380a;	
 	width: 65%;
 	float: right;
 	margin-top: -69px;
@@ -392,6 +395,7 @@ form{
 	margin: 0 auto;
 	color: white;
 	z-index: 3;
+	width: 40px;
 }
 .lesson-section{
 	position: absolute;
@@ -401,14 +405,42 @@ form{
 	right: 0;
 	width: 100%;
 	height: auto;
-	border: 1px groove #999;
 	background-color: rgba(255, 255, 255, .75);
 	box-shadow: 0px -5px 10px rgba(0,0,0,.2);
 	z-index: 2;
 }
-
-.lesson-section-one, .lesson-section-two, .lesson-section-three{
-	width: 30%;
-	border: inset 1px solid #999;
+.lesson-body{
+	width: 100%;
 }
-.lesson-section .lesson-body .lesson-section
+.lesson-section-one, .lesson-section-two, .lesson-section-three{
+	padding: 5px;
+	width: 33%;
+	position: relative;
+	left: 0;
+	right: 0;
+	margin: 0 auto;
+	border: inset 1px solid #777;
+	display: inline-block;
+}
+/*.lesson-section .lesson-body .lesson-section*/
+
+
+/*Teacher Section*/
+.active{
+	background: -webkit-linear-gradient(left, rgba(214, 159, 99, 0) 97.7%, #c2e617 97.9%) rgba(70, 172, 183, 0);
+	background: -moz-linear-gradient(left, rgba(214, 159, 99, 0) 97.7%, #c2e617 97.9%) rgba(70, 172, 183, 0);
+	background: -ms-linear-gradient(left, rgba(214, 159, 99, 0) 97.7%, #c2e617 97.9%) rgba(70, 172, 183, 0);
+	background: linear-gradient(to right, rgba(214, 159, 99, 0) 97.7%, #c2e617 97.9%) rgba(70, 172, 183, 0);
+}
+#new_class_btn{
+	position: absolute;
+	right: 130px;
+}
+.modal-header.teacher-header{
+	background-color: #c2e617!important;
+}
+.rowheader{
+	background-color: #81BB84;
+	color: #ffffff;
+}
+/*End*/

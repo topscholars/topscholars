@@ -110,17 +110,17 @@ class CLASSLIST():
         DATE_FORMAT = "%d-%m-%Y" 
         try:
             userid = request.session['userid']
-            id = request.GET.get('id', False)
-            classid= request.GET.get('classid', False)
-            code = request.GET.get('code', False)
-            subcode = request.GET.get('subcode', False)
-            dayofweek = request.GET.get('dayofweek', False)
-            disabled = request.GET.get('disabled', False)
-            enddate = request.GET.get('enddate', False)
-            startdate = request.GET.get('startdate', False)
-            endtime = request.GET.get('endtime', False)
-            starttime = request.GET.get('starttime', False)
-            teacherid = request.GET.get('teacherid', False)
+            id = request.POST.get('id', False)
+            classid= request.POST.get('classid', False)
+            code = request.POST.get('code', False)
+            subcode = request.POST.get('subcode', False)
+            dayofweek = request.POST.get('dayofweek', False)
+            disabled = request.POST.get('disabled', False)
+            enddate = request.POST.get('enddate', False)
+            startdate = request.POST.get('startdate', False)
+            endtime = request.POST.get('endtime', False)
+            starttime = request.POST.get('starttime', False)
+            teacherid = request.POST.get('teacherid', False)
         except KeyError:
             return HttpResponse('error', mimetype='application/json')
         else:
@@ -147,7 +147,9 @@ class CLASSLIST():
             classschedule.deleted = 0
             classschedule.clientid = clientid
             classschedule.save()
-        return HttpResponse('success', mimetype='application/json')
+            data_json = { 'status': 'success', }
+            data = simplejson.dumps(data_json)
+            return HttpResponse(data, mimetype='application/json')
     
     def getTStudentList(self,request):
         try:

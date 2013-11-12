@@ -43,8 +43,12 @@ function EDITTABLE(){
 		$(".searchboximg").hide();
 		
 		var classid = $('#ele_id').val();
-		thisClass.getStudentData(classid);
-		thisClass.getStudentAddData(classid);
+		if(classid !== ""){
+			thisClass.getStudentData(classid);
+			thisClass.getStudentAddData(classid);
+			$("#list_student").show();
+			$("#list_add_student").show();
+		}
 	}
 	
 	this.hideEditTable =function(){
@@ -56,6 +60,7 @@ function EDITTABLE(){
 		$(".listnewbutton").show();
 		$("#txtSearch").show();
 		$(".searchboximg").show();
+		thisClass.getData('');
 	}
 	
 	this.editTable = function(id){
@@ -203,7 +208,7 @@ function EDITTABLE(){
 		odata = thisClass.oData(odata);
 		$.post(url,odata,
 			function(result){
-
+				thisClass.hideEditTable();
 			})
 		.error(function(xhr, status, error) {
     		alert('Error occur. Please contact the administrator.');
@@ -231,10 +236,14 @@ function EDITTABLE(){
 		});
 		
 		$(".listnewbutton").click(function(){
-			thisClass.showEditTable();
 			$("[id^='ele_']").each(function(){
 				$(this).val('');
 			});
+
+			thisClass.showEditTable();
+			
+			$("#list_student").hide();
+			$("#list_add_student").hide();
 			$("#ele_dayofweek").multiselect('refresh'); 
 		});
 		

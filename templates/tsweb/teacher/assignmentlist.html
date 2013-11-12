@@ -397,7 +397,7 @@ $(function() {
 		</div>	
 	</div> <!-- End side panel -->
 	
-	<button id="new_assignment_btn" class="btn btn-warning btn-lg pull-right new-btn" data-toggle="modal" data-target="#new_assignment_modal">
+	<button id="new_assignment_btn" class="btn btn-info btn-lg new-btn" data-toggle="modal" data-target="#new_assignment_modal">
 	  New Assignment <i class="fa fa-plus"></i>
 	</button>
 	
@@ -416,7 +416,7 @@ $(function() {
 		</div>
 	</div>
 	
-	<div class="block-cell block-wide" style="margin-top: 57px;">
+	<div class="block-cell block-wide">
 		<div id="list"></div>
 		
 		<div class="table-responsive">
@@ -426,6 +426,62 @@ $(function() {
 		</div>
 		
 	</div> <!--End Block Cell-->
+	
+	
+	<!--New Class Modal Form--> 
+	<div class="modal fade" id="new_assignment_modal" tabindex="-1" role="dialog" aria-labelledby="newClassLabel" aria-hidden="true" data-dismiss="false">
+	  <div class="modal-dialog">
+	    <div class="modal-content">
+	      <div class="modal-header teacher-header">
+	        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+	        <h4 class="modal-title">New Assignment</h4>
+	      </div>
+	      <div class="modal-body">
+	        <form role="form" class="form-horizontal" id="new_assigment_form">
+	        	<div class="form-group">
+	        		<label for="ele_name" class="col-sm-4 control-label">Assignment Name</label>
+	        		<div class="col-sm-8">
+	        			<input type="text" name="ele_name" id="ele_name" class="form-control"/>
+	        			<input type="hidden" id="ele_id" name="id" class="form-control" />
+	        		</div>
+	        	</div>
+	        	
+	        	<div class="form-group">
+	        		<label for="description" class="col-sm-4 control-label">Description</label>
+	        		<div class="col-sm-8">
+	        			<input type="text" id="ele_description" class="form-control" name="description" />
+	        		</div>
+	        	</div>
+	        	
+	        	<div class="form-group">
+	        		<label for="rubricid" class="col-sm-4 control-label">Rubric ID</label>
+	        		<div class="col-sm-8">
+	        			<select id="ele_rubricid" name="rubricid" class="form-control"></select>
+	        		</div>
+	        	</div>
+	        	
+	        	<div class="form-group">
+	        		<label for="maxwords" class="col-sm-4 control-label">Maximum Word</label>
+	        		<div class="col-sm-8">
+	        			<input type="text" id="ele_maxwords" name="maxwords" class="form-control" />
+	        		</div>
+	        	</div>
+	    
+	        	<div class="form-group">
+	        		<label for="diabled" class="col-sm-4 control-label">Disable</label>
+	        		<div class="col-sm-8">
+	        			<input type="checkbox" id="ele_disabled" name="disabled" />
+	        		</div>
+	        	</div>
+	        </form>
+	      </div>
+	      <div class="modal-footer">
+	        <input type="reset" class="btn btn-default" data-dismiss="modal" value="Close"/>
+	        <input type="submit" class="btn btn-primary" value="Save Assignment" id="btnSave"/>
+	      </div>
+	    </div><!-- /.modal-content -->
+	  </div><!-- /.modal-dialog -->
+	</div><!-- /.modal -->
 	
 </div> <!-- End Page Container -->
 
@@ -450,48 +506,7 @@ $(function() {
 <input id="txtSearch" class="searchbox" type="text"/>
 <img src="{% static 'tsweb/image/searchbox.png' %}" class="searchboximg" />
 </div>
-<div class="leftnav">
-<div>
-	<table>
-		<tr>
-			<td class="tdimg"><img src="{% static 'tsweb/image/classlist.png' %}"/></td>
-			<td><a href="{% url 'tsweb:tclasslist' %}">Class List</a></td>
-		</tr>
-	</table>
-</div>
-<div class="active">
-	<table>
-		<tr>
-			<td class="tdimg"><img src="{% static 'tsweb/image/assignmentlist.png' %}"/></td>
-			<td><a href="{% url 'tsweb:tassignmentlist' %}">Assignment List</a></td>
-		</tr>
-	</table>
-</div>
-<div>
-	<table>
-		<tr>
-			<td class="tdimg"><img src="{% static 'tsweb/image/studentlist.png' %}"/></td>
-			<td><a href="{% url 'tsweb:tstudentlist' %}">Student List</a></td>
-		</tr>
-	</table>
-</div>
-<div>
-	<table>
-		<tr>
-			<td class="tdimg"><img src="{% static 'tsweb/image/rubriclist.png' %}"/></td>
-			<td><a href="{% url 'tsweb:trubriclist' %}">Rubric List</a></td>
-		</tr>
-	</table>
-</div>
-<div>
-	<table>
-		<tr>
-			<td class="tdimg"><img src="{% static 'tsweb/image/submissionlist.png' %}"/></td>
-			<td><a href="{% url 'tsweb:tsubmissionlist' %}">Submission List</a></td>
-		</tr>
-	</table>
-</div>
-</div>
+
 <div class="content">
 <div id="list"></div>
 <div id="editField">
@@ -520,11 +535,10 @@ $(function() {
 			<td class="col">Disable</td>
 			<td><input type="checkbox" id="ele_disabled" name="disabled" /></td>
 		</tr>
-		<!--
 		<tr>
 			<td><input id="btnSetup" type="button" value="Setup" class="button" style="width:80px;height:24px;cursor:pointer;"></td>
 		</tr>
-		--*>
+
 		<tr>
 			<td>&nbsp;</td>
 		</tr>

@@ -84,12 +84,12 @@
 	<div class="page-container">
 		
 		<div class="assignment-edit-section">
-			 <div class="block-cell block-revision">
-			 		
+			 <div class="block-cell block-wide">
+			 		<textarea></textarea>
 			 </div>
 		</div>
 		
-		<button type="button" class="btn btn-small hide-panel" id="hide-panel"><i class="fa fa-arrow-left"></i></button>
+		<button type="button" class="btn btn-small hide-panel" id="hide-panel"><i class="fa fa-arrow-right"></i></button>
 
 		<div class="panel-group side-panel panel-revision" id="side-panel">
 			
@@ -120,13 +120,6 @@
 		    <div id="collapseTwo" class="panel-collapse collapse">
 		      <div class="block-body">
 		        <ul class="block-list" id="tagList">
-		        	<li class="tag"><a href="#">Tag</a></li>
-		        	<li class="tag"><a href="#">Tag</a></li>
-		        	<li class="tag"><a href="#">Tag</a></li>
-		        	<li class="tag"><a href="#">Tag</a></li>
-		        	<li class="tag"><a href="#">Tag</a></li>
-		        	<li class="tag"><a href="#">Tag</a></li>
-		        	<li class="tag"><a href="#">Tag</a></li>
 		        	<li class="tag"><a href="#">Tag</a></li>
 		        </ul>
 		      </div>
@@ -168,7 +161,7 @@
 	</div> <!--End Page Container-->
 	
 	<button class="btn lesson-btn"><i class="fa fa-arrow-up"></i></button>
-	<div class="lesson-section">
+	<div class="lesson-section" style="display: none;">
 	
 		<div class="lesson-body">
 			<div class="lesson-section-one"> here is some black text</div>
@@ -183,7 +176,7 @@
 	<script>
 		$(document).ready(function () {
 			$('#hide-panel').click(function () {
-				$('.side-panel').toggle('slide','easeOutExpo',300);
+				$('.side-panel').toggle('slideRight','easeOutExpo',300);	
 			});
 			
 				$('.nav-border').css('display', 'block');
@@ -195,33 +188,35 @@
 				$('#hide-nav').click(function (e) {
 					if ($('#hide-nav i').hasClass('fa-arrow-up')) {
 						$('#hide-nav i').removeClass('fa-arrow-up').addClass('fa-arrow-down');
+						$('.block-wide').css('margin-top', '10px').css('height', '100%');
 					} else {
 						$('#hide-nav i').removeClass('fa-arrow-down').addClass('fa-arrow-up');
+						$('.block-wide').css('margin-top', '70px').css('height', '550px');
 					}
 				});
 				
 				$('.hide-panel').click(function (e) {
-					if ($('.hide-panel i').hasClass('fa-arrow-left')) {
-						$('.hide-panel i').removeClass('fa-arrow-left').addClass('fa-arrow-right');
-					} else {
+					if ($('.hide-panel i').hasClass('fa-arrow-right')) {
 						$('.hide-panel i').removeClass('fa-arrow-right').addClass('fa-arrow-left');
+						$('.block-wide').css('width', '100%');
+					} else {
+						$('.hide-panel i').removeClass('fa-arrow-left').addClass('fa-arrow-right');
+						$('.block-wide').css('width', '75%');
 					}
 				});
 				
 				
 				$('.lesson-btn').click(function (e) {
-					$('.lesson-section').slideToggle('fast', function () {
-						$('.lesson-section').css('display', 'block');
-					});
+					$('.lesson-section').toggle('slideUp', 'easeInExpo', 1000);
+					$('.lesson-section').css('display', 'block');
+
 					if ($('.lesson-btn i').hasClass('fa-arrow-up')) {
 						$('.lesson-btn i').removeClass('fa-arrow-up').addClass('fa-arrow-down');
 					} else {
 						$('.lesson-btn i').removeClass('fa-arrow-down').addClass('fa-arrow-up');
 					}
 				});
-				
-				$(".lesson-section").slideToggle();
-				
+
 			});
 			
 	</script>

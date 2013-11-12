@@ -210,11 +210,13 @@ class SUBMISSIONREVIEW():
             i=0
             for criteria in criteriaid:
                 entity = Entity.objects.get(id=5)
+                criteriaid = Rubriccriteria.objects.get(id=criteria)
+                scaleid = Rubricscale.objects.get(id=criteriaval[i])
                 rubricklink = Rubriclink()
                 rubricklink.entityid = entity
                 rubricklink.recid = submissionversionid
-                rubricklink.rubiccriteriaid = criteria
-                rubricklink.rubricscaleid = criteriaval[i]
+                rubricklink.rubiccriteriaid = criteriaid
+                rubricklink.rubricscaleid = scaleid
                 rubricklink.save()
                 i += 1
 

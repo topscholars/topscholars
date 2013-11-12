@@ -85,7 +85,9 @@ class CLASSLIST():
             starttime = request.POST.get('starttime', False)
             teacherid = request.POST.get('teacherid', False)
         except KeyError:
-            return HttpResponse('error', mimetype='application/json')
+            data_json = { 'status': 'error', }
+            data = simplejson.dumps(data_json)
+            return HttpResponse(data, mimetype='application/json')
         else:
             classlist = Classlist.objects.get(id=classid)
             classschedule = Classschedule.objects.get(id=id)

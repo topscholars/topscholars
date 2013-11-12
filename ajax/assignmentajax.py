@@ -49,12 +49,12 @@ class ASSSIGNMENTLIST():
     def save(self,request):
         try:
             userid = request.session['userid']
-            id = request.GET.get('id', False)
-            name = request.GET.get('name', False)
-            description = request.GET.get('description', False)
-            rubricid = request.GET.get('rubricid', False)
-            maxwords = request.GET.get('maxwords', False)
-            disabled = request.GET.get('disabled', False)
+            id = request.POST.get('id', False)
+            name = request.POST.get('name', False)
+            description = request.POST.get('description', False)
+            rubricid = request.POST.get('rubricid', False)
+            maxwords = request.POST.get('maxwords', False)
+            disabled = request.POST.get('disabled', False)
         except KeyError:
             return HttpResponse('error', mimetype='application/json')
         else:
@@ -68,19 +68,23 @@ class ASSSIGNMENTLIST():
             assignment.modifiedby = userid
             assignment.disabled = disabled
             assignment.save()
-        return HttpResponse('success', mimetype='application/json')
+            data_json = { 'status': 'success', }
+            data = simplejson.dumps(data_json)
+            return HttpResponse(data, mimetype='application/json')
     
     def add(self,request):
         try:
             userid = request.session['userid']
-            id = request.GET.get('id', False)
-            name = request.GET.get('name', False)
-            description = request.GET.get('description', False)
-            rubricid = request.GET.get('rubricid', False)
-            maxwords = request.GET.get('maxwords', False)
-            disabled = request.GET.get('disabled', False)
+            id = request.POST.get('id', False)
+            name = request.POST.get('name', False)
+            description = request.POST.get('description', False)
+            rubricid = request.POST.get('rubricid', False)
+            maxwords = request.POST.get('maxwords', False)
+            disabled = request.POST.get('disabled', False)
         except KeyError:
-            return HttpResponse('error', mimetype='application/json')
+            data_json = { 'status': 'error', }
+            data = simplejson.dumps(data_json)
+            return HttpResponse(data, mimetype='application/json')
         else:
             login = Login.objects.get(id=userid)
             clientid = login.clientid
@@ -101,7 +105,9 @@ class ASSSIGNMENTLIST():
             assignment.deleted = 0
             assignment.clientid = clientid
             assignment.save()
-        return HttpResponse('success', mimetype='application/json')
+            data_json = { 'status': 'success', }
+            data = simplejson.dumps(data_json)
+            return HttpResponse(data, mimetype='application/json')
     
     def tAssignmentClass(self,request):
 #         data_json ={}

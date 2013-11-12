@@ -36,6 +36,11 @@ function EDITTABLE(){
 		$(".listnewbutton").hide();
 		$("#txtSearch").hide();
 		$(".searchboximg").hide();
+		
+		$("#listAssignmentClass").show();
+		$("#listAssignmentStudent").show();
+		$("#selectAssignmentHeader").show();
+		$("#list_by_select").show();
 	}
 	
 	this.hideEditTable =function(){
@@ -48,6 +53,7 @@ function EDITTABLE(){
 		$(".listnewbutton").show();
 		$("#txtSearch").show();
 		$(".searchboximg").show();
+		thisClass.getData('');
 	}
 	
 	this.editTable = function(id){
@@ -135,7 +141,7 @@ function EDITTABLE(){
 		odata = thisClass.oData(odata);
 		$.post(url,odata,
 			function(result){
-
+				thisClass.hideEditTable();
 			})
 		.error(function(xhr, status, error) {
     		alert('Error occur. Please contact the administrator.');
@@ -269,10 +275,14 @@ function EDITTABLE(){
 		});
 		
 		$(".listnewbutton").click(function(){
-			thisClass.showEditTable();
 			$("[id^='ele_']").each(function(){
 				$(this).val('');
 			});
+			thisClass.showEditTable();
+			$("#listAssignmentClass").hide();
+			$("#listAssignmentStudent").hide();
+			$("#selectAssignmentHeader").hide();
+			$("#list_by_select").hide();
 		});		
 		
 		thisClass.hideEditTable();

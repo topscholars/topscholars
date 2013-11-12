@@ -385,6 +385,7 @@ function EDITTABLE(){
 		$.post(url,odata,
 			function(result){
 				thisClass.showSubmitDialog();
+				window.location = "{% url 'tsweb:tsubmissionlist' %}";
 			})
 		.error(function(xhr, status, error) {
     		alert('Error occur. Please contact the administrator.');
@@ -417,8 +418,9 @@ function EDITTABLE(){
 				'submissionid' : $("#ele_submissionid").val()
 			},
 			function(result){
+			$(".submitRubricTr").remove();
 			$.each(result,function(ini, val){
-				html += '<tr><td>'+val.criteria+' :</td><td>';
+				html += '<tr class="submitRubricTr"><td>'+val.criteria+' :</td><td>';
 				html += '<select class="submit_criteria" id="'+val.id+'" name="'+val.criteria+'">';
 				html += '</select>';
 				html += '</td></tr>';

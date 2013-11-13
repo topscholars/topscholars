@@ -82,6 +82,7 @@ class Assignment(models.Model):
     id = models.IntegerField(primary_key=True, db_column='ID') # Field name made lowercase.
     name = models.CharField(max_length=100L, db_column='Name') # Field name made lowercase.
     description = models.TextField(db_column='Description', blank=True) # Field name made lowercase.
+    minwords = models.IntegerField(db_column='MinWords') # Field name made lowercase.
     maxwords = models.IntegerField(db_column='MaxWords') # Field name made lowercase.
     rubricid = models.ForeignKey(Rubric,related_name="Assignmenttorubric",db_column='RubricId') # Field name made lowercase.
     createddt = models.DateTimeField(db_column='CreatedDT') # Field name made lowercase.
@@ -528,6 +529,7 @@ class Tag(models.Model):
     parentid = models.IntegerField(db_column='ParentId') # Field name made lowercase.
     category = models.IntegerField(db_column='Category') # Field name made lowercase.
     subcategory = models.IntegerField(db_column='SubCategory') # Field name made lowercase.
+    tagcolor = models.CharField(max_length=7L,db_column='TagColor') # Field name made lowercase.
     createddt = models.DateTimeField(db_column='CreatedDT') # Field name made lowercase.
     createdby = models.IntegerField(db_column='CreatedBy') # Field name made lowercase.
     modifieddt = models.DateTimeField(db_column='ModifiedDT') # Field name made lowercase.

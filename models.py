@@ -544,6 +544,7 @@ class Tag(models.Model):
 class Tagcategory(models.Model):
     id = models.IntegerField(primary_key=True, db_column='ID') # Field name made lowercase.
     name = models.CharField(max_length=100L, db_column='Name') # Field name made lowercase.
+    parentid = models.IntegerField(db_column='ParentId') # Field name made lowercase.
     createddt = models.DateTimeField(db_column='CreatedDT') # Field name made lowercase.
     createdby = models.IntegerField(db_column='CreatedBy') # Field name made lowercase.
     modifieddt = models.DateTimeField(db_column='ModifiedDT') # Field name made lowercase.
@@ -576,19 +577,12 @@ class Taglocallize(models.Model):
     class Meta:
         db_table = 'taglocallize'
 
-class Tagsubcategory(models.Model):
+class Tagcategorylink(models.Model):
     id = models.IntegerField(primary_key=True, db_column='ID') # Field name made lowercase.
-    categoryid = models.IntegerField(db_column='CategoryId') # Field name made lowercase.
-    name = models.CharField(max_length=100L, db_column='Name') # Field name made lowercase.
-    createddt = models.DateTimeField(db_column='CreatedDT') # Field name made lowercase.
-    createdby = models.IntegerField(db_column='CreatedBy') # Field name made lowercase.
-    modifieddt = models.DateTimeField(db_column='ModifiedDT') # Field name made lowercase.
-    modifiedby = models.IntegerField(db_column='ModifiedBy') # Field name made lowercase.
-    disabled = models.IntegerField(db_column='Disabled') # Field name made lowercase.
-    deleted = models.IntegerField(db_column='Deleted') # Field name made lowercase.
-    clientid = models.IntegerField(db_column='ClientId') # Field name made lowercase.
+    tagid = models.ForeignKey(Tag,related_name="Tagcategorylinktotag",db_column='TagId') # Field name made lowercase.
+    categoryid = models.ForeignKey(Tagcategory,related_name="Tagcategorylinktotagcategory",db_column='CategoryId') # Field name made lowercase.
     class Meta:
-        db_table = 'tagsubcategory'
+        db_table = 'tagcategorylink'
 
 class Usertype(models.Model):
     id = models.IntegerField(primary_key=True, db_column='ID') # Field name made lowercase.

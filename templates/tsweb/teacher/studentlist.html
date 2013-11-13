@@ -9,6 +9,7 @@
 	<link rel="stylesheet" type="text/css" href="{% static 'tsweb/css/Prototype.css' %}" />
 	<script src="{% static 'tsweb/js/jQuery1.10.1.js' %}"></script>
 	<script src="{% static 'tsweb/js/jquery-ui-1.10.3.custom.min.js' %}"></script>
+	<script src="{% static 'tsweb/js/jquery.cookie.js' %}"></script>
 	<script src="{% static 'tsweb/js/WaterMark.js' %}"></script>
 	<script src="{% static 'tsweb/js/jquery.datepick.js' %}"></script>
 	<script src="{% static 'tsweb/js/util.js' %}"></script>
@@ -49,24 +50,25 @@ function EDITTABLE(){
 		$(".listnewbutton").show();
 		$("#txtSearch").show();
 		$(".searchboximg").show();
+		thisClass.getData('');
 	}
 	
 	this.editTable = function(id){
-		$.ajax({
-			url: url,
-			type: 'GET',
-			data: { class: evalClass,
-					id: id 
-				},
-			datatype : 'json',
-			success: function(res){
-				$.each(res, function(ini,val){
+		
+		$.getJSON(
+			url,
+			{	class: evalClass,
+				id: id  },
+			function(result){
+				$.each(result, function(ini,val){
 					thisClass.seperateElement($("#ele_"+ini), val);
 				});
 				
 				thisClass.showEditTable();
-			}
-		});
+		})
+		.error(function(xhr, status, error) {
+    		alert('Error occur. Please contact the administrator.');
+    	});
 		return false;
 	}
 
@@ -80,59 +82,38 @@ function EDITTABLE(){
 		});
 	}
 	
-	this.selectTeacher = function(){
-		var html ='';
-		$.ajax({
-			url: url,
-			type: 'GET',
-			data: { class: evalClass,
-					method: 'getTeacher'
-			},
-			success: function(res){
-				$.each(res, function(ini,val){
-					if(val.middlename == null){
-						html += "<option value='"+val.id+"'>"+val.firstname+" "+val.lastname+"</option>";
-					}else{
-						html += "<option value='"+val.id+"'>"+val.firstname+" "+val.middlename+" "+val.lastname+"</option>";
-					}
-				});
-				$("#ele_teacherid").append(html);
-			}	
-		});
-	}
-	
 	this.selectGender = function(){
 		var html ='';
-		$.ajax({
-			url: url,
-			type: 'GET',
-			data: { class: evalClass,
-					method: 'getGender'
-			},
-			success: function(res){
-				$.each(res, function(ini,val){
+		$.getJSON(
+			url,
+			{	class: evalClass,
+				method: 'getGender' },
+			function(result){
+				$.each(result, function(ini,val){
 						html += "<option value='"+val.id+"'>"+val.selectionname+"</option>";
 				});
 				$("#ele_gender").append(html);
-			}	
-		});
+		})
+		.error(function(xhr, status, error) {
+    		alert('Error occur. Please contact the administrator.');
+    	});
 	}
 	
 	this.selectSalutation = function(){
 		var html ='';
-		$.ajax({
-			url: url,
-			type: 'GET',
-			data: { class: evalClass,
-					method: 'getSalutation'
-			},
-			success: function(res){
-				$.each(res, function(ini,val){
+		$.getJSON(
+			url,
+			{	class: evalClass,
+				method: 'getSalutation' },
+			function(result){
+				$.each(result, function(ini,val){
 						html += "<option value='"+val.id+"'>"+val.selectionname+"</option>";
 				});
 				$("#ele_salutation").append(html);
-			}	
-		});
+		})
+		.error(function(xhr, status, error) {
+    		alert('Error occur. Please contact the administrator.');
+    	});
 	}
 	
 	this.getData = function(studentname ,classid) {
@@ -165,14 +146,13 @@ function EDITTABLE(){
 			odata = { class: evalClass, method: 'save'};
 		}
 		odata = thisClass.oData(odata);
-		$.ajax({
-			url: url,
-			type: 'GET',
-			data: odata,
-			success: function(res){
-				
-			}	
-		});
+		$.post(url,odata,
+			function(result){
+				thisClass.hideEditTable();
+			})
+		.error(function(xhr, status, error) {
+    		alert('Error occur. Please contact the administrator.');
+    	});
 	}
 	
 	this.iniControl = function(){

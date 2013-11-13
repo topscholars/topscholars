@@ -85,26 +85,26 @@ class STUDENTLIST():
         DATE_FORMAT = "%d-%m-%Y"
         try:
             userid = request.session['userid']
-            id = request.GET.get('id', False)
-            firstname = request.GET.get('firstname', False)
-            lastname = request.GET.get('lastname', False)
-            middlename = request.GET.get('middlename', False)
-            address1 = request.GET.get('address1', False)
-            address2 = request.GET.get('address2', False)
-            address3 = request.GET.get('address3', False)
-            city = request.GET.get('city', False)
-            zipcode = request.GET.get('zipcode', False)
-            state = request.GET.get('state', False)
-            country = request.GET.get('country', False)
-            mobilephone = request.GET.get('mobilephone', False)
-            homephone = request.GET.get('homephone', False)
-            otherphone = request.GET.get('otherphone', False)
-            emailaddress1 = request.GET.get('emailaddress1', False)
-            emailaddress2 = request.GET.get('emailaddress2', False)
-            dob = request.GET.get('dob', False)
-            gender = request.GET.get('gender', False)
-            salutation = request.GET.get('salutation', False)
-            currentaccademicyear = request.GET.get('currentaccademicyear', False)
+            id = request.POST.get('id', False)
+            firstname = request.POST.get('firstname', False)
+            lastname = request.POST.get('lastname', False)
+            middlename = request.POST.get('middlename', False)
+            address1 = request.POST.get('address1', False)
+            address2 = request.POST.get('address2', False)
+            address3 = request.POST.get('address3', False)
+            city = request.POST.get('city', False)
+            zipcode = request.POST.get('zipcode', False)
+            state = request.POST.get('state', False)
+            country = request.POST.get('country', False)
+            mobilephone = request.POST.get('mobilephone', False)
+            homephone = request.POST.get('homephone', False)
+            otherphone = request.POST.get('otherphone', False)
+            emailaddress1 = request.POST.get('emailaddress1', False)
+            emailaddress2 = request.POST.get('emailaddress2', False)
+            dob = request.POST.get('dob', False)
+            gender = request.POST.get('gender', False)
+            salutation = request.POST.get('salutation', False)
+            currentaccademicyear = request.POST.get('currentaccademicyear', False)
         except KeyError:
             return HttpResponse('error', mimetype='application/json')
         else:
@@ -129,11 +129,10 @@ class STUDENTLIST():
             studentlist.salutation = salutation
             studentlist.currentaccademicyear = currentaccademicyear
             studentlist.save()
-        return HttpResponse('success', mimetype='application/json')
+            data_json = { 'status': 'success', }
+            data = simplejson.dumps(data_json)
+            return HttpResponse(data, mimetype='application/json')
     
-
-
-        
 class TSTUDENTLISTAJAX():
     def get(self,request):
         try:

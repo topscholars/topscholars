@@ -334,18 +334,17 @@ class SUBMISSIONREVIEW():
         
     def tagHighlightList(self,request):
         try:
+            cursor = connection.cursor()
             userid = request.session['userid']
             login = Login.objects.get(id=userid)
             clientid = login.clientid
             submissionversionid = request.GET.get('submissionversionid', False)
-            submissionvshgid = Submissionversionhighlight.objects.filter(submissionversionid=submissionversionid,disabled=0,deleted=0).values_list('id')
+            
         except KeyError:
-            data_json = { 'status': 'error', }
-            data = simplejson.dumps(data_json)
-            return HttpResponse(data, mimetype='application/json')
+            return HttpResponse('error', mimetype='application/json')
         else:
-            taglinklist = Taglink.objects.filter(recid__in=submissionvshgid,entityid=5,deleted=0,clientid=clientid).values_list('tagid')
-            taglist = list(Tag.objects.filter(id__in=taglinklist,disabled=0,deleted=0,clientid=clientid).values('id','name','parentid'))
+            cursor.execute("select t.id,t.name,t.parentid,count(t.id) as number from submissionversionhighlight as smh join taglink as tl on tl.recid = smh.id and tl.entityid=5 and tl.deleted = 0 and tl.clientid= %s join tag as t on t.id = tl.tagid and t.disabled=0 and t.deleted = 0 and t.clientid= %s where smh.submissionversionid = %s and smh.disabled=0 and smh.deleted=0 group by t.id", [clientid,clientid,submissionversionid])
+            taglist = cursor.fetchall() 
             data = simplejson.dumps(taglist)
             return HttpResponse(data, mimetype='application/json')
 

@@ -48,7 +48,23 @@ function EDITTABLE(){
     		alert('Error occur. Please contact the administrator.');
     	});
 	}
-
+	
+	this.countWords = function(result){
+		var html = '';
+		var text = result.submissionversionessay;
+		var maxWord = result.assignmentmaxword;
+		s = text;
+		s = s.replace(/(^\s*)|(\s*$)/gi,"");
+		s = s.replace(/[ ]{2,}/gi," ");
+		s = s.replace(/\n /,"\n");
+		
+		count = s.split(' ').length;
+		html += count;
+		html += '/';
+		html += maxWord;
+		document.getElementById("ele_assignmentmaxword").innerHTML = count+"/"+maxWord;
+	}
+	
 	this.getData = function (submissionid, versionid) {
 	    $.getJSON(
 			url,
@@ -58,7 +74,9 @@ function EDITTABLE(){
 			    'versionid': versionid
 			},
 			function (result) {
+				
 			    $.each(result, function (ini, val) {
+			    	
 			        if (ini == "submissionprogress")
 			            thisClass.setProgressBar(val);
 			        else if (ini == "currentversion") {
@@ -78,7 +96,7 @@ function EDITTABLE(){
 			    });
 
 			    essay = $('#ele_submissionversionessay').html();
-
+				thisClass.countWords(result);
 			    thisClass.highlightEssay();
 			    thisClass.tagHighlightList();
 			    thisClass.getSubmitRubric();
@@ -222,14 +240,15 @@ function EDITTABLE(){
 			    $("#commentArea").val('');
 			    $("<ul>").attr("id", "tagList").appendTo("#tagBox");
 			    if (result.length > 0) {
+			    	
 			        $.each(result, function (i, val) {
 			            var li = $("<li>");
 
 			            //create link
-			            $("<a>").text(val.name).attr({ "data-id": val.id, href: "#", class: "tagClickHighlightList" }).appendTo(li);
+			            $("<a>").text(val[1]+"("+val[3]+")").attr({ "data-id": val[0], href: "#", class: "tagClickHighlightList" }).appendTo(li);
 
 			            //set tag size
-			            if (val.parentid == 0) {
+			            if (val[2] == 0) {
 			                li.children().css({ 'font-size': '2em', 'font-weight': 'bold' });
 			            } else {
 			                li.children().css({ 'font-size': '1.7em' });
@@ -451,6 +470,7 @@ function EDITTABLE(){
 	}
 			
 	this.initContent = function(){
+		
 		thisClass.getData($('#ele_submissionid').val(),'');
 		
 		thisClass.showHighlightDialog(false);

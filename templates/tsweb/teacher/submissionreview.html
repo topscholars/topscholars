@@ -136,6 +136,7 @@ function EDITTABLE(){
 	}
 	
 	this.getHighlightDataTag = function(highlightid) {
+		var tagids = [];
 		$.getJSON(
 			url,
 			{	'class' :  'SUBMISSIONREVIEW',
@@ -145,19 +146,43 @@ function EDITTABLE(){
 				$(".tagedit-listelement-old").remove();
 				var displaytxt = '';
 				for (var i=0;i<result.length;i++) {
+					tagids.push(result[i].id);
 					var tagitem = '<li class="tagedit-listelement tagedit-listelement-old"><span dir="ltr">' + result[i].name + '</span><input type="hidden" name="tag[' + result[i].id + '-a]" value="' + result[i].name + '"><a class="tagedit-close" title="Remove from list.">x</a></li>'
 					$(tagitem).insertBefore('.tagedit-listelement-new');
 					if (displaytxt != '')
 						 displaytxt = displaytxt + ', '
 					displaytxt = displaytxt + result[i].name;
 				}
+				thisClass.tagEditCloseEvent();
+				thisClass.getSelectSuggest(tagids);
 				$('#ele_highlightTagDisplay').text(displaytxt);
 		})
 		.error(function(xhr, status, error) {
     		alert('Error occur. Please contact the administrator.');
     	});
 	}
-
+	
+	this.tagEditCloseEvent = function(){
+		$(".tagedit-close").click(function(){
+			var tagElement = $(this).prev();
+			var thisInput = tagElement.attr('name');
+				thisInput = thisInput.replace('tag[','');
+				thisInput = thisInput.replace('-a]', '');
+				console.log(thisInput);
+			var thisId = thisInput;
+			var tagNewIds = [];
+			$('input[name*="-a"]').each(function(index) {
+				var nameInput = $(this).attr('name');
+				nameInput = nameInput.replace('tag[','');
+				nameInput = nameInput.replace('-a]', '');
+				if(nameInput != thisId){
+					tagNewIds.push(nameInput);
+				}
+			});
+			thisClass.getSelectSuggest(tagNewIds);
+		});
+	}
+	
 	this.getHighlightData = function(highlightid) {
 		$('#ele_highlightid').val(highlightid);
 		
@@ -186,6 +211,7 @@ function EDITTABLE(){
 		if(show) {
 			$('#diveditbg').show();
 			$('#divedithighlight').show();
+			$('.editHighlightSuggest').hide();
 			if($('#ele_highlightid').val() != '')
 			{
 				thisClass.editHighlightDialog(false);
@@ -283,9 +309,9 @@ function EDITTABLE(){
 			function(result){
 			$(".essayhighlight").css({'background':'red'});
 			$.each(result, function(i, val) {
-				highlightid = val.id;
-				$("#"+highlightid+".essayhighlight").css({'background':'yellow'});
-				textComment += "- " + val.comment + "\n";
+				highlightid = val[0];
+				$("#"+highlightid+".essayhighlight").css({'background':val[2]});
+				textComment += "- " + val[1] + "\n";
 			});
 			$("#commentArea").val(textComment);
 		}).error(function(xhr, status, error) {
@@ -428,6 +454,46 @@ function EDITTABLE(){
     	});
 	}
 	
+	this.getSelectSuggest = function(tagids){
+		var option = '';
+		$.post(
+			url,
+			{	'class' :  evalClass,
+				'method' : 'getSelectSuggest',
+				tagids : tagids
+			},
+			function(result){
+				$("#ele_suggestTags option").remove();
+				$.each(result, function(ini,val){
+					option += '<option value="'+val.id+'">'+val.label+'</option>';
+				});
+				$("#ele_suggestTags").append(option);
+				
+				$("#ele_suggestTags").dblclick(function(){
+					var id = $(this).val();
+					var name = $("#ele_suggestTags option:selected").text();
+					$("#ele_suggestTags option[value='"+id+"']").remove();
+					var tagitem = '<li class="tagedit-listelement tagedit-listelement-old"><span dir="ltr">' + name + '</span><input type="hidden" name="tag[' + id + '-a]" value="' + name + '"><a class="tagedit-close" title="Remove from list.">x</a></li>'
+					$(tagitem).insertBefore('.tagedit-listelement-new');
+					
+					var tagNewIds = [];
+					//var tagids = new Array();
+					var i=0;
+					$('input[name*="-a"]').each(function(index) {
+						var nameInput = $(this).attr('name');
+						nameInput = nameInput.replace('tag[','');
+						nameInput = nameInput.replace('-a]', '');
+						tagNewIds.push(nameInput);
+					});
+					thisClass.tagEditCloseEvent();
+					thisClass.getSelectSuggest(tagNewIds);
+					//console.log(tagNewIds);
+				});
+		}).error(function(xhr, status, error) {
+    		alert('Error occur. Please contact the administrator.');
+    	});
+	}
+	
 	this.getSubmitRubric = function(){
 		var html = '';
 		$.getJSON(
@@ -494,6 +560,7 @@ function EDITTABLE(){
 		
 		$('#btnedithighlight').click(function() {
 			thisClass.editHighlightDialog(true);
+			$('.editHighlightSuggest').show();
 		});
 		
 		$('#btncloseedithighlight').click(function() {
@@ -542,7 +609,7 @@ function EDITTABLE(){
 		
 		$( '#tdtag input.tag' ).tagedit({
 			autocompleteURL: "{% url 'tsweb:gettags' 5 %}",
-			autocompleteOptions: {minLength: 3},
+			autocompleteOptions: {minLength: 1},
 			allowEdit:false
 		});
 	}
@@ -596,6 +663,12 @@ function openHighlightDialog(highlightid){
 			</td>
 			<td id="tdtagdisplay">
 				<label id="ele_highlightTagDisplay"></label>
+			</td>
+		</tr>
+		<tr class="editHighlightSuggest">
+			<td>Suggest tags:</td>
+			<td>
+				<select id="ele_suggestTags" size="4"></select>
 			</td>
 		</tr>
 		<tr>

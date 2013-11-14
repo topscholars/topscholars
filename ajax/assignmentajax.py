@@ -54,6 +54,7 @@ class ASSSIGNMENTLIST():
             description = request.POST.get('description', False)
             rubricid = request.POST.get('rubricid', False)
             maxwords = request.POST.get('maxwords', False)
+            minwords = request.POST.get('minwords', False)
             disabled = request.POST.get('disabled', False)
         except KeyError:
             return HttpResponse('error', mimetype='application/json')
@@ -63,6 +64,7 @@ class ASSSIGNMENTLIST():
             assignment.name = name
             assignment.description = description
             assignment.maxwords = maxwords
+            assignment.minwords = minwords
             assignment.rubricid = rubriclist
             assignment.modifieddt = datetime.now()
             assignment.modifiedby = userid
@@ -80,6 +82,7 @@ class ASSSIGNMENTLIST():
             description = request.POST.get('description', False)
             rubricid = request.POST.get('rubricid', False)
             maxwords = request.POST.get('maxwords', False)
+            minwords = request.POST.get('minwords', False)
             disabled = request.POST.get('disabled', False)
         except KeyError:
             data_json = { 'status': 'error', }
@@ -94,6 +97,7 @@ class ASSSIGNMENTLIST():
             assignment.name = name
             assignment.description = description
             assignment.maxwords = maxwords
+            assignment.minwords = minwords
             assignment.rubricid = rubriclist
             assignment.modifieddt = datetime.now()
             assignment.modifiedby = userid

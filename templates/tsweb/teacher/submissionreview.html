@@ -147,8 +147,7 @@ function EDITTABLE(){
 				var displaytxt = '';
 				for (var i=0;i<result.length;i++) {
 					tagids.push(result[i].id);
-					var tagitem = '<li class="tagedit-listelement tagedit-listelement-old"><span dir="ltr">' + result[i].name + '</span><input type="hidden" name="tag[' + result[i].id + '-a]" value="' + result[i].name + '"><a class="tagedit-close" title="Remove from list.">x</a></li>'
-					$(tagitem).insertBefore('.tagedit-listelement-new');
+					thisClass.addTagEditElement(result[i].name , result[i].id);
 					if (displaytxt != '')
 						 displaytxt = displaytxt + ', '
 					displaytxt = displaytxt + result[i].name;
@@ -475,12 +474,10 @@ function EDITTABLE(){
 						var id = $(this).val();
 						var name = $("#ele_suggestTags option:selected").text();
 						$("#ele_suggestTags option[value='"+id+"']").remove();
-						var tagitem = '<li class="tagedit-listelement tagedit-listelement-old"><span dir="ltr">' + name + '</span><input type="hidden" name="tag[' + id + '-a]" value="' + name + '"><a class="tagedit-close" title="Remove from list.">x</a></li>'
-						$(tagitem).insertBefore('.tagedit-listelement-new');
+						thisClass.addTagEditElement(name, id);
 						
 						var tagNewIds = [];
-						//var tagids = new Array();
-						var i=0;
+
 						$('input[name*="-a"]').each(function(index) {
 							var nameInput = $(this).attr('name');
 							nameInput = nameInput.replace('tag[','');
@@ -498,6 +495,10 @@ function EDITTABLE(){
 	    }
 	}
 	
+	this.addTagEditElement = function(name, id){
+		var tagitem = '<li class="tagedit-listelement tagedit-listelement-old"><span dir="ltr">' + name + '</span><input type="hidden" name="tag[' + id + '-a]" value="' + name + '"><a class="tagedit-close" title="Remove from list.">x</a></li>'
+		$(tagitem).insertBefore('.tagedit-listelement-new');
+	}
 	this.getSubmitRubric = function(){
 		var html = '';
 		$.getJSON(

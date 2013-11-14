@@ -350,19 +350,27 @@ class SUBMISSIONREVIEW():
 
     def tagClickHighlightList(self,request):
         try:
+            cursor = connection.cursor()
             userid = request.session['userid']
             login = Login.objects.get(id=userid)
             clientid = login.clientid
             taglinkid = request.GET.get('taglinkid', False)
             submissionversionid = request.GET.get('submissionversionid', False)
-            taglinklist = Taglink.objects.filter(tagid=taglinkid,entityid=5,deleted=0,clientid=clientid).values_list('recid')
-            
         except KeyError:
             data_json = { 'status': 'error', }
             data = simplejson.dumps(data_json)
             return HttpResponse(data, mimetype='application/json')
         else:
-            submissionvshglist= list(Submissionversionhighlight.objects.filter(submissionversionid=submissionversionid,id__in=taglinklist,disabled=0,deleted=0).values('id','comment'))
+            #cursor.execute("select t.id,t.name,t.parentid,count(t.id) as number from submissionversionhighlight as smh join taglink as tl on tl.recid = smh.id and tl.entityid=5 and tl.deleted = 0 and tl.clientid= %s join tag as t on t.id = tl.tagid and t.disabled=0 and t.deleted = 0 and t.clientid= %s where smh.submissionversionid = %s and smh.disabled=0 and smh.deleted=0 group by t.id", [clientid,clientid,submissionversionid])
+            cursor.execute("select smh.id, smh.comment, t.tagcolor from taglink as tl  join submissionversionhighlight as smh on smh.id = tl.recid and smh.disabled=0 and smh.deleted=0 join tag as t on tl.tagid = t.id where tl.tagid = %s and tl.entityid=5 and tl.deleted=0 and tl.clientid=%s and smh.submissionversionid = %s", [taglinkid,clientid,submissionversionid])
+            submissionvshglist = cursor.fetchall()
+#             taglinklist = Taglink.objects.filter(tagid=taglinkid,entityid=5,deleted=0,clientid=clientid).values_list('recid')
+#         except KeyError:
+#             data_json = { 'status': 'error', }
+#             data = simplejson.dumps(data_json)
+#             return HttpResponse(data, mimetype='application/json')
+#         else:
+#             submissionvshglist= list(Submissionversionhighlight.objects.filter(submissionversionid=submissionversionid,id__in=taglinklist,disabled=0,deleted=0).values('id','comment'))
             data = simplejson.dumps(submissionvshglist)
             return HttpResponse(data, mimetype='application/json')
     
@@ -375,6 +383,29 @@ class SUBMISSIONREVIEW():
             return HttpResponse(data, mimetype='application/json')
         else:
             data = simplejson.dumps(selectionlist)
+            return HttpResponse(data, mimetype='application/json')
+        
+    def getSelectSuggest(self,request):
+        try:
+            tagids = request.POST.getlist('tagids[]', False)  
+        except KeyError:
+            data_json = { 'status': 'error', }
+            data = simplejson.dumps(data_json)
+            return HttpResponse(data, mimetype='application/json')
+        else:
+            data_json = []
+            tagentity = TagEntity.objects.filter(entityid=5,tagid__id__in=tagids)
+            for row in tagentity:
+                if row.tagid.parentid != 0:
+                    tagentitysibling = TagEntity.objects.filter(Q(entityid=5),~Q(tagid__id__in=tagids),Q(tagid__parentid=row.tagid.parentid))
+                    for rowsibling in tagentitysibling:
+                        if { "id": str(rowsibling.tagid.id), "label": rowsibling.tagid.name, "value": rowsibling.tagid.name } not in data_json:
+                            data_json.append({ "id": str(rowsibling.tagid.id), "label": rowsibling.tagid.name, "value": rowsibling.tagid.name })
+                tagentitychild = TagEntity.objects.filter(Q(entityid=5), ~Q(tagid__id__in=tagids), Q(tagid__parentid=row.tagid.id))
+                for rowchild in tagentitychild:
+                    if { "id": str(rowchild.tagid.id), "label": rowchild.tagid.name, "value": rowchild.tagid.name } not in data_json:
+                        data_json.append({ "id": str(rowchild.tagid.id), "label": rowchild.tagid.name, "value": rowchild.tagid.name })
+            data = simplejson.dumps(data_json)
             return HttpResponse(data, mimetype='application/json')
         
     def getSubmitRubric(self,request):

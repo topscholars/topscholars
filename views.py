@@ -124,14 +124,30 @@ def gettags(request, entityid):
         data = simplejson.dumps(data_json)
         return HttpResponse(data, mimetype='application/json')
     else:
-        data_json = []
+        
         tagentity = ''
-        if term != False and term != '':
-            tagentity = TagEntity.objects.filter(entityid=entityid,tagid__name__contains=term)
+        
+        if len(term) == 1:
+            data_json = []
+            tagentity = TagEntity.objects.filter(entityid=entityid,tagid__name__contains=term, tagid__parentid=0)
+            for row in tagentity:
+                data_json.append({ "id": str(row.tagid.id), "label": row.tagid.name, "value": row.tagid.name })
         else:
-            tagentity = TagEntity.objects.filter(entityid=entityid)
-        for row in tagentity:
-            data_json.append({ "id": str(row.tagid.id), "label": row.tagid.name, "value": row.tagid.name })
+            data_json = []
+            tagentity = TagEntity.objects.filter(entityid=entityid,tagid__name__contains=term)
+            for row in tagentity:
+                if { "id": str(row.tagid.id), "label": row.tagid.name, "value": row.tagid.name } not in data_json:
+                    data_json.append({ "id": str(row.tagid.id), "label": row.tagid.name, "value": row.tagid.name })
+                if row.tagid.parentid != 0:
+                    tagentitysibling = TagEntity.objects.filter(entityid=entityid,tagid__parentid=row.tagid.parentid)
+                    for rowsibling in tagentitysibling:
+                        if { "id": str(rowsibling.tagid.id), "label": rowsibling.tagid.name, "value": rowsibling.tagid.name } not in data_json:
+                            data_json.append({ "id": str(rowsibling.tagid.id), "label": rowsibling.tagid.name, "value": rowsibling.tagid.name })
+                tagentitychild = TagEntity.objects.filter(entityid=entityid,tagid__parentid=row.tagid.id)
+                for rowchild in tagentitychild:
+                    if { "id": str(rowchild.tagid.id), "label": rowchild.tagid.name, "value": rowchild.tagid.name } not in data_json:
+                        data_json.append({ "id": str(rowchild.tagid.id), "label": rowchild.tagid.name, "value": rowchild.tagid.name })
+                
         data = simplejson.dumps(data_json)
         return HttpResponse(data, mimetype='application/json')
     
@@ -152,4 +168,5 @@ def tprocessajax(request):
         methodToCall = getattr(className, txtmethod)
     method = methodToCall(request)
     return method 
+
 

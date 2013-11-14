@@ -129,12 +129,12 @@ def gettags(request, entityid):
         
         if len(term) == 1:
             data_json = []
-            tagentity = TagEntity.objects.filter(entityid=entityid,tagid__name__contains=term, tagid__parentid=0)
+            tagentity = TagEntity.objects.filter(entityid=entityid,tagid__name__startswith=term, tagid__parentid=0)
             for row in tagentity:
                 data_json.append({ "id": str(row.tagid.id), "label": row.tagid.name, "value": row.tagid.name })
         else:
             data_json = []
-            tagentity = TagEntity.objects.filter(entityid=entityid,tagid__name__contains=term)
+            tagentity = TagEntity.objects.filter(entityid=entityid,tagid__name__startswith=term)
             for row in tagentity:
                 if { "id": str(row.tagid.id), "label": row.tagid.name, "value": row.tagid.name } not in data_json:
                     data_json.append({ "id": str(row.tagid.id), "label": row.tagid.name, "value": row.tagid.name })

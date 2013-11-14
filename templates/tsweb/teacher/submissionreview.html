@@ -492,6 +492,7 @@ function EDITTABLE(){
 	    	});
 	    }else{
 	    	$("#ele_suggestTags option").remove();
+	    	$(".editHighlightSuggest").hide();
 	    }
 	}
 	
@@ -612,6 +613,20 @@ function EDITTABLE(){
 		$('#ele_submissionversionversion').change(function() {
 			thisClass.getData($('#ele_submissionid').val(),$('#ele_submissionversionversion').val());
 		});	
+		
+	    $(document).on('click', '.ui-menu-item', function(){
+	    	$('.editHighlightSuggest').show();
+			var tagNewIds = [];
+
+			$('input[name*="-a"]').each(function(index) {
+				var nameInput = $(this).attr('name');
+				nameInput = nameInput.replace('tag[','');
+				nameInput = nameInput.replace('-a]', '');
+				tagNewIds.push(nameInput);
+			});
+			thisClass.tagEditCloseEvent();
+			thisClass.getSelectSuggest(tagNewIds);
+    	});
 		
 		$( '#tdtag input.tag' ).tagedit({
 			autocompleteURL: "{% url 'tsweb:gettags' 5 %}",

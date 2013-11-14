@@ -147,12 +147,7 @@ function EDITTABLE(){
 				var displaytxt = '';
 				for (var i=0;i<result.length;i++) {
 					tagids.push(result[i].id);
-<<<<<<< HEAD
-					var tagitem = '<li class="tagedit-listelement tagedit-listelement-old"><span dir="ltr">' + result[i].name + '</span><input type="hidden" name="tag[' + result[i].id + '-a]" value="' + result[i].name + '"><a class="tagedit-close" title="Remove from list.">x</a></li>'
-					$(tagitem).insertBefore('.tagedit-listelement-new');
-=======
 					thisClass.addTagEditElement(result[i].name , result[i].id);
->>>>>>> origin/master
 					if (displaytxt != '')
 						 displaytxt = displaytxt + ', '
 					displaytxt = displaytxt + result[i].name;
@@ -167,19 +162,12 @@ function EDITTABLE(){
 	}
 	
 	this.tagEditCloseEvent = function(){
-<<<<<<< HEAD
-=======
 		$(".tagedit-close").unbind('click');
->>>>>>> origin/master
 		$(".tagedit-close").click(function(){
 			var tagElement = $(this).prev();
 			var thisInput = tagElement.attr('name');
 				thisInput = thisInput.replace('tag[','');
 				thisInput = thisInput.replace('-a]', '');
-<<<<<<< HEAD
-				console.log(thisInput);
-=======
->>>>>>> origin/master
 			var thisId = thisInput;
 			var tagNewIds = [];
 			$('input[name*="-a"]').each(function(index) {
@@ -467,46 +455,6 @@ function EDITTABLE(){
 	
 	this.getSelectSuggest = function(tagids){
 		var option = '';
-<<<<<<< HEAD
-		$.post(
-			url,
-			{	'class' :  evalClass,
-				'method' : 'getSelectSuggest',
-				tagids : tagids
-			},
-			function(result){
-				$("#ele_suggestTags option").remove();
-				$.each(result, function(ini,val){
-					option += '<option value="'+val.id+'">'+val.label+'</option>';
-				});
-				$("#ele_suggestTags").append(option);
-				
-				$("#ele_suggestTags").dblclick(function(){
-					var id = $(this).val();
-					var name = $("#ele_suggestTags option:selected").text();
-					$("#ele_suggestTags option[value='"+id+"']").remove();
-					var tagitem = '<li class="tagedit-listelement tagedit-listelement-old"><span dir="ltr">' + name + '</span><input type="hidden" name="tag[' + id + '-a]" value="' + name + '"><a class="tagedit-close" title="Remove from list.">x</a></li>'
-					$(tagitem).insertBefore('.tagedit-listelement-new');
-					
-					var tagNewIds = [];
-					//var tagids = new Array();
-					var i=0;
-					$('input[name*="-a"]').each(function(index) {
-						var nameInput = $(this).attr('name');
-						nameInput = nameInput.replace('tag[','');
-						nameInput = nameInput.replace('-a]', '');
-						tagNewIds.push(nameInput);
-					});
-					thisClass.tagEditCloseEvent();
-					thisClass.getSelectSuggest(tagNewIds);
-					//console.log(tagNewIds);
-				});
-		}).error(function(xhr, status, error) {
-    		alert('Error occur. Please contact the administrator.');
-    	});
-	}
-	
-=======
 		if(tagids != ""){
 			$.post(
 				url,
@@ -551,7 +499,7 @@ function EDITTABLE(){
 		var tagitem = '<li class="tagedit-listelement tagedit-listelement-old"><span dir="ltr">' + name + '</span><input type="hidden" name="tag[' + id + '-a]" value="' + name + '"><a class="tagedit-close" title="Remove from list.">x</a></li>'
 		$(tagitem).insertBefore('.tagedit-listelement-new');
 	}
->>>>>>> origin/master
+
 	this.getSubmitRubric = function(){
 		var html = '';
 		$.getJSON(

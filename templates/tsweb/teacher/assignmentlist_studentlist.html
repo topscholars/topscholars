@@ -1,6 +1,7 @@
 {% if not studentlist %}
 <h2>Student List</h2>
-<table class="tablelist">
+<div class="responsive-table">
+<table class="table table-bordered">
 <tr class="rowheader">
 <td class="cellitem">Id</td>
 <td class="cellitem">First Name</td>
@@ -13,9 +14,11 @@
 <td class="cellitem" colspan="6" align="center">No data exist</td>
 </tr>
 </table>
+</div>
 {% else %}
 <h2>Student List</h2>
-<table class="tablelist">
+<div class="responsive-table">
+<table class="table table-bordered">
 <tr class="rowheader">
 <td class="cellitem">Id</td>
 <td class="cellitem">First Name</td>
@@ -30,9 +33,10 @@
 	<td class="cellitem">{{ student.firstname }}</td>
 	<td class="cellitem">{{ student.lastname }}</td>
 	<td class="cellitem">{{ student.getStudentCurrentClass }}</td>
-	<td class="cellitem"><input type="text" class="datepicker" text="{{ student.id}}" value="" /></td>
-	<td class="cellitem"><input type="button" class="button addStudentassignment" style="width:50px;" text="{{ student.id}}" value="add" style="display: block;"></td>
+	<td class="cellitem"><input type="date" class="datepicker form-control" text="{{ student.id}}" value="" /></td>
+	<td class="cellitem"><input type="button" class="btn btn-warning" text="{{ student.id}}" value="add" style="display: block;"></td>
 	</tr>
 {% endfor %}
 </table>
+</div>
 {% endif %}

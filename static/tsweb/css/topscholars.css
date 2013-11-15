@@ -149,6 +149,9 @@ button:focus{
 	-moz-animation: flash 2s ease-in-out 0s 3 alternate;
 	animation: flash 2s ease-in-out 0s 3 alternate;
 }
+table tr td:hover{
+	cursor: pointer;
+}
 form{
 	color: #444;
 }
@@ -205,10 +208,17 @@ form{
 	position: absolute;
 	width: 25%;
 }
+.side-panel a:hover{
+	text-decoration: none;
+	text-shadow: 0px 0px 10px #333333;
+	transition-duration: .2s;
+	-webkit-transition-duration: .2s;
+	-moz-transition: .2s;
+}
 .hide-panel{
 	position: absolute;
 	right: 10px;
-	top: 77px;
+	top: 213px;
 	background-color: rgba(0, 0, 0, .2);
 	z-index: 4;
 	
@@ -278,9 +288,10 @@ form{
 	display: inline-block!important;
 	position: absolute;
 	left: 0;
-	height: 550px;
+	height: 85%;
 	margin-top: 70px;
 	padding: 5px;
+	overflow: scroll;
 }
 .block-wide.block-padding{
 	padding-top: 30px;
@@ -376,7 +387,7 @@ form{
 }
 .category-text{
 	margin-top: -100px;
-	max-height: 350px;
+	max-height: 99%;
 	height: auto;
 	overflow: scroll;
 }
@@ -390,8 +401,8 @@ form{
 	display: block;
 	margin: 0 auto;
 	color: white;
-	z-index: 3;
-	width: 40px;
+	z-index: 5;
+	width: auto;
 }
 .lesson-section{
 	position: absolute;
@@ -404,10 +415,9 @@ form{
 	height: auto;
 	background-color: rgba(255, 255, 255, .75);
 	box-shadow: 0px -5px 10px rgba(0,0,0,.2);
-	z-index: 2;
+	z-index: 4;
 }
 .assignment-edit-section .block-wide textarea{
-	position: relative;
 	width: 100%;
 	height: 100%;
 }
@@ -423,6 +433,22 @@ form{
 	margin: 0 auto;
 	border: inset 1px solid #777;
 	display: inline-block;
+}
+.lesson-section-header{
+	background: #d45;
+	color: #fff;
+	text-align: center;
+	padding: 5px;
+	font-size: 1.4em;
+	border-radius: 3px;
+}
+.lesson-section-body{
+	margin-top: 5px;
+	min-height: 500px;
+	border: 1px solid #999;
+	border-radius: 3px;
+	overflow: scroll;
+	background: #fff;
 }
 /*.lesson-section .lesson-body .lesson-section*/
 
@@ -448,6 +474,10 @@ form{
 }
 .searchlist{
 	position: absolute;
-	left: 340px;
+	z-index: 2;
+}
+#new_rubric_modal .modal-dialog{
+	width: 60%;
+	left: 40%;
 }
 /*End*/

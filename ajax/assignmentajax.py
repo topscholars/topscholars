@@ -20,7 +20,7 @@ class ASSSIGNMENTLIST():
         except KeyError:
             return HttpResponse('error', mimetype='application/json')
         else:
-            cursor.execute("SELECT id,name,description,rubricid,maxwords FROM assignment  WHERE id = %s", [id])
+            cursor.execute("SELECT id,name,description,rubricid,maxwords,minwords, disabled FROM assignment  WHERE id = %s", [id])
                    
             results = cursor.fetchall() 
             for r in results:
@@ -30,6 +30,8 @@ class ASSSIGNMENTLIST():
                         'description': r[2],
                         'rubricid': r[3],
                         'maxwords': r[4],
+                        'minwords': r[5],
+                        'disabled': r[6],
                         }
             data = simplejson.dumps(data_json)
         return HttpResponse(data, mimetype='application/json')
@@ -54,6 +56,7 @@ class ASSSIGNMENTLIST():
             description = request.POST.get('description', False)
             rubricid = request.POST.get('rubricid', False)
             maxwords = request.POST.get('maxwords', False)
+            minwords = request.POST.get('minwords', False)
             disabled = request.POST.get('disabled', False)
         except KeyError:
             return HttpResponse('error', mimetype='application/json')
@@ -63,6 +66,7 @@ class ASSSIGNMENTLIST():
             assignment.name = name
             assignment.description = description
             assignment.maxwords = maxwords
+            assignment.minwords = minwords
             assignment.rubricid = rubriclist
             assignment.modifieddt = datetime.now()
             assignment.modifiedby = userid
@@ -80,6 +84,7 @@ class ASSSIGNMENTLIST():
             description = request.POST.get('description', False)
             rubricid = request.POST.get('rubricid', False)
             maxwords = request.POST.get('maxwords', False)
+            minwords = request.POST.get('minwords', False)
             disabled = request.POST.get('disabled', False)
         except KeyError:
             data_json = { 'status': 'error', }
@@ -94,6 +99,7 @@ class ASSSIGNMENTLIST():
             assignment.name = name
             assignment.description = description
             assignment.maxwords = maxwords
+            assignment.minwords = minwords
             assignment.rubricid = rubriclist
             assignment.modifieddt = datetime.now()
             assignment.modifiedby = userid

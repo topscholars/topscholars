@@ -9,6 +9,7 @@
 	<link rel="stylesheet" type="text/css" href="{% static 'tsweb/css/Prototype.css' %}" />
 	<script src="{% static 'tsweb/js/jQuery1.10.1.js' %}"></script>
 	<script src="{% static 'tsweb/js/jquery-ui-1.10.3.custom.min.js' %}"></script>
+	<script src="{% static 'tsweb/js/jquery.cookie.js' %}"></script>
 	<script src="{% static 'tsweb/js/WaterMark.js' %}"></script>
 	<script src="{% static 'tsweb/js/jquery.datepick.js' %}"></script>
 	<script src="{% static 'tsweb/js/util.js' %}"></script>
@@ -179,6 +180,41 @@
 			else
 				ele.onKeyPress=event.keyCode;
 		}
+		$(".tablelist").show();
+		$(".listnewbutton").show();
+		$("#txtSearch").show();
+		$(".searchboximg").show();
+		thisClass.getData('');
+		
+		//return and hide
+		$(".viewTD").show();
+		$(".editorTD").hide();
+	}
+	
+	this.editTable = function(id){
+		
+		$.getJSON(
+			url,
+			{	class: evalClass,
+				id: id  },
+			function(result){
+				$.each(result, function(ini,val){
+					thisClass.seperateElement($("#ele_"+ini), val);
+					thisClass.seperateView(ini,val);
+				});
+				
+				thisClass.showEditTable();
+		})
+		.error(function(xhr, status, error) {
+    		alert('Error occur. Please contact the administrator.');
+    	});
+		return false;
+	}
+
+	this.iniEventEditor = function(){
+		thisClass.UIHover("#btnSave");
+		thisClass.UIHover("#btnBack");
+		thisClass.UIHover("#btnEdit");
 		
 		this.save = function(){
 			var odata;
@@ -227,6 +263,60 @@
 			thisClass.selectSalutation();
 			thisClass.hideEditTable();
 			thisClass.iniEventEditor();
+		});
+	}
+	
+	this.selectGender = function(){
+		var html ='';
+		$.getJSON(
+			url,
+			{	class: evalClass,
+				method: 'getGender' },
+			function(result){
+				$.each(result, function(ini,val){
+						html += "<option value='"+val.id+"'>"+val.selectionname+"</option>";
+				});
+				$("#ele_gender").append(html);
+		})
+		.error(function(xhr, status, error) {
+    		alert('Error occur. Please contact the administrator.');
+    	});
+	}
+	
+	this.selectSalutation = function(){
+		var html ='';
+		$.getJSON(
+			url,
+			{	class: evalClass,
+				method: 'getSalutation' },
+			function(result){
+				$.each(result, function(ini,val){
+						html += "<option value='"+val.id+"'>"+val.selectionname+"</option>";
+				});
+				$("#ele_salutation").append(html);
+		})
+		.error(function(xhr, status, error) {
+    		alert('Error occur. Please contact the administrator.');
+    	});
+	}
+	
+	this.getData = function(studentname ,classid) {
+		$("#list").html("<div style='width:100%;position=relative;text-align:center;'><img src='{% static 'tsweb/image/ajax-loader.gif' %}' alt='' style='margin:auto;width=100px;height=100px;position=relative;' /></div>");
+		$.get("{% url 'tsweb:tprocessajax' %}?class="+tableClassAjax,
+		{ studentname : studentname ,
+		  classid : classid},
+		function(result){
+		      $("#list").html(result);
+		})
+		.error(function(xhr, status, error) {
+		    $("#list").html("<img src='{% static 'tsweb/image/notificationcross.gif' %}' alt='' style='width:30px;' />&nbsp;Error: "+xhr.status+": "+xhr.statusText);
+		});
+	}
+	
+	this.Search = function(ele,event)
+	{
+		if (event.keyCode == 13) {
+			thisClass.getData($('#txtSearch').val(), '');
 		}
 	}
 	$(function() {
@@ -527,6 +617,193 @@
 	  });
 	</script>
 
+<!--</script>
+<div class="placeholder">
+<div class="header">
+<div class="headertext">
+<h1>Teacher Name - My Classroom</h1>
+</div>
+<div class="headerbutton">
+<a href="{% url 'tsweb:logout' %}"><img src="{% static 'tsweb/image/logout.png' %}"/></a>
+<a href=""><img src="{% static 'tsweb/image/userdetails.png' %}" /></a>
+<a href=""><img src="{% static 'tsweb/image/username.png' %}" style="margin-top:12px;" /></a>
+</div>
+</div>
+<h1 class="pagename">Student List</h1>
+<div class="clear"></div>
+<div class="searchlist">
+<div class="filter">
+Class Filter:&nbsp;
+<select class="selection " id="lstClassid" >
+	<option value="">Please Select</option>
+{% for class in classlist %}
+	<option value="{{ class.id  }}">{{ class.id }} - {{ class.classname }}</option>
+{% endfor %}
+</select>
+</div>
+<input id="txtSearch" class="searchbox" type="text" value="Search"/>
+<img src="{% static 'tsweb/image/searchbox.png' %}" class="searchboximg" />
+</div>
+<div class="leftnav">
+<div>
+	<table>
+		<tr>
+			<td class="tdimg"><img src="{% static 'tsweb/image/classlist.png' %}"/></td>
+			<td><a href="{% url 'tsweb:tclasslist' %}">Class List</a></td>
+		</tr>
+	</table>
+</div>
+<div>
+	<table>
+		<tr>
+			<td class="tdimg"><img src="{% static 'tsweb/image/assignmentlist.png' %}"/></td>
+			<td><a href="{% url 'tsweb:tassignmentlist' %}">Assignment List</a></td>
+		</tr>
+	</table>
+</div>
+<div class="active">
+	<table>
+		<tr>
+			<td class="tdimg"><img src="{% static 'tsweb/image/studentlist.png' %}"/></td>
+			<td><a href="{% url 'tsweb:tstudentlist' %}">Student List</a></td>
+		</tr>
+	</table>
+</div>
+<div>
+	<table>
+		<tr>
+			<td class="tdimg"><img src="{% static 'tsweb/image/rubriclist.png' %}"/></td>
+			<td><a href="{% url 'tsweb:trubriclist' %}">Rubric List</a></td>
+		</tr>
+	</table>
+</div>
+<div>
+	<table>
+		<tr>
+			<td class="tdimg"><img src="{% static 'tsweb/image/submissionlist.png' %}"/></td>
+			<td><a href="{% url 'tsweb:tsubmissionlist' %}">Submission List</a></td>
+		</tr>
+	</table>
+</div>
+</div>
+<div class="content">
+<div id="list"></div>
+<div id="editField">
+	<form>
+	<table class="editor">
+		<tr>
+			<td class="col">First Name</td>
+			<td class="editorTD">
+				<input type="text" id="ele_firstname" name="firstname" class="text" value="" />
+				<input type="hidden" id="ele_id" name="id" value="" />
+			</td>
+			<td class="viewTD"><span id="textView_firstname"></span></td>
+		</tr>
+		<tr>
+			<td class="col">Middle Name</td>
+			<td class="editorTD"><input type="text" id="ele_middlename" name="middlename" class="text" value="" /></td>
+			<td class="viewTD"><span id="textView_middlename"></span></td>
+		</tr>
+		<tr>
+			<td class="col">Last Name</td>
+			<td class="editorTD"><input type="text" id="ele_lastname" name="lastname" class="text" value="" /></td>
+			<td class="viewTD"><span id="textView_lastname"></span></td>
+		</tr>
+		<tr>
+			<td class="col">Date of Birth</td>
+			<td class="editorTD"><input type="text" id="ele_dob" name="dob" class="text" value="" /></td>
+			<td class="viewTD"><span id="textView_dob"></span></td>
+		</tr>
+		<tr>
+			<td class="col">Gender</td>
+			<td class="editorTD"><select id="ele_gender" name="gender"></select></td>
+			<td class="viewTD"><span id="textView_gender"></span></td>
+		</tr>
+		<tr>
+			<td class="col">Salutation</td>
+			<td class="editorTD"><select id="ele_salutation" name="salutation"></select></td>
+			<td class="viewTD"><span id="textView_salutation"></span></td>
+		</tr>
+		<tr>
+			<td class="col">Address 1</td>
+			<td class="editorTD"><input type="text" id="ele_address1" name="address1" class="text" value="" /></td>
+			<td class="viewTD"><span id="textView_address1"></span></td>
+		</tr>
+		<tr>
+			<td class="col">Address 2</td>
+			<td class="editorTD"><input type="text" id="ele_address2" name="address2" class="text" value="" /></td>
+			<td class="viewTD"><span id="textView_address2"></span></td>
+		</tr>
+		<tr>
+			<td class="col">Address 3</td>
+			<td class="editorTD"><input type="text" id="ele_address3" name="address3" class="text" value="" /></td>
+			<td class="viewTD"><span id="textView_address3"></span></td>
+		</tr>
+		<tr>
+			<td class="col">City</td>
+			<td class="editorTD"><input type="text" id="ele_city" name="city" class="text" value="" /></td>
+			<td class="viewTD"><span id="textView_city"></span></td>
+		</tr>
+		<tr>
+			<td class="col">Zipcode</td>
+			<td class="editorTD"><input type="text" id="ele_zipcode" name="zipcode" class="text" value="" /></td>
+			<td class="viewTD"><span id="textView_zipcode"></span></td>
+		</tr>
+		<tr>
+			<td class="col">State</td>
+			<td class="editorTD"><input type="text" id="ele_state" name="state" class="text" value="" /></td>
+			<td class="viewTD"><span id="textView_state"></span></td>
+		</tr>
+		<tr>
+			<td class="col">Country</td>
+			<td class="editorTD"><input type="text" id="ele_country" name="country" class="text" value="" /></td>
+			<td class="viewTD"><span id="textView_country"></span></td>
+		</tr>
+		<tr>
+			<td class="col">Mobile Phone</td>
+			<td class="editorTD"><input type="text" id="ele_mobilephone" name="mobilephone" class="text" value="" /></td>
+			<td class="viewTD"><span id="textView_mobilephone"></span></td>
+		</tr>
+		<tr>
+			<td class="col">Home Phone</td>
+			<td class="editorTD"><input type="text" id="ele_homephone" name="homephone" class="text" value="" /></td>
+			<td class="viewTD"><span id="textView_homephone"></span></td>
+		</tr>
+		<tr>
+			<td class="col">Other Phone</td>
+			<td class="editorTD"><input type="text" id="ele_otherphone" name="otherphone" class="text" value="" /></td>
+			<td class="viewTD"><span id="textView_otherphone"></span></td>
+		</tr>
+		<tr>
+			<td class="col">Email Address 1</td>
+			<td class="editorTD"><input type="text" id="ele_emailaddress1" name="emailaddress1" class="text" value="" /></td>
+			<td class="viewTD"><span id="textView_emailaddress1"></span></td>
+		</tr>
+		<tr>
+			<td class="col">Email Address 2</td>
+			<td class="editorTD"><input type="text" id="ele_emailaddress2" name="emailaddress2" class="text" value="" /></td>
+			<td class="viewTD"><span id="textView_emailaddress2"></span></td>
+		</tr>
+		<tr>
+			<td class="col">Current Accademic Year</td>
+			<td class="editorTD"><input type="text" id="ele_currentaccademicyear" name="currentaccademicyear" class="text" value="" /></td>
+			<td class="viewTD"><span id="textView_currentaccademicyear"></span></td>
+		</tr>
+		<tr>
+			<td>&nbsp;</td>
+		</tr>
+		<tr>
+			<td><div id="btnBack"><span class="ui-icon ui-icon-arrowreturnthick-1-w" style="float:left;"></span>back</div></td>
+			<td class="editorTD" style="float:right;"><div id="btnSave"><span class="ui-icon ui-icon-disk" style="float:left;"></span>Save</div></td>
+			<td class="viewTD"><div id="btnEdit"><span class="ui-icon ui-icon-wrench" style="float:left;"></span>Edit</div></td>
+		</tr>
+	</table>
+	</form>
+</div>
+</div>
+<div style="clear:both"></div>
+</div>
+>>>>>>> c01980e857e7be4eca2c2122a2cd842c3f38290a-->
 </body>
 
 </html>

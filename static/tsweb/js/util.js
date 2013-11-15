@@ -20,11 +20,41 @@ function GridBase(){
 				case "SELECT":
 				{
 					$(id).find('option:selected').removeAttr("selected");
-					if(name == 'dayofweek'){
+					if($(id).next().hasClass('ui-multiselect')){
 						thisClass.multipleVal(id,val);
 					}else{
 						$(id).val(val);
 					}
+				}
+			}
+		}
+	}
+	
+	this.seperateView = function(id,val){
+		var tagName = $("#ele_"+id).prop("tagName");
+		var name = $("#ele_"+id).attr("name");
+		var val;
+		if(tagName !== undefined){
+			if(tagName == "SPAN")				
+			{
+				$("#textView_"+id).text(value);
+			}else if(tagName == "INPUT"){
+				var type = $("#ele_"+id).prop("type")
+				if(type == "text"){
+					$("#textView_"+id).text(val);
+				}
+				else if(type == 'checkbox'){
+					$("#textView_"+id).text('True');
+					if(val == 0){
+						$("#textView_"+id).text('False');
+					}
+				}
+			}else if(tagName == "SELECT"){
+				if($("#ele_"+id).next().hasClass('ui-multiselect')){
+					$("#textView_"+id).text(val);
+				}else{
+					value = $("#ele_"+id).find('option:selected').text();
+					$("#textView_"+id).text(value);
 				}
 			}
 		}

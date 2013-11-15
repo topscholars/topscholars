@@ -82,6 +82,7 @@ class Assignment(models.Model):
     id = models.IntegerField(primary_key=True, db_column='ID') # Field name made lowercase.
     name = models.CharField(max_length=100L, db_column='Name') # Field name made lowercase.
     description = models.TextField(db_column='Description', blank=True) # Field name made lowercase.
+    minwords = models.IntegerField(db_column='MinWords') # Field name made lowercase.
     maxwords = models.IntegerField(db_column='MaxWords') # Field name made lowercase.
     rubricid = models.ForeignKey(Rubric,related_name="Assignmenttorubric",db_column='RubricId') # Field name made lowercase.
     createddt = models.DateTimeField(db_column='CreatedDT') # Field name made lowercase.
@@ -526,8 +527,7 @@ class Tag(models.Model):
     id = models.IntegerField(primary_key=True, db_column='ID') # Field name made lowercase.
     name = models.CharField(max_length=100L, db_column='Name') # Field name made lowercase.
     parentid = models.IntegerField(db_column='ParentId') # Field name made lowercase.
-    category = models.IntegerField(db_column='Category') # Field name made lowercase.
-    subcategory = models.IntegerField(db_column='SubCategory') # Field name made lowercase.
+    tagcolor = models.CharField(max_length=7L,db_column='TagColor') # Field name made lowercase.
     createddt = models.DateTimeField(db_column='CreatedDT') # Field name made lowercase.
     createdby = models.IntegerField(db_column='CreatedBy') # Field name made lowercase.
     modifieddt = models.DateTimeField(db_column='ModifiedDT') # Field name made lowercase.
@@ -536,21 +536,9 @@ class Tag(models.Model):
     deleted = models.IntegerField(db_column='Deleted') # Field name made lowercase.
     clientid = models.IntegerField(db_column='ClientId') # Field name made lowercase.
     system = models.IntegerField(db_column='System') # Field name made lowercase.
+    description = models.TextField(db_column='Description', blank=True) # Field name made lowercase.
     class Meta:
         db_table = 'tag'
-
-class Tagcategory(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='ID') # Field name made lowercase.
-    name = models.CharField(max_length=100L, db_column='Name') # Field name made lowercase.
-    createddt = models.DateTimeField(db_column='CreatedDT') # Field name made lowercase.
-    createdby = models.IntegerField(db_column='CreatedBy') # Field name made lowercase.
-    modifieddt = models.DateTimeField(db_column='ModifiedDT') # Field name made lowercase.
-    modifiedby = models.IntegerField(db_column='ModifiedBy') # Field name made lowercase.
-    disabled = models.IntegerField(db_column='Disabled') # Field name made lowercase.
-    deleted = models.IntegerField(db_column='Deleted') # Field name made lowercase.
-    clientid = models.IntegerField(db_column='ClientId') # Field name made lowercase.
-    class Meta:
-        db_table = 'tagcategory'
 
 class Taglink(models.Model):
     id = models.IntegerField(primary_key=True, db_column='ID') # Field name made lowercase.
@@ -574,20 +562,6 @@ class Taglocallize(models.Model):
     class Meta:
         db_table = 'taglocallize'
 
-class Tagsubcategory(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='ID') # Field name made lowercase.
-    categoryid = models.IntegerField(db_column='CategoryId') # Field name made lowercase.
-    name = models.CharField(max_length=100L, db_column='Name') # Field name made lowercase.
-    createddt = models.DateTimeField(db_column='CreatedDT') # Field name made lowercase.
-    createdby = models.IntegerField(db_column='CreatedBy') # Field name made lowercase.
-    modifieddt = models.DateTimeField(db_column='ModifiedDT') # Field name made lowercase.
-    modifiedby = models.IntegerField(db_column='ModifiedBy') # Field name made lowercase.
-    disabled = models.IntegerField(db_column='Disabled') # Field name made lowercase.
-    deleted = models.IntegerField(db_column='Deleted') # Field name made lowercase.
-    clientid = models.IntegerField(db_column='ClientId') # Field name made lowercase.
-    class Meta:
-        db_table = 'tagsubcategory'
-
 class Usertype(models.Model):
     id = models.IntegerField(primary_key=True, db_column='ID') # Field name made lowercase.
     type = models.CharField(max_length=50L, db_column='Type') # Field name made lowercase.
@@ -605,6 +579,129 @@ class TagEntity(models.Model):
     id = models.IntegerField(primary_key=True, db_column='ID') # Field name made lowercase.
     tagid = models.ForeignKey(Tag,related_name="Tagentitytotag", db_column='TagId') # Field name made lowercase.
     entityid = models.ForeignKey(Entity,related_name="Tagentitytoentity", db_column='EntityId') # Field name made lowercase.
+    createddt = models.DateTimeField(db_column='CreatedDT') # Field name made lowercase.
+    createdby = models.IntegerField(db_column='CreatedBy') # Field name made lowercase.
+    modifieddt = models.DateTimeField(db_column='ModifiedDT') # Field name made lowercase.
+    modifiedby = models.IntegerField(db_column='ModifiedBy') # Field name made lowercase.
+    disabled = models.IntegerField(db_column='Disabled') # Field name made lowercase.
+    deleted = models.IntegerField(db_column='Deleted') # Field name made lowercase.
+    clientid = models.IntegerField(db_column='ClientId') # Field name made lowercase.
     class Meta:
         db_table = 'TagEntity'
 
+class Category(models.Model):
+    id = models.IntegerField(primary_key=True, db_column='ID') # Field name made lowercase.
+    name = models.CharField(max_length=100L, db_column='Name') # Field name made lowercase.
+    parentid = models.IntegerField(db_column='ParentId') # Field name made lowercase.
+    createddt = models.DateTimeField(db_column='CreatedDT') # Field name made lowercase.
+    createdby = models.IntegerField(db_column='CreatedBy') # Field name made lowercase.
+    modifieddt = models.DateTimeField(db_column='ModifiedDT') # Field name made lowercase.
+    modifiedby = models.IntegerField(db_column='ModifiedBy') # Field name made lowercase.
+    disabled = models.IntegerField(db_column='Disabled') # Field name made lowercase.
+    deleted = models.IntegerField(db_column='Deleted') # Field name made lowercase.
+    clientid = models.IntegerField(db_column='ClientId') # Field name made lowercase.
+    system = models.IntegerField(db_column='System') # Field name made lowercase.
+    class Meta:
+        db_table = 'Category'
+
+class Categoryentity(models.Model):
+    id = models.IntegerField(primary_key=True, db_column='ID') # Field name made lowercase.
+    categoryid = models.ForeignKey(Tag,related_name="Categoryentitytocategory", db_column='CategoryId') # Field name made lowercase.
+    entityid = models.ForeignKey(Entity,related_name="Categoryentitytoentity", db_column='EntityId') # Field name made lowercase.
+    createddt = models.DateTimeField(db_column='CreatedDT') # Field name made lowercase.
+    createdby = models.IntegerField(db_column='CreatedBy') # Field name made lowercase.
+    modifieddt = models.DateTimeField(db_column='ModifiedDT') # Field name made lowercase.
+    modifiedby = models.IntegerField(db_column='ModifiedBy') # Field name made lowercase.
+    disabled = models.IntegerField(db_column='Disabled') # Field name made lowercase.
+    deleted = models.IntegerField(db_column='Deleted') # Field name made lowercase.
+    clientid = models.IntegerField(db_column='ClientId') # Field name made lowercase.
+    class Meta:
+        db_table = 'CategoryEntity'
+
+class Categorylink(models.Model):
+    id = models.IntegerField(primary_key=True, db_column='ID') # Field name made lowercase.
+    entityid = models.ForeignKey(Entity,related_name="Categorylinktoentity", db_column='EntityId') # Field name made lowercase.
+    recid = models.IntegerField(db_column='RecId') # Field name made lowercase.
+    createddt = models.DateTimeField(db_column='CreatedDT') # Field name made lowercase.
+    createdby = models.IntegerField(db_column='CreatedBy') # Field name made lowercase.
+    modifieddt = models.DateTimeField(db_column='ModifiedDT') # Field name made lowercase.
+    modifiedby = models.IntegerField(db_column='ModifiedBy') # Field name made lowercase.
+    deleted = models.IntegerField(db_column='Deleted') # Field name made lowercase.
+    clientid = models.IntegerField(db_column='ClientId') # Field name made lowercase.
+    categoryid = models.ForeignKey(Tag,related_name="Categorylinktocategory",db_column='CategoryId') # Field name made lowercase.
+    class Meta:
+        db_table = 'CategoryLink'
+
+class Lesson(models.Model):
+    id = models.IntegerField(primary_key=True, db_column='ID') # Field name made lowercase.
+    name = models.CharField(max_length=100L, db_column='Name') # Field name made lowercase.
+    levelofability = models.IntegerField(db_column='LevelOfAbility') # Field name made lowercase.
+    grade = models.IntegerField(db_column='Grade') # Field name made lowercase.
+    description = models.TextField(db_column='Description', blank=True) # Field name made lowercase.
+    createddt = models.DateTimeField(db_column='CreatedDT') # Field name made lowercase.
+    createdby = models.IntegerField(db_column='CreatedBy') # Field name made lowercase.
+    modifieddt = models.DateTimeField(db_column='ModifiedDT') # Field name made lowercase.
+    modifiedby = models.IntegerField(db_column='ModifiedBy') # Field name made lowercase.
+    disabled = models.IntegerField(db_column='Disabled') # Field name made lowercase.
+    deleted = models.IntegerField(db_column='Deleted') # Field name made lowercase.
+    clientid = models.IntegerField(db_column='ClientId') # Field name made lowercase.
+    class Meta:
+        db_table = 'Lesson'
+
+class Example(models.Model):
+    id = models.IntegerField(primary_key=True, db_column='ID') # Field name made lowercase.
+    name = models.CharField(max_length=100L, db_column='Name') # Field name made lowercase.
+    levelofability = models.IntegerField(db_column='LevelOfAbility') # Field name made lowercase.
+    grade = models.IntegerField(db_column='Grade') # Field name made lowercase.
+    example = models.TextField(db_column='Example', blank=True) # Field name made lowercase.
+    createddt = models.DateTimeField(db_column='CreatedDT') # Field name made lowercase.
+    createdby = models.IntegerField(db_column='CreatedBy') # Field name made lowercase.
+    modifieddt = models.DateTimeField(db_column='ModifiedDT') # Field name made lowercase.
+    modifiedby = models.IntegerField(db_column='ModifiedBy') # Field name made lowercase.
+    disabled = models.IntegerField(db_column='Disabled') # Field name made lowercase.
+    deleted = models.IntegerField(db_column='Deleted') # Field name made lowercase.
+    clientid = models.IntegerField(db_column='ClientId') # Field name made lowercase.
+    class Meta:
+        db_table = 'Example'
+
+class Explanation(models.Model):
+    id = models.IntegerField(primary_key=True, db_column='ID') # Field name made lowercase.
+    name = models.CharField(max_length=100L, db_column='Name') # Field name made lowercase.
+    levelofability = models.IntegerField(db_column='LevelOfAbility') # Field name made lowercase.
+    grade = models.IntegerField(db_column='Grade') # Field name made lowercase.
+    explanation = models.TextField(db_column='Explanation', blank=True) # Field name made lowercase.
+    createddt = models.DateTimeField(db_column='CreatedDT') # Field name made lowercase.
+    createdby = models.IntegerField(db_column='CreatedBy') # Field name made lowercase.
+    modifieddt = models.DateTimeField(db_column='ModifiedDT') # Field name made lowercase.
+    modifiedby = models.IntegerField(db_column='ModifiedBy') # Field name made lowercase.
+    disabled = models.IntegerField(db_column='Disabled') # Field name made lowercase.
+    deleted = models.IntegerField(db_column='Deleted') # Field name made lowercase.
+    clientid = models.IntegerField(db_column='ClientId') # Field name made lowercase.
+    class Meta:
+        db_table = 'Explanation'
+
+class Lessonexample(models.Model):
+    id = models.IntegerField(primary_key=True, db_column='ID') # Field name made lowercase.
+    lessonid = models.ForeignKey(Entity,related_name="Lessonexampletolesson", db_column='LessonID') # Field name made lowercase.
+    exampleid = models.ForeignKey(Entity,related_name="Lessonexampletoexample", db_column='ExampleID') # Field name made lowercase.
+    createddt = models.DateTimeField(db_column='CreatedDT') # Field name made lowercase.
+    createdby = models.IntegerField(db_column='CreatedBy') # Field name made lowercase.
+    modifieddt = models.DateTimeField(db_column='ModifiedDT') # Field name made lowercase.
+    modifiedby = models.IntegerField(db_column='ModifiedBy') # Field name made lowercase.
+    disabled = models.IntegerField(db_column='Disabled') # Field name made lowercase.
+    deleted = models.IntegerField(db_column='Deleted') # Field name made lowercase.
+    class Meta:
+        db_table = 'LessonExample'
+
+class Exampleexplanation(models.Model):
+    id = models.IntegerField(primary_key=True, db_column='ID') # Field name made lowercase.
+    explanationid = models.ForeignKey(Entity,related_name="Exampleexplanationtoexplanation", db_column='ExplanationID') # Field name made lowercase.
+    exampleid = models.ForeignKey(Entity,related_name="Exampleexplanationtoexample", db_column='ExampleID') # Field name made lowercase.
+    createddt = models.DateTimeField(db_column='CreatedDT') # Field name made lowercase.
+    createdby = models.IntegerField(db_column='CreatedBy') # Field name made lowercase.
+    modifieddt = models.DateTimeField(db_column='ModifiedDT') # Field name made lowercase.
+    modifiedby = models.IntegerField(db_column='ModifiedBy') # Field name made lowercase.
+    disabled = models.IntegerField(db_column='Disabled') # Field name made lowercase.
+    deleted = models.IntegerField(db_column='Deleted') # Field name made lowercase.
+    class Meta:
+        db_table = 'ExampleExplanation'

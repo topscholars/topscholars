@@ -73,6 +73,10 @@ function EDITTABLE(){
 		$("#txtSearch").show();
 		$(".searchboximg").show();
 		thisClass.getData('');
+		
+		//return and hide
+		$(".viewTD").show();
+		$(".editorTD").hide();
 	}
 	
 	this.editTable = function(id){
@@ -83,6 +87,7 @@ function EDITTABLE(){
 			function(result){
 				$.each(result, function(ini,val){
 					thisClass.seperateElement($("#ele_"+ini), val);
+					thisClass.seperateView(ini,val);
 				});
 				
 				thisClass.showEditTable();
@@ -99,6 +104,7 @@ function EDITTABLE(){
 	this.iniEventEditor = function(){
 		thisClass.UIHover("#btnSave");
 		thisClass.UIHover("#btnBack");
+		thisClass.UIHover("#btnEdit");
 		
 		$("#btnBack").click(function(){
 			thisClass.hideEditTable();
@@ -293,11 +299,21 @@ function EDITTABLE(){
 			thisClass.save();
 		});
 		
+		$("#btnEdit").click(function(){
+			$(".editorTD").show();
+			$(".viewTD").hide();
+		});
+		
 		$(".listnewbutton").click(function(){
 			$("[id^='ele_']").each(function(){
 				$(this).val('');
 			});
+			$("[id^='textView_']").each(function(){
+				$(this).text('');
+			});
 			thisClass.showEditTable();
+			$(".editorTD").show();
+			$(".viewTD").hide();
 			$("#listAssignmentClass").hide();
 			$("#listAssignmentStudent").hide();
 			$("#selectAssignmentHeader").hide();
@@ -489,6 +505,152 @@ $(function() {
 	</div><!-- /.modal -->
 	
 </div> <!-- End Page Container -->
+
+<!--<div class="placeholder">
+<div class="header">
+<div class="headertext">
+<h1>Teacher Name - My Classroom</h1>
+</div>
+<div class="headerbutton">
+<a href="{% url 'tsweb:logout' %}"><img src="{% static 'tsweb/image/logout.png' %}"/></a>
+<a href=""><img src="{% static 'tsweb/image/userdetails.png' %}" /></a>
+<a href=""><img src="{% static 'tsweb/image/username.png' %}" style="margin-top:12px;" /></a>
+</div>
+</div>
+<h1 class="pagename">Assignment List</h1>
+<div class="clear"></div>
+<div class="searchlist">
+<div class="filter">
+Class Filter:&nbsp;
+<select class="selection " id="lstClassid" >
+	<option value="">Please Select</option>
+{% for class in classlist %}
+	<option value="{{ class.id  }}">{{ class.id }} - {{ class.classname }}</option>
+{% endfor %}
+</select>
+</div>
+<input id="txtSearch" class="searchbox" type="text"/>
+<img src="{% static 'tsweb/image/searchbox.png' %}" class="searchboximg" />
+</div>
+<div class="leftnav">
+<div>
+	<table>
+		<tr>
+			<td class="tdimg"><img src="{% static 'tsweb/image/classlist.png' %}"/></td>
+			<td><a href="{% url 'tsweb:tclasslist' %}">Class List</a></td>
+		</tr>
+	</table>
+</div>
+<div class="active">
+	<table>
+		<tr>
+			<td class="tdimg"><img src="{% static 'tsweb/image/assignmentlist.png' %}"/></td>
+			<td><a href="{% url 'tsweb:tassignmentlist' %}">Assignment List</a></td>
+		</tr>
+	</table>
+</div>
+<div>
+	<table>
+		<tr>
+			<td class="tdimg"><img src="{% static 'tsweb/image/studentlist.png' %}"/></td>
+			<td><a href="{% url 'tsweb:tstudentlist' %}">Student List</a></td>
+		</tr>
+	</table>
+</div>
+<div>
+	<table>
+		<tr>
+			<td class="tdimg"><img src="{% static 'tsweb/image/rubriclist.png' %}"/></td>
+			<td><a href="{% url 'tsweb:trubriclist' %}">Rubric List</a></td>
+		</tr>
+	</table>
+</div>
+<div>
+	<table>
+		<tr>
+			<td class="tdimg"><img src="{% static 'tsweb/image/submissionlist.png' %}"/></td>
+			<td><a href="{% url 'tsweb:tsubmissionlist' %}">Submission List</a></td>
+		</tr>
+	</table>
+</div>
+</div>
+<div class="content">
+<div id="list"></div>
+<div id="editField">
+	<form>
+	<table class="editor">
+		<tr>
+			<td class="col">Assignment Name</td>
+			<td class="editorTD">
+				<input type="text" id="ele_name" name="name" class="text" value="" />
+				<input type="hidden" id="ele_id" name="id" value="" />
+			</td>
+			<td class="viewTD"><span id="textView_name"></span></td>
+		</tr>
+		<tr>
+			<td class="col">Description</td>
+			<td class="editorTD"><input type="text" id="ele_description" name="description" class="text" value="" /></td>
+			<td class="viewTD"><span id="textView_description"></span></td>
+		</tr>
+		<tr>
+			<td class="col">Rubric ID</td>
+			<td class="editorTD"><select id="ele_rubricid" name="rubricid"></select></td>
+			<td class="viewTD"><span id="textView_rubricid"></span></td>
+		</tr>
+		<tr>
+			<td class="col">Maximum Word</td>
+			<td class="editorTD"><input type="text" id="ele_maxwords" name="maxwords" class="text" value="" /></td>
+			<td class="viewTD"><span id="textView_maxwords"></span></td>
+		</tr>
+		<tr>
+			<td class="col">Minimum Word</td>
+			<td class="editorTD"><input type="text" id="ele_minwords" name="minwords" class="text" value="" /></td>
+			<td class="viewTD"><span id="textView_minwords"></span></td>
+		</tr>
+		<tr>
+			<td class="col">Disable</td>
+			<td class="editorTD"><input type="checkbox" id="ele_disabled" name="disabled" /></td>
+			<td class="viewTD"><span id="textView_disabled"></span></td>
+		</tr>
+		<!--
+		<tr>
+			<td><input id="btnSetup" type="button" value="Setup" class="button" style="width:80px;height:24px;cursor:pointer;"></td>
+		</tr>
+		--*>
+		<tr>
+			<td>&nbsp;</td>
+		</tr>
+		<tr>
+			<td><div id="btnBack"><span class="ui-icon ui-icon-arrowreturnthick-1-w" style="float:left;"></span>back</div></td>
+			<td class="editorTD" style="float:right;"><div id="btnSave"><span class="ui-icon ui-icon-disk" style="float:left;"></span>Save</div></td>
+			<td class="viewTD"><div id="btnEdit"><span class="ui-icon ui-icon-wrench" style="float:left;"></span>Edit</div></td>
+		</tr>
+	</table>
+	</form>
+	<style>
+		#selectAssignmentHeader li{
+			list-style: none;
+			float: left;
+			padding-right: 20px;
+			font-weight: bold;
+		}
+		
+		#selectAssignmentHeader{
+			clear: both;
+		}
+	</style>
+	<div id="listAssignmentClass" style="float:left;"></div>
+	<div id="listAssignmentStudent" style="float:left;padding-left: 20px;"></div>
+	<div id="selectAssignmentHeader" style="padding-top: 10px; padding-bottom: 10px;">
+		<ul>
+			<li>Select For Assignment : </li>
+			<li>
+				<select id="select_assignment">
+					<option value="tClassAssignlist">class</option>
+					<option value="tStudentAssignlist">student</option>
+				</select>
+>>>>>>> c01980e857e7be4eca2c2122a2cd842c3f38290a-->
+
 
 	<script>
 		$('#new_assignment_form').on("submit",function(e){

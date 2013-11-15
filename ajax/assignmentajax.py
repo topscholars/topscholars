@@ -20,7 +20,7 @@ class ASSSIGNMENTLIST():
         except KeyError:
             return HttpResponse('error', mimetype='application/json')
         else:
-            cursor.execute("SELECT id,name,description,rubricid,maxwords FROM assignment  WHERE id = %s", [id])
+            cursor.execute("SELECT id,name,description,rubricid,maxwords,minwords, disabled FROM assignment  WHERE id = %s", [id])
                    
             results = cursor.fetchall() 
             for r in results:
@@ -30,6 +30,8 @@ class ASSSIGNMENTLIST():
                         'description': r[2],
                         'rubricid': r[3],
                         'maxwords': r[4],
+                        'minwords': r[5],
+                        'disabled': r[6],
                         }
             data = simplejson.dumps(data_json)
         return HttpResponse(data, mimetype='application/json')

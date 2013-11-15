@@ -61,6 +61,10 @@ function EDITTABLE(){
 		$("#txtSearch").show();
 		$(".searchboximg").show();
 		thisClass.getData('');
+		
+		//return and hide
+		$(".viewTD").show();
+		$(".editorTD").hide();
 	}
 	
 	this.editTable = function(id){
@@ -71,6 +75,7 @@ function EDITTABLE(){
 			function(result){
 				$.each(result, function(ini,val){
 					thisClass.seperateElement($("#ele_"+ini), val);
+					thisClass.seperateView(ini,val);
 				});
 				
 				$("#ele_dayofweek").multiselect('refresh'); 
@@ -86,6 +91,7 @@ function EDITTABLE(){
 	this.iniEventEditor = function(){
 		thisClass.UIHover("#btnSave");
 		thisClass.UIHover("#btnBack");
+		thisClass.UIHover("#btnEdit");
 		
 		$("#btnBack").click(function(){
 			thisClass.hideEditTable();
@@ -219,6 +225,7 @@ function EDITTABLE(){
 	this.iniControl = function(){
 		thisClass.getData('');
 		Watermark('txtSearch', 'Search', 'noclass');
+		$(".editorTD").hide();
 		 
 		$("#editField").hide();
 		$( "#ele_startdate").datepicker({ dateFormat: 'dd-mm-yy' });
@@ -233,6 +240,11 @@ function EDITTABLE(){
 		
 		$("#btnSave").click(function(){
 			thisClass.save();
+		});
+		
+		$("#btnEdit").click(function(){
+			$(".editorTD").show();
+			$(".viewTD").hide();
 		});
 		
 		$(".listnewbutton").click(function(){
@@ -324,45 +336,52 @@ $(function() {
 	<table class="editor">
 		<tr>
 			<td class="col">Class Id</td>
-			<td>
+			<td class="editorTD">
 				<select id="ele_classid" name='classid'></select>
 				<input type="hidden" id="ele_id" name="id" value="" />
 			</td>
+			<td class="viewTD"><span id="textView_classid"></span></td>
 		</tr>
 		<tr>
 			<td class="col">Code</td>
-			<td><input type="text" id="ele_code" name="code" class="text" value="" /></td>
+			<td class="editorTD"><input type="text" id="ele_code" name="code" class="text" value="" /></td>
+			<td class="viewTD"><span id="textView_code"></span></td>
 		</tr>
 		<tr>
 			<td class="col">Subcode</td>
-			<td><input type="text" id="ele_subcode" name="subcode" class="text" value="" /></td>
+			<td class="editorTD"><input type="text" id="ele_subcode" name="subcode" class="text" value="" /></td>
+			<td class="viewTD"><span id="textView_subcode"></span></td>
 		</tr>
 		<tr>
 			<td class="col">Teacher Name</td>
-			<td>
-				<select id="ele_teacherid" name="teacherid">
-				</select>
+			<td class="editorTD">
+				<select id="ele_teacherid" name="teacherid"></select>
 			</td>
+			<td class="viewTD"><span id="textView_teacherid"></span></td>
 		</tr>
 		<tr>
 			<td class="col">Start Date</td>
-			<td><input type="text" id="ele_startdate" name="startdate" class="text" value="" /></td>
+			<td class="editorTD"><input type="text" id="ele_startdate" name="startdate" class="text" value="" /></td>
+			<td class="viewTD"><span id="textView_startdate"></span></td>
 		</tr>
 		<tr>
 			<td class="col">End Date</td>
-			<td><input type="text" id="ele_enddate" name="enddate" class="text" value="" /></td>
+			<td class="editorTD"><input type="text" id="ele_enddate" name="enddate" class="text" value="" /></td>
+			<td class="viewTD"><span id="textView_enddate"></span></td>
 		</tr>
 		<tr>
 			<td class="col">Start Time</td>
-			<td><input type="text" id="ele_starttime" name="starttime" class="text" value="" /></td>
+			<td class="editorTD"><input type="text" id="ele_starttime" name="starttime" class="text" value="" /></td>
+			<td class="viewTD"><span id="textView_starttime"></span></td>
 		</tr>
 		<tr>
 			<td class="col">End Time</td>
-			<td><input type="text" id="ele_endtime" name="endtime" class="text" value="" /></td>
+			<td class="editorTD"><input type="text" id="ele_endtime" name="endtime" class="text" value="" /></td>
+			<td class="viewTD"><span id="textView_endtime"></span></td>
 		</tr>
 		<tr>
 			<td class="col">Day of week</td>
-			<td>
+			<td class="editorTD">
 				<select id="ele_dayofweek" name="dayofweek" multiple>
 					<option value="Mon">Monday</option>
 					<option value="Tue">Tuesday</option>
@@ -373,17 +392,20 @@ $(function() {
 					<option value="Sun">Sunday</option>
 				</select>
 			</td>
+			<td class="viewTD"><span id="textView_dayofweek"></span></td>
 		</tr>
 		<tr>
 			<td class="col">Disable</td>
-			<td><input type="checkbox" id="ele_disabled" name="disabled" /></td>
+			<td class="editorTD"><input type="checkbox" id="ele_disabled" name="disabled" /></td>
+			<td class="viewTD"><span id="textView_disabled"></span></td>
 		</tr>
 		<tr>
 			<td>&nbsp;</td>
 		</tr>
 		<tr>
 			<td><div id="btnBack"><span class="ui-icon ui-icon-arrowreturnthick-1-w" style="float:left;"></span>back</div></td>
-			<td style="float:right;"><div id="btnSave"><span class="ui-icon ui-icon-disk" style="float:left;"></span>Save</div></td>
+			<td class="editorTD" style="float:right;"><div id="btnSave"><span class="ui-icon ui-icon-disk" style="float:left;"></span>Save</div></td>
+			<td class="viewTD"><div id="btnEdit"><span class="ui-icon ui-icon-wrench" style="float:left;"></span>Edit</div></td>
 		</tr>
 	</table>
 	</form>

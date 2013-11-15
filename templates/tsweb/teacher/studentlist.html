@@ -51,6 +51,10 @@ function EDITTABLE(){
 		$("#txtSearch").show();
 		$(".searchboximg").show();
 		thisClass.getData('');
+		
+		//return and hide
+		$(".viewTD").show();
+		$(".editorTD").hide();
 	}
 	
 	this.editTable = function(id){
@@ -62,6 +66,7 @@ function EDITTABLE(){
 			function(result){
 				$.each(result, function(ini,val){
 					thisClass.seperateElement($("#ele_"+ini), val);
+					thisClass.seperateView(ini,val);
 				});
 				
 				thisClass.showEditTable();
@@ -75,6 +80,7 @@ function EDITTABLE(){
 	this.iniEventEditor = function(){
 		thisClass.UIHover("#btnSave");
 		thisClass.UIHover("#btnBack");
+		thisClass.UIHover("#btnEdit");
 		
 		$("#btnBack").click(function(){
 			thisClass.hideEditTable();
@@ -171,6 +177,11 @@ function EDITTABLE(){
 			thisClass.save();
 		});
 		
+		$("#btnEdit").click(function(){
+			$(".editorTD").show();
+			$(".viewTD").hide();
+		}).hide();
+		
 		$(".listnewbutton").click(function(){
 			thisClass.showEditTable();
 			$("[id^='ele_']").each(function(){
@@ -266,89 +277,109 @@ Class Filter:&nbsp;
 	<table class="editor">
 		<tr>
 			<td class="col">First Name</td>
-			<td>
+			<td class="editorTD">
 				<input type="text" id="ele_firstname" name="firstname" class="text" value="" />
 				<input type="hidden" id="ele_id" name="id" value="" />
 			</td>
+			<td class="viewTD"><span id="textView_firstname"></span></td>
 		</tr>
 		<tr>
 			<td class="col">Middle Name</td>
-			<td><input type="text" id="ele_middlename" name="middlename" class="text" value="" /></td>
+			<td class="editorTD"><input type="text" id="ele_middlename" name="middlename" class="text" value="" /></td>
+			<td class="viewTD"><span id="textView_middlename"></span></td>
 		</tr>
 		<tr>
 			<td class="col">Last Name</td>
-			<td><input type="text" id="ele_lastname" name="lastname" class="text" value="" /></td>
+			<td class="editorTD"><input type="text" id="ele_lastname" name="lastname" class="text" value="" /></td>
+			<td class="viewTD"><span id="textView_lastname"></span></td>
 		</tr>
 		<tr>
 			<td class="col">Date of Birth</td>
-			<td><input type="text" id="ele_dob" name="dob" class="text" value="" /></td>
+			<td class="editorTD"><input type="text" id="ele_dob" name="dob" class="text" value="" /></td>
+			<td class="viewTD"><span id="textView_dob"></span></td>
 		</tr>
 		<tr>
 			<td class="col">Gender</td>
-			<td><select id="ele_gender" name="gender"></select></td>
+			<td class="editorTD"><select id="ele_gender" name="gender"></select></td>
+			<td class="viewTD"><span id="textView_gender"></span></td>
 		</tr>
 		<tr>
 			<td class="col">Salutation</td>
-			<td><select id="ele_salutation" name="salutation"></select></td>
+			<td class="editorTD"><select id="ele_salutation" name="salutation"></select></td>
+			<td class="viewTD"><span id="textView_salutation"></span></td>
 		</tr>
 		<tr>
 			<td class="col">Address 1</td>
-			<td><input type="text" id="ele_address1" name="address1" class="text" value="" /></td>
+			<td class="editorTD"><input type="text" id="ele_address1" name="address1" class="text" value="" /></td>
+			<td class="viewTD"><span id="textView_address1"></span></td>
 		</tr>
 		<tr>
 			<td class="col">Address 2</td>
-			<td><input type="text" id="ele_address2" name="address2" class="text" value="" /></td>
+			<td class="editorTD"><input type="text" id="ele_address2" name="address2" class="text" value="" /></td>
+			<td class="viewTD"><span id="textView_address2"></span></td>
 		</tr>
 		<tr>
 			<td class="col">Address 3</td>
-			<td><input type="text" id="ele_address3" name="address3" class="text" value="" /></td>
+			<td class="editorTD"><input type="text" id="ele_address3" name="address3" class="text" value="" /></td>
+			<td class="viewTD"><span id="textView_address3"></span></td>
 		</tr>
 		<tr>
 			<td class="col">City</td>
-			<td><input type="text" id="ele_city" name="city" class="text" value="" /></td>
+			<td class="editorTD"><input type="text" id="ele_city" name="city" class="text" value="" /></td>
+			<td class="viewTD"><span id="textView_city"></span></td>
 		</tr>
 		<tr>
 			<td class="col">Zipcode</td>
-			<td><input type="text" id="ele_zipcode" name="zipcode" class="text" value="" /></td>
+			<td class="editorTD"><input type="text" id="ele_zipcode" name="zipcode" class="text" value="" /></td>
+			<td class="viewTD"><span id="textView_zipcode"></span></td>
 		</tr>
 		<tr>
 			<td class="col">State</td>
-			<td><input type="text" id="ele_state" name="state" class="text" value="" /></td>
+			<td class="editorTD"><input type="text" id="ele_state" name="state" class="text" value="" /></td>
+			<td class="viewTD"><span id="textView_state"></span></td>
 		</tr>
 		<tr>
 			<td class="col">Country</td>
-			<td><input type="text" id="ele_country" name="country" class="text" value="" /></td>
+			<td class="editorTD"><input type="text" id="ele_country" name="country" class="text" value="" /></td>
+			<td class="viewTD"><span id="textView_country"></span></td>
 		</tr>
 		<tr>
 			<td class="col">Mobile Phone</td>
-			<td><input type="text" id="ele_mobilephone" name="mobilephone" class="text" value="" /></td>
+			<td class="editorTD"><input type="text" id="ele_mobilephone" name="mobilephone" class="text" value="" /></td>
+			<td class="viewTD"><span id="textView_mobilephone"></span></td>
 		</tr>
 		<tr>
 			<td class="col">Home Phone</td>
-			<td><input type="text" id="ele_homephone" name="homephone" class="text" value="" /></td>
+			<td class="editorTD"><input type="text" id="ele_homephone" name="homephone" class="text" value="" /></td>
+			<td class="viewTD"><span id="textView_homephone"></span></td>
 		</tr>
 		<tr>
 			<td class="col">Other Phone</td>
-			<td><input type="text" id="ele_otherphone" name="otherphone" class="text" value="" /></td>
+			<td class="editorTD"><input type="text" id="ele_otherphone" name="otherphone" class="text" value="" /></td>
+			<td class="viewTD"><span id="textView_otherphone"></span></td>
 		</tr>
 		<tr>
 			<td class="col">Email Address 1</td>
-			<td><input type="text" id="ele_emailaddress1" name="emailaddress1" class="text" value="" /></td>
+			<td class="editorTD"><input type="text" id="ele_emailaddress1" name="emailaddress1" class="text" value="" /></td>
+			<td class="viewTD"><span id="textView_emailaddress1"></span></td>
 		</tr>
 		<tr>
 			<td class="col">Email Address 2</td>
-			<td><input type="text" id="ele_emailaddress2" name="emailaddress2" class="text" value="" /></td>
+			<td class="editorTD"><input type="text" id="ele_emailaddress2" name="emailaddress2" class="text" value="" /></td>
+			<td class="viewTD"><span id="textView_emailaddress2"></span></td>
 		</tr>
 		<tr>
 			<td class="col">Current Accademic Year</td>
-			<td><input type="text" id="ele_currentaccademicyear" name="currentaccademicyear" class="text" value="" /></td>
+			<td class="editorTD"><input type="text" id="ele_currentaccademicyear" name="currentaccademicyear" class="text" value="" /></td>
+			<td class="viewTD"><span id="textView_currentaccademicyear"></span></td>
 		</tr>
 		<tr>
 			<td>&nbsp;</td>
 		</tr>
 		<tr>
 			<td><div id="btnBack"><span class="ui-icon ui-icon-arrowreturnthick-1-w" style="float:left;"></span>back</div></td>
-			<td style="float:right;"><div id="btnSave"><span class="ui-icon ui-icon-disk" style="float:left;"></span>Save</div></td>
+			<td class="editorTD" style="float:right;"><div id="btnSave"><span class="ui-icon ui-icon-disk" style="float:left;"></span>Save</div></td>
+			<td class="viewTD"><div id="btnEdit"><span class="ui-icon ui-icon-wrench" style="float:left;"></span>Edit</div></td>
 		</tr>
 	</table>
 	</form>

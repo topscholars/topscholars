@@ -54,6 +54,10 @@ function EDITTABLE(){
 		$("#txtSearch").show();
 		$(".searchboximg").show();
 		thisClass.getData('');
+		
+		//return and hide
+		$(".viewTD").show();
+		$(".editorTD").hide();
 	}
 	
 	this.editTable = function(id){
@@ -64,6 +68,7 @@ function EDITTABLE(){
 			function(result){
 				$.each(result, function(ini,val){
 					thisClass.seperateElement($("#ele_"+ini), val);
+					thisClass.seperateView(ini,val);
 				});
 				
 				thisClass.showEditTable();
@@ -80,6 +85,7 @@ function EDITTABLE(){
 	this.iniEventEditor = function(){
 		thisClass.UIHover("#btnSave");
 		thisClass.UIHover("#btnBack");
+		thisClass.UIHover("#btnEdit");
 		
 		$("#btnBack").click(function(){
 			thisClass.hideEditTable();
@@ -274,6 +280,11 @@ function EDITTABLE(){
 			thisClass.save();
 		});
 		
+		$("#btnEdit").click(function(){
+			$(".editorTD").show();
+			$(".viewTD").hide();
+		});
+		
 		$(".listnewbutton").click(function(){
 			$("[id^='ele_']").each(function(){
 				$(this).val('');
@@ -371,30 +382,36 @@ Class Filter:&nbsp;
 	<table class="editor">
 		<tr>
 			<td class="col">Assignment Name</td>
-			<td>
+			<td class="editorTD">
 				<input type="text" id="ele_name" name="name" class="text" value="" />
 				<input type="hidden" id="ele_id" name="id" value="" />
 			</td>
+			<td class="viewTD"><span id="textView_name"></span></td>
 		</tr>
 		<tr>
 			<td class="col">Description</td>
-			<td><input type="text" id="ele_description" name="description" class="text" value="" /></td>
+			<td class="editorTD"><input type="text" id="ele_description" name="description" class="text" value="" /></td>
+			<td class="viewTD"><span id="textView_description"></span></td>
 		</tr>
 		<tr>
 			<td class="col">Rubric ID</td>
-			<td><select id="ele_rubricid" name="rubricid"></select></td>
+			<td class="editorTD"><select id="ele_rubricid" name="rubricid"></select></td>
+			<td class="viewTD"><span id="textView_rubricid"></span></td>
 		</tr>
 		<tr>
 			<td class="col">Maximum Word</td>
-			<td><input type="text" id="ele_maxwords" name="maxwords" class="text" value="" /></td>
+			<td class="editorTD"><input type="text" id="ele_maxwords" name="maxwords" class="text" value="" /></td>
+			<td class="viewTD"><span id="textView_maxwords"></span></td>
 		</tr>
 		<tr>
 			<td class="col">Minimum Word</td>
-			<td><input type="text" id="ele_mminwords" name="minwords" class="text" value="" /></td>
+			<td class="editorTD"><input type="text" id="ele_minwords" name="minwords" class="text" value="" /></td>
+			<td class="viewTD"><span id="textView_minwords"></span></td>
 		</tr>
 		<tr>
 			<td class="col">Disable</td>
-			<td><input type="checkbox" id="ele_disabled" name="disabled" /></td>
+			<td class="editorTD"><input type="checkbox" id="ele_disabled" name="disabled" /></td>
+			<td class="viewTD"><span id="textView_disabled"></span></td>
 		</tr>
 		<!--
 		<tr>
@@ -406,7 +423,8 @@ Class Filter:&nbsp;
 		</tr>
 		<tr>
 			<td><div id="btnBack"><span class="ui-icon ui-icon-arrowreturnthick-1-w" style="float:left;"></span>back</div></td>
-			<td style="float:right;"><div id="btnSave"><span class="ui-icon ui-icon-disk" style="float:left;"></span>Save</div></td>
+			<td class="editorTD" style="float:right;"><div id="btnSave"><span class="ui-icon ui-icon-disk" style="float:left;"></span>Save</div></td>
+			<td class="viewTD"><div id="btnEdit"><span class="ui-icon ui-icon-wrench" style="float:left;"></span>Edit</div></td>
 		</tr>
 	</table>
 	</form>

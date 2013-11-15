@@ -251,8 +251,12 @@ function EDITTABLE(){
 			$("[id^='ele_']").each(function(){
 				$(this).val('');
 			});
-
+			$("[id^='textView_']").each(function(){
+				$(this).text('');
+			});
 			thisClass.showEditTable();
+			$(".editorTD").show();
+			$(".viewTD").hide();
 			
 			$("#list_student").hide();
 			$("#list_add_student").hide();

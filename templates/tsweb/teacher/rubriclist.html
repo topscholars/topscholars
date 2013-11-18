@@ -19,8 +19,10 @@
 	<script src="{% static 'tsweb/js/jquery-ui-1.10.3.custom.min.js' %}"></script>-->
 	
 	<script src="../../../static/tsweb/js/jQuery1-10-1.js" type="text/javascript"></script>
+	<script src="../../../static/tsweb/js/jquery-ui-1-10-3-custom-min.js" type="text/javascript"></script>
 	<script src="../../../static/tsweb/js/bootstrap.js" type="text/javascript"></script>
 	<script src="../../../static/tsweb/js/transition.js" type="text/javascript"></script>
+	<script src="../../../static/tsweb/js/popover.js" type="text/javascript"></script>
 <script>
 $(function() {
 	Watermark('txtSearch', 'Search', 'noclass');
@@ -184,18 +186,85 @@ function CloseEdit() {
 		        <h4 class="modal-title">New Rubric</h4>
 		      </div>
 		      <div class="modal-body">
-		        <form role="form" class="form-horizontal" id="new_rubric_form">
+		        <form role="form" class="form-inline" id="new_rubric_form">
 		        	<!--Create rubric here-->
+		        	<div class="col-lg-4 clearfix">
+			        	<div class="form-group">
+			        		<label for="rubric_objective">Goal Of Task</label>
+			        		<input type="text" name="rubric_objective" id="rubric_objective" class="form-control" />
+			        	</div>
+			        	<div class="form-group">
+			        		<label for="rubric_objective">Audience</label>
+			        		<input type="text" name="rubric_objective" id="rubric_objective" class="form-control" />
+			        	</div>
+			        	<div class="form-group">
+			        		<label for="rubric_objective">Context/Situation</label>
+			        		<input type="text" name="rubric_objective" id="rubric_objective" class="form-control" />
+			        	</div>
+			        	<div class="form-group">
+			        		<label for="rubric_objective">Product Parameters</label>
+			        		<input type="text" name="rubric_objective" id="rubric_objective" class="form-control" />
+			        	</div>
+		        	</div>
+		        	
+		        	<span class="info">To change the "%" value simply click on the number</span>
+		        	
+		        	<div class="rubric-categories">
+		        		<div class="rubric-impact circle circle-blue center-block">
+		        			<p>Impact</p>
+		        			<div class="weight-percent"><input id="impact_percent" max="100" autofocus="true" step="1" type="number" name="impact-percent" class="circle-input" value="0" />%</div>
+		        		</div>
+		        		
+		        		<div class="rubric-quality circle circle-green">
+		        			<p>Quality</p>
+		        			<div class="weight-percent"><input id="quality_percent" max="100" step="1" type="number" name="quality-percent" class="circle-input" value="0" />%</div>
+		        		</div>
+		        		
+		        		<div class="rubric-objective circle circle-grey">
+		        			<div>Objective</div>
+		        		</div>
+		        		
+		        		<div class="rubric-content circle circle-purple">
+		        			<p>Content</p>
+		        			<div class="weight-percent"><input id="content_percent" max="100" step="1" type="number" name="content-percent" class="circle-input" value="0" />%</div>
+		        		</div>
+		        		
+		        		<div class="rubric-process circle circle-red">
+		        			<p>Process</p>
+		        			<div class="weight-percent"><input id="process_percent" max="100" step="1" type="number" name="process-percent" class="circle-input" value="0" />%</div>
+		        		</div>
+		        	</div>
+		        	<div class="modal-footer">
+		        	  <input type="reset" class="btn btn-default" data-dismiss="modal" value="Close"/>
+		        	  <input type="submit" class="btn btn-primary" value="Save Rubric" id="btnSave"/>
+		        	</div>
 		        </form>
 		      </div>
-		      <div class="modal-footer">
-		        <input type="reset" class="btn btn-default" data-dismiss="modal" value="Close"/>
-		        <input type="submit" class="btn btn-primary" value="Save Rubric" id="btnSave"/>
-		      </div>
+		      
 		    </div><!-- /.modal-content -->
 		  </div><!-- /.modal-dialog -->
 		</div><!-- /.modal -->
 		
+		<script>
+			$(document).ready(function () {
+				$("[rel=popover]").popover();
+				
+				var num = new Number();
+				var circleInput = $('.circle-input');
+				
+				if (circleInput.valueOf() <= 25) {
+					$('.circle').addClass('circle-xs');
+				} else if (circleInput.valueOf() <= 50) {
+					$('.circle').addClass('circle-sm');
+				} else if ($('.circle-input')() <= 75) {
+					$('.circle').addClass('circle-md');
+				} else if ($('.circle-input')() <= 100) {
+					$('.circle').addClass('circle-lg');
+				} else {
+					console.log("No value added");
+				}
+			});
+		</script>	
 
 <!--<div id="editrubricbackground" style="z-index:99;width:100%;height:100%;position:absolute;background-color:gray;opacity:0.8;"></div>
 <div id="editrubric" style="margin:auto;top:159px;width:782px;height:600px;position:absolute;left:0;right:0;border:1px #B9B9B9 solid;background-color:white;z-index:100;">
@@ -397,71 +466,8 @@ Tages:&nbsp;<input type="text" style="width:410px;height:20px;" value="">
 <input id="btnCancel" type="button" value="Cancel" class="button" style="width:80px;height:24px;cursor:pointer;background-color:#F8C7C7;height:35px;">&nbsp;
 <input id="btnSave" type="button" value="Save" class="button" style="width:80px;height:24px;cursor:pointer;background-color:#A6C2D9;height:35px;">
 </div>
-</div>
-<div class="placeholder">
-<div class="header">
-<div class="headertext">
-<h1>Teacher Name - My Classroom</h1>
-</div>
-<div class="headerbutton">
-<a href="{% url 'tsweb:logout' %}"><img src="{% static 'tsweb/image/logout.png' %}"/></a>
-<a href=""><img src="{% static 'tsweb/image/userdetails.png' %}" /></a>
-<a href=""><img src="{% static 'tsweb/image/username.png' %}" style="margin-top:12px;" /></a>
-</div>
-</div>
-<h1 class="pagename">Rubric List</h1>
-<input id="txtSearch" class="searchbox searchboxnofilter" type="text" value="Search"/>
-<img src="{% static 'tsweb/image/searchbox.png' %}" class="searchboximg searchboximgnofilter" />
-<div class="clear"></div>
-<br/>
-<div class="leftnav">
-<div>
-	<table>
-		<tr>
-			<td class="tdimg"><img src="{% static 'tsweb/image/classlist.png' %}"/></td>
-			<td><a href="{% url 'tsweb:tclasslist' %}">Class List</a></td>
-		</tr>
-	</table>
-</div>
-<div>
-	<table>
-		<tr>
-			<td class="tdimg"><img src="{% static 'tsweb/image/assignmentlist.png' %}"/></td>
-			<td><a href="{% url 'tsweb:tassignmentlist' %}">Assignment List</a></td>
-		</tr>
-	</table>
-</div>
-<div>
-	<table>
-		<tr>
-			<td class="tdimg"><img src="{% static 'tsweb/image/studentlist.png' %}"/></td>
-			<td><a href="{% url 'tsweb:tstudentlist' %}">Student List</a></td>
-		</tr>
-	</table>
-</div>
-<div class="active">
-	<table>
-		<tr>
-			<td class="tdimg"><img src="{% static 'tsweb/image/rubriclist.png' %}"/></td>
-			<td><a href="{% url 'tsweb:trubriclist' %}">Rubric List</a></td>
-		</tr>
-	</table>
-</div>
-<div>
-	<table>
-		<tr>
-			<td class="tdimg"><img src="{% static 'tsweb/image/submissionlist.png' %}"/></td>
-			<td><a href="{% url 'tsweb:tsubmissionlist' %}">Submission List</a></td>
-		</tr>
-	</table>
-</div>
-</div>
-<div class="content">
-<div id="list"></div>
-<input type="button" value="New Rubric" class="button listnewbutton"/>
-</div>
-<div style="clear:both"></div>
-</div>-->
+</div> -->
+
 
 	</div> <!-- End page container --> 
 </body>

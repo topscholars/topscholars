@@ -56,9 +56,16 @@
 	animation-name: flash;
 }
 
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    /* display: none; <- Crashes Chrome on hover */
+    -webkit-appearance: none;
+    margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
+}
 
 body{
-	background-color: #cccccc;
+	/*background-color: #cccccc;*/
+	background: #ffffff url('../../../static/tsweb/image/squairy_light.png') repeat left top;
 }
 .container{
 	height: auto!important;
@@ -148,6 +155,15 @@ button:focus{
 	-webkit-animation: flash 2s ease-in-out 0s 3 alternate;
 	-moz-animation: flash 2s ease-in-out 0s 3 alternate;
 	animation: flash 2s ease-in-out 0s 3 alternate;
+}
+.popover{
+	background-color: #2d3339!important;
+	color: #ffffff!important;
+	font-weight: bold!important;
+}
+.popover.arrow{
+	background-color: #2d3339!important;
+	z-index: 9999!important;
 }
 table tr td:hover{
 	cursor: pointer;
@@ -275,6 +291,9 @@ form{
 	border: 1px solid #999999;
 	box-shadow: 0px 5px 0px rgba(102,102,102, .5);
 }
+.block-expanded .block-body{
+	max-height: 100%!important;
+}
 .no-padding .block-body{
 	padding: 0!important;
 }
@@ -331,6 +350,10 @@ form{
 	padding: 8px;
 	margin-bottom: 10px;
 }
+.block-body .text-scroll{
+	height: 40px;
+	overflow: scroll;
+}
 .block-body .block-list{
 	width: 100%;
 	padding: 0!important;
@@ -338,9 +361,15 @@ form{
 }
 .block-list .tag{
 	display: inline-block;
-	background-color: rgba(239, 250, 40, 0.50);
-	padding: 2px;
+	background-color: rgba(33, 156, 230, 0.3);
+	padding: 3px;
 	border-radius: 3px;
+}
+.tag{
+	border: 1px dashed #91faaa;
+}
+.tag a:hover{
+	text-shadow: none;
 }
 .block-list li{
 	
@@ -449,6 +478,8 @@ form{
 	border-radius: 3px;
 	overflow: scroll;
 	background: #fff;
+	padding: 5px;
+	overflow: scroll;
 }
 /*.lesson-section .lesson-body .lesson-section*/
 
@@ -479,5 +510,188 @@ form{
 #new_rubric_modal .modal-dialog{
 	width: 60%;
 	left: 40%;
+}
+.rubric-categories{
+	display: inline-block;
+	/*margin-left: 30px;*/
+}
+.rubric-categories-sm{
+	display: inline-block!important;
+	-webkit-transform: scale(.75);
+	-moz-transform: scale(.75);
+	-o-transform: scale(.75);
+	
+	margin-top: -55px;
+}
+.circle-lg{
+	width: 12em!important;
+	height: 12em!important;
+	border-radius: 12em!important;
+}
+.circle-lg .circle-input{
+	width: 92px!important;
+}
+.circle-md{
+	width: 10em!important;
+	height: 10em!important;
+	border-radius: 10em!important;
+}
+.circle-md .circle-input{
+	width: 71px!important;
+}
+.circle-sm{
+	width: 8em!important;
+	height: 8em!important;
+	border-radius: 8em!important;
+}
+.circle-sm .circle-input{
+	width: 51px!important;
+}
+.circle-xs{
+	width: 6em!important;
+	height: 6em!important;
+	border-radius: 6em!important;
+}
+.circle-xs .circle-input{
+	width: 39px!important;
+}
+.circle-lg .weight-percent{
+	font-size: 3.8em!important;
+}
+.circle-md .weight-percent{
+	font-size: 3em!important;
+}
+.circle-sm .weight-percent{
+	font-size: 2em!important;
+}
+.circle-xs .weight-percent{
+	font-size: 1.5em!important;
+}
+.circle:before{
+	content: "";
+}
+.circle{
+	width: 9em;
+	height: 9em;
+	border-radius: 9em;
+	background-color: #444390;
+	content: "";
+	color: #ffffff;
+	font-weight: bold;
+	clear: both;
+	display: block;
+	padding: 10px;
+	text-align: center;
+	margin: 10px;
+}
+.circle:hover{
+	cursor: pointer;
+}
+.circle .weight-percent{
+	font-size: 2.5em;
+}
+.circle .circle-input{
+	width: 61px;
+}
+.circle-blue{
+	background-color: rgba(116, 151, 191, 0.5);
+	border: 1px solid;
+	border-color: rgba(116, 151, 191, .8);
+}
+.circle-blue:hover{
+	background-color: rgba(116, 151, 191, 1);
+	transition-duration: .2s;
+	-webkit-transition-duration: .2s;
+	-moz-transition: .2s;
+}
+.circle-green{
+	background-color: rgba(108, 176, 122, 0.5);
+	border: 1px solid;
+	border-color: rgba(108, 176, 122, 0.8);
+}
+.circle-green:hover{
+	background-color: rgba(108, 176, 122, 1);
+	transition-duration: .2s;
+	-webkit-transition-duration: .2s;
+	-moz-transition: .2s;
+}
+.circle-purple{
+	background-color: rgba(184, 160, 200, 0.5);
+	border: 1px solid;
+	border-color: rgba(184, 160, 200, 0.8);
+}
+.circle-purple:hover{
+	background-color: rgba(184, 160, 200, 1);
+	transition-duration: .2s;
+	-webkit-transition-duration: .2s;
+	-moz-transition: .2s;
+}
+.circle-red{
+	background-color: rgba(201, 139, 149, 0.5);
+	border: 1px solid;
+	border-color: rgba(201, 139, 149, 0.8);
+}
+.circle-red:hover{
+	background-color: rgba(201, 139, 149, 1);
+	transition-duration: .2s;
+	-webkit-transition-duration: .2s;
+	-moz-transition: .2s;
+}
+.circle-grey{
+	background-color: rgba(100, 100, 100, .3);
+	border: 1px solid;
+	border-color: rgba(100, 100, 100, .7);
+}
+.circle-grey:hover{
+	background-color: rgba(100, 100, 100, 1);
+	transition-duration: .2s;
+	-webkit-transition-duration: .2s;
+	-moz-transition: .2s;
+}
+.circle-grey div{
+	font-size: 1.5em;
+	line-height: 4.5em;
+}
+.circle-input{
+	background-color: transparent;
+	border: none;
+	color: #ffffff;
+	
+	-webkit-animation: flash 2s ease-in-out 0s 3 alternate;
+	-moz-animation: flash 2s ease-in-out 0s 3 alternate;
+	animation: flash 2s ease-in-out 0s 3 alternate;
+}
+.circle-val{
+	font-size: 1.4em!important;
+}
+.rubric-objective{
+	float: right;
+	margin-top: -136px;
+	margin-right: -150px;
+	z-index: 9999;
+	position: relative;
+}
+.rubric-impact{
+	margin-right: -150px;
+	float: right;
+	margin-bottom: -10px;
+}
+.rubric-quality{
+	margin-right: -33px;
+}
+.rubric-content{
+	float: right;
+	margin-right: -267px;
+	margin-top: -140px;
+}
+.rubric-process{
+	float: right;
+	margin-right: -150px;
+	margin-top: -19px;
+}
+.info{
+	float: right;
+	width: 125px;
+	color: #999;
 }
 /*End*/

@@ -62,6 +62,12 @@ input::-webkit-inner-spin-button {
     -webkit-appearance: none;
     margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
 }
+input:focus, input:active{
+	outline-color: rgba(0,0,0,.3)!important;
+	outline-width: 10px!important;
+	outline-offset: inherit;
+	outline: none!important;
+}
 
 body{
 	/*background-color: #cccccc;*/
@@ -69,6 +75,10 @@ body{
 }
 .container{
 	height: auto!important;
+}
+.no-style{
+	border: none;
+	width: 30px;
 }
 .page-container{
 	padding-bottom: 50px;
@@ -177,6 +187,9 @@ form{
 .form-centered legend{
 	font-size: 2em;
 	color: #444;
+}
+.input-group{
+	margin-bottom: 5px;
 }
 #login-form, #register-form{
 	margin: 0 auto;
@@ -481,6 +494,14 @@ form{
 	padding: 5px;
 	overflow: scroll;
 }
+.gradeSlider{
+	width: 50%;
+	margin-bottom: 10px;
+}
+.rubricSlider{
+	width: 100%;
+	margin-bottom: 10px!important;
+}
 /*.lesson-section .lesson-body .lesson-section*/
 
 
@@ -507,7 +528,7 @@ form{
 	position: absolute;
 	z-index: 2;
 }
-#new_rubric_modal .modal-dialog{
+.modal-wide .modal-dialog{
 	width: 60%;
 	left: 40%;
 }
@@ -593,7 +614,7 @@ form{
 .circle .circle-input{
 	width: 61px;
 }
-.circle-blue{
+.circle-blue, .btn-blue{
 	background-color: rgba(116, 151, 191, 0.5);
 	border: 1px solid;
 	border-color: rgba(116, 151, 191, .8);
@@ -604,7 +625,7 @@ form{
 	-webkit-transition-duration: .2s;
 	-moz-transition: .2s;
 }
-.circle-green{
+.circle-green, .btn-green{
 	background-color: rgba(108, 176, 122, 0.5);
 	border: 1px solid;
 	border-color: rgba(108, 176, 122, 0.8);
@@ -615,7 +636,7 @@ form{
 	-webkit-transition-duration: .2s;
 	-moz-transition: .2s;
 }
-.circle-purple{
+.circle-purple, .btn-purple{
 	background-color: rgba(184, 160, 200, 0.5);
 	border: 1px solid;
 	border-color: rgba(184, 160, 200, 0.8);
@@ -626,7 +647,7 @@ form{
 	-webkit-transition-duration: .2s;
 	-moz-transition: .2s;
 }
-.circle-red{
+.circle-red, .btn-red{
 	background-color: rgba(201, 139, 149, 0.5);
 	border: 1px solid;
 	border-color: rgba(201, 139, 149, 0.8);
@@ -650,7 +671,7 @@ form{
 }
 .circle-grey div{
 	font-size: 1.5em;
-	line-height: 4.5em;
+	line-height: 5em;
 }
 .circle-input{
 	background-color: transparent;
@@ -663,6 +684,24 @@ form{
 }
 .circle-val{
 	font-size: 1.4em!important;
+}
+.block-cell .circle-blue,
+.block-cell .circle-green, 
+.block-cell .circle-purple,
+.block-cell .circle-red{
+	color: #ffffff;
+	text-align: center;
+	padding: 10px;
+	border: none;
+}
+.btn-add{
+	width: 50px;
+	height: 50px;
+	border-radius: 30px;
+	
+	position: absolute;
+	left: 30px;
+	bottom: 120px;
 }
 .rubric-objective{
 	float: right;
@@ -693,5 +732,14 @@ form{
 	float: right;
 	width: 125px;
 	color: #999;
+}
+.criteria-count{
+	margin-top: -215px;
+	margin-right: 20px;
+}
+.category-info{
+	margin-top: -100px;
+	position: relative;
+	right: -200px;
 }
 /*End*/

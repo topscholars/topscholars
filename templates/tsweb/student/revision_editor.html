@@ -14,12 +14,13 @@
 	<link rel="stylesheet" href="../../../static/tsweb/css/bootstrap-glyphicons.css" type="text/css" />
 	<link rel="stylesheet" href="../../../static/tsweb/css/topscholars.css" type="text/css" />
 	<link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
-	
+	<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
 <!--	<script src="{% static 'tsweb/js/jQuery1.10.1.js' %}"></script>
 	<script src="{% static 'tsweb/js/jquery-ui-1.10.3.custom.min.js' %}"></script>-->
 	
 	<script src="../../../static/tsweb/js/jQuery1-10-1.js" type="text/javascript"></script>
 	<script src="../../../static/tsweb/js/jquery-ui-1-10-3-custom-min.js" type="text/javascript"></script>
+	<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
 	<script src="../../../static/tsweb/js/bootstrap.js" type="text/javascript"></script>
 	<script src="../../../static/tsweb/js/transition.js" type="text/javascript"></script>
 	<script src="../../../static/tsweb/js/popover.js" type="text/javascript"></script>
@@ -134,7 +135,7 @@
 			        		data-trigger="hover"
 			        		data-content="{% tag-details %} this is some more info about this tag.  Of course it will be loaded dynamically.."
 			        		role="button">{% tag-name %}
-			        		<span class="glyphicon glyphicon-thumbs-up"></span>
+			        		<span class="fa fa-frown-o"></span>
 		        		</a>
 	        		</li>
 		        </ul>
@@ -184,7 +185,9 @@
 		  					<div class="weight-percent circle-val" id="quality_percent">{%val%} %</div>
 		  				</div>
 		  				
-		  				<div class="rubric-objective circle circle-grey">
+		  				<div class="rubric-objective circle circle-grey"
+		  							data-toggle="modal"
+		  							data-target="#objective_modal">
 		  					<div>Objective</div>
 		  				</div>
 		  				
@@ -248,7 +251,8 @@
 	
 	<!--Modals for Rubric categories-->
 	
-	<div class="modal fade" id="impact_modal" tabindex="-1" role="dialog" aria-labelledby="impactRubric" aria-hidden="true" data-dismiss="false">
+	<!--Modal for Impact-->
+	<div class="modal fade modal-wide" id="impact_modal" tabindex="-1" role="dialog" aria-labelledby="impactRubric" aria-hidden="true" data-dismiss="false">
 	  <div class="modal-dialog">
 	    <div class="modal-content">
 	      <div class="modal-header teacher-header">
@@ -258,18 +262,131 @@
 	      <div class="modal-body">
 	        <form role="form" class="form-inline" id="impact_form">
 
-	        	
-	        	
+	        	<div class="bullet-list">
+	        		<ul>
+	        			<li>Answer the prompt beyond a reasonable doubt
+	        				<p>
+	        				  <label for="gradeValue1">Grade:</label>
+	        				  <input type="text" id="gradeValue1" style="border: 0; color: #f6931f; font-weight: bold;" />
+	        				</p>
+	        				<div id="gradeSlider" class="gradeSlider"></div>
+	        			</li>
+	        
+	        			<li>Effectively highlights the writers</li>
+	        			<li>Using sound reasoning and logical progression to support main arguments</li>
+	        			<li>Answer the prompt beyond a reasonable doubt</li>
+	        		</ul>
+	        		
+	        	</div>
+	        	<div class="modal-footer">
+	        		<div class="progress progress-striped active">
+	        		  <div class="progress-bar"  role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: 45%">
+	        		    <span class="sr-only">45% Complete</span>
+	        		  </div>
+	        		</div>	
+	        	  <input type="reset" class="btn btn-default" data-dismiss="modal" value="Close"/>
+	        	  <input type="submit" class="btn btn-primary" value="Save" id="btnSave"/>
+	        	</div>
 	        </form>
 	      </div>
-	      <div class="modal-footer">
-	        <input type="reset" class="btn btn-default" data-dismiss="modal" value="Close"/>
-	        <input type="submit" class="btn btn-primary" value="Save" id="btnSave"/>
-	      </div>
+	      
 	    </div><!-- /.modal-content -->
 	  </div><!-- /.modal-dialog -->
 	</div><!-- /.modal -->
 	
+	
+	
+	<!--Modal for Quality-->
+	<div class="modal fade modal-wide" id="quality_modal" tabindex="-1" role="dialog" aria-labelledby="qualityRubric" aria-hidden="true" data-dismiss="false">
+		  <div class="modal-dialog">
+		    <div class="modal-content">
+		      <div class="modal-header teacher-header">
+		        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+		        <h4 class="modal-title">Quality</h4>
+		      </div>
+		      <div class="modal-body">
+		        <form role="form" class="form-inline" id="quality_form">
+	
+		        	
+		        	
+		        </form>
+		      </div>
+		      <div class="modal-footer">
+		        <input type="reset" class="btn btn-default" data-dismiss="modal" value="Close"/>
+		        <input type="submit" class="btn btn-primary" value="Save" id="btnSave"/>
+		      </div>
+		    </div><!-- /.modal-content -->
+		  </div><!-- /.modal-dialog -->
+		</div><!-- /.modal -->
+	
+	<!--Modal for Content-->
+	<div class="modal fade modal-wide" id="content_modal" tabindex="-1" role="dialog" aria-labelledby="contentRubric" aria-hidden="true" data-dismiss="false">
+		  <div class="modal-dialog">
+		    <div class="modal-content">
+		      <div class="modal-header teacher-header">
+		        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+		        <h4 class="modal-title">Content</h4>
+		      </div>
+		      <div class="modal-body">
+		        <form role="form" class="form-inline" id="content_form">
+	
+		        	
+		        	
+		        </form>
+		      </div>
+		      <div class="modal-footer">
+		        <input type="reset" class="btn btn-default" data-dismiss="modal" value="Close"/>
+		        <input type="submit" class="btn btn-primary" value="Save" id="btnSave"/>
+		      </div>
+		    </div><!-- /.modal-content -->
+		  </div><!-- /.modal-dialog -->
+		</div><!-- /.modal -->
+	
+	<!--Modal for Process-->
+	<div class="modal fade modal-wide" id="process_modal" tabindex="-1" role="dialog" aria-labelledby="processRubric" aria-hidden="true" data-dismiss="false">
+		  <div class="modal-dialog">
+		    <div class="modal-content">
+		      <div class="modal-header teacher-header">
+		        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+		        <h4 class="modal-title">Process</h4>
+		      </div>
+		      <div class="modal-body">
+		        <form role="form" class="form-inline" id="process_form">
+	
+		        	
+		        	
+		        </form>
+		      </div>
+		      <div class="modal-footer">
+		        <input type="reset" class="btn btn-default" data-dismiss="modal" value="Close"/>
+		        <input type="submit" class="btn btn-primary" value="Save" id="btnSave"/>
+		      </div>
+		    </div><!-- /.modal-content -->
+		  </div><!-- /.modal-dialog -->
+		</div><!-- /.modal -->
+		
+		<!--Modal for Objective-->
+		<div class="modal fade modal-wide" id="objective_modal" tabindex="-1" role="dialog" aria-labelledby="objectiveRubric" aria-hidden="true" data-dismiss="false">
+			  <div class="modal-dialog">
+			    <div class="modal-content">
+			      <div class="modal-header teacher-header">
+			        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+			        <h4 class="modal-title">Objective</h4>
+			      </div>
+			      <div class="modal-body">
+			        <form role="form" class="form-inline" id="objective_form">
+		
+			        	
+			        	
+			        </form>
+			      </div>
+			      <div class="modal-footer">
+			        <input type="reset" class="btn btn-default" data-dismiss="modal" value="Close"/>
+			        <input type="submit" class="btn btn-primary" value="Save" id="btnSave"/>
+			      </div>
+			    </div><!-- /.modal-content -->
+			  </div><!-- /.modal-dialog -->
+			</div><!-- /.modal -->
 	
 	<script>
 		$(document).ready(function () {
@@ -277,53 +394,63 @@
 				$('.side-panel').toggle('slideRight','easeOutExpo',300);	
 			});
 			
+			$('.nav-border').css('display', 'block');
+			$('#hide-nav').click(function () {
+				$('.navbar').toggle();
 				$('.nav-border').css('display', 'block');
-				$('#hide-nav').click(function () {
-					$('.navbar').toggle();
-					$('.nav-border').css('display', 'block');
-				});
-				
-				$('#hide-nav').click(function (e) {
-					if ($('#hide-nav i').hasClass('fa-arrow-up')) {
-						$('#hide-nav i').removeClass('fa-arrow-up').addClass('fa-arrow-down');
-						$('.block-wide').css('margin-top', '10px').css('height', '100%');
-						$('.side-panel').css('margin-top', '-60px');
-						$('.hide-panel').css('margin-top', '-60px');
-					} else {
-						$('#hide-nav i').removeClass('fa-arrow-down').addClass('fa-arrow-up');
-						$('.block-wide').css('margin-top', '70px').css('height', '550px');
-						$('.side-panel').css('margin-top', '0px');
-						$('.hide-panel').css('margin-top', '0px');
-					}
-				});
-				
-				$('.hide-panel').click(function (e) {
-					if ($('.hide-panel i').hasClass('fa-arrow-right')) {
-						$('.hide-panel i').removeClass('fa-arrow-right').addClass('fa-arrow-left');
-						$('.block-wide').css('width', '100%');
-					} else {
-						$('.hide-panel i').removeClass('fa-arrow-left').addClass('fa-arrow-right');
-						$('.block-wide').css('width', '75%');
-					}
-				});
-				
-				
-				$('.lesson-btn').click(function (e) {
-					$('.lesson-section').toggle('slow', 'easeOutElastic', 3000);
-					$('.lesson-section').css('display', 'block');
-
-					if ($('.lesson-btn i').hasClass('fa-arrow-up')) {
-						$('.lesson-btn i').removeClass('fa-arrow-up').addClass('fa-arrow-down');
-					} else {
-						$('.lesson-btn i').removeClass('fa-arrow-down').addClass('fa-arrow-up');
-					}
-				});
-				
-				$("[rel=popover]").popover();
-			
 			});
 			
+			$('#hide-nav').click(function (e) {
+				if ($('#hide-nav i').hasClass('fa-arrow-up')) {
+					$('#hide-nav i').removeClass('fa-arrow-up').addClass('fa-arrow-down');
+					$('.block-wide').css('margin-top', '10px').css('height', '100%');
+					$('.side-panel').css('margin-top', '-60px');
+					$('.hide-panel').css('margin-top', '-60px');
+				} else {
+					$('#hide-nav i').removeClass('fa-arrow-down').addClass('fa-arrow-up');
+					$('.block-wide').css('margin-top', '70px').css('height', '550px');
+					$('.side-panel').css('margin-top', '0px');
+					$('.hide-panel').css('margin-top', '0px');
+				}
+			});
+			
+			$('.hide-panel').click(function (e) {
+				if ($('.hide-panel i').hasClass('fa-arrow-right')) {
+					$('.hide-panel i').removeClass('fa-arrow-right').addClass('fa-arrow-left');
+					$('.block-wide').css('width', '100%');
+				} else {
+					$('.hide-panel i').removeClass('fa-arrow-left').addClass('fa-arrow-right');
+					$('.block-wide').css('width', '75%');
+				}
+			});
+			
+			
+			$('.lesson-btn').click(function (e) {
+				$('.lesson-section').toggle('slow', 'easeOutElastic', 3000);
+				$('.lesson-section').css('display', 'block');
+
+				if ($('.lesson-btn i').hasClass('fa-arrow-up')) {
+					$('.lesson-btn i').removeClass('fa-arrow-up').addClass('fa-arrow-down');
+				} else {
+					$('.lesson-btn i').removeClass('fa-arrow-down').addClass('fa-arrow-up');
+				}
+			});
+			
+			$("[rel=popover]").popover();
+
+			
+			$(function() {
+			    $( "#gradeSlider").slider({
+			    	value: 0,
+			    	min: 0,
+			    	max: 100,
+			    	slide: function( event, ui ) {
+			    		$( "#gradeValue1" ).val(ui.value + "%");
+			    	}
+			    });
+			    $( "#gradeValue1" ).val($( "#gradeSlider" + " %").slider( "value" ) );
+			  });
+		});		
 	</script>
-	
 </body>
 </html>

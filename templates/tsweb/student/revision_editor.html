@@ -262,22 +262,17 @@
 	      <div class="modal-body">
 	        <form role="form" class="form-inline" id="impact_form">
 
-	        	<div class="bullet-list">
-	        		<ul>
-	        			<li>Answer the prompt beyond a reasonable doubt
+	        	<div class="criteria-list">
+	        		<ul col-lg-12>
+	        			<li class="well well-small">Answer the prompt beyond a reasonable doubt
 	        				<p>
-	        				  <label for="gradeValue1">Grade:</label>
-	        				  <input type="text" id="gradeValue1" style="border: 0; color: #f6931f; font-weight: bold;" />
+	        				  <label for="criteriaWeight">Weight:</label>
+	        				  <input placeholder="0-100" class="weight-input" type="number" max="100" maxlength="3" />
 	        				</p>
-	        				<div id="gradeSlider" class="gradeSlider"></div>
 	        			</li>
-	        
-	        			<li>Effectively highlights the writers</li>
-	        			<li>Using sound reasoning and logical progression to support main arguments</li>
-	        			<li>Answer the prompt beyond a reasonable doubt</li>
 	        		</ul>
-	        		
 	        	</div>
+	        	
 	        	<div class="modal-footer">
 	        		<div class="progress progress-striped active">
 	        		  <div class="progress-bar"  role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: 45%">
@@ -287,8 +282,9 @@
 	        	  <input type="reset" class="btn btn-default" data-dismiss="modal" value="Close"/>
 	        	  <input type="submit" class="btn btn-primary" value="Save" id="btnSave"/>
 	        	</div>
+	        	
 	        </form>
-	      </div>
+	      </div><!-- /.modal-body -->
 	      
 	    </div><!-- /.modal-content -->
 	  </div><!-- /.modal-dialog -->
@@ -306,15 +302,30 @@
 		      </div>
 		      <div class="modal-body">
 		        <form role="form" class="form-inline" id="quality_form">
-	
-		        	
-		        	
-		        </form>
+						<div class="criteria-list">
+								<ul col-lg-12>
+									<li class="well well-small">Answer the prompt beyond a reasonable doubt
+										<p>
+										  <label for="criteriaWeight">Weight:</label>
+										  <input placeholder="0-100" class="weight-input" type="number" max="100" maxlength="3" />
+										</p>
+									</li>
+								</ul>
+							</div>
+							
+							<div class="modal-footer">
+								<div class="progress progress-striped active">
+								  <div class="progress-bar"  role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: 45%">
+								    <span class="sr-only">45% Complete</span>
+								  </div>
+								</div>	
+							  <input type="reset" class="btn btn-default" data-dismiss="modal" value="Close"/>
+							  <input type="submit" class="btn btn-primary" value="Save" id="btnSave"/>
+							</div>
+							
+						</form>
 		      </div>
-		      <div class="modal-footer">
-		        <input type="reset" class="btn btn-default" data-dismiss="modal" value="Close"/>
-		        <input type="submit" class="btn btn-primary" value="Save" id="btnSave"/>
-		      </div>
+		      
 		    </div><!-- /.modal-content -->
 		  </div><!-- /.modal-dialog -->
 		</div><!-- /.modal -->
@@ -329,15 +340,30 @@
 		      </div>
 		      <div class="modal-body">
 		        <form role="form" class="form-inline" id="content_form">
-	
-		        	
-		        	
-		        </form>
+							<div class="criteria-list">
+									<ul col-lg-12>
+										<li class="well well-small">Answer the prompt beyond a reasonable doubt
+											<p>
+											  <label for="criteriaWeight">Weight:</label>
+											  <input placeholder="0-100" class="weight-input" type="number" max="100" maxlength="3" />
+											</p>
+										</li>
+									</ul>
+								</div>
+								
+								<div class="modal-footer">
+									<div class="progress progress-striped active">
+									  <div class="progress-bar"  role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: 45%">
+									    <span class="sr-only">45% Complete</span>
+									  </div>
+									</div>	
+								  <input type="reset" class="btn btn-default" data-dismiss="modal" value="Close"/>
+								  <input type="submit" class="btn btn-primary" value="Save" id="btnSave"/>
+								</div>
+								
+							</form>
 		      </div>
-		      <div class="modal-footer">
-		        <input type="reset" class="btn btn-default" data-dismiss="modal" value="Close"/>
-		        <input type="submit" class="btn btn-primary" value="Save" id="btnSave"/>
-		      </div>
+		      
 		    </div><!-- /.modal-content -->
 		  </div><!-- /.modal-dialog -->
 		</div><!-- /.modal -->
@@ -352,15 +378,30 @@
 		      </div>
 		      <div class="modal-body">
 		        <form role="form" class="form-inline" id="process_form">
-	
-		        	
-		        	
-		        </form>
+							<div class="criteria-list">
+									<ul col-lg-12>
+										<li class="well well-small">Answer the prompt beyond a reasonable doubt
+											<p>
+											  <label for="criteriaWeight">Weight:</label>
+											  <input placeholder="0-100" class="weight-input" type="number" max="100" maxlength="3" />
+											</p>
+										</li>
+									</ul>
+								</div>
+								
+								<div class="modal-footer">
+									<div class="progress progress-striped active">
+									  <div class="progress-bar"  role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: 45%">
+									    <span class="sr-only">45% Complete</span>
+									  </div>
+									</div>	
+								  <input type="reset" class="btn btn-default" data-dismiss="modal" value="Close"/>
+								  <input type="submit" class="btn btn-primary" value="Save" id="btnSave"/>
+								</div>
+								
+							</form>
 		      </div>
-		      <div class="modal-footer">
-		        <input type="reset" class="btn btn-default" data-dismiss="modal" value="Close"/>
-		        <input type="submit" class="btn btn-primary" value="Save" id="btnSave"/>
-		      </div>
+		      
 		    </div><!-- /.modal-content -->
 		  </div><!-- /.modal-dialog -->
 		</div><!-- /.modal -->
@@ -374,16 +415,21 @@
 			        <h4 class="modal-title">Objective</h4>
 			      </div>
 			      <div class="modal-body">
-			        <form role="form" class="form-inline" id="objective_form">
-		
-			        	
-			        	
-			        </form>
+							
+							<h5>{% assignment_name %}</h5>
+							<p class="text-scroll"><b>Description:</b> {% assignment_description %}</p>
+							<p><b>Max Points:</b> out of 100</p>
+							<p><b>Category:</b> {% assignment_category %}</p>
+							<p><b>Grading Criteria:</b> {% rubric_name %}</p>
+							<p><b>Due Date:</b> {% due_date %}</p>			
+									
+							<div class="modal-footer">
+							  <input type="reset" class="btn btn-default" data-dismiss="modal" value="Close"/>
+							  <!--<input type="submit" class="btn btn-primary" value="Save" id="btnSave"/>-->
+							</div>
+									
 			      </div>
-			      <div class="modal-footer">
-			        <input type="reset" class="btn btn-default" data-dismiss="modal" value="Close"/>
-			        <input type="submit" class="btn btn-primary" value="Save" id="btnSave"/>
-			      </div>
+			      
 			    </div><!-- /.modal-content -->
 			  </div><!-- /.modal-dialog -->
 			</div><!-- /.modal -->
@@ -439,17 +485,17 @@
 			$("[rel=popover]").popover();
 
 			
-			$(function() {
-			    $( "#gradeSlider").slider({
-			    	value: 0,
-			    	min: 0,
-			    	max: 100,
-			    	slide: function( event, ui ) {
-			    		$( "#gradeValue1" ).val(ui.value + "%");
-			    	}
-			    });
-			    $( "#gradeValue1" ).val($( "#gradeSlider" + " %").slider( "value" ) );
-			  });
+//			$(function() {
+//			    $( "#gradeSlider").slider({
+//			    	value: 0,
+//			    	min: 0,
+//			    	max: 100,
+//			    	slide: function( event, ui ) {
+//			    		$( "#gradeValue1" ).val(ui.value + "%");
+//			    	}
+//			    });
+//			    $( "#gradeValue1" ).val($( "#gradeSlider" + " %").slider( "value" ) );
+//			  });
 		});		
 	</script>
 </body>

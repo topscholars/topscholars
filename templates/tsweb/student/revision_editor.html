@@ -11,7 +11,6 @@
 	<link rel="stylesheet" type="text/css" href="{% static 'tsweb/css/topscholars.css' %}" />-->
 	
 	<link rel="stylesheet" href="../../../static/tsweb/css/bootstrap.css" type="text/css" />
-	<link rel="stylesheet" href="../../../static/tsweb/css/bootstrap-glyphicons.css" type="text/css" />
 	<link rel="stylesheet" href="../../../static/tsweb/css/topscholars.css" type="text/css" />
 	<link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
 	<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
@@ -94,26 +93,60 @@
 		<button type="button" class="btn btn-small hide-panel" id="hide-panel"><i class="fa fa-arrow-right"></i></button>
 
 		<div class="panel-group side-panel panel-revision" id="side-panel">
-			
-			<div class="panel panel-default block-cell block-thin">
+		
+			<div class="panel panel-default block-cell block-thin block-expanded">
 				<div class="panel-heading block-header">
 					<h3 class="panel-title">
-						<a data-toggle="collapse" data-parent="#side-panel" href="#collapseOne">
-							Assignment Info
+						<a data-toggle="collapse" data-parent="#side-panel" href="#collapseFour">
+							Rubric
 						</a>
 					</h3>
 				</div>
-				<div id="collapseOne" class="panel-collapse collapse">
+				<div id="collapseFour" class="panel-collapse collapse">
 					<div class="block-body">
-						<h5>{% assignment_name %}</h5>
-						<p class="text-scroll"><b>Description:</b> {% assignment_description %}</p>
-						<p><b>Max Points:</b> out of 100</p>
-						<p><b>Category:</b> {% assignment_category %}</p>
-						<p><b>Grading Criteria:</b> {% rubric_name %}</p>
-						<p><b>Due Date:</b> {% due_date %}</p>
+						<!--<div>{% rubric %}</div>-->
+						
+						<div class="rubric-categories-sm">
+							<div class="rubric-impact circle circle-blue"
+										data-toggle="modal"
+										data-target="#impact_modal">
+								<p>Impact</p>
+								<div class="weight-percent circle-val" id="impact_percent">{%val%} %</div>
+							</div>
+							
+							<div class="rubric-quality circle circle-green"
+										data-toggle="modal"
+										data-target="#quality_modal">
+								<p>Quality</p>
+								<div class="weight-percent circle-val" id="quality_percent">{%val%} %</div>
+							</div>
+							
+							<div class="rubric-objective circle circle-grey"
+										data-toggle="modal"
+										data-target="#objective_modal">
+								<div>Objective</div>
+							</div>
+							
+							<div class="rubric-content circle circle-purple"
+										data-toggle="modal"
+										data-target="#content_modal">
+								<p>Content</p>
+								<div class="weight-percent circle-val" id="content_percent">{%val%} %</div>
+							</div>
+							
+							<div class="rubric-process circle circle-red"
+										data-toggle="modal"
+										data-target="#process_modal">
+								<p>Process</p>
+								<div class="weight-percent circle-val" id="process_percent">{%val%} %</div>
+							</div>
+						</div>
+						
+						
 					</div>
 				</div>
 			</div>
+			
 				  
 		  <div class="panel panel-default block-cell block-thin">
 		  	
@@ -157,95 +190,37 @@
 		      </div>
 		    </div>
 		  </div>
-		  
-		  <div class="panel panel-default block-cell block-thin block-expanded">
-		  	<div class="panel-heading block-header">
-		  		<h3 class="panel-title">
-		  			<a data-toggle="collapse" data-parent="#side-panel" href="#collapseFour">
-		  				Rubric
-		  			</a>
-		  		</h3>
-		  	</div>
-		  	<div id="collapseFour" class="panel-collapse collapse">
-		  		<div class="block-body">
-		  			<!--<div>{% rubric %}</div>-->
-		  			
-		  			<div class="rubric-categories-sm">
-		  				<div class="rubric-impact circle circle-blue"
-		  							data-toggle="modal"
-		  							data-target="#impact_modal">
-		  					<p>Impact</p>
-		  					<div class="weight-percent circle-val" id="impact_percent">{%val%} %</div>
-		  				</div>
-		  				
-		  				<div class="rubric-quality circle circle-green"
-		  							data-toggle="modal"
-		  							data-target="#quality_modal">
-		  					<p>Quality</p>
-		  					<div class="weight-percent circle-val" id="quality_percent">{%val%} %</div>
-		  				</div>
-		  				
-		  				<div class="rubric-objective circle circle-grey"
-		  							data-toggle="modal"
-		  							data-target="#objective_modal">
-		  					<div>Objective</div>
-		  				</div>
-		  				
-		  				<div class="rubric-content circle circle-purple"
-		  							data-toggle="modal"
-		  							data-target="#content_modal">
-		  					<p>Content</p>
-		  					<div class="weight-percent circle-val" id="content_percent">{%val%} %</div>
-		  				</div>
-		  				
-		  				<div class="rubric-process circle circle-red"
-		  							data-toggle="modal"
-		  							data-target="#process_modal">
-		  					<p>Process</p>
-		  					<div class="weight-percent circle-val" id="process_percent">{%val%} %</div>
-		  				</div>
-		  			</div>
-		  			
-		  			
-		  		</div>
-		  	</div>
-		  </div>
+			  
 		</div> <!--End Side Panel-->
 		
 		
 	</div> <!--End Page Container-->
 	
 	<button class="btn lesson-btn">Lessons <i class="fa fa-arrow-up"></i></button>
-	<div class="lesson-section" style="display: none;">
+	<div class="lesson" id="lessonLarge" style="display: none;">
 	
 		<div class="lesson-body">
-			<div class="lesson-section-one">
+			<div class="lesson-section">
 				<div class="lesson-section-header">Lesson</div>
 				
 				<div class="lesson-section-body">
 					Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-				</div>
-			</div>
-			
+				</div> <!-- /. lesson-section-body -->
+			</div>  <!-- /. lesson-section -->
+		</div> <!-- /. lesson-body -->
 		
-			<div class="lesson-section-two">
-				<div class="lesson-section-header">Usage</div>
+		<div class="progress progress-striped active lesson-progress">
+		  <div class="progress-bar"  role="progressbar" aria-valuenow="50" aria-valuemin="10" aria-valuemax="100" style="width: 100%">
+		    <span class="sr-only">100% Complete</span>
+		  </div>
+		</div>
+		
+	</div> <!-- /. lesson -->
+	
+	
+	<div class="lesson-section-small" id="lessonSmall" style="display: none;">
+		<div class="lesson-section">
 			
-				<div class="lesson-section-body">
-				
-				</div>
-			
-			</div>
-			
-			<div class="lesson-section-three">
-				<div class="lesson-section-header">Quiz</div>
-				<div class="lesson-section-body">
-					<form method="" action="" role="form" class="form form-inline">
-						
-					</form>
-				</div>
-				
-			</div>
 		</div>
 	</div>
 	
@@ -275,8 +250,8 @@
 	        	
 	        	<div class="modal-footer">
 	        		<div class="progress progress-striped active">
-	        		  <div class="progress-bar"  role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: 45%">
-	        		    <span class="sr-only">45% Complete</span>
+	        		  <div class="progress-bar"  role="progressbar" aria-valuenow="50" aria-valuemin="10" aria-valuemax="100" style="width: 0%">
+	        		    <span class="sr-only"></span>
 	        		  </div>
 	        		</div>	
 	        	  <input type="reset" class="btn btn-default" data-dismiss="modal" value="Close"/>
@@ -289,7 +264,6 @@
 	    </div><!-- /.modal-content -->
 	  </div><!-- /.modal-dialog -->
 	</div><!-- /.modal -->
-	
 	
 	
 	<!--Modal for Quality-->
@@ -472,8 +446,8 @@
 			
 			
 			$('.lesson-btn').click(function (e) {
-				$('.lesson-section').toggle('slow', 'easeOutElastic', 3000);
-				$('.lesson-section').css('display', 'block');
+				$('#lessonLarge').toggle(1000, 'easeOutElastic');
+				$('#lessonLarge').css('display', 'block');
 
 				if ($('.lesson-btn i').hasClass('fa-arrow-up')) {
 					$('.lesson-btn i').removeClass('fa-arrow-up').addClass('fa-arrow-down');

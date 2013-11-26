@@ -70,8 +70,8 @@ input:focus, input:active{
 }
 
 body{
-	/*background-color: #cccccc;*/
-	background: #ffffff url('../../../static/tsweb/image/squairy_light.png') repeat left top;
+	background-color: #cccccc;
+	/*background: #ffffff url('../../../static/tsweb/image/squairy_light.png') repeat left top;*/
 }
 .container{
 	height: auto!important;
@@ -247,7 +247,7 @@ form{
 .hide-panel{
 	position: absolute;
 	right: 10px;
-	top: 213px;
+	top: 123px;
 	background-color: rgba(0, 0, 0, .2);
 	z-index: 4;
 	
@@ -446,7 +446,7 @@ form{
 	z-index: 5;
 	width: auto;
 }
-.lesson-section{
+.lesson{
 	position: absolute;
 	bottom: 0;
 	margin: 0 auto;
@@ -466,7 +466,7 @@ form{
 .lesson-body{
 	width: 100%;
 }
-.lesson-section-one, .lesson-section-two, .lesson-section-three{
+/*.lesson-section-one, .lesson-section-two, .lesson-section-three{
 	padding: 5px;
 	width: 33%;
 	position: relative;
@@ -475,7 +475,7 @@ form{
 	margin: 0 auto;
 	border: inset 1px solid #777;
 	display: inline-block;
-}
+}*/
 .lesson-section-header{
 	background: #d45;
 	color: #fff;
@@ -493,6 +493,16 @@ form{
 	background: #fff;
 	padding: 5px;
 	overflow: scroll;
+}
+.lesson-progress{
+	width: 80%;
+	margin-left: 20px;
+	margin-right: 20px;	
+	position: relative;
+	left: 0;
+	richness: 0;
+	margin: 0 auto;
+	margin-bottom: 10px;
 }
 .gradeSlider{
 	width: 50%;
@@ -744,6 +754,20 @@ form{
 	margin-right: -150px;
 	margin-top: -19px;
 }
+#new_rubric_form .modal-footer{
+	border-top: none !important;
+}
+.add-tag{
+	margin-top: 10px !important;
+}
+#add_impact_criteria_btn, #add_quality_criteria_btn, #add_content_criteria_btn, #add_process_criteria_btn{
+	margin: 10px auto;
+	right: 0;
+	display: inherit;
+	left: 0;
+	right: 0;
+}
+
 .info{
 	float: right;
 	width: 125px;

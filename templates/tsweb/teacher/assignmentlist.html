@@ -486,11 +486,62 @@ $(function() {
 	        	</div>
 	        	
 	        	<div class="form-group">
+	        		<label for="ele_goal" class="col-sm-4 control-label">Goal of Task</label>
+	        		<div class="col-sm-8">
+	        			<input type="text" id="ele_goal" class="form-control" name="goal-of-task" />
+	        		</div>
+	        	</div>
+	        	
+	        	<div class="form-group">
+	        		<label for="ele_audience" class="col-sm-4 control-label">Audience</label>
+	        		<div class="col-sm-8">
+	        			<input type="text" id="ele_audience" class="form-control" name="audience" />
+	        		</div>
+	        	</div>
+	        	
+	        	<div class="form-group">
+	        		<label for="ele_context" class="col-sm-4 control-label">Context/Situation</label>
+	        		<div class="col-sm-8">
+	        			<input type="text" id="ele_context" class="form-control" name="context" />
+	        		</div>
+	        	</div>
+	        	
+	        	<div class="form-group">
+	        		<label for="ele_parameters" class="col-sm-4 control-label">Parameters(Word Length)</label>
+	        		<div class="col-sm-8">
+	        			<input type="text" id="ele_parameters" class="form-control" name="parameters" />
+	        		</div>
+	        	</div>
+	        	
+	        	<div class="form-group">
+	        		<label for="ele_duedate" class="col-sm-4 control-label">Due Date/Time</label>
+	        		<div class="col-sm-8">
+	        			<input type="datetime-local" id="ele_duedate" class="form-control" name="duedate" />
+	        		</div>
+	        	</div>
+	        	
+	        	<div class="form-group">
+	        		<label for="ele_revisions" class="col-sm-4 control-label">Revisions</label>
+	        		<div class="col-sm-8">
+	        			<input type="text" id="ele_revisions" class="form-control" name="revisions" />
+	        		</div>
+	        	</div>
+	        	
+	        	<div class="form-group">
+	        		<label for="ele_classid" class="col-sm-4 control-label">Assigned Class</label>
+	        		<div class="col-sm-8">
+	        			<select id="ele_classid" class="form-control">
+	        				<option id="ele_class">{% ele_class %}</option>
+	        			</select>
+	        		</div>
+	        	</div>
+	        	
+<!--	        	<div class="form-group">
 	        		<label for="rubricid" class="col-sm-4 control-label">Rubric ID</label>
 	        		<div class="col-sm-8">
 	        			<select id="ele_rubricid" name="rubricid" class="form-control"></select>
 	        		</div>
-	        	</div>
+	        	</div>-->
 	        	
 	        	<div class="form-group">
 	        		<label for="maxwords" class="col-sm-4 control-label">Maximum Word</label>
@@ -505,11 +556,12 @@ $(function() {
 	        			<input type="checkbox" id="ele_disabled" name="disabled" />
 	        		</div>
 	        	</div>
+	        	
+	        	<div class="modal-footer">
+	        	  <input type="reset" class="btn btn-default" data-dismiss="modal" value="Close"/>
+	        	  <input type="submit" class="btn btn-primary" value="Save Assignment" id="btnSave"/>
+	        	</div>
 	        </form>
-	      </div>
-	      <div class="modal-footer">
-	        <input type="reset" class="btn btn-default" data-dismiss="modal" value="Close"/>
-	        <input type="submit" class="btn btn-primary" value="Save Assignment" id="btnSave"/>
 	      </div>
 	    </div><!-- /.modal-content -->
 	  </div><!-- /.modal-dialog -->

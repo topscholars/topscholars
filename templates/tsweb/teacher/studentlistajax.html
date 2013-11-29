@@ -7,7 +7,7 @@
 <td class="cellitem">Student Grade</td>
 </tr>
 {% for student in studentlist %}
-    <tr id="{{ student.id }}" class="rowitem">
+    <tr id="{{ student.id }}" class="rowitem" data-toggle="modal" data-target="#new_student_modal">
 	<td class="cellitem">{{ student.id }}</td>
 	<td class="cellitem">{{ student.getFullName }}</td>
 	<td class="cellitem">{{ student.getNextAssginmentDate }}</td>

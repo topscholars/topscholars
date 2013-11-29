@@ -170,6 +170,8 @@ button:focus{
 	background-color: #2d3339!important;
 	color: #ffffff!important;
 	font-weight: bold!important;
+	z-index: 99!important;
+	position: absolute!important;
 }
 .popover.arrow{
 	background-color: #2d3339!important;
@@ -774,7 +776,7 @@ form{
 	color: #999;
 }
 .criteria-count{
-	margin-top: -215px;
+	margin-top: -265px;
 	margin-right: 20px;
 }
 .category-info{

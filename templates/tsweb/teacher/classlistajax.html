@@ -9,7 +9,7 @@
 <td class="cellitem">Rublic</td>
 </tr>
 {% for class in classlist %}
-    <tr id="{{ class.id }}" class="rowitem">
+    <tr id="{{ class.id }}" class="rowitem" data-toggle="modal" data-target="#new_class_modal">
 	<td class="cellitem">{{ class.id }}</td>
 	<td class="cellitem">{{ class.code }}</td>
 	<td class="cellitem">{{ class.classid.description }}</td>

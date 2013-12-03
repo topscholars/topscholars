@@ -177,6 +177,17 @@ function CloseEdit() {
 					</h3>
 				</div>
 			</div>	
+			
+			<div class="panel block-cell block-thin">
+				<div class="panel-heading block-header">
+					<h3 class="panel-title">
+						<a href="{% url 'tsweb:tlessonlist' %}">
+							Tag List <i class="fa fa-tags pull-right"></i>
+						</a>
+					</h3>
+				</div>
+			</div>
+			
 		</div> <!-- End side panel -->
 		
 		<div class="block-cell block-wide">
@@ -229,7 +240,7 @@ function CloseEdit() {
 		        	<div class="col-lg-5 clearfix">
 			        	<div class="form-group">
 			        		<label for="rubric_goal">Goal Of Task</label>
-			        		<input type="text" name="rubric_goal" id="rubric_goal" class="form-control" />
+			        		<input type="text" name="rubric_goal" id="rubric_goal" class="form-control" required="required"/>
 			        	</div>
 			        	<div class="form-group">
 			        		<label for="rubric_audience">Audience</label>

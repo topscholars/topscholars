@@ -631,6 +631,7 @@ function EDITTABLE(){
 					if(result.submissionversionid !==""){
 						$('#ele_submissionversionid').val(result.submissionversionid);
 					}
+					window.location = "{% url 'tsweb:sindex' %}";
 				})
 			.error(function(xhr, status, error) {
 	    		alert('Error occur. Please contact the administrator.');
@@ -654,6 +655,7 @@ function EDITTABLE(){
 					if(result.submissionversionid !==""){
 						$('#ele_submissionversionid').val(result.submissionversionid);
 					}
+					window.location = "{% url 'tsweb:sindex' %}";
 				})
 			.error(function(xhr, status, error) {
 	    		alert('Error occur. Please contact the administrator.');

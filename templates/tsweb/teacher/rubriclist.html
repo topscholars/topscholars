@@ -248,43 +248,27 @@ function CloseEdit() {
 			        	<div class="well" id="add_impact_criteria_text" style="display: none;">
 				        	<input type="text" name="add_impact_criteria" id="add_impact_criteria" class="form-control" placeholder="Add Impact Criteria"/>
 				        	<input type="text" name="add-impact-tag" placeholder="Add Tag" id="add_impact_tag" class="form-control add-tag" />
-				        	<div>
-				        	  <label for="impactWeight">Weight</label>
-				        	  <input type="number" step="1" max="100" maxlength="3" value="0" id="impactWeight" class="form-control" style="color: #f6931f; font-weight: bold;" />
-				        	</div>
 				        	<input type="button" class="btn btn-blue" value="+" id="add_impact_criteria_btn"/>
 			        	</div>
 			        	<div class="alert alert-danger alertImpact" style="display: none;">Please enter text.</div>
 			        	
 								<div class="well" id="add_quality_criteria_text" style="display: none;">
 			        		<input type="text" name="add_quality_criteria" id="add_quality_criteria" class="form-control" placeholder="Add Quality Criteria" />
-			        		<input type="text" name="add-quality-tag" placeholder="Add Tag" id="add_quality_tag" class="form-control add-tag" />	
-			        		<div>
-			        		  <label for="qualityWeight">Weight</label>
-			        		  <input type="number" step="1" max="100" maxlength="3" value="0" id="qualityWeight" class="form-control" style="color: #f6931f; font-weight: bold;" />
-			        		</div>
+			        		<input type="text" name="add-quality-tag" placeholder="Add Tag" id="add_quality_tag" class="form-control add-tag" />
 		        			<input type="button" class="btn btn-green" value="+" id="add_quality_criteria_btn"/>
 				        </div>
 			        	<div class="alert alert-danger alertQuality" style="display: none;">Please enter text.</div>
 			        	
 			        	<div class="well" id="add_content_criteria_text" style="display: none;">
 			        		<input type="text" name="add_content_criteria" id="add_content_criteria" class="form-control" placeholder="Add Content Criteria"/>
-				        	<input type="text" name="add-content-tag" placeholder="Add Tag" id="add_content_tag" class="form-control add-tag" />	
-					        <div>
-					          <label for="contentWeight">Weight</label>
-					          <input type="number" step="1" max="100" maxlength="3" value="0" id="contentWeight" class="form-control" style="color: #f6931f; font-weight: bold;" />
-					        </div>
+				        	<input type="text" name="add-content-tag" placeholder="Add Tag" id="add_content_tag" class="form-control add-tag" />
 					        <input type="button" class="btn btn-purple" value="+" id="add_content_criteria_btn"/>
 				        </div>
 			        	<div class="alert alert-danger alertContent" style="display: none;">Please enter text.</div>
 			        	
 			        	<div class="well" id="add_process_criteria_text" style="display: none;">
 			        		<input type="text" name="add_process_criteria" id="add_process_criteria" class="form-control" placeholder="Add Process Criteria"/>
-				        	<input type="text" name="add-process-tag" placeholder="Add Tag" id="add_process_tag" class="form-control add-tag" />		
-				        	<div>
-				        	  <label for="processWeight">Weight</label>
-				        	  <input type="number" step="1" max="100" maxlength="3" value="0" id="processWeight" class="form-control" style="color: #f6931f; font-weight: bold;" />
-				        	</div>
+				        	<input type="text" name="add-process-tag" placeholder="Add Tag" id="add_process_tag" class="form-control add-tag" />
 				        	<input type="button" class="btn btn-red" value="+" id="add_process_criteria_btn"/>
 				        </div>
 			        	<div class="alert alert-danger alertProcess" style="display: none;">Please enter text.</div>
@@ -302,7 +286,7 @@ function CloseEdit() {
 		        		
 		        		<div class="rubric-quality circle circle-green">
 		        			<p>Quality</p>
-		        			<div class="weight-percent"><input id="quality_percent" maxlength="3" max="100" step="1" type="number" name="quality-percent" class="circle-input" value="0" />%</div>
+		        			<div class="weight-percent"><input id="quality_percent" maxlength="3" max="100" step="1" type="number" name="quality-percent" class="circle-input" value="0"/>%</div>
 		        		</div>
 		        		
 		        		
@@ -323,6 +307,14 @@ function CloseEdit() {
 		        		
 		        	</div>
 		        	<div class="modal-footer" style="margin-top: 135px!important;">
+		        	
+		        	
+		        		<div class="fileUpload btn btn-warning">
+	        		    <input id="uploadFile" placeholder="Choose File" disabled="disabled" />
+	        		    <span>Upload File</span>
+	        		    <input id="uploadBtn" type="file" class="upload" />
+		        		</div>
+		        		
 		        	  <input type="reset" class="btn btn-default" data-dismiss="modal" value="Close"/>
 		        	  <input type="submit" class="btn btn-primary" value="Save Rubric" id="btnSave"/>
 		        	</div>
@@ -342,6 +334,7 @@ function CloseEdit() {
 		  </div><!-- /.modal-dialog -->
 		</div><!-- /.modal -->
 		
+
 		<!--View Created Rubric Modal-->
 		<div class="modal fade modal-wide" id="created_rubric" tabindex="-1" role="dialog" aria-labelledby="createdRubricLabel" aria-hidden="true" data-dismiss="false">
 		  <div class="modal-dialog">
@@ -455,12 +448,14 @@ function CloseEdit() {
     </div> <!-- /.modal -->
 		
 		<script>
+			document.getElementById("uploadBtn").onchange = function () {
+		    document.getElementById("uploadFile").value = this.value;
+			};
 			
 			$('.edit').editable('http://www.example.com/save.php', {
 				indicator : 'Saving...',
 				tooltip : 'Click to edit'
 			});
-
 			
 			$('.rubric-impact').click(function () {
 				$('#add_impact_criteria_text').toggle('slide', 'left');
@@ -478,7 +473,6 @@ function CloseEdit() {
 					$('#add_impact_criteria_text').delay(500).toggle('slide').delay(500).toggle('slide', function () {
 						$('#add_impact_criteria_btn').val("+");
 						$('#add_impact_criteria').val('');
-						$('#impactWeight').val('');
 						$('#add_impact_tag').val('');
 						var $n = $('.impact-count');
 						$n.val(Number($n.val())+1);
@@ -505,7 +499,6 @@ function CloseEdit() {
 					$('#add_quality_criteria_text').delay(500).toggle('slide').delay(500).toggle('slide', function () {
 						$('#add_quality_criteria_btn').val("+");
 						$('#add_quality_criteria').val('');
-						$('#qualityWeight').val('');
 						$('#add_quality_tag').val('');
 						var $n = $('.quality-count');
 						$n.val(Number($n.val())+1);
@@ -532,7 +525,6 @@ function CloseEdit() {
 					$('#add_content_criteria_text').delay(500).toggle('slide').delay(500).toggle('slide', function () {
 						$('#add_content_criteria_btn').val("+");
 						$('#add_content_criteria').val('');
-						$('#contentWeight').val('');
 						$('#add_content_tag').val('');
 						var $n = $('.content-count');
 						$n.val(Number($n.val())+1);
@@ -559,7 +551,6 @@ function CloseEdit() {
 					$('#add_process_criteria_text').delay(500).toggle('slide').delay(500).toggle('slide', function () {
 						$('#add_process_criteria_btn').val("+");
 						$('#add_process_criteria').val('');
-						$('#processWeight').val('');
 						$('#add_process_tag').val('');
 						var $n = $('.process-count');
 						$n.val(Number($n.val())+1);

@@ -14,6 +14,8 @@
 	<link rel="stylesheet" href="../../../static/tsweb/css/topscholars.css" type="text/css" />
 	<link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
 	<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
+	<link rel="stylesheet" href="../../../static/tsweb/css/retactor.css" />
+	<link rel="stylesheet" href="../../../static/tsweb/css/redactor-iframe.css" />
 <!--	<script src="{% static 'tsweb/js/jQuery1.10.1.js' %}"></script>
 	<script src="{% static 'tsweb/js/jquery-ui-1.10.3.custom.min.js' %}"></script>-->
 	
@@ -23,6 +25,7 @@
 	<script src="../../../static/tsweb/js/bootstrap.js" type="text/javascript"></script>
 	<script src="../../../static/tsweb/js/transition.js" type="text/javascript"></script>
 	<script src="../../../static/tsweb/js/popover.js" type="text/javascript"></script>
+	<script src="../../../static/tsweb/js/redactor.js" type="text/javascript"></script>
 
 </head>
 
@@ -162,6 +165,11 @@
 							</div>
 						</div>
 						
+						<div class="progress progress-striped active lesson-progress">
+						  <div class="progress-bar"  role="progressbar" aria-valuenow="50" aria-valuemin="10" aria-valuemax="100" style="width: 100%">
+						    <span class="sr-only">100% Complete</span>
+						  </div>
+						</div>
 						
 					</div>
 				</div>
@@ -217,8 +225,9 @@
 	</div> <!--End Page Container-->
 	
 	<button class="btn lesson-btn">Lessons <i class="fa fa-arrow-up"></i></button>
-	<div class="lesson" id="lessonLarge" style="display: none;">
 	
+	<div class="lesson" id="lessonLarge" style="display: none;">
+
 		<div class="lesson-body">
 			<div class="lesson-section">
 				<div class="lesson-section-header">Lesson</div>
@@ -229,20 +238,21 @@
 			</div>  <!-- /. lesson-section -->
 		</div> <!-- /. lesson-body -->
 		
-		<div class="progress progress-striped active lesson-progress">
-		  <div class="progress-bar"  role="progressbar" aria-valuenow="50" aria-valuemin="10" aria-valuemax="100" style="width: 100%">
-		    <span class="sr-only">100% Complete</span>
-		  </div>
+	</div> <!-- /. lesson large -->
+	
+	
+	<div class="lesson" id="lessonSmall" style="display: none;">
+	
+		<div class="lesson-body">
+			<div class="lesson-section">
+				<div class="lesson-section-header lesson-header-small">{% lesson_name %}</div>
+				<div class="lesson-section-body">
+					lesson information will go here....
+				</div>
+			</div>
 		</div>
 		
-	</div> <!-- /. lesson -->
-	
-	
-	<div class="lesson-section-small" id="lessonSmall" style="display: none;">
-		<div class="lesson-section">
-			
-		</div>
-	</div>
+	</div> <!-- /. lesson small -->
 	
 	<!--Modals for Rubric categories-->
 	
@@ -269,11 +279,6 @@
 	        	</div>
 	        	
 	        	<div class="modal-footer">
-	        		<div class="progress progress-striped active">
-	        		  <div class="progress-bar"  role="progressbar" aria-valuenow="50" aria-valuemin="10" aria-valuemax="100" style="width: 0%">
-	        		    <span class="sr-only"></span>
-	        		  </div>
-	        		</div>	
 	        	  <input type="reset" class="btn btn-default" data-dismiss="modal" value="Close"/>
 	        	  <input type="submit" class="btn btn-primary" value="Save" id="btnSave"/>
 	        	</div>
@@ -308,11 +313,6 @@
 							</div>
 							
 							<div class="modal-footer">
-								<div class="progress progress-striped active">
-								  <div class="progress-bar"  role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: 45%">
-								    <span class="sr-only">45% Complete</span>
-								  </div>
-								</div>	
 							  <input type="reset" class="btn btn-default" data-dismiss="modal" value="Close"/>
 							  <input type="submit" class="btn btn-primary" value="Save" id="btnSave"/>
 							</div>
@@ -346,11 +346,6 @@
 								</div>
 								
 								<div class="modal-footer">
-									<div class="progress progress-striped active">
-									  <div class="progress-bar"  role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: 45%">
-									    <span class="sr-only">45% Complete</span>
-									  </div>
-									</div>	
 								  <input type="reset" class="btn btn-default" data-dismiss="modal" value="Close"/>
 								  <input type="submit" class="btn btn-primary" value="Save" id="btnSave"/>
 								</div>
@@ -384,11 +379,6 @@
 								</div>
 								
 								<div class="modal-footer">
-									<div class="progress progress-striped active">
-									  <div class="progress-bar"  role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: 45%">
-									    <span class="sr-only">45% Complete</span>
-									  </div>
-									</div>	
 								  <input type="reset" class="btn btn-default" data-dismiss="modal" value="Close"/>
 								  <input type="submit" class="btn btn-primary" value="Save" id="btnSave"/>
 								</div>
@@ -466,8 +456,8 @@
 			
 			
 			$('.lesson-btn').click(function (e) {
-				$('#lessonLarge').toggle(1000, 'easeOutElastic');
-				$('#lessonLarge').css('display', 'block');
+				$('#lessonSmall').toggle(1000, 'easeOutElastic');
+				$('#lessonSmall').css('display', 'block');
 
 				if ($('.lesson-btn i').hasClass('fa-arrow-up')) {
 					$('.lesson-btn i').removeClass('fa-arrow-up').addClass('fa-arrow-down');
@@ -478,18 +468,6 @@
 			
 			$("[rel=popover]").popover();
 
-			
-//			$(function() {
-//			    $( "#gradeSlider").slider({
-//			    	value: 0,
-//			    	min: 0,
-//			    	max: 100,
-//			    	slide: function( event, ui ) {
-//			    		$( "#gradeValue1" ).val(ui.value + "%");
-//			    	}
-//			    });
-//			    $( "#gradeValue1" ).val($( "#gradeSlider" + " %").slider( "value" ) );
-//			  });
 		});		
 	</script>
 </body>

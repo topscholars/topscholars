@@ -440,7 +440,7 @@ form{
 }
 .lesson-btn{
 	position: absolute;
-	bottom: 0;
+	bottom: 10px;
 	right: 10px;
 	display: block;
 	margin: 0 auto;
@@ -454,12 +454,17 @@ form{
 	margin: 0 auto;
 	left: 0;
 	right: 0;
-	width: 100%;
-	min-height: 500px;
+	width: 95%;
 	height: auto;
 	background-color: rgba(255, 255, 255, .75);
 	box-shadow: 0px -5px 10px rgba(0,0,0,.2);
 	z-index: 4;
+}
+#lessonLarge{
+	min-height: 500px;
+}
+#lessonSmall{
+	height: 200px !important;
 }
 .assignment-edit-section .block-wide textarea{
 	width: 100%;
@@ -468,16 +473,7 @@ form{
 .lesson-body{
 	width: 100%;
 }
-/*.lesson-section-one, .lesson-section-two, .lesson-section-three{
-	padding: 5px;
-	width: 33%;
-	position: relative;
-	left: 0;
-	right: 0;
-	margin: 0 auto;
-	border: inset 1px solid #777;
-	display: inline-block;
-}*/
+
 .lesson-section-header{
 	background: #d45;
 	color: #fff;
@@ -485,6 +481,9 @@ form{
 	padding: 5px;
 	font-size: 1.4em;
 	border-radius: 3px;
+}
+.lesson-header-small{
+	background: #417c91;
 }
 .lesson-section-body{
 	margin-top: 5px;
@@ -758,6 +757,24 @@ form{
 }
 #new_rubric_form .modal-footer{
 	border-top: none !important;
+}
+
+
+.fileUpload {
+	position: relative;
+	overflow: hidden;
+	margin: 10px;
+}
+.fileUpload input.upload {
+	position: absolute;
+	top: 0;
+	right: 0;
+	margin: 0;
+	padding: 0;
+	font-size: 20px;
+	cursor: pointer;
+	opacity: 0;
+	filter: alpha(opacity=0);
 }
 .add-tag{
 	margin-top: 10px !important;

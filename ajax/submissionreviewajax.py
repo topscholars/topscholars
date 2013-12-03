@@ -27,7 +27,9 @@ class SUBMISSIONREVIEW():
             DATE_FORMAT = "%d-%m-%Y" 
             data_json = ''
             if versionid != False and versionid != '':
-                submissionversion = Submissionversion.objects.get(id=versionid)
+                submission = Submission.objects.get(id=submissionid)
+                subid = submission.id
+                submissionversion = Submissionversion.objects.get(submissionid=subid,version=versionid)
                 currentversion = ''
                 if submissionversion.version == submissionversion.submissionid.getLatestVersion():
                     currentversion = 'y'

@@ -76,7 +76,6 @@ function EDITTABLE(){
 			function (result) {
 				
 			    $.each(result, function (ini, val) {
-			    	
 			        if (ini == "submissionprogress")
 			            thisClass.setProgressBar(val);
 			        else if (ini == "currentversion") {
@@ -733,7 +732,7 @@ function openHighlightDialog(highlightid){
 <div style="margin-top:10px;">
 <select id="ele_submissionversionversion" class="selection" style="position:relative;float:left;">
 {% for row in submissionversionlist %}
-	<option value="{{ row.id }}">Revision {{ row.version }}</option>
+	<option value="{{ row.version }}">Revision {{ row.version }}</option>
 {% endfor %}
 </select>
 <input type="button" class="button" style="width:80px;height:26px;position:relative;float:right;" value="Return" id="btnReturn">

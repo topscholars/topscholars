@@ -45,19 +45,20 @@ $(function(){
 <div style="width:720px;position:relative;float:left;top:40px;margin-left:10px;padding-bottom:52px;">
 <img src="{% static 'tsweb/image/anonymous-large.png' %}" style="width:162px;height:162px;" />
 <div style="width:520px;height:167px;border:1px #666666 solid;position:relative;float:right;">
-<span style="font-size:34px;line-height:36px;margin-left:10px;margin-top:10px;;float:left;position:relative;width:480px;">James McCracken</span>
+{% for student in studentlist %}
+<span style="font-size:34px;line-height:36px;margin-left:10px;margin-top:10px;;float:left;position:relative;width:480px;">{{ student.firstname }} {{ student.middlename }} {{ student.lastname }}</span>
 <table style="margin-left:10px;">
 <tr>
 <td>Email:</td>
-<td>mccracken.james@gmail.com</td>
+<td>{{ student.emailaddress1 }}</td>
 </tr>
 <tr>
 <td>Current Grade:</td>
-<td>9</td>
+<td>{{ student.getStudentGrade }}</td>
 </tr>
 <tr>
 <td>Class Enrolled:</td>
-<td>English, History, Maths</td>
+<td>{{ student.getStudentAllClass }}</td>
 </tr>
 <tr>
 <td>Teachers:</td>
@@ -68,6 +69,7 @@ $(function(){
 <td>-% of Assignments Completed on Time</td>
 </tr>
 </table>
+{% endfor %}
 </div>
 <div id="tabs" class="clear" style="margin-top:10px;">
   <ul>
@@ -199,14 +201,16 @@ words as the previous attempt
 <div style="width:270px;position:relative;float:right;top:40px;margin-right:10px;">
 <span style="text-decoration:underline;font-weight:bold;">Assigment List</span>
 <div style="margin-top:5px;">
+{% for submission in submissionlist %}
 <div style="border:1px #0090CA solid;height:50px;">
 	<img src="{% static 'tsweb/image/assignmenttype.png' %}" style="margin:10px;width:25px;float:left;">
 	<div style="float:right;text-align:right;margin:10px 30px;font-size:13px;">
-		<a href="" style="color:black;">Assignment-0001</a><br/>
-		Due Date: 17-Sep-2013
+		<a href="{% url 'tsweb:stsubmissionreview' submission.id %}" style="color:black;">Assignment-{{ submission.getAssignment }}</a><br/>
+		Due Date: {{ submission.duedate|date:"d-M-Y" }}
 	</div>
 </div>
-<div style="border:1px #0090CA solid;height:50px;">
+{% endfor %}
+<!-- <div style="border:1px #0090CA solid;height:50px;">
 	<img src="{% static 'tsweb/image/assignmenttype.png' %}" style="margin:10px;width:25px;float:left;">
 	<div style="float:right;text-align:right;margin:10px 30px;font-size:13px;">
 		<span style="text-decoration:underline;">Assignment-0002</span><br/>
@@ -233,7 +237,8 @@ words as the previous attempt
 		<span style="text-decoration:underline;">Assignment-0005</span><br/>
 		Due Date: 03-Oct-2013
 	</div>
-</div>
+</div> -->
+
 </div>
 <div id="tabs2" class="clear" style="margin-top:10px;">
   <ul>

@@ -12,6 +12,7 @@ from ajax.studentajax import *
 from ajax.rubricajax import *
 from ajax.submissionajax import *
 from ajax.submissionreviewajax import *
+from ajax.submissionreviewstudentajax import *
 from ajax.loginajax import *
 
 #Login View
@@ -47,7 +48,20 @@ def logout(request):
         
 #Student Views
 def sindex(request):
-    return render(request, 'tsweb/student/index.html', '')
+    try:
+        userid = request.session['userid']
+    except KeyError:
+        pass
+    else:
+        login = Login.objects.get(id=userid)
+        clientid = login.clientid
+        studentid = login.recid
+        studentlist = Studentlist.objects.filter(id=studentid)
+        submissionlist = Submission.objects.filter(studentid=studentid)
+        context= {'studentlist' : studentlist, 'submissionlist' : submissionlist}
+        #data = simplejson.dumps(submissionlist)
+        #return HttpResponse(data, mimetype='application/json')
+        return render(request, 'tsweb/student/index.html', context)
 
 #Teacher Views
 def tclasslist(request):
@@ -102,6 +116,8 @@ def tsubmissionlist(request):
 def tsubmissionreview(request, id):
     try:
         userid = request.session['userid']
+        login = Login.objects.get(id=userid)
+        usertypeid = login.usertypeid
     except KeyError:
         return HttpResponseRedirect(reverse('tsweb:login'))
     else:
@@ -112,6 +128,21 @@ def tsubmissionreview(request, id):
                   'studentname' : studentname,
                   'submissionversionlist' : submissionversionlist }
         return render(request, 'tsweb/teacher/submissionreview.html', context)
+        
+def stsubmissionreview(request, id):
+    try:
+        userid = request.session['userid']
+    except KeyError:
+        return HttpResponseRedirect(reverse('tsweb:login'))
+    else:
+        submissionversionlist = Submissionversion.objects.filter(submissionid=id)
+        submission = Submission.objects.get(id=id)
+        studentname = submission.studentid.getFullName()
+        context= {'id' : id,
+                  'studentname' : studentname,
+                  'submissionversionlist' : submissionversionlist }
+        return render(request, 'tsweb/student/submissionreview.html', context)
+                
 
 def gettags(request, entityid):
     try:

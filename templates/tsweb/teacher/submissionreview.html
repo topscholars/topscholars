@@ -19,6 +19,8 @@
 	<link rel="stylesheet" href="../../../static/tsweb/css/bootstrap-glyphicons.css" type="text/css" />
 	<link rel="stylesheet" href="../../../static/tsweb/css/topscholars.css" type="text/css" />
 	<link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+	<link rel="stylesheet" href="../../../static/tsweb/css/redactor.css" />
+	<link rel="stylesheet" href="../../../static/tsweb/css/jquery.comment.css" />
 	
 <!--	<script src="{% static 'tsweb/js/jQuery1.10.1.js' %}"></script>
 	<script src="{% static 'tsweb/js/jquery-ui-1.10.3.custom.min.js' %}"></script>-->
@@ -29,7 +31,24 @@
 	<script src="../../../static/tsweb/js/bootstrap.js" type="text/javascript"></script>
 	<script src="../../../static/tsweb/js/transition.js" type="text/javascript"></script>
 	<script src="../../../static/tsweb/js/popover.js" type="text/javascript"></script>
+	<script src="../../../static/tsweb/js/redactor.min.js" type="text/javascript"></script>
+	<script src="../../../static/tsweb/js/jquery.comment.js" type="text/javascript"></script>
 	
+	<script>
+		$(document).ready(function () {
+			$("#commentSection").comments({
+			     getCommentsUrl: "/JqComment/GetComments",
+			     postCommentUrl: "/JqComment/PostComment",
+			     deleteCommentUrl: "/JqComment/DeleteComment",
+			});
+			
+			$("[rel=popover]").popover();
+			
+		});	
+		$(function(){
+	    $('#redactor_editor').redactor({});
+		});
+	</script>
 </head>
 
 <body>
@@ -700,19 +719,9 @@ function openHighlightDialog(highlightid){
 		
 			<div class="block-cell block-wide">
 			
-				<textarea id="text_area" 
-									data-toggle="popover" 
-									title 
-									data-original-title="Tag" 
-									contenteditable="true"
-									rel="popover"
-									data-container=".block-wide"
-									data-toggle="popover" title
-									data-content="">Eventually the text editor will live here.
-				</textarea>
+				<div id="redactor_editor" name="content" style="width: 100%; height: auto;"></div>
 						<!--ADD TAGGING BUTTON OR HIGHLIGHT STATE-->
 			</div>
-			
 		</div>		
 			<div class="panel-group side-panel panel-revision" id="side-panel">
 			
@@ -808,7 +817,9 @@ function openHighlightDialog(highlightid){
 			    </div>
 			    <div id="collapseThree" class="panel-collapse collapse">
 			      <div class="block-body">
-			       	<p>{% tag_comments %}</p>
+			       	<div id="commentSection">
+			       	
+			       	</div>
 			      </div>
 			    </div>
 			  </div>
@@ -816,13 +827,6 @@ function openHighlightDialog(highlightid){
 			</div> <!--End Side Panel-->
 			
 	</div> <!-- end page container -->
-	<script>
-				$(document).ready(function () {
-	
-					
-					$("[rel=popover]").popover();
-				});		
-			</script>
 <!--<input type="hidden" id="ele_submissionid" value="{{ id }}">
 <input type="hidden" id="ele_submissionversionid">
 <div id="diveditbg" style="background-color:gray;z-index:1;width:100%;height:100%;position:absolute;opacity:0.4;"></div>

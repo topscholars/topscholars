@@ -458,13 +458,14 @@ form{
 	height: auto;
 	background-color: rgba(255, 255, 255, .75);
 	box-shadow: 0px -5px 10px rgba(0,0,0,.2);
+	border: 1px solid rgb(153, 153, 153);
 	z-index: 4;
 }
 #lessonLarge{
-	min-height: 500px;
+	min-height: 85% !important;
 }
 #lessonSmall{
-	height: 200px !important;
+	height: 35% !important;
 }
 .assignment-edit-section .block-wide textarea{
 	width: 100%;
@@ -479,21 +480,28 @@ form{
 	color: #fff;
 	text-align: center;
 	padding: 5px;
-	font-size: 1.4em;
-	border-radius: 3px;
+	font-size: 1.6em;
 }
 .lesson-header-small{
 	background: #417c91;
 }
 .lesson-section-body{
 	margin-top: 5px;
-	min-height: 500px;
-	border: 1px solid #999;
-	border-radius: 3px;
 	overflow: scroll;
 	background: #fff;
 	padding: 5px;
 	overflow: scroll;
+}
+.lesson-media, .lesson-text, .lesson-quiz{
+	padding: 5px;
+	width: 33.33%;
+	height: 500px;
+}
+.lesson-media, .lesson-text{
+	border-right: 1px solid rgba(30, 30, 30, .3);
+}
+.lesson-media iframe{
+	width: 100%;
 }
 .lesson-progress{
 	width: 80%;
@@ -505,7 +513,7 @@ form{
 	margin: 0 auto;
 	margin-bottom: 10px;
 }
-.gradeSlider{
+.grade-slider{
 	width: 50%;
 	margin-bottom: 10px;
 }

@@ -149,9 +149,37 @@
 		        <h4 class="modal-title">New Lesson</h4>
 		      </div>
 		      <div class="modal-body">
-		      
-		      
-		      
+		      	<div class="row">
+				      <form class="form" role="form" id="lesson_form">
+				      	<div class="col-lg-6" style="border-right: 1px solid #ddd;">
+				      		<div class="form-group">
+				      			<label for="lesson_name">Name: </label>
+				      			<input type="text" name="lesson_name" id="lesson_name" class="form-control" />
+				      		</div>
+				      		
+				      		<div class="form-group">
+				      			<label for="uploadFile">Upload Media</label>
+				      			<div class="fileUpload btn btn-warning form-control">
+				      			  <input id="uploadFile" placeholder="Choose File" disabled="disabled" />
+				      			  <span>Add Media</span>
+				      			  <input id="uploadBtn" type="file" class="upload" />
+				      			</div>
+				      		</div>
+				      		
+				      		<div class="form-group">
+				      			<label for="lesson_text">Add Text</label>
+				      			<textarea type="text" name="lesson_text" class="form-control"></textarea>
+				      		</div>
+				      	</div> <!-- End col-6 -->
+				      	
+				      	<div class="col-lg-6">
+				      		<label for="lesson_quiz">Add Quiz</label>
+				      		<div class="form-group">
+				      			
+				      		</div>
+				      	</div>
+				      </form>
+		      	</div>
 		      </div>
 		      <div class="modal-footer">
 		        <input type="reset" class="btn btn-default" data-dismiss="modal" value="Close"/>
@@ -163,6 +191,11 @@
 		
 	
 	</div> <!-- End page container -->
-
+	<script>
+		document.getElementById("uploadBtn").onchange = function () {
+		  document.getElementById("uploadFile").value = this.value;
+		};
+	
+	</script>
 </body>
 </html>

@@ -7,6 +7,7 @@
 	<link rel="stylesheet" type="text/css" href="{% static 'tsweb/css/Prototype.css' %}" />
 	<link rel="stylesheet" type="text/css" href="{% static 'tsweb/css/smoothness/jquery-ui-1.10.3.custom.min.css' %}" />
 	<link rel="stylesheet" type="text/css" href="{% static 'tsweb/css/jquery.tagedit.css' %}" />
+	<link rel="stylesheet" type="text/css" href="{% static 'tsweb/css/redactor.css' %}" />
 	<script src="{% static 'tsweb/js/jQuery1.10.1.js' %}"></script>
 	<script src="{% static 'tsweb/js/jquery-ui-1.10.3.custom.min.js' %}"></script>
 	<script src="{% static 'tsweb/js/jquery.cookie.js' %}"></script>
@@ -14,6 +15,7 @@
 	<script src="{% static 'tsweb/js/util.js' %}"></script>
 	<script src="{% static 'tsweb/js/jquery.autoGrowInput.js' %}"></script>
 	<script src="{% static 'tsweb/js/jquery.tagedit.js' %}"></script>
+	<script src="{% static 'tsweb/js/redactor.min.js' %}"></script>
 </head>
 
 <body>
@@ -565,6 +567,10 @@ function EDITTABLE(){
 		thisClass.showHighlightDialog(false);
 		
 		thisClass.getSelectStage();
+		
+		$('#ele_submissionversionessaytextarea').redactor({
+			focus: true
+		});
 
 		// $('#ele_submissionversionessay').mouseup(function() {
 			// var node = this;

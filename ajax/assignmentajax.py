@@ -28,7 +28,7 @@ class ASSSIGNMENTLIST():
                         'id': r[0],
                         'name': r[1],
                         'description': r[2],
-                        'rubricid': r[3],
+                        'classid': r[3],
                         'maxwords': r[4],
                         'minwords': r[5],
                         'disabled': r[6],
@@ -54,14 +54,14 @@ class ASSSIGNMENTLIST():
             id = request.POST.get('id', False)
             name = request.POST.get('name', False)
             description = request.POST.get('description', False)
-            rubricid = request.POST.get('rubricid', False)
+            classid = request.POST.get('classid', False)
             maxwords = request.POST.get('maxwords', False)
             minwords = request.POST.get('minwords', False)
             disabled = request.POST.get('disabled', False)
         except KeyError:
             return HttpResponse('error', mimetype='application/json')
         else:
-            rubriclist = Rubric.objects.get(id=rubricid)
+            rubriclist = Rubric.objects.get(id=classid)
             assignment = Assignment.objects.get(id=id)
             assignment.name = name
             assignment.description = description

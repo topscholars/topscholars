@@ -70,7 +70,10 @@ def tclasslist(request):
     except KeyError:
         return HttpResponseRedirect(reverse('tsweb:login'))
     else:
-        return render(request, 'tsweb/teacher/classlist.html', '')
+        login = Login.objects.get(id=userid)
+        user_name = login.loginname
+        context= {'user_name' : user_name}
+        return render(request, 'tsweb/teacher/classlist.html', context)
 
 def tassignmentlist(request):
     try:
@@ -80,8 +83,10 @@ def tassignmentlist(request):
     else:
         login = Login.objects.get(id=userid)
         clientid = login.clientid
+        user_name = login.loginname
         classlist = Classlist.objects.filter(clientid=clientid)
-        context= {'classlist' : classlist}
+        context= {'classlist' : classlist,
+                  'user_name' : user_name}
         return render(request, 'tsweb/teacher/assignmentlist.html', context)
 
 def tstudentlist(request):
@@ -92,8 +97,10 @@ def tstudentlist(request):
     else:
         login = Login.objects.get(id=userid)
         clientid = login.clientid
+        user_name = login.loginname
         classlist = Classlist.objects.filter(clientid=clientid)
-        context= {'classlist' : classlist}
+        context= {'classlist' : classlist,
+                  'user_name' : user_name}
         return render(request, 'tsweb/teacher/studentlist.html', context)
 
 def trubriclist(request):
@@ -102,7 +109,10 @@ def trubriclist(request):
     except KeyError:
         return HttpResponseRedirect(reverse('tsweb:login'))
     else:
-        return render(request, 'tsweb/teacher/rubriclist.html', '')
+        login = Login.objects.get(id=userid)
+        user_name = login.loginname
+        context= {'user_name' : user_name}
+        return render(request, 'tsweb/teacher/rubriclist.html', context)
 
 def tsubmissionlist(request):
     try:
@@ -110,14 +120,17 @@ def tsubmissionlist(request):
     except KeyError:
         return HttpResponseRedirect(reverse('tsweb:login'))
     else:
-        
-        return render(request, 'tsweb/teacher/submissionlist.html', '')
+        login = Login.objects.get(id=userid)
+        user_name = login.loginname
+        context= {'user_name' : user_name}
+        return render(request, 'tsweb/teacher/submissionlist.html', context)
 
 def tsubmissionreview(request, id):
     try:
         userid = request.session['userid']
         login = Login.objects.get(id=userid)
         usertypeid = login.usertypeid
+        user_name = login.loginname
     except KeyError:
         return HttpResponseRedirect(reverse('tsweb:login'))
     else:
@@ -126,6 +139,7 @@ def tsubmissionreview(request, id):
         studentname = submission.studentid.getFullName()
         context= {'id' : id,
                   'studentname' : studentname,
+                  'user_name' : user_name,
                   'submissionversionlist' : submissionversionlist }
         return render(request, 'tsweb/teacher/submissionreview.html', context)
         

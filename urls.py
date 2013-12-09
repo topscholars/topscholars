@@ -13,6 +13,7 @@ urlpatterns = patterns('',
                        url(r'teacher/submissionlist/', views.tsubmissionlist, name='tsubmissionlist'),
                        url(r'teacher/submissionreview/(?P<id>\d+)/', views.tsubmissionreview, name='tsubmissionreview'),
                        url(r'teacher/gettags/(?P<entityid>\d+)/', views.gettags, name='gettags'),
+                       url(r'#', views.sindex, name='tlessonlist'),
 
                        url(r'index/', views.sindex, name='sindex'),
                        url(r'student/submissionreview/(?P<id>\d+)/', views.stsubmissionreview, name='stsubmissionreview'),

@@ -106,7 +106,9 @@ class STUDENTLIST():
             salutation = request.POST.get('salutation', False)
             currentaccademicyear = request.POST.get('currentaccademicyear', False)
         except KeyError:
-            return HttpResponse('error', mimetype='application/json')
+            data_json = { 'status': 'error', }
+            data = simplejson.dumps(data_json)
+            return HttpResponse(data, mimetype='application/json')
         else:
             studentlist = Studentlist.objects.get(id=id)
             studentlist.firstname = firstname
@@ -128,6 +130,90 @@ class STUDENTLIST():
             studentlist.gender = gender
             studentlist.salutation = salutation
             studentlist.currentaccademicyear = currentaccademicyear
+            studentlist.save()
+            data_json = { 'status': 'success', }
+            data = simplejson.dumps(data_json)
+            return HttpResponse(data, mimetype='application/json')
+        
+    def add(self,request):
+        DATE_FORMAT = "%d-%m-%Y"
+        try:
+            userid = request.session['userid']
+            
+            user = request.POST.get('user', False)
+            password = request.POST.get('password', False)
+            hint = request.POST.get('hint', False)
+            
+            id = request.POST.get('id', False)
+            firstname = request.POST.get('firstname', False)
+            lastname = request.POST.get('lastname', False)
+            middlename = request.POST.get('middlename', False)
+            address1 = request.POST.get('address1', False)
+            address2 = request.POST.get('address2', False)
+            address3 = request.POST.get('address3', False)
+            city = request.POST.get('city', False)
+            zipcode = request.POST.get('zipcode', False)
+            state = request.POST.get('state', False)
+            country = request.POST.get('country', False)
+            mobilephone = request.POST.get('mobilephone', False)
+            homephone = request.POST.get('homephone', False)
+            otherphone = request.POST.get('otherphone', False)
+            emailaddress1 = request.POST.get('emailaddress1', False)
+            emailaddress2 = request.POST.get('emailaddress2', False)
+            dob = request.POST.get('dob', False)
+            gender = request.POST.get('gender', False)
+            salutation = request.POST.get('salutation', False)
+            currentaccademicyear = request.POST.get('currentaccademicyear', False)
+        except KeyError:
+            data_json = { 'status': 'error', }
+            data = simplejson.dumps(data_json)
+            return HttpResponse(data, mimetype='application/json')
+        else:
+            login = Login.objects.get(id=userid)
+            clientid = login.clientid
+            
+            recid = Studentlist.objects.latest('id').id
+            
+            login = Login()
+            login.loginname = user
+            login.password = password
+            login.hint = hint
+            login.usertypeid = 2
+            login.recid = recid+1
+            login.modifieddt = datetime.now()
+            login.modifiedby = userid
+            login.createddt = datetime.now()
+            login.createdby = userid
+            login.disabled = 0
+            login.deleted = 0
+            login.clientid = clientid
+            login.save()
+            
+            studentlist = Studentlist()
+            studentlist.firstname = firstname
+            studentlist.lastname = lastname
+            studentlist.middlename = middlename
+            studentlist.address1 = address1
+            studentlist.address2 = address2
+            studentlist.address3 = address3
+            studentlist.city = city
+            studentlist.zipcode = zipcode
+            studentlist.state = state
+            studentlist.country = country
+            studentlist.mobilephone = mobilephone
+            studentlist.homephone = homephone
+            studentlist.otherphone = otherphone
+            studentlist.emailaddress1 = emailaddress1
+            studentlist.emailaddress2 = emailaddress2
+            studentlist.dob = datetime.strptime(dob,DATE_FORMAT)
+            studentlist.gender = gender
+            studentlist.salutation = salutation
+            studentlist.currentaccademicyear = currentaccademicyear
+            studentlist.timezone = 0
+            studentlist.otherphonetype = 0
+            studentlist.enrollmentdt = datetime.now()
+            studentlist.leadid = 0
+            studentlist.clientid = clientid
             studentlist.save()
             data_json = { 'status': 'success', }
             data = simplejson.dumps(data_json)

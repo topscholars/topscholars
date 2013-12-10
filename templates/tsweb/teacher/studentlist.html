@@ -479,7 +479,23 @@
 		<button id="new_student_btn" class="btn btn-info btn-lg new-btn" data-toggle="modal" data-target="#new_student_modal">
 		  New Student <i class="fa fa-plus"></i>
 		</button>
+	<script>
+		$(".listnewbutton").click(function(){
+			thisClass.showEditTable();
+			$(".editorTD").show();
+			$(".viewTD").hide();
+			$("[id^='ele_']").each(function(){
+				$(this).val('');
+			});
+		});
 		
+		$( "#ele_dob").datepicker({ 
+			dateFormat: 'dd-mm-yy',
+            yearRange: "-50:+0",
+            changeMonth: false,
+            changeYear: true
+		});
+	</script>		
 		<!--New Student Modal Form--> 
 		<div class="modal fade" id="new_student_modal" tabindex="-1" role="dialog" aria-labelledby="newStudentLabel" aria-hidden="true" data-dismiss="false">
 		  <div class="modal-dialog">
@@ -730,6 +746,33 @@ Class Filter:&nbsp;
 	<form>
 	<table class="editor">
 		<tr>
+			<td class="col editorTD">User</td>
+			<td class="editorTD">
+				<input type="text" id="ele_user" name="user" class="text" value="" />
+			</td>
+		</tr>
+		<tr>
+			<td class="col editorTD">Password</td>
+			<td class="editorTD">
+				<input type="text" id="ele_password" name="password" class="text" value="" />
+			</td>
+		</tr>
+		<tr>
+			<td class="col editorTD">RE-Password</td>
+			<td class="editorTD">
+				<input type="text" id="ele_re_password" name="re_password" class="text" value="" />
+			</td>
+		</tr>
+		<tr>
+			<td class="col editorTD">Hint</td>
+			<td class="editorTD">
+				<input type="text" id="ele_hint" name="hint" class="text" value="" />
+			</td>
+		</tr>
+		<tr>
+			<td class="editorTD" colspan="3"><hr></td>
+		</tr>
+		<tr>
 			<td class="col">First Name</td>
 			<td class="editorTD">
 				<input type="text" id="ele_firstname" name="firstname" class="text" value="" />
@@ -783,14 +826,14 @@ Class Filter:&nbsp;
 			<td class="viewTD"><span id="textView_city"></span></td>
 		</tr>
 		<tr>
-			<td class="col">Zipcode</td>
-			<td class="editorTD"><input type="text" id="ele_zipcode" name="zipcode" class="text" value="" /></td>
-			<td class="viewTD"><span id="textView_zipcode"></span></td>
-		</tr>
-		<tr>
 			<td class="col">State</td>
 			<td class="editorTD"><input type="text" id="ele_state" name="state" class="text" value="" /></td>
 			<td class="viewTD"><span id="textView_state"></span></td>
+		</tr>
+		<tr>
+			<td class="col">Zipcode</td>
+			<td class="editorTD"><input type="text" id="ele_zipcode" name="zipcode" class="text" value="" /></td>
+			<td class="viewTD"><span id="textView_zipcode"></span></td>
 		</tr>
 		<tr>
 			<td class="col">Country</td>
@@ -838,6 +881,7 @@ Class Filter:&nbsp;
 	</table>
 	</form>
 </div>
+<input type="button" value="New Student" class="button listnewbutton"/>
 </div>
 <div style="clear:both"></div>
 </div>

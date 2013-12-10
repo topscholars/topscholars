@@ -822,4 +822,14 @@ form{
 #created_rubric .modal-footer{
 	border: none;
 }
+#commentSection textarea{
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	padding: 5px;
+}
+#commentSection textarea:focus{
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	padding: 5px;
+}
 /*End*/

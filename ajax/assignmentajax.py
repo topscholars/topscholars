@@ -105,8 +105,6 @@ class ASSSIGNMENTLIST():
             assignment.modifiedby = userid
             assignment.createddt = datetime.now()
             assignment.createdby = userid
-            assignment.modifieddt = datetime.now()
-            assignment.modifiedby = userid
             assignment.disabled = disabled
             assignment.deleted = 0
             assignment.clientid = clientid

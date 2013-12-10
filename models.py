@@ -441,6 +441,14 @@ class Studentlist(models.Model):
         row = cursor.fetchone()
         return row[0]
     
+    def getStudentAllClass(self):
+        stdid=self.id
+        cursor = connection.cursor()
+        cursor.execute('select cs.code from studentlist as st join studentclass as sc on st.id = sc.studentid join classschedule as cs on sc.classscheduleid = cs.id where st.id = %s',[stdid])
+        #row = cursor.fetchone()
+        row = [item[0] for item in cursor.fetchall()]
+        return ', '.join(row)
+    
     class Meta:
         db_table = 'studentlist'
 
@@ -485,6 +493,16 @@ class Submission(models.Model):
         else:
             return 0
     
+    def getAssignment(self):
+        submissionid=self.id
+        cursor = connection.cursor()
+        cursor.execute('select asm.name from Submission as sm join Assignment as asm on (sm.assignmentid = asm.id) where sm.id = %s and sm.disabled = 0 and sm.deleted = 0',[submissionid])
+        row = cursor.fetchone()
+        if row is not None:
+            return row[0]
+        else:
+            return 0
+        
     class Meta:
         unique_together = (('studentid', 'teacherid', 'assignmentid'),)
         db_table = 'submission'

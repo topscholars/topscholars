@@ -11,7 +11,7 @@ from itertools import chain
 from datetime import datetime
 import time
 
-class SUBMISSIONREVIEW():
+class SUBMISSIONCREATE():
     def getSubmissionVersion(self,request):
         try:
             userid = request.session['userid']
@@ -27,9 +27,7 @@ class SUBMISSIONREVIEW():
             DATE_FORMAT = "%d-%m-%Y" 
             data_json = ''
             if versionid != False and versionid != '':
-                submission = Submission.objects.get(id=submissionid)
-                subid = submission.id
-                submissionversion = Submissionversion.objects.get(submissionid=subid,version=versionid)
+                submissionversion = Submissionversion.objects.get(id=versionid)
                 currentversion = ''
                 if submissionversion.version == submissionversion.submissionid.getLatestVersion():
                     currentversion = 'y'
@@ -47,31 +45,43 @@ class SUBMISSIONREVIEW():
                         'submissioncomment': submissionversion.submissionid.comment,
                         'submissionversionstage': submissionversion.stage,
                         'submissionversionessay': submissionversion.essay,
+                        'submissionversionessaytextarea': submissionversion.essay,
                         'submissionversioncomment': submissionversion.comment,
                         'currentversion': currentversion,
+                        'submissionstudentstatus': submissionversion.studentstatus,
+                        'submissionteacherstatus': submissionversion.teacherstatus,
                         }
             elif submissionid != False and submissionid != '':
                 submission = Submission.objects.get(id=submissionid)
-                submissionversion = Submissionversion.objects.get(submissionid=submission.id,version=submission.getLatestVersion)
-                if submissionversion.version == submissionversion.submissionid.getLatestVersion():
-                    currentversion = 'y'
+                try:
+                    submissionversion = Submissionversion.objects.get(submissionid=submission.id,version=submission.getLatestVersion)
+                except Submissionversion.DoesNotExist:
+                    data_json = { }
+                    data = simplejson.dumps(data_json)
+                    return HttpResponse(data, mimetype='application/json')
                 else:
-                    currentversion = 'n'
-                data_json = {
-                        'submissionversionid': submissionversion.id,
-                        'submissionversionversion': submissionversion.version,
-                        'assignmentname': submissionversion.submissionid.assignmentid.name,
-                        'assignmentdesc': submissionversion.submissionid.assignmentid.description,
-                        'assignmentmaxword': submissionversion.submissionid.assignmentid.maxwords,
-                        'assignmentrubric': submissionversion.submissionid.assignmentid.rubricid.name,
-                        'submissionduedate': submissionversion.submissionid.duedate.strftime(DATE_FORMAT),
-                        'submissionprogress': submissionversion.submissionid.progress,
-                        'submissioncomment': submissionversion.submissionid.comment,
-                        'submissionversionstage': submissionversion.stage,
-                        'submissionversionessay': submissionversion.essay,
-                        'submissionversioncomment': submissionversion.comment,
-                        'currentversion': currentversion,
-                        }
+                    if submissionversion.version == submissionversion.submissionid.getLatestVersion():
+                        currentversion = 'y'
+                    else:
+                        currentversion = 'n'
+                    data_json = {
+                            'submissionversionid': submissionversion.id,
+                            'submissionversionversion': submissionversion.version,
+                            'assignmentname': submissionversion.submissionid.assignmentid.name,
+                            'assignmentdesc': submissionversion.submissionid.assignmentid.description,
+                            'assignmentmaxword': submissionversion.submissionid.assignmentid.maxwords,
+                            'assignmentrubric': submissionversion.submissionid.assignmentid.rubricid.name,
+                            'submissionduedate': submissionversion.submissionid.duedate.strftime(DATE_FORMAT),
+                            'submissionprogress': submissionversion.submissionid.progress,
+                            'submissioncomment': submissionversion.submissionid.comment,
+                            'submissionversionstage': submissionversion.stage,
+                            'submissionversionessay': submissionversion.essay,
+                            'submissionversionessaytextarea': submissionversion.essay,
+                            'submissionversioncomment': submissionversion.comment,
+                            'currentversion': currentversion,
+                            'submissionstudentstatus': submissionversion.studentstatus,
+                            'submissionteacherstatus': submissionversion.teacherstatus,
+                            }
             else:
                 data_json = {
                             'status': 'no key passed',
@@ -180,53 +190,112 @@ class SUBMISSIONREVIEW():
     def submit(self,request):
         try:
             userid = request.session['userid']
+            submissionid = request.POST.get('submissionid', False)
+            essay = request.POST.get('essay', False)
             submissionversionid = request.POST.get('submissionversionid', False)
-            stage = request.POST.get('stage', False)
-            progress = request.POST.get('progress', False)
-            comment = request.POST.get('comment', False)
-            criteriaid = request.POST.getlist('criteriaid[]', False)
-            criteriaval = request.POST.getlist('criteriaval[]', False)
-            criteriaval[0]
         except KeyError:
-            data_json = {
-                        'status': 'user not logged in',
-                        }
+            data_json = { 'status': 'error' }
             data = simplejson.dumps(data_json)
             return HttpResponse(data, mimetype='application/json')
         else:
-            submissionvs = Submissionversion.objects.get(id=submissionversionid)
-            
-            submissionid = submissionvs.submissionid.id
-            submission = Submission.objects.get(id=submissionid)
-            submission.progress = progress
-            submission.save()
-            
-            submissionvs.teacherstatus = 1
-            submissionvs.stage = stage
-            submissionvs.comment = comment
-            submissionvs.modifiedby = userid
-            submissionvs.modifieddt = datetime.now()
-            submissionvs.save()
+            if submissionversionid == "":
+                submissionlist = Submission.objects.get(id=submissionid)
+                submissionvs = Submissionversion()
+                submissionvs.submissionid =submissionlist
+                #version have change none complete
+                submissionvs.version = 1
+                submissionvs.essay = essay
+                submissionvs.studentstatus = 1
+                submissionvs.teacherstatus = 0
+                submissionvs.stage = 0
+                submissionvs.createddt = datetime.now()
+                submissionvs.createdby = userid
+                submissionvs.modifieddt = datetime.now()
+                submissionvs.modifiedby = userid
+                submissionvs.disabled = 0
+                submissionvs.deleted = 0
+                submissionvs.save()
+                
+                recid = Submissionversion.objects.latest('id').id
 
+                data_json = { 'submissionversionid': recid,
+                             'status': 'success'}
+                data = simplejson.dumps(data_json)
+                return HttpResponse(data, mimetype='application/json')
+            else:
+                submissionlist = Submission.objects.get(id=submissionid)
+                submissionvs = Submissionversion.objects.get(id=submissionversionid)
+                submissionvs.submissionid =submissionlist
+                #version have change none complete
+                submissionvs.version = 1
+                submissionvs.essay = essay
+                submissionvs.studentstatus = 1
+                submissionvs.teacherstatus = 0
+                submissionvs.stage = 0
+                submissionvs.modifieddt = datetime.now()
+                submissionvs.modifiedby = userid
+                submissionvs.disabled = 0
+                submissionvs.deleted = 0
+                submissionvs.save()
 
-            i=0
-            for criteria in criteriaid:
-                entity = Entity.objects.get(id=5)
-                criteriaid = Rubriccriteria.objects.get(id=criteria)
-                scaleid = Rubricscale.objects.get(id=criteriaval[i])
-                rubricklink = Rubriclink()
-                rubricklink.entityid = entity
-                rubricklink.recid = submissionversionid
-                rubricklink.rubiccriteriaid = criteriaid
-                rubricklink.rubricscaleid = scaleid
-                rubricklink.save()
-                i += 1
-
-            data_json = {
-                        'status': criteriaval[0],
-                        }
+                data_json = {'status': 'success'}
+                data = simplejson.dumps(data_json)
+                return HttpResponse(data, mimetype='application/json')
+        
+    def save(self,request):
+        try:
+            userid = request.session['userid']
+            submissionid = request.POST.get('submissionid', False)
+            essay = request.POST.get('essay', False)
+            submissionversionid = request.POST.get('submissionversionid', False)
+        except KeyError:
+            data_json = { 'status': 'error' }
             data = simplejson.dumps(data_json)
             return HttpResponse(data, mimetype='application/json')
+        else:
+            if submissionversionid == "":
+                submissionlist = Submission.objects.get(id=submissionid)
+                submissionvs = Submissionversion()
+                submissionvs.submissionid =submissionlist
+                #version have change none complete
+                submissionvs.version = 1
+                submissionvs.essay = essay
+                submissionvs.studentstatus = 0
+                submissionvs.teacherstatus = 0
+                submissionvs.stage = 0
+                submissionvs.createddt = datetime.now()
+                submissionvs.createdby = userid
+                submissionvs.modifieddt = datetime.now()
+                submissionvs.modifiedby = userid
+                submissionvs.disabled = 0
+                submissionvs.deleted = 0
+                submissionvs.save()
+                
+                recid = Submissionversion.objects.latest('id').id
+
+                data_json = { 'submissionversionid': recid,
+                             'status': 'success'}
+                data = simplejson.dumps(data_json)
+                return HttpResponse(data, mimetype='application/json')
+            else:
+                submissionlist = Submission.objects.get(id=submissionid)
+                submissionvs = Submissionversion.objects.get(id=submissionversionid)
+                submissionvs.submissionid =submissionlist
+                #version have change none complete
+                submissionvs.version = 1
+                submissionvs.essay = essay
+                submissionvs.studentstatus = 0
+                submissionvs.teacherstatus = 0
+                submissionvs.stage = 0
+                submissionvs.modifieddt = datetime.now()
+                submissionvs.modifiedby = userid
+                submissionvs.disabled = 0
+                submissionvs.deleted = 0
+                submissionvs.save()
+
+                data_json = {'status': 'success'}
+                data = simplejson.dumps(data_json)
+                return HttpResponse(data, mimetype='application/json')
 
     def addSubmissionversionHighlight(self,request):
         try:

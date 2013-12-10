@@ -15,5 +15,6 @@ urlpatterns = patterns('',
                        url(r'teacher/gettags/(?P<entityid>\d+)/', views.gettags, name='gettags'),
 
                        url(r'index/', views.sindex, name='sindex'),
+                       url(r'student/submissionreview/(?P<id>\d+)/', views.stsubmissionreview, name='stsubmissionreview'),
 
 )

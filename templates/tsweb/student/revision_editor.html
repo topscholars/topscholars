@@ -127,10 +127,27 @@
 		<div class="assignment-edit-section">
 			 <div class="block-cell block-wide">
 			 		 
-			 		<div id="redactor_content" name="content" style="width: 100%; height: auto;"></div>
+			 		<div id="redactor_content" name="content" style="width: 100%; height: auto;">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum</div>
 			 		<!--ADD TAGGING BUTTON OR HIGHLIGHT STATE-->
 			 </div>
 			
+		</div>
+		
+		<div class="tag-list-dropdown col-lg-2" style="display: none;">
+			<form class="form" role="form">
+		    <div class="input-group input-group-sm">
+		      <input type="text" class="form-control">
+		      <span class="input-group-btn">
+		        <input class="btn btn-info" type="submit" value="Add Tag"/>
+		      </span>
+		    </div><!-- /input-group -->
+				
+				<ul id="taglist">
+					<li><a href="#">{% tag %}</a></li>
+				</ul>
+				
+				<!--<input type="submit" name="add-tab" value="Add Tag" class="btn btn-primary btn-small pull-right" />-->
+			</form>
 		</div>
 		
 		<button type="button" class="btn btn-small hide-panel" id="hide-panel"><i class="fa fa-arrow-right"></i></button>
@@ -289,7 +306,7 @@
 			<div class="lesson-section">
 				<div class="lesson-section-header lesson-header-small">{% lesson_name %}</div>
 				<div class="lesson-section-body">
-					lesson information will go here....
+					
 				</div>
 			</div>
 		</div>

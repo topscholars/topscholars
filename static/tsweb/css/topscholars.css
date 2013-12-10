@@ -386,6 +386,23 @@ form{
 .tag a:hover{
 	text-shadow: none;
 }
+.tag-list-dropdown{
+	position: relative;
+	padding: 5px;
+	background-color: rgba(100, 100, 100, .75);
+	border-radius: 3px;
+}
+.tag-list-dropdown ul{
+	list-style: none;
+	padding: 5px;
+}
+.tag-list-dropdown ul li a{
+	color: #ffffff;
+}
+.tag-list-dropdown #taglist{
+	background-color: rgba(80, 80, 80, .75);
+	border-radius: 3px;
+}
 .block-list li{
 	
 	width: 100%!;

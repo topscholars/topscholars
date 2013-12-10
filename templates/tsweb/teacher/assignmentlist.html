@@ -448,16 +448,17 @@ $(function() {
 	</button>
 	
 	<div class="searchlist form form-horizontal">
-		
-		<div class="form-group">
-			<label for="lstClassid" class="col-sm-4 control-label">Class Filter:&nbsp;</label>
-			<div class="col-sm-8">
-				<select class="form-control" id="lstClassid">
-					<option value="">Please Select</option>
-					{% for class in classlist %}
-					<option value="{{ class.id  }}">{{ class.id }} - {{ class.classname }}</option>
-					{% endfor %}
-				</select>
+		<div class="row">
+			<div class="form-group">
+				<label for="lstClassid" class="col-sm-4 control-label">Class Filter:&nbsp;</label>
+				<div class="col-sm-8">
+					<select class="form-control" id="lstClassid">
+						<option value="">Please Select</option>
+						{% for class in classlist %}
+						<option value="{{ class.id  }}">{{ class.id }} - {{ class.classname }}</option>
+						{% endfor %}
+					</select>
+				</div>
 			</div>
 		</div>
 	</div>

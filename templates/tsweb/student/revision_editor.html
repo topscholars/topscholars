@@ -503,8 +503,7 @@
 			
 			
 			$('.lesson-btn').click(function (e) {
-				$('#lessonLarge').toggle(1000, 'easeOutElastic');
-				$('#lessonLarge').css('display', 'block');
+				openStaticLesson();
 
 				if ($('.lesson-btn i').hasClass('fa-arrow-up')) {
 					$('.lesson-btn i').removeClass('fa-arrow-up').addClass('fa-arrow-down');
@@ -512,6 +511,20 @@
 					$('.lesson-btn i').removeClass('fa-arrow-down').addClass('fa-arrow-up');
 				}
 			});
+			
+			$('#tag-details').click(function () {
+				openDynamicLesson();
+			});
+			
+			//Open lessons
+			function openStaticLesson() {
+				$('#lessonLarge').toggle(1000, 'easeOutElastic');
+				$('#lessonLarge').css('display', 'block');
+			}
+			function openDynamicLesson() {
+				$('#lessonSmall').toggle(1000, 'easeOutElastic');
+				$('#lessonSmall').css('display', 'block');
+			}
 			
 			$(function() {
 			    $( "#grade-slider1" ).slider({

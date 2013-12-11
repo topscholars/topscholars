@@ -587,7 +587,6 @@ function EDITTABLE(){
 	}
 			
 	this.initContent = function(){
-		
 		thisClass.getData($('#ele_submissionid').val(),'');
 		
 		thisClass.showHighlightDialog(false);
@@ -836,6 +835,9 @@ function openHighlightDialog(highlightid){
 			  </div>
 				  
 			</div> <!--End Side Panel-->
+			
+			<input type="submit" id="saveAssignment" class="btn btn-info btn-lg new-btn" value="Save Assignment" />
+			<a href="{# submissionlist #}" class="btn btn-warning new-btn" style="display: inline-block; right: 50px;">Exit</a>			
 			
 	</div> <!-- end page container -->
 <!--<input type="hidden" id="ele_submissionid" value="{{ id }}">

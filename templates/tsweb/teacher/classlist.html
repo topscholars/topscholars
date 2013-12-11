@@ -427,6 +427,7 @@ $(function() {
 		    <div class="modal-content">
 		      <div class="modal-header teacher-header">
 		        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+		        <button type="button" class="btn btn-default btn-small btn-edit pull-right" id="editClassBtn">Edit</button>
 		        <h4 class="modal-title">New Class</h4>
 		      </div>
 		      <div class="modal-body">
@@ -456,6 +457,13 @@ $(function() {
 		        		<label for="teacherid" class="col-sm-3 control-label">Teacher Name</label>
 		        		<div class="col-sm-9">
 		        			<select id="ele_teacherid" name="teacherid" class="form-control"></select>
+		        		</div>
+		        	</div>
+		        	
+		        	<div class="form-group">
+		        		<label for="studentid" class="col-sm-3 control-label">Student Name</label>
+		        		<div class="col-sm-9">
+		        			<select id="ele_studentid" name="studentid" class="form-control"></select>
 		        		</div>
 		        	</div>
 		        	
@@ -557,154 +565,17 @@ $(function() {
       $('#new_class_form')[0].reset();
       $('#new_class_form .form-error').remove();
     });
+    
+    $('.modal .form-control, .modal input[type="checkbox"]').attr('disabled', 'disabled');
+    
+    $('#new_class_btn').click(function () {
+    	$('#editClassBtn').hide();
+    	$('.modal .form-control, .modal input[type="checkbox"]').removeAttr('disabled', 'disabled');
+    });
+    
+    $('#editClassBtn').click(function(){$('.modal .form-control, .modal input[type="checkbox"]').removeAttr('disabled', 'disabled')});
 	</script>
 
-<!--<div class="placeholder">--*>
-<div class="header">
-<div class="headertext">
-<h1>Teacher Name - My Classroom</h1>
-</div>
-<div class="headerbutton">
-<a href="{% url 'tsweb:logout' %}"><img src="{% static 'tsweb/image/logout.png' %}"/></a>
-<a href=""><img src="{% static 'tsweb/image/userdetails.png' %}" /></a>
-<a href=""><img src="{% static 'tsweb/image/username.png' %}" style="margin-top:12px;" /></a>
-</div>
-</div>
-<h1 class="pagename">Class List</h1>
-<input id="txtSearch" class="searchbox searchboxnofilter" type="text"/>
-<img src="{% static 'tsweb/image/searchbox.png' %}" class="searchboximg searchboximgnofilter" />
-<div class="clear"></div>
-<br/>
-<div class="leftnav">
-<div class="active">
-	<table>
-		<tr>
-			<td class="tdimg"><img src="{% static 'tsweb/image/classlist.png' %}"/></td>
-			<td><a href="{% url 'tsweb:tclasslist' %}">Class List</a></td>
-		</tr>
-	</table>
-</div>
-<div>
-	<table>
-		<tr>
-			<td class="tdimg"><img src="{% static 'tsweb/image/assignmentlist.png' %}"/></td>
-			<td><a href="{% url 'tsweb:tassignmentlist' %}">Assignment List</a></td>
-		</tr>
-	</table>
-</div>
-<div>
-	<table>
-		<tr>
-			<td class="tdimg"><img src="{% static 'tsweb/image/studentlist.png' %}"/></td>
-			<td><a href="{% url 'tsweb:tstudentlist' %}">Student List</a></td>
-		</tr>
-	</table>
-</div>
-<div>
-	<table>
-		<tr>
-			<td class="tdimg"><img src="{% static 'tsweb/image/rubriclist.png' %}"/></td>
-			<td><a href="{% url 'tsweb:trubriclist' %}">Rubric List</a></td>
-		</tr>
-	</table>
-</div>
-<div>
-	<table>
-		<tr>
-			<td class="tdimg"><img src="{% static 'tsweb/image/submissionlist.png' %}"/></td>
-			<td><a href="{% url 'tsweb:tsubmissionlist' %}">Submission List</a></td>
-		</tr>
-	</table>
-</div>
-</div>
-<div class="content">
-<div id="list"></div>
-<div id="editField">
-	<form>
-	<table class="editor">
-		<tr>
-			<td class="col">Class Id</td>
-			<td class="editorTD">
-				<select id="ele_classid" name='classid'></select>
-				<input type="hidden" id="ele_id" name="id" value="" />
-			</td>
-			<td class="viewTD"><span id="textView_classid"></span></td>
-		</tr>
-		<tr>
-			<td class="col">Code</td>
-			<td class="editorTD"><input type="text" id="ele_code" name="code" class="text" value="" /></td>
-			<td class="viewTD"><span id="textView_code"></span></td>
-		</tr>
-		<tr>
-			<td class="col">Subcode</td>
-			<td class="editorTD"><input type="text" id="ele_subcode" name="subcode" class="text" value="" /></td>
-			<td class="viewTD"><span id="textView_subcode"></span></td>
-		</tr>
-		<tr>
-			<td class="col">Teacher Name</td>
-			<td class="editorTD">
-				<select id="ele_teacherid" name="teacherid"></select>
-			</td>
-			<td class="viewTD"><span id="textView_teacherid"></span></td>
-		</tr>
-		<tr>
-			<td class="col">Start Date</td>
-			<td class="editorTD"><input type="text" id="ele_startdate" name="startdate" class="text" value="" /></td>
-			<td class="viewTD"><span id="textView_startdate"></span></td>
-		</tr>
-		<tr>
-			<td class="col">End Date</td>
-			<td class="editorTD"><input type="text" id="ele_enddate" name="enddate" class="text" value="" /></td>
-			<td class="viewTD"><span id="textView_enddate"></span></td>
-		</tr>
-		<tr>
-			<td class="col">Start Time</td>
-			<td class="editorTD"><input type="text" id="ele_starttime" name="starttime" class="text" value="" /></td>
-			<td class="viewTD"><span id="textView_starttime"></span></td>
-		</tr>
-		<tr>
-			<td class="col">End Time</td>
-			<td class="editorTD"><input type="text" id="ele_endtime" name="endtime" class="text" value="" /></td>
-			<td class="viewTD"><span id="textView_endtime"></span></td>
-		</tr>
-		<tr>
-			<td class="col">Day of week</td>
-			<td class="editorTD">
-				<select id="ele_dayofweek" name="dayofweek" multiple>
-					<option value="Mon">Monday</option>
-					<option value="Tue">Tuesday</option>
-					<option value="Wed">Wednesday</option>
-					<option value="Thu">Thursday</option>
-					<option value="Fri">Friday</option>
-					<option value="Sat">Saturday</option>
-					<option value="Sun">Sunday</option>
-				</select>
-			</td>
-			<td class="viewTD"><span id="textView_dayofweek"></span></td>
-		</tr>
-		<tr>
-			<td class="col">Disable</td>
-			<td class="editorTD"><input type="checkbox" id="ele_disabled" name="disabled" /></td>
-			<td class="viewTD"><span id="textView_disabled"></span></td>
-		</tr>
-		<tr>
-			<td>&nbsp;</td>
-		</tr>
-		<tr>
-			<td><div id="btnBack"><span class="ui-icon ui-icon-arrowreturnthick-1-w" style="float:left;"></span>back</div></td>
-			<td class="editorTD" style="float:right;"><div id="btnSave"><span class="ui-icon ui-icon-disk" style="float:left;"></span>Save</div></td>
-			<td class="viewTD"><div id="btnEdit"><span class="ui-icon ui-icon-wrench" style="float:left;"></span>Edit</div></td>
-		</tr>
-	</table>
-	</form>
-	<div id="list_student"></div>
-	<div id="list_add_student"></div>
-</div>
-<input type="button" value="New Class" class="button listnewbutton"/>
-</div>
-<div style="clear:both"></div>
-</div>
->>>>>>> c01980e857e7be4eca2c2122a2cd842c3f38290a-->
 </body>
 
 </html>

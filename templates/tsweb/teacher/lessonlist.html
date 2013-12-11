@@ -130,7 +130,7 @@
 					
 		</div> <!-- End side panel -->
 		
-		<button id="new_class_btn" class="btn btn-info btn-lg new-btn" data-toggle="modal" data-target="#new_lesson_modal">
+		<button id="new_lesson_btn" class="btn btn-info btn-lg new-btn" data-toggle="modal" data-target="#new_lesson_modal">
 		  New Lesson <i class="fa fa-plus"></i>
 		</button>
 		<div class="block-cell block-wide">
@@ -146,6 +146,7 @@
 		    <div class="modal-content">
 		      <div class="modal-header teacher-header">
 		        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+		        <button type="button" class="btn btn-default btn-small btn-edit pull-right" id="editLessonBtn">Edit</button>
 		        <h4 class="modal-title">New Lesson</h4>
 		      </div>
 		      <div class="modal-body">
@@ -195,7 +196,16 @@
 		document.getElementById("uploadBtn").onchange = function () {
 		  document.getElementById("uploadFile").value = this.value;
 		};
-	
+		
+		$('.modal .form-control, .modal input[type="checkbox"]').attr('disabled', 'disabled');
+		
+		$('#new_lesson_btn').click(function () {
+			$('#editLessonBtn').hide();
+			$('.modal .form-control, .modal input[type="checkbox"]').removeAttr('disabled', 'disabled');
+		});
+		
+		$('#editLessonBtn').click(function(){$('.modal .form-control, .modal input[type="checkbox"]').removeAttr('disabled', 'disabled')});
+		
 	</script>
 </body>
 </html>

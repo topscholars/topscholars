@@ -717,11 +717,49 @@ function openHighlightDialog(highlightid){
 		<div class="assignment-edit-section">
 		
 			<div class="block-cell block-wide">
+				<div class="searchlist">
+					
+					<div class="form-group">
+						<label for="lstClassid" class="col-sm-4 control-label">Revision Filter:&nbsp;</label>
+						<div class="col-sm-8">
+							<select class="form-control" id="lstClassid">
+								<option value="">Please Select</option>
+								{% for class in classlist %}
+								<option value="{{ revision.id  }}">{{ revision.id }}</option>
+								{% endfor %}
+							</select>
+						</div>
+					</div>
+				</div>
+				
 			
-				<div id="redactor_editor" name="content" style="width: 100%; height: auto;"></div>
+				<div id="redactor_editor" name="content" style="width: 100%; height: auto;">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum</div>
 						<!--ADD TAGGING BUTTON OR HIGHLIGHT STATE-->
 			</div>
-		</div>		
+		</div>	
+		<style>
+			.redactor_box{
+				top: 50px;
+			}
+		</style>	
+		
+		<div class="tag-list-dropdown col-lg-2" style="display: none;">
+			<form class="form" role="form">
+		    <div class="input-group input-group-sm">
+		      <input type="text" class="form-control">
+		      <span class="input-group-btn">
+		        <input class="btn btn-info" type="submit" value="Add Tag"/>
+		      </span>
+		    </div><!-- /input-group -->
+				
+				<ul id="taglist">
+					<li><a href="#">{% tag %}</a></li>
+				</ul>
+				
+				<!--<input type="submit" name="add-tab" value="Add Tag" class="btn btn-primary btn-small pull-right" />-->
+			</form>
+		</div>
+		
 			<div class="panel-group side-panel panel-revision" id="side-panel">
 			
 				<div class="panel panel-default block-cell block-thin block-expanded">
@@ -793,10 +831,10 @@ function openHighlightDialog(highlightid){
 			        	<li class="tag">
 				        	<a href="#" id="tag-details" rel="popover"
 				        		data-placement="left"
-				        		data-container=".block-wide"
+				        		data-container="body"
 				        		data-toggle="popover" title
 				        		data-trigger="hover"
-				        		data-content="{% tag-details %} this is some more info about this tag.  Of course it will be loaded dynamically.."
+				        		data-content="{% tag-details %}"
 				        		role="button">{% tag-name %}
 				        		<span class="fa fa-frown-o"></span>
 			        		</a>
@@ -826,9 +864,11 @@ function openHighlightDialog(highlightid){
 			</div> <!--End Side Panel-->
 			
 			<input type="submit" id="saveAssignment" class="btn btn-info btn-lg new-btn" value="Save Assignment" />
-			<a href="{% submissionlist %}" class="btn btn-warning new-btn" style="display: inline-block; right: 50px;">Exit</a>			
+			<a href="{% submissionlist %}" class="btn btn-warning new-btn" id="exitBtn" style="display: inline-block; right: 50px;">Exit</a>			
 			
 	</div> <!-- end page container -->
+	
+	
 <!--<input type="hidden" id="ele_submissionid" value="{{ id }}">
 <input type="hidden" id="ele_submissionversionid">
 <div id="diveditbg" style="background-color:gray;z-index:1;width:100%;height:100%;position:absolute;opacity:0.4;"></div>

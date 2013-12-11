@@ -228,7 +228,7 @@
 		        	<li class="tag">
 			        	<a href="#" id="tag-details" rel="popover"
 			        		data-placement="left"
-			        		data-container=".block-wide"
+			        		data-container="body"
 			        		data-toggle="popover" title
 			        		data-trigger="hover"
 			        		data-content="{% tag-details %} this is some more info about this tag.  Of course it will be loaded dynamically.."
@@ -268,7 +268,9 @@
 
 		<div class="lesson-body">
 			<div class="lesson-section">
-				<div class="lesson-section-header">Lesson</div>
+				<div class="lesson-section-header">Lesson
+				<button type="button" class="close" aria-hidden="true">&times;</button>
+				</div>
 				
 				<div class="lesson-section-body">
 					<div class="lesson-media pull-left">
@@ -304,7 +306,9 @@
 	
 		<div class="lesson-body">
 			<div class="lesson-section">
-				<div class="lesson-section-header lesson-header-small">{% lesson_name %}</div>
+				<div class="lesson-section-header lesson-header-small">{% lesson_name %}
+					<button type="button" class="close" aria-hidden="true">&times;</button>
+				</div>
 				<div class="lesson-section-body">
 					
 				</div>
@@ -519,7 +523,7 @@
 			});
 			
 			
-			$('.lesson-btn').click(function (e) {
+			$('.lesson-btn').click(function arrowToggle() {
 				openStaticLesson();
 
 				if ($('.lesson-btn i').hasClass('fa-arrow-up')) {
@@ -528,8 +532,19 @@
 					$('.lesson-btn i').removeClass('fa-arrow-down').addClass('fa-arrow-up');
 				}
 			});
+			$('#lessonLarge .close').click(function () {
+				openStaticLesson();
+				if ($('.lesson-btn i').hasClass('fa-arrow-up')) {
+					$('.lesson-btn i').removeClass('fa-arrow-up').addClass('fa-arrow-down');
+				} else {
+					$('.lesson-btn i').removeClass('fa-arrow-down').addClass('fa-arrow-up');
+				}
+			});
 			
 			$('#tag-details').click(function () {
+				openDynamicLesson();
+			});
+			$('#lessonSmall .close').click(function () {
 				openDynamicLesson();
 			});
 			

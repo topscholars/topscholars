@@ -169,13 +169,12 @@ button:focus{
 .popover{
 	background-color: #2d3339!important;
 	color: #ffffff!important;
-	font-weight: bold!important;
+/*	font-weight: bold!important;*/
 	z-index: 99!important;
 	position: absolute!important;
 }
-.popover.arrow{
-	background-color: #2d3339!important;
-	z-index: 9999!important;
+.popover .arrow{
+	display: none!important;
 }
 table tr td:hover{
 	cursor: pointer;
@@ -404,7 +403,6 @@ form{
 	border-radius: 3px;
 }
 .block-list li{
-	
 	width: 100%!;
 }
 .block-list li a{
@@ -553,6 +551,9 @@ form{
 	bottom: 100px;
 	right: 110px;
 }
+#saveAssignment, #exitBtn{
+	bottom: 20px!important;
+}
 .modal-header.teacher-header{
 	background-color: #46b8da!important;
 }
@@ -567,6 +568,9 @@ form{
 .modal-wide .modal-dialog{
 	width: 60%;
 	left: 40%;
+}
+.btn-edit{
+	margin-right: 50px;
 }
 .rubric-categories{
 	display: inline-block;

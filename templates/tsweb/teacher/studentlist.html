@@ -437,7 +437,7 @@
 				
 		</div> <!-- End side panel -->
 		
-		<div class="searchlist form form-horizontal">
+		<div class="searchlist">
 			
 			<div class="form-group">
 				<label for="lstClassid" class="col-sm-4 control-label">Class Filter:&nbsp;</label>
@@ -456,23 +456,6 @@
 			<div id="list"></div>
 			
 			<!--Student table insert here-->
-			
-			<div class="table-responsive">
-			<table class="table table-bordered" style="margin-top: 45px;">
-			<tr class="rowheader">
-			<td class="cellitem">Id</td>
-			<td class="cellitem">Student Name</td>
-			<td class="cellitem">Next Assignment Due Date</td>
-			<td class="cellitem">Student Grade</td>
-			</tr>
-			    <tr id="{{ student.id }}" class="rowitem">
-				<td class="cellitem">{{ student.id }}</td>
-				<td class="cellitem">{{ student.getFullName }}</td>
-				<td class="cellitem">{{ student.getNextAssginmentDate }}</td>
-				<td class="cellitem">{{ student.getStudentGrade }}</td>
-				</tr>
-			</table>
-			</div>
 			
 		</div> <!--End Block Cell-->
 		
@@ -502,6 +485,7 @@
 		    <div class="modal-content">
 		      <div class="modal-header teacher-header">
 		        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+		        <button type="button" class="btn btn-default btn-small btn-edit pull-right" id="editStudentBtn">Edit</button>
 		        <h4 class="modal-title">New Student</h4>
 		      </div>
 		      <div class="modal-body">
@@ -525,6 +509,30 @@
 		        		<label for="ele_lastname" class="col-sm-4 control-label">Last Name</label>
 		        		<div class="col-sm-8">
 		        			<input type="text" name="lastname" id="ele_lastname" class="form-control"/>
+		        		</div>
+		        	</div>
+		        	
+		        	<div class="form-group">
+		        		<label for="ele_username" class="col-sm-4 control-label">User Name</label>
+		        		<div class="col-sm-8">
+		        			<input type="text" name="username" id="ele_username" class="form-control"/>
+		        			<input type="hidden" id="ele_username" name="id" class="form-control" />
+		        		</div>
+		        	</div>
+		        	
+		        	<div class="form-group">
+		        		<label for="ele_password" class="col-sm-4 control-label">Password</label>
+		        		<div class="col-sm-8">
+		        			<input type="text" name="password" id="ele_password" class="form-control"/>
+		        			<input type="hidden" id="ele_password" name="id" class="form-control" />
+		        		</div>
+		        	</div>
+		        	
+		        	<div class="form-group">
+		        		<label for="ele_password_confirm" class="col-sm-4 control-label">Confirm Password</label>
+		        		<div class="col-sm-8">
+		        			<input type="text" name="password_confirm" id="ele_password_confirm" class="form-control"/>
+		        			<input type="hidden" id="ele_password_confirm" name="id" class="form-control" />
 		        		</div>
 		        	</div>
 		        	
@@ -669,6 +677,15 @@
 	    $('#new_assignment_form')[0].reset();
 	    $('#new_assignment_form .form-error').remove();
 	  });
+	  
+	  $('.modal .form-control, .modal input[type="checkbox"]').attr('disabled', 'disabled');
+	  
+	  $('#new_student_btn').click(function () {
+	  	$('#editStudentBtn').hide();
+	  	$('.modal .form-control, .modal input[type="checkbox"]').removeAttr('disabled', 'disabled');
+	  });
+	  
+	  $('#editStudentBtn').click(function(){$('.modal .form-control, .modal input[type="checkbox"]').removeAttr('disabled', 'disabled')});
 	</script>
 
 <!--</script>

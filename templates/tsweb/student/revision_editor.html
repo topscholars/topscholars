@@ -1,4 +1,4 @@
-﻿<!--{% load staticfiles %}-->
+<!--{% load staticfiles %}-->
 <!DOCTYPE html>
 <html>
 
@@ -64,7 +64,7 @@
 <script>
 function EDITTABLE(){
 	var thisClass = this;
-	var evalClass = 'SUBMISSIONREVIEW';
+	var evalClass = 'SUBMISSIONCREATE';
 	var essay;
 	var url = "{% url 'tsweb:tprocessajax' %}";
 	this.startHighlightPositon = '';
@@ -97,8 +97,7 @@ function EDITTABLE(){
 		var html = '';
 		var text = result.submissionversionessay;
 		var maxWord = result.assignmentmaxword;
-		/*
-		var s = text;
+		s = text;
 		s = s.replace(/(^\s*)|(\s*$)/gi,"");
 		s = s.replace(/[ ]{2,}/gi," ");
 		s = s.replace(/\n /,"\n");
@@ -107,38 +106,45 @@ function EDITTABLE(){
 		html += count;
 		html += '/';
 		html += maxWord;
-		
-		document.getElementById("ele_assignmentmaxword").innerHTML = count+"/"+maxWord;
-		*/
+		//document.getElementById("ele_assignmentmaxword").innerHTML = count+"/"+maxWord;
 	}
 	
 	this.getData = function (submissionid, versionid) {
 	    $.getJSON(
 			url,
-			{ 'class': 'SUBMISSIONREVIEW',
+			{ 'class': evalClass,
 			    'method': 'getSubmissionVersion',
 			    'submissionid': submissionid,
 			    'versionid': versionid
 			},
 			function (result) {
-				
+				var teacherstaus = false;
 			    $.each(result, function (ini, val) {
 			    	
 			        if (ini == "submissionprogress")
 			            thisClass.setProgressBar(val);
 			        else if (ini == "currentversion") {
-			            if (val == 'y') {
-			                $('#btnedithighlight').show();
-			                $('#btnSubmit').show();
-			            }
-			            else {
-			                $('#btnedithighlight').hide();
-			                $('#btnSubmit').hide();
-			            }
+			            // if (val == 'y') {
+			                // $('#btnedithighlight').show();
+			                // $('#btnSubmit').show();
+			            // }
+			            // else {
+			                // $('#btnedithighlight').hide();
+			                // $('#btnSubmit').hide();
+			            // }
 			        }
-			        else if(ini == "ele_submissionversionessay")
-			        {
-			        	$("#ele_submissionversionessay").text(val);
+		       		else if(ini == "submissionstudentstatus") {
+			        	if(val == 1) {
+			        		$("#btnSave").hide();
+			        		$("#btnSubmit").hide();
+			        		$("#ele_submissionversionessay").show();
+			        		thisClass.closeEditEssay();
+			        	}
+			        }
+			        else if(ini == "submissionteacherstatus") {
+			        	if(val == 1) {
+							teacherstaus = true;
+			        	}
 			        }
 			        else if ($('#ele_' + ini).is("span") || $('#ele_' + ini).is("div"))
 			            $('#ele_' + ini).html(val);
@@ -147,10 +153,13 @@ function EDITTABLE(){
 			    });
 
 			    essay = $('#ele_submissionversionessay').html();
-				thisClass.countWords(result);
-			    thisClass.highlightEssay();
-			    thisClass.tagHighlightList();
-			    thisClass.getSubmitRubric();
+			    
+			    if(teacherstaus){
+					thisClass.countWords(result);
+				    thisClass.highlightEssay();
+				    thisClass.tagHighlightList();
+				    thisClass.getSubmitRubric();
+			   	}
 			})
 			.error(function (xhr, status, error) {
 			    alert('Error occur. Please contact the administrator.');
@@ -230,6 +239,12 @@ function EDITTABLE(){
 				}
 			});
 			thisClass.getSelectSuggest(tagNewIds);
+		});
+	}
+	
+	this.closeEditEssay = function(){
+		$('#ele_submissionversionessay').keypress(function(e){
+			return false;
 		});
 	}
 	
@@ -325,9 +340,9 @@ function EDITTABLE(){
 
 			            //set tag size
 			            if (val[2] == 0) {
-			                li.children().css({ 'font-size': '1.5em', 'font-weight': 'bold' });
+			                li.children().css({ 'font-size': '2em', 'font-weight': 'bold' });
 			            } else {
-			                li.children().css({ 'font-size': '1.2em' });
+			                li.children().css({ 'font-size': '1.7em' });
 			            }
 
 			            //add to list
@@ -363,7 +378,7 @@ function EDITTABLE(){
 				$("#"+highlightid+".essayhighlight").css({'background':val[2]});
 				textComment += "- " + val[1] + "\n";
 			});
-			$("#commentSection").text(textComment);
+			$("#commentArea").val(textComment);
 		}).error(function(xhr, status, error) {
     		alert('Error occur. Please contact the administrator.');
     	});
@@ -600,23 +615,20 @@ function EDITTABLE(){
 		
 		thisClass.getSelectStage();
 
-		$('#ele_submissionversionessay').mouseup(function() {
-			var node = this;
-			if(thisClass.getSelectionCharOffsetsWithin(node).start != thisClass.getSelectionCharOffsetsWithin(node).end)
-			{
-				var start = thisClass.getSelectionCharOffsetsWithin(node).start;
-				var end = thisClass.getSelectionCharOffsetsWithin(node).end;
-				var htxt = essay;
-				
-				htxt = htxt.substring(start,end);
-				//alert(htxt);
-				thisClass.startHighlightPositon = start;
-				$('#ele_highlighttext').val(htxt);
-				thisClass.showHighlightDialog(true);
-			}
-		}).keypress(function(e){
-			return false;
-		});
+		// $('#ele_submissionversionessay').mouseup(function() {
+			// var node = this;
+			// if(thisClass.getSelectionCharOffsetsWithin(node).start != thisClass.getSelectionCharOffsetsWithin(node).end)
+			// {
+				// var start = thisClass.getSelectionCharOffsetsWithin(node).start;
+				// var end = thisClass.getSelectionCharOffsetsWithin(node).end;
+				// var htxt = essay;
+				// htxt = htxt.substring(start,end);
+				// //alert(htxt);
+				// thisClass.startHighlightPositon = start;
+				// $('#ele_highlighttext').val(htxt);
+				// thisClass.showHighlightDialog(true);
+			// }
+		// });
 		
 		$('#btnedithighlight').click(function() {
 			thisClass.editHighlightDialog(true);
@@ -648,11 +660,55 @@ function EDITTABLE(){
 		});
 
 		$('#btnReturn').click(function() {
-			window.location = "{% url 'tsweb:tsubmissionlist' %}";
+			window.location = "{% url 'tsweb:sindex' %}";
 		});
 		
-		$('#saveAssignment').click(function() {
-			thisClass.showSubmitDialog(true);
+		$('#btnSubmit').click(function() {
+			//thisClass.showSubmitDialog(true);
+			var essay = $("#ele_submissionversionessay").text();
+			var submissionid = $("#ele_submissionid").val();
+			var submissionversionid = $('#ele_submissionversionid').val();
+			odata = {'class' :  evalClass,
+ 			 'method' : 'submit',
+ 			 'submissionid' : submissionid,
+ 			 'submissionversionid' : submissionversionid,
+ 			 'essay' : essay
+ 			 };
+
+			$.post(url,odata,
+				function(result){
+					if(result.submissionversionid !==""){
+						$('#ele_submissionversionid').val(result.submissionversionid);
+					}
+					window.location = "{% url 'tsweb:sindex' %}";
+				})
+			.error(function(xhr, status, error) {
+	    		alert('Error occur. Please contact the administrator.');
+	    	});
+		});
+		
+		$('#btnSave').click(function() {
+			//thisClass.showSubmitDialog(true);
+			var essay = $("#ele_submissionversionessay").text();
+			var submissionid = $("#ele_submissionid").val();
+			var submissionversionid = $('#ele_submissionversionid').val();
+			odata = {'class' :  evalClass,
+ 			 'method' : 'save',
+ 			 'submissionid' : submissionid,
+ 			 'submissionversionid' : submissionversionid,
+ 			 'essay' : essay
+ 			 };
+
+			$.post(url,odata,
+				function(result){
+					if(result.submissionversionid !==""){
+						$('#ele_submissionversionid').val(result.submissionversionid);
+					}
+					//window.location = "{% url 'tsweb:sindex' %}";
+				})
+			.error(function(xhr, status, error) {
+	    		alert('Error occur. Please contact the administrator.');
+	    	});
 		});
 		
 		$("#btncancelsubmit").click(function(){
@@ -874,9 +930,9 @@ function openHighlightDialog(highlightid){
 			  </div>
 				  
 			</div> <!--End Side Panel-->
-			
-			<input type="submit" id="saveAssignment" class="btn btn-info btn-lg new-btn" value="Save Assignment" />
-			<a href="{% url 'tsweb:tsubmissionlist' %}" class="btn btn-warning new-btn" style="display: inline-block; right: 50px;">Exit</a>			
+			<input type="button" class="button btn btn-default" style="bottom: 100px; position: absolute; right: 250px;" value="Draft" id="btnSave">
+			<input type="submit" id="btnSubmit" class="btn btn-info btn-lg new-btn" value="Save Assignment" />
+			<a href="{% url 'tsweb:sindex' %}" class="btn btn-warning new-btn" style="display: inline-block; right: 50px;">Exit</a>			
 			
 	</div> <!-- end page container -->
 	
@@ -905,7 +961,7 @@ function openHighlightDialog(highlightid){
 		</tr>
 		<tr id="viewhighlight">
 			<td colspan="2" style="text-align:center;">
-				<input id="btnedithighlight" type="button" class="button btn btn-default" style="width:80px;" value="Edit">&nbsp;
+				<!-- <input id="btnedithighlight" type="button" class="button btn btn-default" style="width:80px;" value="Edit">&nbsp; -->
 				<input id="btncloseedithighlight" type="button" class="button btn btn-default" style="width:80px;" value="Close">
 			</td>
 		</tr>

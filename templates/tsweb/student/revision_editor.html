@@ -139,6 +139,9 @@ function EDITTABLE(){
 			        		$("#btnSubmit").hide();
 			        		$("#ele_submissionversionessay").show();
 			        		thisClass.closeEditEssay();
+			        	}else{
+			        		$("#btnSave").show();
+			        		$("#btnSubmit").show();
 			        	}
 			        }
 			        else if(ini == "submissionteacherstatus") {
@@ -562,6 +565,29 @@ function EDITTABLE(){
 	    }
 	}
 	
+	this.getAssignmentStatus = function(){
+		$.getJSON(
+			url,
+			{	'class' :  evalClass,
+				'method' : 'getAssignmentStatus',
+				'submissionid' : $("#ele_submissionid").val()
+			},
+			function(result){
+				$.each(result, function(ini,val){
+					if(val.studentstatus !== 1 || val.teacherstatus !== 1){
+						$("#btnRevise").hide();
+						return false;
+					}else if(val.submissionid__progress == 100){
+						$("#btnRevise").hide();
+						return false;
+					}
+				});
+
+		}).error(function(xhr, status, error) {
+    		alert('Error occur. Please contact the administrator.');
+    	});
+	}
+	
 	this.addTagEditElement = function(name, id){
 		var tagitem = '<li class="tagedit-listelement tagedit-listelement-old"><span dir="ltr">' + name + '</span><input type="hidden" name="tag[' + id + '-a]" value="' + name + '"><a class="tagedit-close" title="Remove from list.">x</a></li>'
 		$(tagitem).insertBefore('.tagedit-listelement-new');
@@ -607,6 +633,32 @@ function EDITTABLE(){
     		alert('Error occur. Please contact the administrator.');
     	});
 	}
+	
+	this.addRevise = function(){
+		var option = '';
+		var maxVersion = '';
+		$.getJSON(
+			url,
+			{	'class' :  evalClass,
+				'method' : 'addRevise',
+				'submissionid' : $("#ele_submissionid").val()
+			},
+			function(result){
+				$("#ele_submissionversionversion option").remove();
+	            $.each(result, function(ini, val){
+	                option += '<option value="' + val.version + '">Revision ' + val.version + '</option>';
+	                maxVersion = val.version;
+	            });
+                $("#ele_submissionversionversion").append(option);
+                
+                $('#ele_submissionversionversion').val(maxVersion);
+                thisClass.getData($('#ele_submissionid').val(),$('#ele_submissionversionversion').val());
+                
+                thisClass.getAssignmentStatus();
+		}).error(function(xhr, status, error) {
+    		alert('Error occur. Please contact the administrator.');
+    	});
+	}
 			
 	this.initContent = function(){
 		thisClass.getData($('#ele_submissionid').val(),'');
@@ -615,6 +667,7 @@ function EDITTABLE(){
 		
 		thisClass.getSelectStage();
 
+		thisClass.getAssignmentStatus();
 		// $('#ele_submissionversionessay').mouseup(function() {
 			// var node = this;
 			// if(thisClass.getSelectionCharOffsetsWithin(node).start != thisClass.getSelectionCharOffsetsWithin(node).end)
@@ -685,6 +738,10 @@ function EDITTABLE(){
 			.error(function(xhr, status, error) {
 	    		alert('Error occur. Please contact the administrator.');
 	    	});
+		});
+		
+		$("#btnRevise").click(function(){
+			thisClass.addRevise();
 		});
 		
 		$('#btnSave').click(function() {
@@ -822,8 +879,23 @@ function openHighlightDialog(highlightid){
 				</table>
 				</div>
 				<!-- end submit block -->
-				<div id="ele_submissionversionessay" name="submissionversionessay" style="width: 100%; height: auto;"></div>
-				
+				<div class="searchlist form form-horizontal">
+		
+					<div class="form-group">
+						<label for="ele_submissionversionversion" class="col-sm-4 control-label">Revision:&nbsp;</label>
+						<div class="col-sm-8">
+							<select id="ele_submissionversionversion" class="form-control" style="position:relative;float:left;">
+							{% for row in submissionversionlist %}
+								<option value="{{ row.version }}">Revision {{ row.version }}</option>
+							{% endfor %}
+							</select>
+						</div>
+					</div>
+					
+				</div>
+				<div style="position: absolute; top: 50px; width: 100%;">
+					<div id="ele_submissionversionessay" name="submissionversionessay" style="width: 100%; height: auto;"></div>
+				</div>
 				<!--<div id="redactor_editor" name="content" style="width: 100%; height: auto;"></div>-->
 						<!--ADD TAGGING BUTTON OR HIGHLIGHT STATE-->
 			</div>
@@ -931,6 +1003,7 @@ function openHighlightDialog(highlightid){
 				  
 			</div> <!--End Side Panel-->
 			<input type="button" class="button btn btn-default" style="bottom: 100px; position: absolute; right: 250px;" value="Draft" id="btnSave">
+			<input type="button" class="button btn btn-default" style="bottom: 100px; position: absolute; right: 110px;" value="Revise" id="btnRevise">
 			<input type="submit" id="btnSubmit" class="btn btn-info btn-lg new-btn" value="Save Assignment" />
 			<a href="{% url 'tsweb:sindex' %}" class="btn btn-warning new-btn" style="display: inline-block; right: 50px;">Exit</a>			
 			

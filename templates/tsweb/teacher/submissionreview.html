@@ -766,8 +766,23 @@ function openHighlightDialog(highlightid){
 				</table>
 				</div>
 				<!-- end submit block -->
-				<div id="ele_submissionversionessay" name="submissionversionessay" style="width: 100%; height: auto;"></div>
-				
+				<div class="searchlist form form-horizontal">
+		
+					<div class="form-group">
+						<label for="ele_submissionversionversion" class="col-sm-4 control-label">Revision:&nbsp;</label>
+						<div class="col-sm-8">
+							<select id="ele_submissionversionversion" class="form-control" style="position:relative;float:left;">
+							{% for row in submissionversionlist %}
+								<option value="{{ row.version }}">Revision {{ row.version }}</option>
+							{% endfor %}
+							</select>
+						</div>
+					</div>
+					
+				</div>
+				<div style="position: absolute; top: 50px; width: 100%;">
+					<div id="ele_submissionversionessay" name="submissionversionessay" style="width: 100%; height: auto;"></div>
+				</div>
 				<!--<div id="redactor_editor" name="content" style="width: 100%; height: auto;"></div>-->
 						<!--ADD TAGGING BUTTON OR HIGHLIGHT STATE-->
 			</div>

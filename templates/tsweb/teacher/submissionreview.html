@@ -129,14 +129,27 @@ function EDITTABLE(){
 			        else if (ini == "currentversion") {
 			            if (val == 'y') {
 			                $('#btnedithighlight').show();
-			                $('#saveAssignment').show();
+			                //$('#saveAssignment').show();
 			            }
 			            else {
 			                $('#btnedithighlight').hide();
-			                $('#saveAssignment').hide();
+			                //$('#saveAssignment').hide();
+			                
 			            }
 			        }
-			        else if(ini == "ele_submissionversionessay")
+			        else if(ini == "submissionversionteacherstatus")
+			       	{
+			            if (val == '0') {
+			                //$('#btnedithighlight').show();
+			                $('#saveAssignment').show();
+			            }
+			            else {
+			                //$('#btnedithighlight').hide();
+			                $('#saveAssignment').hide();
+			                
+			            }
+			       	}
+			        else if(ini == "submissionversionessay")
 			        {
 			        	$("#ele_submissionversionessay").text(val);
 			        }
@@ -312,6 +325,7 @@ function EDITTABLE(){
 			    'submissionversionid': $('#ele_submissionversionid').val()
 			},
 			function (result) {
+				$("#tagList li").remove();
 			    $("#tagBox").html('');
 			    $("#commentArea").val('');
 			    $("<ul>").attr("id", "tagList").appendTo("#tagBox");

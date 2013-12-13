@@ -49,6 +49,7 @@ class SUBMISSIONREVIEW():
                         'submissionversionessay': submissionversion.essay,
                         'submissionversioncomment': submissionversion.comment,
                         'currentversion': currentversion,
+                        'submissionversionteacherstatus' : submissionversion.teacherstatus,
                         }
             elif submissionid != False and submissionid != '':
                 submission = Submission.objects.get(id=submissionid)
@@ -71,6 +72,7 @@ class SUBMISSIONREVIEW():
                         'submissionversionessay': submissionversion.essay,
                         'submissionversioncomment': submissionversion.comment,
                         'currentversion': currentversion,
+                        'submissionversionteacherstatus' : submissionversion.teacherstatus,
                         }
             else:
                 data_json = {

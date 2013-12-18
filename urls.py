@@ -14,6 +14,7 @@ urlpatterns = patterns('',
                        url(r'teacher/submissionreview/(?P<id>\d+)/', views.tsubmissionreview, name='tsubmissionreview'),
                        url(r'teacher/gettags/(?P<entityid>\d+)/', views.gettags, name='gettags'),
                        url(r'teacher/tlessonlist/', views.tlessonlist, name='tlessonlist'),
+                       url(r'teacher/userlist/', views.tuserlist, name='tuserlist'),
 
                        url(r'index/', views.sindex, name='sindex'),
                        url(r'student/submissionreview/(?P<id>\d+)/', views.stsubmissionreview, name='stsubmissionreview'),

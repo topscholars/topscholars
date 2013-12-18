@@ -142,11 +142,12 @@ function EDITTABLE(){
 			            if (val == '0') {
 			                //$('#btnedithighlight').show();
 			                $('#saveAssignment').show();
+			                thisClass.essayEvent();
 			            }
 			            else {
 			                //$('#btnedithighlight').hide();
 			                $('#saveAssignment').hide();
-			                
+			                $('#ele_submissionversionessay').unbind('mouseup');
 			            }
 			       	}
 			        else if(ini == "submissionversionessay")
@@ -606,14 +607,8 @@ function EDITTABLE(){
     		alert('Error occur. Please contact the administrator.');
     	});
 	}
-			
-	this.initContent = function(){
-		thisClass.getData($('#ele_submissionid').val(),'');
-		
-		thisClass.showHighlightDialog(false);
-		
-		thisClass.getSelectStage();
-
+	
+	this.essayEvent = function(){
 		$('#ele_submissionversionessay').mouseup(function() {
 			var node = this;
 			if(thisClass.getSelectionCharOffsetsWithin(node).start != thisClass.getSelectionCharOffsetsWithin(node).end)
@@ -632,6 +627,17 @@ function EDITTABLE(){
 			return false;
 		});
 		
+	}
+			
+	this.initContent = function(){
+		thisClass.getData($('#ele_submissionid').val(),'');
+		
+		thisClass.showHighlightDialog(false);
+		
+		thisClass.getSelectStage();
+		
+		thisClass.essayEvent();
+
 		$('#btnedithighlight').click(function() {
 			thisClass.editHighlightDialog(true);
 			$('.editHighlightSuggest').show();

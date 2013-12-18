@@ -1,4 +1,4 @@
-﻿{% load staticfiles %}
+{% load staticfiles %}
 <!DOCTYPE html>
 <html>
 
@@ -26,7 +26,6 @@
 	<script src="{% static 'tsweb/js/jquery.multiselect.js' %}"></script>
 	<script src="{% static 'tsweb/js/util.js' %}"></script>
 	<script src="{% static 'tsweb/js/jquery.validate.js' %}"></script>
-	
 	<!--
 	<script src="{% static 'tsweb/js/jQuery1.10.1.js' %}"></script>
 	<script src="{% static 'tsweb/js/WaterMark.js' %}"></script>
@@ -47,8 +46,8 @@ EDITTABLE.prototype = new GridBase();
 function EDITTABLE(){
 	var thisClass = this;
 	var url = "{% url 'tsweb:tprocessajax' %}";
-	var evalClass = 'CLASSLIST';
-	var tableClassAjax = 'TCLASSLISTAJAX'
+	var evalClass = 'USERLIST';
+	var tableClassAjax = 'TUSERLISTAJAX'
 	
 	this.pagename = $(".pagename").text();
 	
@@ -73,12 +72,14 @@ function EDITTABLE(){
 	this.hideEditTable =function(){
 		$(".pagename").text(thisClass.pagename);
 		
-		$("#editField").hide();
+		// $("#editField").hide();
 		
-		$(".tablelist").show();
-		$(".listnewbutton").show();
-		$("#txtSearch").show();
-		$(".searchboximg").show();
+		// $(".tablelist").show();
+		// $(".listnewbutton").show();
+		// $("#txtSearch").show();
+		// $(".searchboximg").show();
+		
+		$('#new_class_modal').modal('hide')
 		thisClass.getData('');
 		
 		//return and hide
@@ -118,40 +119,38 @@ function EDITTABLE(){
 		});
 	}
 	
-	this.selectTeacher = function(){
+	this.selectSalutation = function(){
 		var html ='';
-		$.getJSON( url,
-			{	class: evalClass,
-				method: 'getTeacher'  },
-			function(result){
-				$.each(result, function(ini,val){
-					if(val.middlename == null){
-						html += "<option value='"+val.id+"'>"+val.firstname+" "+val.lastname+"</option>";
-					}else{
-						html += "<option value='"+val.id+"'>"+val.firstname+" "+val.middlename+" "+val.lastname+"</option>";
-					}
+		$.ajax({
+			url: url,
+			type: 'GET',
+			data: { class: evalClass,
+					method: 'getSalutation'
+			},
+			success: function(res){
+				$.each(res, function(ini,val){
+						html += "<option value='"+val.id+"'>"+val.selectionname+"</option>";
 				});
-				$("#ele_teacherid").append(html);
-		})
-		.error(function(xhr, status, error) {
-    		alert('Error occur. Please contact the administrator.');
-    	});
+				$("#ele_salutation").append(html);
+			}	
+		});
 	}
 	
-	this.selectClass = function(){
+	this.selectSecurityProfile = function(){
 		var html ='';
-		$.getJSON( url,
-			{	class: evalClass,
-				method: 'getClass'  },
-			function(result){
-				$.each(result, function(ini,val){
-						html += "<option value='"+val.id+"'>"+val.classname+"</option>";
+		$.ajax({
+			url: url,
+			type: 'GET',
+			data: { class: evalClass,
+					method: 'getSecurityProfile'
+			},
+			success: function(res){
+				$.each(res, function(ini,val){
+						html += "<option value='"+val.id+"'>"+val.name+"</option>";
 				});
-				$("#ele_classid").append(html);
-		})
-		.error(function(xhr, status, error) {
-    		alert('Error occur. Please contact the administrator.');
-    	});
+				$("#ele_securityprofile").append(html);
+			}	
+		});
 	}
 	
 	this.getData = function(description) {
@@ -233,6 +232,11 @@ function EDITTABLE(){
 		odata = thisClass.oData(odata);
 		$.post(url,odata,
 			function(result){
+				if($("#ele_id").val() == ""){
+					if(result.status == "success"){
+						alert("User : "+ result.email + "\n Password : "+ result.password);
+					}
+				}
 				thisClass.hideEditTable();
 			})
 		.error(function(xhr, status, error) {
@@ -241,16 +245,43 @@ function EDITTABLE(){
 
 	}
 	
+    this.initValidateForm = function(){
+		  $("#new_class_modal").validate({              
+		    rules: {
+		      	firstname:{
+		      		required: true,
+		      	},
+	          	lastname : {
+					required: true,
+	            },
+	            emailaddress : {
+	                required: true,
+	                email: true,
+	            }
+		    },
+			 invalidHandler: function(event, validator) {
+			// 'this' refers to the form
+				thisClass.submitForm = false;
+			}
+		  });
+    }
+
+	this.initValidateFormEvent = function(){
+		thisClass.submitForm = true;
+	  	$("#new_class_modal").validate().form();
+	}
+	
+	
 	this.iniControl = function(){
 		thisClass.getData('');
 		Watermark('txtSearch', 'Search', 'noclass');
 		$(".editorTD").hide();
 		 
 		$("#editField").hide();
-		$( "#ele_startdate").datepicker({ dateFormat: 'dd-mm-yy' });
-		$( "#ele_enddate").datepicker({ dateFormat: 'dd-mm-yy' });
-		$("#ele_starttime").timepicker();
-		$("#ele_endtime").timepicker();
+		$( "#ele_dob").datepicker({ dateFormat: 'dd-mm-yy' });
+		//$( "#ele_enddate").datepicker({ dateFormat: 'dd-mm-yy' });
+		//$("#ele_starttime").timepicker();
+		//$("#ele_endtime").timepicker();
 		$("#ele_dayofweek").multiselect();
 		
 		$('#txtSearch').keypress(function(event) {
@@ -258,7 +289,10 @@ function EDITTABLE(){
 		});
 		
 		$("#class-submit").click(function(){
-			thisClass.save();
+        	thisClass.initValidateFormEvent();
+            if(thisClass.submitForm){
+				thisClass.save();
+			}
 		});
 		
 		$("#btnEdit").click(function(){
@@ -283,18 +317,19 @@ function EDITTABLE(){
 		});
 		
 		thisClass.iniEventEditor();
-		thisClass.selectTeacher();
-		thisClass.selectClass();
+		thisClass.initValidateForm();
+		thisClass.selectSalutation();
+		thisClass.selectSecurityProfile(); 
 		
 		var profile = new EDITPROFILE(url);
 		profile.iniControl();
 	}
 }
-
 $(function() {
 	var gen = new EDITTABLE();
 	gen.iniControl();
 });
+
 
 </script>
 		{% include "tsweb/main/navbar.html" %}
@@ -303,7 +338,7 @@ $(function() {
 		{% include "tsweb/main/sidepanel.html" %}
 		
 		<button id="new_class_btn" class="btn btn-info btn-lg new-btn" data-toggle="modal" data-target="#new_class_modal">
-		  New Class <i class="fa fa-plus"></i>
+		  New Teacher <i class="fa fa-plus"></i>
 		</button>
 		<div class="block-cell block-wide">
 			<div id="list"></div>
@@ -320,86 +355,100 @@ $(function() {
 		    <div class="modal-content">
 		      <div class="modal-header teacher-header">
 		        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-		        <h4 class="modal-title">New Class</h4>
+		        <h4 class="modal-title">New Teacher</h4>
 		      </div>
 		      <div class="modal-body">
 		        <form role="form" class="form-horizontal" id="new_class_form">
+		        	
 		        	<div class="form-group">
-		        		<label for="classid" class="col-sm-3 control-label">Class ID</label>
+		        		<label for="ele_salutation" class="col-sm-3 control-label">Salutations</label>
 		        		<div class="col-sm-9">
-		        			<select id="ele_classid" class="form-control" name="classid"></select>
 		        			<input type="hidden" id="ele_id" name="id" value="" />
+		        			<select id="ele_salutation" name="salutation" class="form-control"></select>
 		        		</div>
 		        	</div>
 		        	
 		        	<div class="form-group">
-		        		<label for="code" class="col-sm-3 control-label">Code</label>
+		        		<label for="code" class="col-sm-3 control-label">First Name</label>
 		        		<div class="col-sm-9">
-		        			<input type="text" id="ele_code" class="form-control" name="code" />
+		        			<input type="text" id="ele_firstname" class="form-control" name="firstname" />
 		        		</div>
 		        	</div>
 		        	
 		        	<div class="form-group">
-		        		<label for="subcode" class="col-sm-3 control-label">Subcode</label>
+		        		<label for="subcode" class="col-sm-3 control-label">Middle Name</label>
 		        		<div class="col-sm-9">
-		        			<input type="text" id="ele_subcode" class="form-control" name="subcode" />
+		        			<input type="text" id="ele_middlename" class="form-control" name="middlename" />
 		        		</div>
 		        	</div>
 		        	
 		        	<div class="form-group">
-		        		<label for="teacherid" class="col-sm-3 control-label">Teacher Name</label>
+		        		<label for="teacherid" class="col-sm-3 control-label">Last Name</label>
 		        		<div class="col-sm-9">
-		        			<select id="ele_teacherid" name="teacherid" class="form-control"></select>
+		        			<input type="text" id="ele_lastname" class="form-control" name="lastname" />
 		        		</div>
 		        	</div>
 		        	
 		        	<div class="form-group">
-		        		<label for="startdate" class="col-sm-3 control-label">Start Date</label>
+		        		<label for="teacherid" class="col-sm-3 control-label">Date of Birth</label>
 		        		<div class="col-sm-9">
-			        		<input type="date" id="ele_startdate" class="form-control" name="startdate" />
+		        			<input type="text" id="ele_dob" class="form-control" name="dob" />
 		        		</div>
 		        	</div>
 		        	
 		        	<div class="form-group">
-		        		<label for="enddate" class="col-sm-3 control-label">End Date</label>
+		        		<label for="teacherid" class="col-sm-3 control-label">Title</label>
 		        		<div class="col-sm-9">
-		        			<input type="date" id="ele_enddate" class="form-control" name="enddate" />
+		        			<input type="text" id="ele_title" class="form-control" name="title" />
 		        		</div>
 		        	</div>
 		        	
 		        	<div class="form-group">
-		        		<label for="starttime" class="col-sm-3 control-label">Start Time</label>
+		        		<label for="teacherid" class="col-sm-3 control-label">Department</label>
 		        		<div class="col-sm-9">
-		        			<input type="time" id="ele_starttime" class="form-control" name="starttime" />
+		        			<input type="text" id="ele_department" class="form-control" name="department" />
 		        		</div>
 		        	</div>
 		        	
 		        	<div class="form-group">
-		        		<label for="endtime" class="col-sm-3 control-label">End Time</label>
+		        		<label for="endtime" class="col-sm-3 control-label">Home Phone</label>
 		        		<div class="col-sm-9">
-		        			<input type="time" id="ele_endtime" class="form-control" name="endtime" />
+		        			<input type="time" id="ele_homephone" class="form-control" name="homephone" />
 		        		</div>
 		        	</div>
 		        	
 		        	<div class="form-group">
-		        		<label for="dayofweek" class="col-sm-3 control-label">Day of Week</label>
-		        			<div class="col-sm-9">
-					        	<select id="ele_dayofweek" name="dayofweek" class="form-control">
-					        		<option value="Mon">Monday</option>
-					        		<option value="Tue">Tuesday</option>
-					        		<option value="Wed">Wednesday</option>
-					        		<option value="Thu">Thursday</option>
-					        		<option value="Fri">Friday</option>
-					        		<option value="Sat">Saturday</option>
-					        		<option value="Sun">Sunday</option>
-					        	</select>
-					       	</div>
+		        		<label for="endtime" class="col-sm-3 control-label">Office Phone</label>
+		        		<div class="col-sm-9">
+		        			<input type="time" id="ele_officephone" class="form-control" name="officephone" />
+		        		</div>
 		        	</div>
 		        	
 		        	<div class="form-group">
-		        		<label for="diabled" class="col-sm-3 control-label">Disable</label>
+		        		<label for="endtime" class="col-sm-3 control-label">Ext.</label>
 		        		<div class="col-sm-9">
-		        			<input type="checkbox" id="ele_disabled" name="disabled" />
+		        			<input type="time" id="ele_officeext" class="form-control" name="officeext" />
+		        		</div>
+		        	</div>
+		        	
+		        	<div class="form-group">
+		        		<label for="endtime" class="col-sm-3 control-label">Mobile Phone</label>
+		        		<div class="col-sm-9">
+		        			<input type="time" id="ele_mobilephone" class="form-control" name="mobilephone" />
+		        		</div>
+		        	</div>
+		        	
+		        	<div class="form-group">
+		        		<label for="endtime" class="col-sm-3 control-label">E-mail Address</label>
+		        		<div class="col-sm-9">
+		        			<input type="time" id="ele_emailaddress" class="form-control" name="emailaddress" />
+		        		</div>
+		        	</div>
+		        	
+		        	<div class="form-group">
+		        		<label for="ele_salutation" class="col-sm-3 control-label">Security Profile</label>
+		        		<div class="col-sm-9">
+		        			<select id="ele_securityprofile" name="securityprofile" class="form-control"></select>
 		        		</div>
 		        	</div>
 		        </form>
@@ -411,9 +460,7 @@ $(function() {
 		    </div><!-- /.modal-content -->
 		  </div><!-- /.modal-dialog -->
 		</div><!-- /.modal -->
-		
 		{% include "tsweb/main/editprofile.html" %}
-	
 	</div> <!-- End Page Container -->
 <!--
 <div class="placeholder">

@@ -96,7 +96,8 @@ function GridBase(){
 					thisVal = 0;
 				}
 			}else{
-				var thisVal = $(this).val();
+				
+				thisVal = $(this).val();
 			}
 			
 			if(attrName !== undefined){
@@ -133,6 +134,159 @@ function GridBase(){
 	}
 }
 
+function EDITPROFILE(url) {
+	var thisClass = this;
+
+	this.getData = function() {
+		$.getJSON( url,
+			{	class: 'USERLIST',
+				'method': 'editData'},
+			function(result){
+				$.each(result, function(ini,val){
+					thisClass.seperateElement($("#edit_"+ini), val);
+				});
+
+		});
+	}
+	
+	this.seperateElement = function(id,val){
+		var tagName = $(id).prop("tagName");
+		var name = $(id).attr("name");
+		if(tagName !== undefined){
+			switch (tagName)
+			{
+				case "SPAN":
+				{
+					$(id).text(val);
+				}
+				case "INPUT":
+					var type = $(id).prop("type")
+					if(type == "text")
+						$(id).val(val);
+					else if(type == 'checkbox')
+						thisClass.checkboxVal(id,val);
+				case "SELECT":
+				{
+					$(id).find('option:selected').removeAttr("selected");
+					if($(id).next().hasClass('ui-multiselect')){
+						thisClass.multipleVal(id,val);
+					}else{
+						$(id).val(val);
+					}
+				}
+			}
+		}
+	}
+	
+	this.hideEditTable = function(){
+		$('#edit_profile').modal('hide');
+	}
+	
+	this.oEditData = function(odata){
+				$("[id^='edit_']").each(function(){
+			var attrName = $(this).attr("name");
+			var thisType = $(this).attr("type");
+			
+			var thisVal;
+			if(thisType == 'checkbox'){
+				if($(this).prop('checked')){
+					thisVal = 1;
+				}else{
+					thisVal = 0;
+				}
+			}else{
+				
+				thisVal = $(this).val();
+			}
+			
+			if(attrName !== undefined){
+				var data = {};
+				if(thisVal !== null){
+					if(typeof thisVal == 'object'){
+						data[attrName] = thisClass.objToStr(thisVal);
+					}else{
+						data[attrName] = thisVal;
+					}
+				}
+			}
+			
+			$.extend(odata, data);
+		});
+	}
+	
+	this.save = function(){
+		var odata;
+
+		odata = {'class' :  'USERLIST', 'method' : "save" };
+		thisClass.oEditData(odata);
+
+		$.post(url,odata,
+			function(result){
+				thisClass.hideEditTable();
+			});
+	}
+	
+	this.selectEditSalutation = function(){
+		var html ='';
+		$.ajax({
+			url: url,
+			type: 'GET',
+			data: { class: 'USERLIST',
+					method: 'getSalutation'
+			},
+			success: function(res){
+				$.each(res, function(ini ,val){
+						html += "<option value='"+val.id+"'>"+val.selectionname+"</option>";
+				});
+				$("#edit_salutation").append(html);
+			}	
+		});
+	}
+	
+    this.initValidateForm = function(){
+		  $("#edit_profile_form").validate({              
+		    rules: {
+		      	firstname:{
+		      		required: true,
+		      	},
+	          	password : {
+					minlength : 6,
+	            },
+	            re_password : {
+	                minlength : 5,
+	                equalTo : "#edit_password"
+	            }
+		    },
+			 invalidHandler: function(event, validator) {
+			// 'this' refers to the form
+				thisClass.submitForm = false;
+			}
+		  });
+    }
+
+	this.initValidateFormEvent = function(){
+		thisClass.submitForm = true;
+	  	$("#edit_profile_form").validate().form();
+	}
+	
+	this.iniControl = function(){
+		$("#edit-profile-submit").click(function(){
+        	thisClass.initValidateFormEvent();
+            if(thisClass.submitForm){
+				thisClass.save();
+			}
+		});
+		
+		$( "#edit_dob").datepicker({ dateFormat: 'dd-mm-yy' });
+		
+		thisClass.getData();
+		thisClass.selectEditSalutation(); 
+		thisClass.initValidateForm();
+	}
+	
+}
+
+
 var csrftoken = $.cookie('csrftoken');
 
 function csrfSafeMethod(method) {
@@ -147,3 +301,5 @@ $.ajaxSetup({
         }
     }
 });
+
+

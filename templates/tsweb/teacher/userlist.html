@@ -246,7 +246,7 @@ function EDITTABLE(){
 	}
 	
     this.initValidateForm = function(){
-		  $("#new_class_modal").validate({              
+		  $("#new_class_form").validate({              
 		    rules: {
 		      	firstname:{
 		      		required: true,
@@ -268,7 +268,7 @@ function EDITTABLE(){
 
 	this.initValidateFormEvent = function(){
 		thisClass.submitForm = true;
-	  	$("#new_class_modal").validate().form();
+	  	$("#new_class_form").validate().form();
 	}
 	
 	
@@ -413,35 +413,35 @@ $(function() {
 		        	<div class="form-group">
 		        		<label for="endtime" class="col-sm-3 control-label">Home Phone</label>
 		        		<div class="col-sm-9">
-		        			<input type="time" id="ele_homephone" class="form-control" name="homephone" />
+		        			<input type="text" id="ele_homephone" class="form-control" name="homephone" />
 		        		</div>
 		        	</div>
 		        	
 		        	<div class="form-group">
 		        		<label for="endtime" class="col-sm-3 control-label">Office Phone</label>
 		        		<div class="col-sm-9">
-		        			<input type="time" id="ele_officephone" class="form-control" name="officephone" />
+		        			<input type="text" id="ele_officephone" class="form-control" name="officephone" />
 		        		</div>
 		        	</div>
 		        	
 		        	<div class="form-group">
 		        		<label for="endtime" class="col-sm-3 control-label">Ext.</label>
 		        		<div class="col-sm-9">
-		        			<input type="time" id="ele_officeext" class="form-control" name="officeext" />
+		        			<input type="text" id="ele_officeext" class="form-control" name="officeext" />
 		        		</div>
 		        	</div>
 		        	
 		        	<div class="form-group">
 		        		<label for="endtime" class="col-sm-3 control-label">Mobile Phone</label>
 		        		<div class="col-sm-9">
-		        			<input type="time" id="ele_mobilephone" class="form-control" name="mobilephone" />
+		        			<input type="text" id="ele_mobilephone" class="form-control" name="mobilephone" />
 		        		</div>
 		        	</div>
 		        	
 		        	<div class="form-group">
 		        		<label for="endtime" class="col-sm-3 control-label">E-mail Address</label>
 		        		<div class="col-sm-9">
-		        			<input type="time" id="ele_emailaddress" class="form-control" name="emailaddress" />
+		        			<input type="text" id="ele_emailaddress" class="form-control" name="emailaddress" />
 		        		</div>
 		        	</div>
 		        	

@@ -278,8 +278,9 @@
 			        	    <div id="collapseSix" class="panel-collapse collapse in">
 			        	      <div class="panel-body">
 			        		      <input type="text" name="ele_performance" class="form-control" id="ele_performance" />
-			        		      <button class="btn btn-small" data-toggle="modal" data-target="#created_rubric">Add Rubric</button>
+			        		      <button class="btn btn-small" data-toggle="modal" data-target="#new_rubric_modal">Add Rubric</button>
 			        	        <button class="btn btn-small" data-toggle="modal" data-target="#new_assignment_modal">Add Assignment</button>
+			        	        <button class="btn btn-small" data-toggle="modal" data-target="#assignment_list_modal">Choose Assignment</button>
 			        	        
 			        	        <div class="new-performance"></div>
 			        	        
@@ -301,8 +302,8 @@
 			        	    <div id="collapseSeven" class="panel-collapse collapse in">
 			        	      <div class="panel-body">
 		        	          <input type="text" name="ele_evidence" class="form-control" id="ele_evidence"/>
-			        	        <button class="btn btn-small" data-toggle="modal" data-target="#created_rubric">Add Rubric</button>
-			        	        <button class="btn btn-small" data-toggle="modal" data-target="#new_assignment_modal">Add Assignment</button>
+			        	        <button class="btn btn-small" data-toggle="modal" data-target="#lesson_modal">Add Lesson</button>
+			        	        <button class="btn btn-small" data-toggle="modal" data-target="#criteria_modal">Add Criteria</button>
 			        	        
 			        	        <div class="new-evidence"></div>
 			        	        
@@ -451,14 +452,7 @@
 	        			</select>
 	        		</div>
 	        	</div>
-	        	
-<!--	        	<div class="form-group">
-	        		<label for="rubricid" class="col-sm-4 control-label">Rubric ID</label>
-	        		<div class="col-sm-8">
-	        			<select id="ele_rubricid" name="rubricid" class="form-control"></select>
-	        		</div>
-	        	</div>-->
-	        	
+	        	        	
 	        	<div class="form-group">
 	        		<label for="maxwords" class="col-sm-4 control-label">Maximum Word</label>
 	        		<div class="col-sm-8">
@@ -483,117 +477,246 @@
 	  </div><!-- /.modal-dialog -->
 	</div><!-- /.modal -->
 	
-	<!--View Created Rubric Modal-->
-	<div class="modal fade modal-wide" id="created_rubric" tabindex="-1" role="dialog" aria-labelledby="createdRubricLabel" aria-hidden="true" data-dismiss="false">
+	<!--Assignment List Modal Form--> 
+	<div class="modal fade" id="assignment_list_modal" tabindex="-1" role="dialog" aria-labelledby="assignmentListLabel" aria-hidden="true" data-dismiss="false">
 	  <div class="modal-dialog">
 	    <div class="modal-content">
 	      <div class="modal-header teacher-header">
 	        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-	        <h4 class="modal-title">{% rubric_name %}</h4>
+	        <h4 class="modal-title">Choose Assignment</h4>
 	      </div>
 	      <div class="modal-body">
-	      	<p class="text-muted">Click on the text to edit your rubric.  Then hit &#8984;Enter</p>
-	      	
-	      	<form role="form" class="form" style="margin-top: -85px;">
-		      	<div class="rubric-overview col-lg-6">
-		      		<ul>
-		      			<li><b>Goal:</b><p class="edit">{% rubric_goal %}</p></li>
-		      			<li><b>Audience:</b> <p class="edit">{% rubric_audience %}</p></li>
-		      			<li><b>Context:</b> <p class="edit">{% rubric_context %}</p></li>
-		      			<li><b>Product Parameters:</b> <p class="edit">{% rubric_parameters %}</p></li>
-		      		</ul>
-		      	</div>
-		      	<div class="category-info col-lg-6">
-		      	
-		      		<div class="panel-group" id="rubric-panel">
-		      			
-		      			<div class="panel panel-default block-cell block-thin">
-		      				<div class="circle-blue">
-		      					<h3 class="panel-title">
-		      						<a data-toggle="collapse" data-parent="#rubric-panel" href="#collapseTen">
-		      							Impact 
-		      						</a>
-		      						<span class="pull-right">{% impact_percent %}</span>
-		      					</h3>
-		      				</div>
-		      				
-		      				<div id="collapseTen" class="panel-collapse collapse">
-		      					<div class="block-body">
-		      						<ul>
-		      							<li class="edit">{% impact_criteria %}</li>
-		      						</ul>
-		      					</div>
-		      				</div>
-		      			</div>
-		      		
-		      			<div class="panel panel-default block-cell block-thin">
-		      				<div class="circle-green">
-		      					<h3 class="panel-title">
-		      						<a data-toggle="collapse" data-parent="#rubric-panel" href="#collapseEleven">
-		      							Quality
-		      						</a>
-		      						<span class="pull-right">{% quality_percent %}</span>
-		      					</h3>
-		      				</div>
-		      				
-		      				<div id="collapseEleven" class="panel-collapse collapse">
-		      					<div class="block-body">
-		      						<ul>
-		      							<li class="edit">{% quality_criteria %}</li>
-		      						</ul>
-		      					</div>
-		      				</div>
-		      			</div>
+	        <label>Select an Assignment from the list below.</label>
+	        <div class="table-responsive">
+		        <table class="table table-bordered" >
+			        <tr class="rowheader">
+			        <td class="cellitem">Id</td>
+			        <td class="cellitem">Name</td>
+			        <td class="cellitem">Description</td>
+			        <td class="cellitem">Max Points</td>
+			        <td class="cellitem">Word Limit</td>
+			        </tr>
+		        	<tr class="rowitem" id="{{ row.id }}">
+		        	<td class="cellitem">{{ row.id }}</td>
+		        	<td class="cellitem">{{ row.name }}</td>
+		        	<td class="cellitem">{{ row.description }}</td>
+		        	<td class="cellitem">{{ row.rubricid.name }}</td>
+		        	<td class="cellitem">{{ row.maxwords }}</td>
+		        	</tr>
+		        </table>
+	        </div>
+	  				        	
+        	<div class="modal-footer">
+        	  <input type="reset" class="btn btn-default" data-dismiss="modal" value="Close"/>
+        	</div>
+	      </div>
+	    </div><!-- /.modal-content -->
+	  </div><!-- /.modal-dialog -->
+	</div><!-- /.modal -->
 	
-								<div class="panel panel-default block-cell block-thin">
-									<div class="circle-purple">
-										<h3 class="panel-title">
-											<a data-toggle="collapse" data-parent="#rubric-panel" href="#collapseTwelve">
-												Content
-											</a>
-											<span class="pull-right">{% content_percent %}</span>
-										</h3>
-									</div>
-									
-									<div id="collapseTwelve" class="panel-collapse collapse">
-										<div class="block-body">
-											<ul>
-												<li class="edit">{% content_criteria %}</li>
-											</ul>
-										</div>
-									</div>
-								</div>
-								
-								<div class="panel panel-default block-cell block-thin">
-									<div class="circle-red">
-										<h3 class="panel-title">
-											<a data-toggle="collapse" data-parent="#rubric-panel" href="#collapseThirteen">
-												Process
-											</a>
-											<span class="pull-right">{% process_percent %}</span>
-										</h3>
-									</div>
-									
-									<div id="collapseThirteen" class="panel-collapse collapse">
-										<div class="block-body">
-											<ul>
-												<li class="edit">{% process_criteria %}</li>
-											</ul>
-										</div>
-									</div>
-								</div>	      		
-			      	</div>
-		      	</div> <!-- /.panel -->
-		      	
-		      	<div class="modal-footer" style="margin-top: 100px!important;">
-		      	  <input type="reset" class="btn btn-default" data-dismiss="modal" value="Cancel"/>
-		      	  <input type="submit" class="btn btn-success" value="Save Rubric" id="btnEditRubric"/>
-		      	</div>
-		      </form>
-	      </div> <!-- /.modal-body -->
-	    </div> <!-- /.modal-content -->
-	  </div> <!-- /.modal-dialog -->
-	</div> <!-- /.modal -->
+	<!--Criteria List Modal Form--> 
+	<div class="modal fade" id="criteria_modal" tabindex="-1" role="dialog" aria-labelledby="criteriaLabel" aria-hidden="true" data-dismiss="false">
+	  <div class="modal-dialog">
+	    <div class="modal-content">
+	      <div class="modal-header teacher-header">
+	        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+	        <h4 class="modal-title">Choose Criteria</h4>
+	      </div>
+	      <div class="modal-body">
+	        <label>Select criteria from the lists below.</label>
+	        
+	        <!--Criteria Section-->
+	        	<h4>Impact Criteria</h4>
+	        	<div class="well well-small">
+	        		<ul id="impact_list">
+	        			<li><a href="#">{% add_impact_criteria %}</a></li>
+	        		</ul>
+	        	</div>
+	        	
+	        	<h4>Quality Criteria</h4>
+	        	<div class="well well-small">
+	        		<ul id="quality_list">
+	        			<li><a href="#">{% add_quality_criteria %}</a></li>
+	        		</ul>
+	        	</div>
+	        	
+	        	<h4>Content Criteria</h4>
+	        	<div class="well well-small">
+	        		<ul id="content_list">
+	        			<li><a href="#">{% add_content_criteria %}</a></li>
+	        		</ul>
+	        	</div>
+	        	
+	        	<h4>Process Criteria</h4>
+	        	<div class="well well-small">
+	        		<ul id="process_list">
+	        			<li><a href="#">{% add_process_criteria %}</a></li>
+	        		</ul>
+	        	</div>
+	  				        	
+        	<div class="modal-footer">
+        	  <input type="reset" class="btn btn-default" data-dismiss="modal" value="Close"/>
+        	</div>
+	      </div>
+	    </div><!-- /.modal-content -->
+	  </div><!-- /.modal-dialog -->
+	</div><!-- /.modal -->
+	
+	<!--Criteria List Modal Form--> 
+	<div class="modal fade" id="lesson_modal" tabindex="-1" role="dialog" aria-labelledby="lessonLabel" aria-hidden="true" data-dismiss="false">
+	  <div class="modal-dialog">
+	    <div class="modal-content">
+	      <div class="modal-header teacher-header">
+	        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+	        <h4 class="modal-title">Choose Lesson</h4>
+	      </div>
+	      <div class="modal-body">
+	        <label>Select a lesson from the list below.</label>
+	        <div class="responsive-table table-condensed">
+	        <table class="table table-bordered ">
+	        <tr class="rowheader">
+	        <td class="cellitem">Id</td>
+	        <td class="cellitem">Class Name</td>
+	        <td class="cellitem">Description</td>
+	        <td class="cellitem">Next Due Date</td>
+
+	        </tr>
+	            <tr id="{{ class.id }}" class="rowitem">
+	        	<td class="cellitem">{{ class.id }}</td>
+	        	<td class="cellitem">{{ class.code }}</td>
+	        	<td class="cellitem">{{ class.classid.description }}</td>
+	        	<td class="cellitem">{{ class.startdate }}</td>
+
+	        	</tr>
+	        </table>
+	        </div>
+	  				        	
+	      	<div class="modal-footer">
+	      	  <input type="reset" class="btn btn-default" data-dismiss="modal" value="Close"/>
+	      	</div>
+	      </div>
+	    </div><!-- /.modal-content -->
+	  </div><!-- /.modal-dialog -->
+	</div><!-- /.modal -->
+	
+	<!--New Rubric Modal Form--> 
+	<div class="modal fade modal-wide" id="new_rubric_modal" tabindex="-1" role="dialog" aria-labelledby="newRubricLabel" aria-hidden="true" data-dismiss="false">
+	  <div class="modal-dialog">
+	    <div class="modal-content">
+	      <div class="modal-header teacher-header">
+	        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+	        <h4 class="modal-title">New Rubric</h4>
+	      </div>
+	      <div class="modal-body">
+	        <form role="form" class="form-inline" id="new_rubric_form">
+	        	<!--Create rubric here-->
+	        	<div class="col-lg-5 clearfix">
+		        	<div class="form-group">
+		        		<label for="rubric_goal">Goal Of Task</label>
+		        		<input type="text" name="rubric_goal" id="rubric_goal" class="form-control" required="required"/>
+		        	</div>
+		        	<div class="form-group">
+		        		<label for="rubric_audience">Audience</label>
+		        		<input type="text" name="rubric_audience" id="rubric_audience" class="form-control" />
+		        	</div>
+		        	<div class="form-group">
+		        		<label for="rubric_context">Context/Situation</label>
+		        		<input type="text" name="rubric_context" id="rubric_context" class="form-control" />
+		        	</div>
+		        	<div class="form-group">
+		        		<label for="rubric_parameters">Product Parameters</label>
+		        		<input type="text" name="rubric_parameters" id="rubric_parameters" class="form-control" />
+		        	</div>
+		        	
+		        	<!--Criteria Section-->
+		        	<div class="well" id="add_impact_criteria_text" style="display: none;">
+			        	<input type="text" name="add_impact_criteria" id="add_impact_criteria" class="form-control" placeholder="Add Impact Criteria"/>
+			        	<input type="text" name="add-impact-tag" placeholder="Add Tag" id="add_impact_tag" class="form-control add-tag" />
+			        	<input type="button" class="btn btn-blue" value="+" id="add_impact_criteria_btn"/>
+		        	</div>
+		        	<div class="alert alert-danger alertImpact" style="display: none;">Please enter text.</div>
+		        	
+							<div class="well" id="add_quality_criteria_text" style="display: none;">
+		        		<input type="text" name="add_quality_criteria" id="add_quality_criteria" class="form-control" placeholder="Add Quality Criteria" />
+		        		<input type="text" name="add-quality-tag" placeholder="Add Tag" id="add_quality_tag" class="form-control add-tag" />
+	        			<input type="button" class="btn btn-green" value="+" id="add_quality_criteria_btn"/>
+			        </div>
+		        	<div class="alert alert-danger alertQuality" style="display: none;">Please enter text.</div>
+		        	
+		        	<div class="well" id="add_content_criteria_text" style="display: none;">
+		        		<input type="text" name="add_content_criteria" id="add_content_criteria" class="form-control" placeholder="Add Content Criteria"/>
+			        	<input type="text" name="add-content-tag" placeholder="Add Tag" id="add_content_tag" class="form-control add-tag" />
+				        <input type="button" class="btn btn-purple" value="+" id="add_content_criteria_btn"/>
+			        </div>
+		        	<div class="alert alert-danger alertContent" style="display: none;">Please enter text.</div>
+		        	
+		        	<div class="well" id="add_process_criteria_text" style="display: none;">
+		        		<input type="text" name="add_process_criteria" id="add_process_criteria" class="form-control" placeholder="Add Process Criteria"/>
+			        	<input type="text" name="add-process-tag" placeholder="Add Tag" id="add_process_tag" class="form-control add-tag" />
+			        	<input type="button" class="btn btn-red" value="+" id="add_process_criteria_btn"/>
+			        </div>
+		        	<div class="alert alert-danger alertProcess" style="display: none;">Please enter text.</div>
+	        	</div>
+	        	
+	        	
+	        	<span class="info text-muted">To change the "%" value simply click on the number.  Click on the circles to add a new criteria.</span>
+	        	
+	        	<div class="rubric-categories">
+	        		<div class="rubric-impact circle circle-blue center-block">
+	        			<p>Impact</p>
+	        			<div class="weight-percent"><input id="impact_percent" maxlength="3" max="100" autofocus="true" step="1" type="number" name="impact-percent" class="circle-input" value="0" />%</div>
+	        		</div>
+	        		
+	        		
+	        		<div class="rubric-quality circle circle-green">
+	        			<p>Quality</p>
+	        			<div class="weight-percent"><input id="quality_percent" maxlength="3" max="100" step="1" type="number" name="quality-percent" class="circle-input" value="0"/>%</div>
+	        		</div>
+	        		
+	        		
+	        		<div class="rubric-objective circle circle-grey">
+	        			<div>Objective</div>
+	        		</div>
+	        		
+	        		<div class="rubric-content circle circle-purple">
+	        			<p>Content</p>
+	        			<div class="weight-percent"><input id="content_percent" max="100" step="1" type="number" name="content-percent" class="circle-input" value="0" />%</div>
+	        		</div>
+	        		
+	        		
+	        		<div class="rubric-process circle circle-red">
+	        			<p>Process</p>
+	        			<div class="weight-percent"><input id="process_percent" max="100" step="1" type="number" name="process-percent" class="circle-input" value="0" />%</div>
+	        		</div>
+	        		
+	        	</div>
+	        	<div class="modal-footer" style="margin-top: 135px!important;">
+	        	
+	        	
+	        		<div class="fileUpload btn btn-warning">
+	      		    <input id="uploadFile" placeholder="Choose File" disabled="disabled" />
+	      		    <span>Upload File</span>
+	      		    <input id="uploadBtn" type="file" class="upload" />
+	        		</div>
+	        		
+	        	  <input type="reset" class="btn btn-default" data-dismiss="modal" value="Close"/>
+	        	  <input type="submit" class="btn btn-primary" value="Save Rubric" id="btnSave"/>
+	        	</div>
+	        </form>
+	      </div>
+	      
+	      <div class="criteria-count pull-right">
+					<ul style="color: #999;">
+	    			<li>Impact Criteria: <input class="impact-count no-style" type="text" value="0"/></li>
+	    			<li>Quality Criteria: <input class="quality-count no-style" type="text" value="0"/></li>
+	    			<li>Content Criteria: <input class="content-count no-style" type="text" value="0"/></li>
+	    			<li>Process Criteria: <input class="process-count no-style" type="text" value="0"/></li>
+	    		</ul>
+	      </div>
+	      
+	    </div><!-- /.modal-content -->
+	  </div><!-- /.modal-dialog -->
+	</div><!-- /.modal -->
 				
 	
 	<script>
@@ -645,7 +768,7 @@
 			event.preventDefault();
 		});
 		$('#btnAddPerformance').click(function(event){
-			$('.new-performance').append('<div class="ngText"><input type="text" name="ele_goal" class="form-control" id="nEvidence" /><i class="fa fa-minus-square-o minus fa-lg pull-right"></i><button class="btn btn-small" data-toggle="modal" data-target="#created_rubric">Add Rubric</button> <button class="btn btn-small" data-toggle="modal" data-target="#new_assignment_modal">Add Assignment</button></div>');
+			$('.new-performance').append('<div class="ngText"><input type="text" name="ele_goal" class="form-control" id="nEvidence" /><i class="fa fa-minus-square-o minus fa-lg pull-right"></i><button class="btn btn-small" data-toggle="modal" data-target="#new_rubric_modal">Add Rubric</button> <button class="btn btn-small" data-toggle="modal" data-target="#new_assignment_modal">Add Assignment</button> <button class="btn btn-small" data-toggle="modal" data-target="#assignment_list_modal">Choose Assignment</button></div>');
 			
 			$('.minus').click(function () {
 				$('.ngText').each(function () {
@@ -655,7 +778,7 @@
 			event.preventDefault();
 		});
 		$('#btnAddEvidence').click(function(event){
-			$('.new-evidence').append('<div class="ngText"><input type="text" name="ele_goal" class="form-control" id="nEvidence" /><i class="fa fa-minus-square-o minus fa-lg pull-right"></i><button class="btn btn-small" data-toggle="modal" data-target="#created_rubric">Add Rubric</button> <button class="btn btn-small" data-toggle="modal" data-target="#new_assignment_modal">Add Assignment</button></div>');
+			$('.new-evidence').append('<div class="ngText"><input type="text" name="ele_goal" class="form-control" id="nEvidence" /><i class="fa fa-minus-square-o minus fa-lg pull-right"></i><button class="btn btn-small" data-toggle="modal" data-target="#lesson_modal">Add Lesson</button> <button class="btn btn-small" data-toggle="modal" data-target="#criteria_modal">Add Criteria</button></div>');
 			
 			$('.minus').click(function () {
 				$('.ngText').each(function () {

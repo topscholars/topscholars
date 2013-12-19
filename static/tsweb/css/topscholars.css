@@ -865,4 +865,13 @@ form{
 	margin-bottom: 10px;
 	margin-top: 5px;
 }
+#impact_list:hover, 
+#quality_list:hover, 
+#content_list:hover, 
+#process_list:hover{
+	cursor: pointer;
+}
+#criteria_modal .well:active{
+	background: #fff;
+}
 /*End*/

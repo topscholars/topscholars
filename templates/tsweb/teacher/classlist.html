@@ -71,14 +71,15 @@ function EDITTABLE(){
 	}
 	
 	this.hideEditTable =function(){
-		$(".pagename").text(thisClass.pagename);
-		
-		$("#editField").hide();
-		
-		$(".tablelist").show();
-		$(".listnewbutton").show();
-		$("#txtSearch").show();
-		$(".searchboximg").show();
+		$("#new_class_modal").modal('hide');
+		// $(".pagename").text(thisClass.pagename);
+// 		
+		// $("#editField").hide();
+// 		
+		// $(".tablelist").show();
+		// $(".listnewbutton").show();
+		// $("#txtSearch").show();
+		// $(".searchboximg").show();
 		thisClass.getData('');
 		
 		//return and hide
@@ -356,28 +357,28 @@ $(function() {
 		        	<div class="form-group">
 		        		<label for="startdate" class="col-sm-3 control-label">Start Date</label>
 		        		<div class="col-sm-9">
-			        		<input type="date" id="ele_startdate" class="form-control" name="startdate" />
+			        		<input type="text" id="ele_startdate" class="form-control" name="startdate" />
 		        		</div>
 		        	</div>
 		        	
 		        	<div class="form-group">
 		        		<label for="enddate" class="col-sm-3 control-label">End Date</label>
 		        		<div class="col-sm-9">
-		        			<input type="date" id="ele_enddate" class="form-control" name="enddate" />
+		        			<input type="text" id="ele_enddate" class="form-control" name="enddate" />
 		        		</div>
 		        	</div>
 		        	
 		        	<div class="form-group">
 		        		<label for="starttime" class="col-sm-3 control-label">Start Time</label>
 		        		<div class="col-sm-9">
-		        			<input type="time" id="ele_starttime" class="form-control" name="starttime" />
+		        			<input type="text" id="ele_starttime" class="form-control" name="starttime" />
 		        		</div>
 		        	</div>
 		        	
 		        	<div class="form-group">
 		        		<label for="endtime" class="col-sm-3 control-label">End Time</label>
 		        		<div class="col-sm-9">
-		        			<input type="time" id="ele_endtime" class="form-control" name="endtime" />
+		        			<input type="text" id="ele_endtime" class="form-control" name="endtime" />
 		        		</div>
 		        	</div>
 		        	

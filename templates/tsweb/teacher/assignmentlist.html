@@ -295,7 +295,7 @@ function EDITTABLE(){
 			$(".viewTD").hide();
 		});
 		
-		$("#ele_duedate").datetimepicker();
+		$("#ele_duedate").datetimepicker({ dateFormat: "dd-mm-yy",timeFormat: "HH:mm" });
 		
 		$("#new_assignment_btn").click(function(){
 			$("[id^='ele_']").each(function(){
@@ -381,16 +381,9 @@ $(function() {
 	        	</div>
 	        	
 	        	<div class="form-group">
-	        		<label for="description" class="col-sm-4 control-label">Description</label>
-	        		<div class="col-sm-8">
-	        			<input type="text" id="ele_description" class="form-control" name="description" />
-	        		</div>
-	        	</div>
-	        	
-	        	<div class="form-group">
 	        		<label for="ele_goal" class="col-sm-4 control-label">Goal of Task</label>
 	        		<div class="col-sm-8">
-	        			<input type="text" id="ele_goal" class="form-control" name="goal-of-task" />
+	        			<input type="text" id="ele_description" class="form-control" name="description" />
 	        		</div>
 	        	</div>
 	        	
@@ -404,14 +397,14 @@ $(function() {
 	        	<div class="form-group">
 	        		<label for="ele_context" class="col-sm-4 control-label">Context/Situation</label>
 	        		<div class="col-sm-8">
-	        			<input type="text" id="ele_context" class="form-control" name="context" />
+	        			<input type="text" id="ele_contextsituation" class="form-control" name="contextsituation" />
 	        		</div>
 	        	</div>
 	        	
 	        	<div class="form-group">
 	        		<label for="ele_parameters" class="col-sm-4 control-label">Parameters(Word Length)</label>
 	        		<div class="col-sm-8">
-	        			<input type="text" id="ele_parameters" class="form-control" name="parameters" />
+	        			<input type="text" id="ele_maxwords" class="form-control" name="maxwords" />
 	        		</div>
 	        	</div>
 	        	
@@ -433,7 +426,6 @@ $(function() {
 	        		<label for="ele_classid" class="col-sm-4 control-label">Assigned Class</label>
 	        		<div class="col-sm-8">
 	        			<select id="ele_classid" name="classid" class="form-control">
-	        				<option>{# ele_class #}</option>
 	        			</select>
 	        		</div>
 	        	</div>
@@ -445,13 +437,6 @@ $(function() {
 	        		</div>
 	        	</div>-->
 	        	
-	        	<div class="form-group">
-	        		<label for="maxwords" class="col-sm-4 control-label">Maximum Word</label>
-	        		<div class="col-sm-8">
-	        			<input type="text" id="ele_maxwords" name="maxwords" class="form-control" />
-	        		</div>
-	        	</div>
-	    
 	        	<div class="form-group">
 	        		<label for="diabled" class="col-sm-4 control-label">Disable</label>
 	        		<div class="col-sm-8">

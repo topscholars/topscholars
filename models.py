@@ -92,6 +92,10 @@ class Assignment(models.Model):
     disabled = models.IntegerField(db_column='Disabled') # Field name made lowercase.
     deleted = models.IntegerField(db_column='Deleted') # Field name made lowercase.
     clientid = models.IntegerField(db_column='ClientId') # Field name made lowercase.
+    audience = models.TextField(db_column='Audience') # Field name made lowercase.
+    contextsituation = models.TextField(db_column='ContextSituation') # Field name made lowercase.
+    duedate = models.DateTimeField(db_column='DueDateTime') # Field name made lowercase.
+    revisions = models.IntegerField(db_column='NumRevisions') # Field name made lowercase.
     class Meta:
         db_table = 'assignment'
 

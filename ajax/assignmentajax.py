@@ -1,6 +1,6 @@
 from django.http import HttpResponse,HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
-from django.utils import simplejson
+from django.utils import simplejson,timezone
 from django.core import serializers
 from django.db.models.query import RawQuerySet
 from django.db import connection
@@ -8,7 +8,7 @@ from tsweb.models import *
 from django.db.models import Q
 from itertools import chain
 
-from datetime import datetime
+from datetime import datetime, timedelta
 import time
 
 
@@ -16,14 +16,20 @@ class ASSSIGNMENTLIST():
     def get(self,request):
         cursor = connection.cursor()
         try:
+            DATE_FORMAT = "%d-%m-%Y %H:%M" 
             id = request.GET.get('id', False)
         except KeyError:
             return HttpResponse('error', mimetype='application/json')
         else:
-            cursor.execute("SELECT id,name,description,rubricid,maxwords,minwords, disabled FROM assignment  WHERE id = %s", [id])
+            cursor.execute("SELECT id,name,description,rubricid,maxwords,minwords, disabled,audience,contextsituation,duedatetime,numrevisions FROM assignment  WHERE id = %s", [id])
                    
             results = cursor.fetchall() 
             for r in results:
+                if r[9] is None:
+                    duedate = ''
+                else:
+                    timeshow = r[9] + timedelta(hours=7)
+                    duedate = timeshow.strftime(DATE_FORMAT)
                 data_json = {
                         'id': r[0],
                         'name': r[1],
@@ -32,6 +38,10 @@ class ASSSIGNMENTLIST():
                         'maxwords': r[4],
                         'minwords': r[5],
                         'disabled': r[6],
+                        'audience': r[7],
+                        'contextsituation': r[8],
+                        'duedate': duedate,
+                        'revisions': r[10],
                         }
             data = simplejson.dumps(data_json)
         return HttpResponse(data, mimetype='application/json')
@@ -50,14 +60,20 @@ class ASSSIGNMENTLIST():
     
     def save(self,request):
         try:
+            DATE_FORMAT = "%d-%m-%Y %H:%M"
             userid = request.session['userid']
             id = request.POST.get('id', False)
             name = request.POST.get('name', False)
             description = request.POST.get('description', False)
             classid = request.POST.get('classid', False)
             maxwords = request.POST.get('maxwords', False)
-            minwords = request.POST.get('minwords', False)
+            #minwords = request.POST.get('minwords', False)
             disabled = request.POST.get('disabled', False)
+            audience = request.POST.get('audience', False)
+            contextsituation = request.POST.get('contextsituation', False)
+            duedate = request.POST.get('duedate', False)
+            revisions = request.POST.get('revisions', False)
+
         except KeyError:
             return HttpResponse('error', mimetype='application/json')
         else:
@@ -66,8 +82,12 @@ class ASSSIGNMENTLIST():
             assignment.name = name
             assignment.description = description
             assignment.maxwords = maxwords
-            assignment.minwords = minwords
+            assignment.minwords = maxwords
             assignment.rubricid = rubriclist
+            assignment.audience = audience
+            assignment.contextsituation = contextsituation
+            assignment.duedate = datetime.strptime(duedate,DATE_FORMAT)
+            assignment.revisions = revisions
             assignment.modifieddt = datetime.now()
             assignment.modifiedby = userid
             assignment.disabled = disabled

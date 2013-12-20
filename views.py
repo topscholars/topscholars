@@ -176,6 +176,23 @@ def tlessonlist(request):
                   'urlActive': urlActive,}
         return render(request, 'tsweb/teacher/lessonlist.html', context)
     
+def ttaglist(request):
+    try:
+        userid = request.session['userid']
+    except KeyError:
+        return HttpResponseRedirect(reverse('tsweb:login'))
+    else:
+        login = Login.objects.get(id=userid)
+        user_name = login.loginname
+        recid = login.recid
+        userlist = Userlist.objects.get(id=recid)
+        securityprofile = userlist.securityprofileid
+        urlActive = 'taglist'
+        context= {'user_name' : user_name,
+                  'securityprofile' : securityprofile,
+                  'urlActive': urlActive,}
+        return render(request, 'tsweb/teacher/taglist.html', context)
+    
 def tuserlist(request):
     try:
         userid = request.session['userid']
@@ -192,6 +209,24 @@ def tuserlist(request):
                   'securityprofile' : securityprofile,
                   'urlActive': urlActive,}
         return render(request, 'tsweb/teacher/userlist.html', context)
+    
+def tunitlist(request):
+    try:
+        userid = request.session['userid']
+    except KeyError:
+        return HttpResponseRedirect(reverse('tsweb:login'))
+    else:
+        login = Login.objects.get(id=userid)
+        user_name = login.loginname
+        recid = login.recid
+        userlist = Userlist.objects.get(id=recid)
+        securityprofile = userlist.securityprofileid
+        urlActive = 'unitlist'
+        context= {'user_name' : user_name,
+                  'securityprofile' : securityprofile,
+                  'urlActive': urlActive,}
+        return render(request, 'tsweb/teacher/unitlist.html', context)
+
 
 def tsubmissionreview(request, id):
     try:

@@ -1,6 +1,16 @@
 <div class="side-panel">
 		
 			<div class="panel block-cell block-thin">
+				<div class="panel-heading block-header {% if urlActive == 'unitlist' %}active{% endif %}">
+					<h3 class="panel-title">
+						<a href="{% url 'tsweb:tunitlist' %}">
+							Unit List <i class="fa fa-sitemap pull-right"></i>
+						</a>
+					</h3>
+				</div>
+			</div>
+		
+			<div class="panel block-cell block-thin">
 				<div class="panel-heading block-header {% if urlActive == 'classlist' %}active{% endif %}">
 					<h3 class="panel-title">
 						<a href="{% url 'tsweb:tclasslist' %}">
@@ -63,7 +73,7 @@
 			<div class="panel block-cell block-thin">
 				<div class="panel-heading block-header">
 					<h3 class="panel-title">
-						<a href="{% url 'tsweb:tlessonlist' %}">
+						<a href="{% url 'tsweb:ttaglist' %}">
 							Tag List <i class="fa fa-tags pull-right"></i>
 						</a>
 					</h3>

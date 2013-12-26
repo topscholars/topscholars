@@ -176,8 +176,11 @@
 				      	<div class="col-lg-6">
 				      		<label for="lesson_quiz">Add Quiz</label>
 				      		<div class="form-group">
-				      			
+				      			<label for="question">Question:</label>
+				      			<input type="text" name="question" id="question" class="form-control" placeholder="Type Question Here"/>
 				      		</div>
+				      		<div class="new-question"></div>
+				      		<button class="btn btn-info btn-small pull-right add-question" role="button" id="btnAddQuestion"><i class="fa fa-plus"></i></button>
 				      	</div>
 				      </form>
 		      	</div>
@@ -196,6 +199,15 @@
 		document.getElementById("uploadBtn").onchange = function () {
 		  document.getElementById("uploadFile").value = this.value;
 		};
+		
+		$('#btnAddQuestion').click(function(event){
+			$('.new-question').append('<div class="ngText form-group"><input type="text" name="ele_question" class="form-control" id="nQuestion" placeholder="Type Question Here" /><i class="fa fa-minus-square-o minus fa-lg pull-right"></i></div>');
+			
+			$('.minus').click(function () {
+				$('.ngText').last().remove();
+			});
+			event.preventDefault();
+		});
 		
 		$('.modal .form-control, .modal input[type="checkbox"]').attr('disabled', 'disabled');
 		

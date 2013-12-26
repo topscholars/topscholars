@@ -301,7 +301,7 @@
 			        	        </a>
 			        	      </h4>
 			        	    </div>
-			        	    <div id="collapseSeven" class="panel-collapse collapse in">
+			        	    <div id="collapseSeven" class="panel-collapse collapse">
 			        	      <div class="panel-body">
 		        	          <input type="text" name="ele_evidence" class="form-control" id="ele_evidence"/>
 			        	        <button class="btn btn-small" data-toggle="modal" data-target="#lesson_modal">Create Lesson</button>
@@ -346,10 +346,12 @@
 					        	  			    Grade Manual
 					        	  			  </label>
 					        	  			</div>
+					        	  			<a href="#" class="btn btn-info btn-small" id="openLesson">Show Lesson</a>
 					        	  		</div> <!-- /.col-lg-4-->
 					        	  		
 					        	  		<div class="col-lg-8">
-					        	  		
+					        	  			<label for="activity-details">Details</label>
+					        	  			<p id="activity-details">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum</p>
 					        	  		</div> <!-- /.col-lg-8 -->
 					        	  	</div> <!-- /.row-->
 			        	  		</div>
@@ -368,13 +370,13 @@
 			        	 				<label for="">Select Grade Type</label>
 			        	 				<div class="radio">
 			        	 				  <label>
-			        	 				    <input type="radio" name="optionsGrade" id="optionsGradeAuto" value="Grade Auto" checked>
+			        	 				    <input type="radio" name="optionsGrade2" id="optionsGradeAuto" value="Grade Auto" checked>
 			        	 				    Grade Auto
 			        	 				  </label>
 			        	 				</div>
 			        	 				<div class="radio">
 			        	 				  <label>
-			        	 				    <input type="radio" name="optionsGrade" id="optionsGradeManual" value="Grade Manual">
+			        	 				    <input type="radio" name="optionsGrade2" id="optionsGradeManual" value="Grade Manual">
 			        	 				    Grade Manual
 			        	 				  </label>
 			        	 				</div>
@@ -464,6 +466,15 @@
 			
 		});
 		$("#sortable").sortable();
+		
+		$('#openLesson').click(function () {
+			openDynamicLesson();
+		});
+		
+		function openDynamicLesson() {
+			$('#lessonSmall').toggle(1000, 'easeOutElastic');
+			$('#lessonSmall').css('display', 'block').css('z-index', '99999');
+		}
 	});
 	</script>		
 			
@@ -671,7 +682,7 @@
 	</div><!-- /.modal -->
 	
 	<!--Criteria List Modal Form--> 
-	<div class="modal fade" id="lesson_modal" tabindex="-1" role="dialog" aria-labelledby="lessonLabel" aria-hidden="true" data-dismiss="false">
+	<!--<div class="modal fade" id="lesson_modal" tabindex="-1" role="dialog" aria-labelledby="lessonLabel" aria-hidden="true" data-dismiss="false">
 	  <div class="modal-dialog">
 	    <div class="modal-content">
 	      <div class="modal-header teacher-header">
@@ -702,6 +713,54 @@
 	      	<div class="modal-footer">
 	      	  <input type="reset" class="btn btn-default" data-dismiss="modal" value="Close"/>
 	      	</div>
+	      </div>
+	    </div><!-- /.modal-content --*>
+	  </div><!-- /.modal-dialog --*>
+	</div><!-- /.modal --*>-->
+	
+	<div class="modal fade modal-wide" id="lesson_modal" tabindex="-1" role="dialog" aria-labelledby="newLessonLabel" aria-hidden="true" data-dismiss="false">
+	  <div class="modal-dialog">
+	    <div class="modal-content">
+	      <div class="modal-header teacher-header">
+	        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+	        <h4 class="modal-title">New Lesson</h4>
+	      </div>
+	      <div class="modal-body">
+	      	<div class="row">
+			      <form class="form" role="form" id="lesson_form">
+			      	<div class="col-lg-6" style="border-right: 1px solid #ddd;">
+			      		<div class="form-group">
+			      			<label for="lesson_name">Name: </label>
+			      			<input type="text" name="lesson_name" id="lesson_name" class="form-control" />
+			      		</div>
+			      		
+			      		<div class="form-group">
+			      			<label for="uploadFile">Upload Media</label>
+			      			<div class="fileUpload btn btn-warning form-control">
+			      			  <input id="uploadFile" placeholder="Choose File" disabled="disabled" />
+			      			  <span>Add Media</span>
+			      			  <input id="uploadBtn" type="file" class="upload" />
+			      			</div>
+			      		</div>
+			      		
+			      		<div class="form-group">
+			      			<label for="lesson_text">Add Text</label>
+			      			<textarea type="text" name="lesson_text" class="form-control"></textarea>
+			      		</div>
+			      	</div> <!-- End col-6 -->
+			      	
+			      	<div class="col-lg-6">
+			      		<label for="lesson_quiz">Add Quiz</label>
+			      		<div class="form-group">
+			      			
+			      		</div>
+			      	</div>
+			      </form>
+	      	</div>
+	      </div>
+	      <div class="modal-footer">
+	        <input type="reset" class="btn btn-default" data-dismiss="modal" value="Close"/>
+	        <input type="submit" class="btn btn-primary" value="Save Lesson" id="lesson-submit"/>
 	      </div>
 	    </div><!-- /.modal-content -->
 	  </div><!-- /.modal-dialog -->
@@ -826,72 +885,107 @@
 	  </div><!-- /.modal-dialog -->
 	</div><!-- /.modal -->
 				
+	<div class="lesson" id="lessonSmall" style="display: none;">
+	
+		<div class="lesson-body">
+			<div class="lesson-section">
+				<div class="lesson-section-header lesson-header-small">{% lesson_name %}
+					<button type="button" class="close" aria-hidden="true">&times;</button>
+				</div>
+				<div class="lesson-section-body">
+					<form class="form form-inline" role="form">
+						<div class="section-one">
+							<select class="form-control">
+								<option>Choose Unit</option>
+							</select>
+							<select class="form-control">
+								<option>Lesson</option>
+							</select>
+							<select class="form-control">
+								<option>Activity</option>
+							</select>
+						</div><!-- /.section-one -->
+						
+						<div class="section-two" >
+							<legend>Explanation:</legend>
+							<p>{% question %}</p>
+							
+							<legend>Explanation:</legend>
+							<p>{% answer %}</p>
+						</div>
+						
+						<div class="section-three">
+							<button class="btn btn-info" role="button">Next</button>
+							<button class="btn btn-info" role="button">Back</button>
+							<button class="btn btn-info" role="button">Play From Beginning<i class=""></i></button>
+							<!--<button class="btn btn-info" role="button">Record Answer</button>-->
+						</div>
+						
+					</form>
+				</div>
+			</div>
+		</div>
+		
+	</div> <!-- /. lesson small -->
 	
 	<script>
+	
+		document.getElementById("uploadBtn").onchange = function () {
+		  document.getElementById("uploadFile").value = this.value;
+		};
+		
 		$('#btnAddGoal').click(function(event){
-			$('.new-goal').append('<div class="ngText"><input type="text" name="ele_goal" class="form-control" id="nGoal" /><i class="fa fa-minus-square-o minus fa-lg pull-right"></i></div>');
+			$('.new-goal').append('<div class="ngText"><input type="text" name="ele_goal" class="form-control" id="nGoal" /><i class="fa fa-minus-square-o minus fa-lg"></i></div>');
 			
 			$('.minus').click(function () {
-				$('.new-goal > .ngText').hide($('.ngText').this);
+				$('.ngText').last().remove();
 			});
 			event.preventDefault();
 		});
 		$('#btnAddUnderstanding').click(function(event){
-			$('.new-understanding').append('<div class="ngText"><input type="text" name="ele_goal" class="form-control" id="nUnderstanding" /><i class="fa fa-minus-square-o minus fa-lg pull-right"></i></div>');
+			$('.new-understanding').append('<div class="ngText"><input type="text" name="ele_goal" class="form-control" id="nUnderstanding" /><i class="fa fa-minus-square-o minus fa-lg"></i></div>');
 			
 			$('.minus').click(function () {
-				$('.ngText').each(function () {
-					$('.ngText',this).hide();
-				});
+				$('.ngText').last().remove();
 			});
 			event.preventDefault();
 		});$('#btnAddQuestion').click(function(event){
-			$('.new-question').append('<div class="ngText"><input type="text" name="ele_goal" class="form-control" id="nQuestion" /><i class="fa fa-minus-square-o minus fa-lg pull-right"></i></div>');
+			$('.new-question').append('<div class="ngText"><input type="text" name="ele_goal" class="form-control" id="nQuestion" /><i class="fa fa-minus-square-o minus fa-lg"></i></div>');
 			
 			$('.minus').click(function () {
-				$('.ngText').each(function () {
-					$('.ngText', this).hide();
-				});
+				$('.ngText').last().remove();
 			});
 			event.preventDefault();
 		});
 		$('#btnAddKnow').click(function(event){
-			$('.new-know').append('<div class="ngText"><input type="text" name="ele_goal" class="form-control" id="nKnow" /><i class="fa fa-minus-square-o minus fa-lg pull-right"></i></div>');
+			$('.new-know').append('<div class="ngText"><input type="text" name="ele_goal" class="form-control" id="nKnow" /><i class="fa fa-minus-square-o minus fa-lg"></i></div>');
 			
 			$('.minus').click(function () {
-				$('.ngText').each(function () {
-					$('.ngText', this).hide();
-				});
+				$('.ngText').last().remove();
 			});
 			event.preventDefault();
 		});
 		$('#btnAddAble').click(function(event){
-			$('.new-able').append('<div class="ngText"><input type="text" name="ele_goal" class="form-control" id="nAble" /><i class="fa fa-minus-square-o minus fa-lg pull-right"></i></div>');
+			$('.new-able').append('<div class="ngText"><input type="text" name="ele_goal" class="form-control" id="nAble" /><i class="fa fa-minus-square-o minus fa-lg"></i></div>');
 			
 			$('.minus').click(function () {
-				$('.ngText').each(function () {
-					$('.ngText', this).hide();
-				});
+				$('.ngText').last().remove();
 			});
 			event.preventDefault();
 		});
 		$('#btnAddPerformance').click(function(event){
-			$('.new-performance').append('<div class="ngText"><input type="text" name="ele_goal" class="form-control" id="nEvidence" /><i class="fa fa-minus-square-o minus fa-lg pull-right"></i><button class="btn btn-small" data-toggle="modal" data-target="#new_rubric_modal">Add Rubric</button> <button class="btn btn-small" data-toggle="modal" data-target="#new_assignment_modal">Add Assignment</button> <button class="btn btn-small" data-toggle="modal" data-target="#assignment_list_modal">Choose Assignment</button></div>');
+			$('.new-performance').append('<div class="ngText"><input type="text" name="ele_goal" class="form-control" id="nEvidence" /><i class="fa fa-minus-square-o minus fa-lg"></i><button class="btn btn-small" data-toggle="modal" data-target="#new_rubric_modal">Add Rubric</button> <button class="btn btn-small" data-toggle="modal" data-target="#new_assignment_modal">Add Assignment</button> <button class="btn btn-small" data-toggle="modal" data-target="#assignment_list_modal">Choose Assignment</button></div>');
 			
 			$('.minus').click(function () {
-				$('.ngText').each(function () {
-					$('.ngText').hide();
-				});
+				$('.ngText').last().remove();
 			});
 			event.preventDefault();
 		});
 		$('#btnAddEvidence').click(function(event){
-			$('.new-evidence').append('<div class="ngText"><input type="text" name="ele_goal" class="form-control" id="nEvidence" /><i class="fa fa-minus-square-o minus fa-lg pull-right"></i><button class="btn btn-small" data-toggle="modal" data-target="#lesson_modal">Create Lesson</button> <button class="btn btn-small" data-toggle="modal" data-target="#criteria_modal">Add Criteria</button></div>');
+			$('.new-evidence').append('<div class="ngText"><input type="text" name="ele_goal" class="form-control" id="nEvidence" /><i class="fa fa-minus-square-o minus fa-lg"></i><button class="btn btn-small" data-toggle="modal" data-target="#lesson_modal">Create Lesson</button> <button class="btn btn-small" data-toggle="modal" data-target="#criteria_modal">Add Criteria</button></div>');
 			
 			$('.minus').click(function () {
-				$('.ngText').each(function () {
-					$('.ngText').hide();
-				});
+				$('.ngText').last().remove();
 			});
 			event.preventDefault();
 		});

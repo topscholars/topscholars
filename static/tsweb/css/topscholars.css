@@ -819,6 +819,7 @@ form{
 #uploadFile{
 	border: none;
 	border-radius: 2px;
+	width: 70%;
 }
 .add-tag{
 	margin-top: 10px !important;
@@ -866,9 +867,16 @@ form{
 	border-radius: 3px;
 	padding: 5px;
 }
-.fa-minus-square-o{
+#lesson_form .fa-minus-square-o{
+	position: absolute;
+	right: 20px;
+	margin-top: -25px;
+	color: #999;
+}
+#new_unit_form .fa-minus-square-o{
+	position: absolute;
+	right: 40px;
 	margin-top: -35px;
-	margin-right: 5px;
 	color: #999;
 }
 .fa-minus-square-o:hover{

@@ -536,6 +536,19 @@ form{
 	width: 100%;
 	margin-bottom: 10px!important;
 }
+.section-one, .section-two, .section-three{
+	width: 33%;
+	display: inline;
+	float: left;
+	padding: 5px;
+}
+.section-two{
+	border: 1px solid #999;
+}
+.section-one select{
+	margin-bottom: 5px;
+	margin-top: 5px;
+}
 /*.lesson-section .lesson-body .lesson-section*/
 
 
@@ -871,7 +884,16 @@ form{
 #process_list:hover{
 	cursor: pointer;
 }
-#criteria_modal .well:active{
-	background: #fff;
+#criteria_modal ul{
+	list-style: none;
+}
+#sortable{
+	margin-left: -40px;
+}
+#sortable:hover{
+	cursor: pointer;
+}
+.fa-sort{
+	margin-top: 3px;
 }
 /*End*/

@@ -311,29 +311,32 @@
 				</div>
 				<div class="lesson-section-body">
 					<form class="form form-inline" role="form">
-						<div class="row">
-							<div class="col-lg-4">
-								<select class="form-control">
-									<option>Choose Unit</option>
-								</select>
-							</div>
-						</div> <!-- /.row -->
-						<br />
-						<div class="row">
-							<div class="col-lg-4">
-								<select class="form-control">
-									<option>Lesson</option>
-								</select>
-							</div>
-						</div> <!-- /.row -->
-						<br />
-						<div class="row">
-							<div class="col-lg-4">
-								<select class="form-control">
-									<option>Activity</option>
-								</select>
-							</div>
-						</div><!-- /.row -->
+						<div class="section-one">
+							<select class="form-control">
+								<option>Choose Unit</option>
+							</select>
+							<select class="form-control">
+								<option>Lesson</option>
+							</select>
+							<select class="form-control">
+								<option>Activity</option>
+							</select>
+						</div><!-- /.section-one -->
+						
+						<div class="section-two" >
+							<legend>Explanation:</legend>
+							<p>{% question %}</p>
+							
+							<legend>Explanation:</legend>
+							<p>{% answer %}</p>
+						</div>
+						
+						<div class="section-three">
+							<button class="btn btn-info" role="button">Next</button>
+							<button class="btn btn-info" role="button">Back</button>
+							<button class="btn btn-info" role="button">Play From Beginning<i class=""></i></button>
+							<!--<button class="btn btn-info" role="button">Record Answer</button>-->
+						</div>
 						
 					</form>
 				</div>

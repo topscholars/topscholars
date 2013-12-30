@@ -313,7 +313,7 @@ form{
 }
 
 .block-thin{
-	width: 320px;
+	width: 100%;
 	box-shadow: none!important;
 }
 .block-wide{
@@ -588,7 +588,11 @@ form{
 }
 .modal-wide .modal-dialog{
 	width: 60%;
-	left: 40%;
+	position: relative;
+	margin: 10px auto;
+	left: 0;
+	right: 0;
+	/*left: 40%;*/
 }
 .btn-edit{
 	margin-right: 50px;
@@ -915,4 +919,16 @@ form{
 #mcAnswers li{
 	margin-left: -40px;
 }
+.ui-sortable-helper .panel-heading{
+	background: #a2db8b;
+}
 /*End*/
+
+
+@media only screen 
+and (min-device-width : 768px) 
+and (max-device-width : 1024px)  {
+	#search-form{
+		display: none!important;
+	}
+}

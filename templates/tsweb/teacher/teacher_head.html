@@ -14,6 +14,7 @@
 	<link rel="stylesheet" href="../../../static/tsweb/css/bootstrap-glyphicons.css" type="text/css" />
 	<link rel="stylesheet" href="../../../static/tsweb/css/topscholars.css" type="text/css" />
 	<link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+	<link rel="stylesheet" href="../../../static/tsweb/css/smoothness/jquery-ui-1.10.3.custom.min.css" />
 	
 <!--	<script src="{% static 'tsweb/js/jQuery1.10.1.js' %}"></script>
 	<script src="{% static 'tsweb/js/jquery-ui-1.10.3.custom.min.js' %}"></script>-->
@@ -21,7 +22,8 @@
 	<script src="../../../static/tsweb/js/jQuery1-10-1.js" type="text/javascript"></script>
 	<script src="../../../static/tsweb/js/bootstrap.js" type="text/javascript"></script>
 	<script src="../../../static/tsweb/js/transition.js" type="text/javascript"></script>
-
+	<script src="../../../static/tsweb/js/jquery-ui-1-10-3-custom-min.js" type="text/javascript"></script>
+	<script src="../../../static/tsweb/js/jquery-touch-punch.min.js" type="text/javascript"></script>
 </head>
 
 <body>
@@ -38,7 +40,7 @@
 					</ul>
 				</li>
 				
-				<li class="dropdown">
+				<li class="dropdown s-name">
 					<a href="#" class="dropdown-toggle student-name" data-toggle="dropdown">{% user_name %}</a>
 					<ul class="dropdown-menu">
 						<li><a href="{% url 'tsweb:logout' %}"><i class="fa fa-power-off"></i> Log Out</a></li>
@@ -47,7 +49,7 @@
 			</ul>
 			
 			<form class="navbar-form navbar-left" role="search" id="search-form" method="" action="null">
-				<div class="input-group col-lg-3 col-offset-6">
+				<div class="input-group col-lg-3 col-offset-6 col-sm-4">
 					<input type="text" class="form-control" id="txtSearch">
 			    <span class="input-group-btn">
 			      <input class="btn btn-default" type="submit" value="Search">
@@ -57,4 +59,5 @@
 	    
 		</div>
 	</nav> <!-- End Nav -->
+	
 	<div class="page-container">

@@ -769,6 +769,9 @@ pre code {
     margin-right: -15px;
     margin-left: -15px;
   }
+  .logo{
+  	font-size: .7em;
+  }
 }
 
 .row .row {
@@ -1001,9 +1004,18 @@ pre code {
   .col-pull-11 {
     right: 91.66666666666666%;
   }
+  
+  .logo{
+  	/*font-size: 1em!important;*/
+  	margin-left: -40px!important;
+  }
+  .s-name{
+  	/*right: -40px!important;*/
+  }
 }
 
 @media (min-width: 992px) {
+	
   .container {
     max-width: 940px;
   }

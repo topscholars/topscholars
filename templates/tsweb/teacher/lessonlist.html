@@ -179,9 +179,21 @@
 				      			<label for="question">Question:</label>
 				      			<input type="text" name="question" id="question" class="form-control" placeholder="Type Question Here"/>
 				      		</div>
+				      		<div class="form-group">
+				      			<label for="mcAnswer">Answer:</label>
+				      			<input type="text" name="mcAnswer" id="mcAnswer" class="form-control" placeholder="Answer Goes Here" /></li>
+				      		</div>
 				      		<div class="new-question"></div>
+				      		<label for="isMultiple">
+				      			<input type="checkbox" name="isMultiple" id="isMultiple" value="Is this multiple choice?" /> Is this multiple choice?
+				      		</label>
 				      		<button class="btn btn-info btn-small pull-right add-question" role="button" id="btnAddQuestion"><i class="fa fa-plus"></i></button>
 				      	</div>
+				      	
+				      	<div class="col-lg-6">
+				      		
+				      	</div>
+				      	
 				      </form>
 		      	</div>
 		      </div>
@@ -200,6 +212,12 @@
 		  document.getElementById("uploadFile").value = this.value;
 		};
 		
+//		if ($('#isMulitple input[type=checkbox]').is(':checked')) {
+//			$('#mcAnswers').show();
+//		} else {
+//			$('#mcAnswers').hide();
+//		}
+				
 		$('#btnAddQuestion').click(function(event){
 			$('.new-question').append('<div class="ngText form-group"><input type="text" name="ele_question" class="form-control" id="nQuestion" placeholder="Type Question Here" /><i class="fa fa-minus-square-o minus fa-lg pull-right"></i></div>');
 			
@@ -217,6 +235,7 @@
 		});
 		
 		$('#editLessonBtn').click(function(){$('.modal .form-control, .modal input[type="checkbox"]').removeAttr('disabled', 'disabled')});
+		
 		
 	</script>
 </body>

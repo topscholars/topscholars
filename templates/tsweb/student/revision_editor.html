@@ -311,33 +311,21 @@
 				</div>
 				<div class="lesson-section-body">
 					<form class="form form-inline" role="form">
-						<div class="section-one">
-							<select class="form-control">
-								<option>Choose Unit</option>
-							</select>
-							<select class="form-control">
-								<option>Lesson</option>
-							</select>
-							<select class="form-control">
-								<option>Activity</option>
-							</select>
-						</div><!-- /.section-one -->
-						
-						<div class="section-two" >
-							<legend>Explanation:</legend>
-							<p>{% question %}</p>
+						<div class="section-wide">
+							<p id="ele_example">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum</p>
 							
-							<legend>Explanation:</legend>
-							<p>{% answer %}</p>
+							<p id="ele_question" style="display: none;">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam?</p>
+							
+							<p id="ele_answer" style="display: none;">Lorem ipsum dolor sit amet, consectetur adipisicing elit</p>
+							<hr />
+							<button class="btn btn-default" role="button" id="backBtn"><i class="fa fa-angle-left"></i> Back</button>
+							<button class="btn btn-default" role="button" id="nextBtn">Next <i class="fa fa-angle-right"></i></button>
+							<button class="btn btn-danger" role="button" id="resetQuestion">Reset Question</button>
+							<button class="btn btn-primary" type="submit" role="button">Submit Answer</button>
+							<button class="btn btn-success pull-right" role="button" id="exampleBtn">Example</button>
+							<button class="btn btn-success pull-right" role="button" id="questionBtn">Question</button>
+							<button class="btn btn-success pull-right" role="button" id="answerBtn">Answer</button>
 						</div>
-						
-						<div class="section-three">
-							<button class="btn btn-info" role="button">Next</button>
-							<button class="btn btn-info" role="button">Back</button>
-							<button class="btn btn-info" role="button">Play From Beginning<i class=""></i></button>
-							<!--<button class="btn btn-info" role="button">Record Answer</button>-->
-						</div>
-						
 					</form>
 				</div>
 			</div>

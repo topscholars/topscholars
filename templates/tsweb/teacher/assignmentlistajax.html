@@ -12,7 +12,7 @@
 {% for row in assignmentlist %}
 	<tr class="rowitem" id="{{ row.id }}" data-toggle="modal" data-target="#new_assignment_modal">
 	<td class="cellitem">{{ row.id }}</td>
-	<td class="cellitem"><img src="{% static 'tsweb/image/assignmenttype.png' %}"/></td>
+	<td class="cellitem"><i class="fa fa-file-text fa-2x" style="color: #777777;"></i></td>
 	<td class="cellitem">{{ row.name }}</td>
 	<td class="cellitem">{{ row.description }}</td>
 	<td class="cellitem">{{ row.rubricid.name }}</td>

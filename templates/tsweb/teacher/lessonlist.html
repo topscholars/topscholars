@@ -53,6 +53,7 @@ $(function() {
 		    <div class="modal-content">
 		      <div class="modal-header teacher-header">
 		        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+		        <button type="button" class="btn btn-default btn-small btn-edit pull-right" id="editLessonBtn">Edit</button>
 		        <h4 class="modal-title">New Lesson</h4>
 		      </div>
 		      <div class="modal-body">
@@ -82,8 +83,21 @@ $(function() {
 				      	<div class="col-lg-6">
 				      		<label for="lesson_quiz">Add Quiz</label>
 				      		<div class="form-group">
-				      			
+				      		<label for="question">Question:</label>
+				      			<input type="text" name="question" id="question" class="form-control" placeholder="Type Question Here"/>
 				      		</div>
+				      		<div class="form-group">
+				      			<label for="mcAnswer">Answer:</label>
+				      			<input type="text" name="mcAnswer" id="mcAnswer" class="form-control" placeholder="Answer Goes Here" /></li>
+				      		</div>
+				      		<div class="new-question"></div>
+				      		<label for="isMultiple">
+				      			<input type="checkbox" name="isMultiple" id="isMultiple" value="Is this multiple choice?" /> Is this multiple choice?
+				      		</label>
+				      		<button class="btn btn-info btn-small pull-right add-question" role="button" id="btnAddQuestion"><i class="fa fa-plus"></i></button>
+				      	</div>
+				      	
+				      	<div class="col-lg-6">
 				      	</div>
 				      </form>
 		      	</div>
@@ -103,6 +117,30 @@ $(function() {
 		  document.getElementById("uploadFile").value = this.value;
 		};
 	
+//		if ($('#isMulitple input[type=checkbox]').is(':checked')) {
+//			$('#mcAnswers').show();
+//		} else {
+//			$('#mcAnswers').hide();
+//		}
+				
+		$('#btnAddQuestion').click(function(event){
+			$('.new-question').append('<div class="ngText form-group"><input type="text" name="ele_question" class="form-control" id="nQuestion" placeholder="Type Question Here" /><i class="fa fa-minus-square-o minus fa-lg pull-right"></i></div>');
+			
+			$('.minus').click(function () {
+				$('.ngText').last().remove();
+			});
+			event.preventDefault();
+		});
+		
+		$('.modal .form-control, .modal input[type="checkbox"]').attr('disabled', 'disabled');
+		
+		$('#new_lesson_btn').click(function () {
+			$('#editLessonBtn').hide();
+			$('.modal .form-control, .modal input[type="checkbox"]').removeAttr('disabled', 'disabled');
+		});
+		
+		$('#editLessonBtn').click(function(){$('.modal .form-control, .modal input[type="checkbox"]').removeAttr('disabled', 'disabled')});
+		
 	</script>
 </body>
 </html>

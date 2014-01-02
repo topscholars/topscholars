@@ -201,7 +201,7 @@ $(function() {
 			        	    <div id="collapseSeven" class="panel-collapse collapse in">
 			        	      <div class="panel-body">
 		        	          <input type="text" name="ele_evidence" class="form-control" id="ele_evidence"/>
-			        	        <button class="btn btn-small" data-toggle="modal" data-target="#lesson_modal">Add Lesson</button>
+			        	        <button class="btn btn-small" data-toggle="modal" data-target="#lesson_modal">Create Lesson</button>
 			        	        <button class="btn btn-small" data-toggle="modal" data-target="#criteria_modal">Add Criteria</button>
 			        	        
 			        	        <div class="new-evidence"></div>
@@ -213,25 +213,97 @@ $(function() {
 			        	  
 			        	</div>
 			        	
-			        </div> <!-- /.col-lg-12 -->
+			        </div> <!-- /.col-lg-12 STAGE TWO-->
+			        
+			        <div class="col-lg-12" id="stage_three" style="display: none;">
+			        	<p>You may reorder your activities by clicking an dragging to the position most desirable</p>
+			        	
+			        	<ul id="sortable" class="panel-group">
+			        	  <li class="panel panel-success">
+			        	  	<div class="panel-heading">
+			        	  		<div class="panel-title">
+			        	  			<a data-toggle="collapse" data-parent="sortable" href="#collapseEight">{# activity_title #}</a>
+			        	  			<i class="fa fa-sort pull-right"></i>
+			        	  		</div>
+			        	  	</div>
+			        	  	<div id="collapseEight" class="panel-collapse collapse">
+			        	  		<div class="panel-body">
+			        	  			<div class="row">
+				        	  			<div class="col-lg-4">
+					        	  			<label for="">Select Grade Type</label>
+					        	  			<div class="radio">
+					        	  			  <label>
+					        	  			    <input type="radio" name="optionsGrade" id="optionsGradeAuto" value="Grade Auto" checked>
+					        	  			    Grade Auto
+					        	  			  </label>
+					        	  			</div>
+					        	  			<div class="radio">
+					        	  			  <label>
+					        	  			    <input type="radio" name="optionsGrade" id="optionsGradeManual" value="Grade Manual">
+					        	  			    Grade Manual
+					        	  			  </label>
+					        	  			</div>
+					        	  			<a href="#" class="btn btn-info btn-small" id="openLesson">Show Lesson</a>
+					        	  		</div> <!-- /.col-lg-4-->
+					        	  		
+					        	  		<div class="col-lg-8">
+					        	  			<label for="activity-details">Details</label>
+					        	  			<p id="activity-details">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum</p>
+					        	  		</div> <!-- /.col-lg-8 -->
+					        	  	</div> <!-- /.row-->
+			        	  		</div>
+			        	  	</div>
+			        	 	</li>
+			        	 	
+			        	 	<li class="panel panel-success">
+			        	 		<div class="panel-heading">
+			        	 			<div class="panel-title">
+			        	 				<a data-toggle="collapse" data-parent="sortable" href="#collapseNine">{# activity_title1 #}</a>
+			        	 				<i class="fa fa-sort pull-right"></i>
+			        	 			</div>
+			        	 		</div>
+			        	 		<div id="collapseNine" class="panel-collapse collapse">
+			        	 			<div class="panel-body">
+			        	 				<label for="">Select Grade Type</label>
+			        	 				<div class="radio">
+			        	 				  <label>
+			        	 				    <input type="radio" name="optionsGrade2" id="optionsGradeAuto" value="Grade Auto" checked>
+			        	 				    Grade Auto
+			        	 				  </label>
+			        	 				</div>
+			        	 				<div class="radio">
+			        	 				  <label>
+			        	 				    <input type="radio" name="optionsGrade2" id="optionsGradeManual" value="Grade Manual">
+			        	 				    Grade Manual
+			        	 				  </label>
+			        	 				</div>
+			        	 			</div>
+			        	 		</div>
+			        	 		</li>
+			        	 	
+			        	</ul>
+			        </div> <!-- /.col-lg-12 STAGE THREE -->
+			    
 		        </div> <!-- /.row -->
 	        </form>
 	      </div>
 	      <div class="modal-footer">
 	      	
-	        <input type="reset" data-dismiss="modal" class="btn btn-default" value="Close" id="closeBtn"/>
-	        <a href="#" id="goBack" class="btn btn-default hide">Go Back</a>
-	        <input type="submit" class="btn btn-primary hide" value="Save Unit" id="unit-submit"/>
-	        <input type="button" id="nextBtn" class="btn btn-success" value="Go to stage 2 "/>
+	        <input type="reset" id="closeBtn" data-dismiss="modal" class="btn btn-default" value="Close" />
+	        <a href="#" id="goStage1" class="btn btn-default hide"><i class="fa fa-arrow-left"></i> Stage 1</a>
+	        <a href="#" id="goStage2" class="btn btn-default hide"><i class="fa fa-arrow-left"></i> Stage 2</a>
+	        <input type="submit" id="unit-submit" class="btn btn-primary hide" value="Save Unit" />
+	        <input type="button" id="stage2Btn" class="btn btn-success" value="Go to stage 2 "/>
+	        <input type="button" id="stage3Btn" class="btn btn-success hide" value="Go to stage 3"/>
 	      </div><!-- /.modal-footer -->
 	    </div><!-- /.modal-content -->
 	  </div><!-- /.modal-dialog -->
 	</div><!-- /.modal -->
 	
-	<script>
+		<script>
 	$(document).ready(function () {
-
-		$('#nextBtn').click(function () {
+		
+		$('#stage2Btn').click(function () {
 			$('#new_unit_modal .modal-title').text('New Unit - Stage 2 - Assessment Evidence');
 			
 			$('#closeBtn').hide();
@@ -241,24 +313,68 @@ $(function() {
 			
 			$(this).hide();
 			
-			$('#unit-submit').removeClass('hide');
-			$('#goBack').removeClass('hide');
+			$('#stage3Btn').removeClass('hide');
+			$('#goStage1').removeClass('hide');
 			
 		});
 		
-		$('#goBack').click(function () {
+		$('#stage3Btn').click(function() {
+			$('#new_unit_modal .modal-title').text('New Unit - Stage 3 - Activity Creation');
+			
+			$('#closeBtn').hide();
+			$('#stage_two').hide();
+			$('#stage_three').show();
+			$(this).hide();
+			
+			$('#goStage2').removeClass('hide').show();
+			$('#goStage1').addClass('hide');
+			$('#stage3Btn').addClass('hide');
+			$('#unit-submit').removeClass('hide');
+			
+		});
+		
+		$('#goStage1').click(function () {
 			$('#new_unit_modal .modal-title').text('New Unit - Stage 1 - Desired Results');
 			$('#unit-submit').addClass('hide');
-			$('#nextBtn').show();
+			$('#stage2Btn').show();
 			$('#closeBtn').show();
+			$('#stage3Btn').addClass('hide');
 			$('#stage_two').hide();
 			$('#stage_one').show();
 			
 			$(this).addClass('hide');
 			
-			
 		});
 		
+		$('#goStage2').click(function () {
+			$('#new_unit_modal .modal-title').text('New Unit - Stage 2 - Assessment Evidence');
+			
+			$('#closeBtn').hide();
+			
+			$('#stage_three').hide();
+			$('#stage_two').show();
+			
+			$(this).hide();
+			
+			$('#stage3Btn').removeClass('hide');
+			$('#stage3Btn').show();
+			$('#goStage1').removeClass('hide');
+			$('#unit-submit').addClass('hide');
+			
+		});
+		$("#sortable").sortable();
+		
+		$('#openLesson').click(function () {
+			openDynamicLesson();
+		});
+		
+		function openDynamicLesson() {
+			$('#lessonSmall').toggle(1000, 'easeOutElastic');
+			$('#lessonSmall').css('display', 'block').css('z-index', '99999');	
+		}
+		$('#lessonSmall .close').click(function () {
+			openDynamicLesson();
+		});
 	});
 	</script>		
 			
@@ -425,44 +541,49 @@ $(function() {
 	        <label>Select criteria from the lists below.</label>
 	        
 	        <!--Criteria Section-->
+	        	
 	        	<h4>Impact Criteria</h4>
-	        	<div class="well well-small">
+	        	<div class="">
 	        		<ul id="impact_list">
-	        			<li><a href="#">{# add_impact_criteria #}</a></li>
+	        			<li><label for="impact_criteria"><input type="checkbox" name="impact_criteria" value="{# add_impact_criteria #}" /> {# choose_impact_criteria #}</label></li>
 	        		</ul>
+	        		<hr />
 	        	</div>
 	        	
 	        	<h4>Quality Criteria</h4>
-	        	<div class="well well-small">
+	        	<div class="">
 	        		<ul id="quality_list">
-	        			<li><a href="#">{# add_quality_criteria #}</a></li>
+	        			<li><label for="quality_criteria"><input type="checkbox" name="quality_criteria" value="{# add_quality_criteria #}" /> {# choose_quality_criteria #}</label></li>
 	        		</ul>
+	        		<hr />
 	        	</div>
 	        	
 	        	<h4>Content Criteria</h4>
-	        	<div class="well well-small">
+	        	<div class="">
 	        		<ul id="content_list">
-	        			<li><a href="#">{# add_content_criteria #}</a></li>
+	        			<li><label for="content_criteria"><input type="checkbox" name="content_criteria" value="{# add_content_criteria #}" /> {# choose_content_criteria #}</label></li>
 	        		</ul>
+	        		<hr />
 	        	</div>
 	        	
 	        	<h4>Process Criteria</h4>
-	        	<div class="well well-small">
+	        	<div class="">
 	        		<ul id="process_list">
-	        			<li><a href="#">{# add_process_criteria #}</a></li>
+	        			<li><label for="process_criteria"><input type="checkbox" name="process_criteria" value="{# add_process_criteria #}" /> {# choose_process_criteria #}</label></li>
 	        		</ul>
 	        	</div>
 	  				        	
-        	<div class="modal-footer">
-        	  <input type="reset" class="btn btn-default" data-dismiss="modal" value="Close"/>
-        	</div>
+	        	<div class="modal-footer">
+	        	  <input type="reset" class="btn btn-default" data-dismiss="modal" value="Close"/>
+	        	  <input type="button" class="btn btn-primary" name="choose_criteria" value="Choose Criteria" />
+	        	</div>
 	      </div>
 	    </div><!-- /.modal-content -->
 	  </div><!-- /.modal-dialog -->
 	</div><!-- /.modal -->
 	
-	<!--Criteria List Modal Form--> 
-	<div class="modal fade" id="lesson_modal" tabindex="-1" role="dialog" aria-labelledby="lessonLabel" aria-hidden="true" data-dismiss="false">
+		<!--Criteria List Modal Form--> 
+	<!--<div class="modal fade" id="lesson_modal" tabindex="-1" role="dialog" aria-labelledby="lessonLabel" aria-hidden="true" data-dismiss="false">
 	  <div class="modal-dialog">
 	    <div class="modal-content">
 	      <div class="modal-header teacher-header">
@@ -480,11 +601,11 @@ $(function() {
 	        <td class="cellitem">Next Due Date</td>
 
 	        </tr>
-	            <tr id="{# class.id #}" class="rowitem">
-	        	<td class="cellitem">{# class.id #}</td>
-	        	<td class="cellitem">{# class.code #}</td>
-	        	<td class="cellitem">{# class.classid.description #}</td>
-	        	<td class="cellitem">{# class.startdate #}</td>
+	            <tr id="{{ class.id }}" class="rowitem">
+	        	<td class="cellitem">{{ class.id }}</td>
+	        	<td class="cellitem">{{ class.code }}</td>
+	        	<td class="cellitem">{{ class.classid.description }}</td>
+	        	<td class="cellitem">{{ class.startdate }}</td>
 
 	        	</tr>
 	        </table>
@@ -493,6 +614,68 @@ $(function() {
 	      	<div class="modal-footer">
 	      	  <input type="reset" class="btn btn-default" data-dismiss="modal" value="Close"/>
 	      	</div>
+	      </div>
+	    </div><!-- /.modal-content --*>
+	  </div><!-- /.modal-dialog --*>
+	</div><!-- /.modal --*>-->
+	
+	<div class="modal fade modal-wide" id="lesson_modal" tabindex="-1" role="dialog" aria-labelledby="newLessonLabel" aria-hidden="true" data-dismiss="false">
+	  <div class="modal-dialog">
+	    <div class="modal-content">
+	      <div class="modal-header teacher-header">
+	        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+	        <h4 class="modal-title">New Lesson</h4>
+	      </div>
+	      <div class="modal-body">
+	      	<div class="row">
+			      <form class="form" role="form" id="lesson_form">
+			      	<div class="col-lg-6" style="border-right: 1px solid #ddd;">
+			      		<div class="form-group">
+			      			<label for="lesson_name">Name: </label>
+			      			<input type="text" name="lesson_name" id="lesson_name" class="form-control" />
+			      		</div>
+			      		
+			      		<div class="form-group">
+			      			<label for="uploadFile">Upload Media</label>
+			      			<div class="fileUpload btn btn-warning form-control">
+			      			  <input id="uploadFile" placeholder="Choose File" disabled="disabled" />
+			      			  <span>Add Media</span>
+			      			  <input id="uploadBtn" type="file" class="upload" />
+			      			</div>
+			      		</div>
+			      		
+			      		<div class="form-group">
+			      			<label for="lesson_text">Add Text</label>
+			      			<textarea type="text" name="lesson_text" class="form-control"></textarea>
+			      		</div>
+			      	</div> <!-- End col-6 -->
+			      	
+			      	<div class="col-lg-6">
+			      		<label for="lesson_quiz">Add Quiz</label>
+			      		<div class="form-group">
+			      			<label for="question">Question:</label>
+			      			<input type="text" name="question" id="question" class="form-control" placeholder="Type Question Here"/>
+			      		</div>
+			      		<div class="new-lesson-question"></div>
+			      		<label for="isMultiple">
+			      			<input type="checkbox" name="isMultiple" id="isMultiple" value="Is this multiple choice?" checked="unchecked"/> Is this multiple choice?
+			      		</label>
+			      		<button class="btn btn-info btn-small pull-right add-question" role="button" id="btnAddLessonQuestion"><i class="fa fa-plus"></i></button>
+			      	</div>
+			      	
+			      	<div class="col-lg-6">
+			      		<div class="form-group">
+			      			<ul id="mcAnswers" class="hide">
+			      				<li><input type="text" name="mcAnswer" id="mcAnswer" class="form-control" placeholder="Answer Goes Here" /></li>
+			      			</ul>
+			      		</div>
+			      	</div>
+			      </form>
+	      	</div>
+	      </div>
+	      <div class="modal-footer">
+	        <input type="reset" class="btn btn-default" data-dismiss="modal" value="Close"/>
+	        <input type="submit" class="btn btn-primary" value="Save Lesson" id="lesson-submit"/>
 	      </div>
 	    </div><!-- /.modal-content -->
 	  </div><!-- /.modal-dialog -->
@@ -617,78 +800,132 @@ $(function() {
 	  </div><!-- /.modal-dialog -->
 	</div><!-- /.modal -->
 	{% include "tsweb/main/editprofile.html" %}	
+	<div class="lesson" id="lessonSmall" style="display: none;">
+	
+		<div class="lesson-body">
+			<div class="lesson-section">
+				<div class="lesson-section-header lesson-header-small">{# lesson_name #}
+					<button type="button" class="close" aria-hidden="true">&times;</button>
+				</div>
+				<div class="lesson-section-body">
+					<form class="form form-inline" role="form">
+						<div class="section-one">
+							<select class="form-control">
+								<option>Choose Unit</option>
+							</select>
+							<select class="form-control">
+								<option>Lesson</option>
+							</select>
+							<select class="form-control">
+								<option>Activity</option>
+							</select>
+						</div><!-- /.section-one -->
+						
+						<div class="section-two ">
+							<legend>Explanation:</legend>
+							<p>{# question #}</p>
+							
+							<legend>Explanation:</legend>
+							<p>{# answer #}</p>
+						</div>
+						
+						<div class="section-three text-center">
+							<div class="row form-group">
+								<button class="btn btn-danger" role="button" id="pfbBtn">Play From Beginning <i class="fa fa-undo"></i></button>
+							</div>
+							<div class="row form-group">
+								<button class="btn btn-success" role="button" id="answerBtn">Answer</button>
+								<button class="btn btn-info" role="button">Chronology: {# #}</button>
+							</div>
+							<div class="row form-group">
+								<button class="btn btn-warning" role="button">Type: Dynamic</button>
+							</div>
+							<div class="row form-group">
+								<button class="btn btn-default" role="button"><i class="fa fa-angle-left"></i> Back</button>
+								<button class="btn btn-default" role="button">Next <i class="fa fa-angle-right"></i></button>
+								<button class="btn btn-primary" type="submit" role="button">Submit</button>
+							</div>
+							<!--<button class="btn btn-info" role="button">Record Answer</button>-->
+						</div>
+						
+					</form>
+				</div>
+			</div>
+		</div>
+		
+	</div> <!-- /. lesson small -->
 	
 	<script>
+	
+		document.getElementById("uploadBtn").onchange = function () {
+		  document.getElementById("uploadFile").value = this.value;
+		};
+		
 		$('#btnAddGoal').click(function(event){
-			$('.new-goal').append('<div class="ngText"><input type="text" name="ele_goal" class="form-control" id="nGoal" /><i class="fa fa-minus-square-o minus fa-lg pull-right"></i></div>');
+			$('.new-goal').append('<div class="ngText"><input type="text" name="ele_goal" class="form-control" id="nGoal" /><i class="fa fa-minus-square-o minus fa-lg"></i></div>');
 			
 			$('.minus').click(function () {
-				$('.new-goal > .ngText').hide($('.ngText').this);
+				$('.ngText').last().remove();
 			});
 			event.preventDefault();
 		});
 		$('#btnAddUnderstanding').click(function(event){
-			$('.new-understanding').append('<div class="ngText"><input type="text" name="ele_goal" class="form-control" id="nUnderstanding" /><i class="fa fa-minus-square-o minus fa-lg pull-right"></i></div>');
+			$('.new-understanding').append('<div class="ngText"><input type="text" name="ele_goal" class="form-control" id="nUnderstanding" /><i class="fa fa-minus-square-o minus fa-lg"></i></div>');
 			
 			$('.minus').click(function () {
-				$('.ngText').each(function () {
-					$('.ngText',this).hide();
-				});
+				$('.ngText').last().remove();
 			});
 			event.preventDefault();
 		});$('#btnAddQuestion').click(function(event){
-			$('.new-question').append('<div class="ngText"><input type="text" name="ele_goal" class="form-control" id="nQuestion" /><i class="fa fa-minus-square-o minus fa-lg pull-right"></i></div>');
+			$('.new-question').append('<div class="ngText"><input type="text" name="ele_goal" class="form-control" id="nQuestion" /><i class="fa fa-minus-square-o minus fa-lg"></i></div>');
 			
 			$('.minus').click(function () {
-				$('.ngText').each(function () {
-					$('.ngText', this).hide();
-				});
+				$('.ngText').last().remove();
 			});
 			event.preventDefault();
 		});
 		$('#btnAddKnow').click(function(event){
-			$('.new-know').append('<div class="ngText"><input type="text" name="ele_goal" class="form-control" id="nKnow" /><i class="fa fa-minus-square-o minus fa-lg pull-right"></i></div>');
+			$('.new-know').append('<div class="ngText"><input type="text" name="ele_goal" class="form-control" id="nKnow" /><i class="fa fa-minus-square-o minus fa-lg"></i></div>');
 			
 			$('.minus').click(function () {
-				$('.ngText').each(function () {
-					$('.ngText', this).hide();
-				});
+				$('.ngText').last().remove();
 			});
 			event.preventDefault();
 		});
 		$('#btnAddAble').click(function(event){
-			$('.new-able').append('<div class="ngText"><input type="text" name="ele_goal" class="form-control" id="nAble" /><i class="fa fa-minus-square-o minus fa-lg pull-right"></i></div>');
+			$('.new-able').append('<div class="ngText"><input type="text" name="ele_goal" class="form-control" id="nAble" /><i class="fa fa-minus-square-o minus fa-lg"></i></div>');
 			
 			$('.minus').click(function () {
-				$('.ngText').each(function () {
-					$('.ngText', this).hide();
-				});
+				$('.ngText').last().remove();
 			});
 			event.preventDefault();
 		});
 		$('#btnAddPerformance').click(function(event){
-			$('.new-performance').append('<div class="ngText"><input type="text" name="ele_goal" class="form-control" id="nEvidence" /><i class="fa fa-minus-square-o minus fa-lg pull-right"></i><button class="btn btn-small" data-toggle="modal" data-target="#new_rubric_modal">Add Rubric</button> <button class="btn btn-small" data-toggle="modal" data-target="#new_assignment_modal">Add Assignment</button> <button class="btn btn-small" data-toggle="modal" data-target="#assignment_list_modal">Choose Assignment</button></div>');
+			$('.new-performance').append('<div class="ngText"><input type="text" name="ele_goal" class="form-control" id="nEvidence" /><i class="fa fa-minus-square-o minus fa-lg"></i><button class="btn btn-small" data-toggle="modal" data-target="#new_rubric_modal">Add Rubric</button> <button class="btn btn-small" data-toggle="modal" data-target="#new_assignment_modal">Add Assignment</button> <button class="btn btn-small" data-toggle="modal" data-target="#assignment_list_modal">Choose Assignment</button></div>');
 			
 			$('.minus').click(function () {
-				$('.ngText').each(function () {
-					$('.ngText').hide();
-				});
+				$('.ngText').last().remove();
 			});
 			event.preventDefault();
 		});
 		$('#btnAddEvidence').click(function(event){
-			$('.new-evidence').append('<div class="ngText"><input type="text" name="ele_goal" class="form-control" id="nEvidence" /><i class="fa fa-minus-square-o minus fa-lg pull-right"></i><button class="btn btn-small" data-toggle="modal" data-target="#lesson_modal">Add Lesson</button> <button class="btn btn-small" data-toggle="modal" data-target="#criteria_modal">Add Criteria</button></div>');
+			$('.new-evidence').append('<div class="ngText"><input type="text" name="ele_goal" class="form-control" id="nEvidence" /><i class="fa fa-minus-square-o minus fa-lg"></i><button class="btn btn-small" data-toggle="modal" data-target="#lesson_modal">Create Lesson</button> <button class="btn btn-small" data-toggle="modal" data-target="#criteria_modal">Add Criteria</button></div>');
 			
 			$('.minus').click(function () {
-				$('.ngText').each(function () {
-					$('.ngText').hide();
-				});
+				$('.ngText').last().remove();
+			});
+			event.preventDefault();
+		});
+		$('#btnAddLessonQuestion').click(function (event) {
+			$('.new-lesson-question').append('<div class="ngText"><input type="text" name="ele_goal" class="form-control" id="nQuestion" /><i class="fa fa-minus-square-o minus fa-lg"></i></div>');
+			
+			$('.minus').click(function () {
+				$('.ngText').last().remove();
 			});
 			event.preventDefault();
 		});
 		
 		
 	</script>
-	
 </body>
 </html>

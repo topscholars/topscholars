@@ -736,7 +736,7 @@ function EDITTABLE(){
 		
 		$('#btnSave').click(function() {
 			//thisClass.showSubmitDialog(true);
-			var essay = $("#redactor_content").text();
+			var essay = $("#redactor_content").html();
 			var submissionid = $("#ele_submissionid").val();
 			var submissionversionid = $('#ele_submissionversionid').val();
 			odata = {'class' :  evalClass,

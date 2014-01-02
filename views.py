@@ -15,6 +15,7 @@ from ajax.submissionreviewajax import *
 from ajax.submissionreviewstudentajax import *
 from ajax.loginajax import *
 from ajax.userajax import *
+from ajax.tagajax import *
 
 #Login View
 def login(request):

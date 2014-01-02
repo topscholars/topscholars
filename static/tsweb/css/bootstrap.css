@@ -769,6 +769,9 @@ pre code {
     margin-right: -15px;
     margin-left: -15px;
   }
+  .logo{
+  	font-size: .7em;
+  }
 }
 
 .row .row {
@@ -1001,9 +1004,18 @@ pre code {
   .col-pull-11 {
     right: 91.66666666666666%;
   }
+  
+  .logo{
+  	/*font-size: 1em!important;*/
+  	margin-left: -40px!important;
+  }
+  .s-name{
+  	/*right: -40px!important;*/
+  }
 }
 
 @media (min-width: 992px) {
+	
   .container {
     max-width: 940px;
   }
@@ -1648,6 +1660,28 @@ select.input-small {
 .input-group-btn > .btn:hover,
 .input-group-btn > .btn:active {
   z-index: 2;
+}
+.input-group-sm > .form-control,
+.input-group-sm > .input-group-addon,
+.input-group-sm > .input-group-btn > .btn {
+  height: 30px;
+  padding: 5px 10px;
+  font-size: 12px;
+  line-height: 1.5;
+  border-radius: 3px;
+}
+
+select.input-group-sm > .form-control,
+select.input-group-sm > .input-group-addon,
+select.input-group-sm > .input-group-btn > .btn {
+  height: 30px;
+  line-height: 30px;
+}
+
+textarea.input-group-sm > .form-control,
+textarea.input-group-sm > .input-group-addon,
+textarea.input-group-sm > .input-group-btn > .btn {
+  height: auto;
 }
 
 .form-inline .form-control,

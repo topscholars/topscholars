@@ -169,13 +169,12 @@ button:focus{
 .popover{
 	background-color: #2d3339!important;
 	color: #ffffff!important;
-	font-weight: bold!important;
+/*	font-weight: bold!important;*/
 	z-index: 99!important;
 	position: absolute!important;
 }
-.popover.arrow{
-	background-color: #2d3339!important;
-	z-index: 9999!important;
+.popover .arrow{
+	display: none!important;
 }
 table tr td:hover{
 	cursor: pointer;
@@ -314,7 +313,7 @@ form{
 }
 
 .block-thin{
-	width: 320px;
+	width: 100%;
 	box-shadow: none!important;
 }
 .block-wide{
@@ -386,8 +385,24 @@ form{
 .tag a:hover{
 	text-shadow: none;
 }
+.tag-list-dropdown{
+	position: absolute;
+	padding: 5px;
+	background-color: rgba(100, 100, 100, .75);
+	border-radius: 3px;
+}
+.tag-list-dropdown ul{
+	list-style: none;
+	padding: 5px;
+}
+.tag-list-dropdown ul li a{
+	color: #ffffff;
+}
+.tag-list-dropdown #taglist{
+	background-color: rgba(80, 80, 80, .75);
+	border-radius: 3px;
+}
 .block-list li{
-	
 	width: 100%!;
 }
 .block-list li a{
@@ -465,7 +480,7 @@ form{
 	min-height: 85% !important;
 }
 #lessonSmall{
-	height: 35% !important;
+	height: 40% !important;
 }
 .assignment-edit-section .block-wide textarea{
 	width: 100%;
@@ -476,7 +491,7 @@ form{
 }
 
 .lesson-section-header{
-	background: #d45;
+	background: #d44d5c;
 	color: #fff;
 	text-align: center;
 	padding: 5px;
@@ -486,7 +501,6 @@ form{
 	background: #417c91;
 }
 .lesson-section-body{
-	margin-top: 5px;
 	overflow: scroll;
 	background: #fff;
 	padding: 5px;
@@ -521,6 +535,28 @@ form{
 	width: 100%;
 	margin-bottom: 10px!important;
 }
+.section-one, .section-two, .section-three{
+	width: 33%;
+	display: inline;
+	float: left;
+	padding: 5px;
+}
+.section-wide{
+	width: 100%;
+	padding: 5px;
+}
+.section-one select{
+	margin-bottom: 5px;
+	margin-top: 5px;
+}
+.section-two{
+	border: 2px dashed #999;
+	border-radius: 3px;
+}
+.section-three{
+	padding-left: 20px;
+}
+
 /*.lesson-section .lesson-body .lesson-section*/
 
 
@@ -536,6 +572,9 @@ form{
 	bottom: 100px;
 	right: 110px;
 }
+#saveAssignment, #exitBtn{
+	bottom: 20px!important;
+}
 .modal-header.teacher-header{
 	background-color: #46b8da!important;
 }
@@ -549,7 +588,14 @@ form{
 }
 .modal-wide .modal-dialog{
 	width: 60%;
-	left: 40%;
+	position: relative;
+	margin: 10px auto;
+	left: 0;
+	right: 0;
+	/*left: 40%;*/
+}
+.btn-edit{
+	margin-right: 50px;
 }
 .rubric-categories{
 	display: inline-block;
@@ -785,6 +831,7 @@ form{
 #uploadFile{
 	border: none;
 	border-radius: 2px;
+	width: 70%;
 }
 .add-tag{
 	margin-top: 10px !important;
@@ -822,7 +869,66 @@ form{
 #created_rubric .modal-footer{
 	border: none;
 }
-.error{
-	color:red;
+#commentSection textarea{
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	padding: 5px;
+}
+#commentSection textarea:focus{
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	padding: 5px;
+}
+#lesson_form .fa-minus-square-o{
+	position: absolute;
+	right: 20px;
+	margin-top: -25px;
+	color: #999;
+}
+#new_unit_form .fa-minus-square-o{
+	position: absolute;
+	right: 40px;
+	margin-top: -35px;
+	color: #999;
+}
+.fa-minus-square-o:hover{
+	cursor: pointer;
+}
+#new_unit_form input[type='text']{
+	margin-bottom: 10px;
+	margin-top: 5px;
+}
+#impact_list:hover, 
+#quality_list:hover, 
+#content_list:hover, 
+#process_list:hover{
+	cursor: pointer;
+}
+#criteria_modal ul{
+	list-style: none;
+}
+#sortable{
+	margin-left: -40px;
+}
+#sortable:hover{
+	cursor: pointer;
+}
+.fa-sort{
+	margin-top: 3px;
+}
+#mcAnswers li{
+	margin-left: -40px;
+}
+.ui-sortable-helper .panel-heading{
+	background: #a2db8b;
 }
 /*End*/
+
+
+@media only screen 
+and (min-device-width : 768px) 
+and (max-device-width : 1024px)  {
+	#search-form{
+		display: none!important;
+	}
+}

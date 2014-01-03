@@ -49,7 +49,7 @@
 				</li>
 			</ul>
 			
-			<form class="navbar-form navbar-left" role="search" id="search-form" method="" action="null">
+			<form class="navbar-form navbar-left hidden-md" role="search" id="search-form" method="" action="null">
 				<div class="input-group col-lg-3 col-offset-6 col-sm-4">
 					<input type="text" class="form-control" id="txtSearch" style="display: none;">
 			    <span class="input-group-btn">
@@ -286,9 +286,9 @@
 			        	    <div id="collapseSix" class="panel-collapse collapse in">
 			        	      <div class="panel-body">
 			        		      <input type="text" name="ele_performance" class="form-control" id="ele_performance" />
-			        		      <button class="btn btn-small" data-toggle="modal" data-target="#new_rubric_modal">Add Rubric</button>
-			        	        <button class="btn btn-small" data-toggle="modal" data-target="#new_assignment_modal">Add Assignment</button>
-			        	        <button class="btn btn-small" data-toggle="modal" data-target="#assignment_list_modal">Choose Assignment</button>
+			        		      <button class="btn btn-small btn-default" data-toggle="modal" data-target="#new_rubric_modal">Add Rubric</button>
+			        	        <button class="btn btn-small btn-default" data-toggle="modal" data-target="#new_assignment_modal">Add Assignment</button>
+			        	        <button class="btn btn-small btn-default" data-toggle="modal" data-target="#assignment_list_modal">Choose Assignment</button>
 			        	        
 			        	        <div class="new-performance"></div>
 			        	        
@@ -310,8 +310,8 @@
 			        	    <div id="collapseSeven" class="panel-collapse collapse">
 			        	      <div class="panel-body">
 		        	          <input type="text" name="ele_evidence" class="form-control" id="ele_evidence"/>
-			        	        <button class="btn btn-small" data-toggle="modal" data-target="#lesson_modal">Create Lesson</button>
-			        	        <button class="btn btn-small" data-toggle="modal" data-target="#criteria_modal">Add Criteria</button>
+			        	        <button class="btn btn-small btn-default" data-toggle="modal" data-target="#lesson_modal">Create Lesson</button>
+			        	        <button class="btn btn-small btn-default" data-toggle="modal" data-target="#criteria_modal">Add Criteria</button>
 			        	        
 			        	        <div class="new-evidence"></div>
 			        	        
@@ -325,70 +325,36 @@
 			        </div> <!-- /.col-lg-12 STAGE TWO-->
 			        
 			        <div class="col-lg-12" id="stage_three" style="display: none;">
-			        	<p>You may reorder your activities by clicking an dragging to the position most desirable</p>
+			        	<p class="text-muted">You may reorder your activities &amp; lessons by clicking an dragging to the position most desirable</p>
 			        	
 			        	<ul id="sortable" class="panel-group">
 			        	  <li class="panel panel-success">
 			        	  	<div class="panel-heading">
 			        	  		<div class="panel-title">
-			        	  			<a data-toggle="collapse" data-parent="sortable" href="#collapseEight">{% activity_title %}</a>
+			        	  			<a data-toggle="collapse" data-parent="sortable" href="#collapseEight" class="lesson-title">{% lesson_title %}</a>
 			        	  			<i class="fa fa-sort pull-right"></i>
 			        	  		</div>
 			        	  	</div>
 			        	  	<div id="collapseEight" class="panel-collapse collapse">
 			        	  		<div class="panel-body">
-			        	  			<div class="row">
-				        	  			<div class="col-lg-4">
-					        	  			<label for="">Select Grade Type</label>
-					        	  			<div class="radio">
-					        	  			  <label>
-					        	  			    <input type="radio" name="optionsGrade" id="optionsGradeAuto" value="Grade Auto" checked>
-					        	  			    Grade Auto
-					        	  			  </label>
-					        	  			</div>
-					        	  			<div class="radio">
-					        	  			  <label>
-					        	  			    <input type="radio" name="optionsGrade" id="optionsGradeManual" value="Grade Manual">
-					        	  			    Grade Manual
-					        	  			  </label>
-					        	  			</div>
-					        	  			<a href="#" class="btn btn-info btn-small" id="openLesson">Show Lesson</a>
-					        	  		</div> <!-- /.col-lg-4-->
-					        	  		
-					        	  		<div class="col-lg-8">
-					        	  			<label for="activity-details">Details</label>
-					        	  			<p id="activity-details">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum</p>
-					        	  		</div> <!-- /.col-lg-8 -->
-					        	  	</div> <!-- /.row-->
+		        	  				<ul id="sortableActivities" style="list-style: none;">
+		        	  					<li class="well">
+	        	  							 <input type="text" class="form-control" placeholder="Add Activity Here" value="{% activity_title %}">
+	        	  							 <p>Grade Type</p>
+        	  							   <div class="onoffswitch">
+        	  							     <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="myonoffswitch" checked>
+        	  							     <label class="onoffswitch-label" for="myonoffswitch">
+        	  							         <div class="onoffswitch-inner"></div>
+        	  							         <div class="onoffswitch-switch"></div>
+        	  							     </label>
+        	  							   </div> 
+        	  							   <a href="submissionReview.html" class="btn btn-small btn-success pull-right">Go to activity <i class="fa fa-arrow-right"></i></a>
+		        	  					</li>
+		        	  				
+		        	  				</ul>
 			        	  		</div>
 			        	  	</div>
 			        	 	</li>
-			        	 	
-			        	 	<li class="panel panel-success">
-			        	 		<div class="panel-heading">
-			        	 			<div class="panel-title">
-			        	 				<a data-toggle="collapse" data-parent="sortable" href="#collapseNine">{% activity_title1 %}</a>
-			        	 				<i class="fa fa-sort pull-right"></i>
-			        	 			</div>
-			        	 		</div>
-			        	 		<div id="collapseNine" class="panel-collapse collapse">
-			        	 			<div class="panel-body">
-			        	 				<label for="">Select Grade Type</label>
-			        	 				<div class="radio">
-			        	 				  <label>
-			        	 				    <input type="radio" name="optionsGrade2" id="optionsGradeAuto" value="Grade Auto" checked>
-			        	 				    Grade Auto
-			        	 				  </label>
-			        	 				</div>
-			        	 				<div class="radio">
-			        	 				  <label>
-			        	 				    <input type="radio" name="optionsGrade2" id="optionsGradeManual" value="Grade Manual">
-			        	 				    Grade Manual
-			        	 				  </label>
-			        	 				</div>
-			        	 			</div>
-			        	 		</div>
-			        	 		</li>
 			        	 	
 			        	</ul>
 			        </div> <!-- /.col-lg-12 STAGE THREE -->
@@ -472,13 +438,14 @@
 			
 		});
 		$("#sortable").sortable();
+		$("#sortableActivities").sortable();
 		
-		$('#openLesson').click(function () {
+		$('.lesson-title').click(function () {
 			openDynamicLesson();
 		});
 		
 		function openDynamicLesson() {
-			$('#lessonSmall').toggle(1000, 'easeOutElastic');
+			$('#lessonSmall').toggle(1000, 'easeOutExpo');
 			$('#lessonSmall').css('display', 'block').css('z-index', '99999');	
 		}
 		$('#lessonSmall .close').click(function () {
@@ -689,43 +656,6 @@
 	    </div><!-- /.modal-content -->
 	  </div><!-- /.modal-dialog -->
 	</div><!-- /.modal -->
-	
-	<!--Criteria List Modal Form--> 
-	<!--<div class="modal fade" id="lesson_modal" tabindex="-1" role="dialog" aria-labelledby="lessonLabel" aria-hidden="true" data-dismiss="false">
-	  <div class="modal-dialog">
-	    <div class="modal-content">
-	      <div class="modal-header teacher-header">
-	        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-	        <h4 class="modal-title">Choose Lesson</h4>
-	      </div>
-	      <div class="modal-body">
-	        <label>Select a lesson from the list below.</label>
-	        <div class="responsive-table table-condensed">
-	        <table class="table table-bordered ">
-	        <tr class="rowheader">
-	        <td class="cellitem">Id</td>
-	        <td class="cellitem">Class Name</td>
-	        <td class="cellitem">Description</td>
-	        <td class="cellitem">Next Due Date</td>
-
-	        </tr>
-	            <tr id="{{ class.id }}" class="rowitem">
-	        	<td class="cellitem">{{ class.id }}</td>
-	        	<td class="cellitem">{{ class.code }}</td>
-	        	<td class="cellitem">{{ class.classid.description }}</td>
-	        	<td class="cellitem">{{ class.startdate }}</td>
-
-	        	</tr>
-	        </table>
-	        </div>
-	  				        	
-	      	<div class="modal-footer">
-	      	  <input type="reset" class="btn btn-default" data-dismiss="modal" value="Close"/>
-	      	</div>
-	      </div>
-	    </div><!-- /.modal-content --*>
-	  </div><!-- /.modal-dialog --*>
-	</div><!-- /.modal --*>-->
 	
 	<div class="modal fade modal-wide" id="lesson_modal" tabindex="-1" role="dialog" aria-labelledby="newLessonLabel" aria-hidden="true" data-dismiss="false">
 	  <div class="modal-dialog">
@@ -946,7 +876,7 @@
 								<button class="btn btn-info" role="button">Chronology: {{ }}</button>
 							</div>
 							<div class="row form-group">
-								<button class="btn btn-warning" role="button">Type: Dynamic</button>
+								<button class="btn btn-warning" role="button">Type: {% auto-grade %}</button>
 							</div>
 							<div class="row form-group">
 								<button class="btn btn-default" role="button"><i class="fa fa-angle-left"></i> Back</button>
@@ -1009,7 +939,7 @@
 			event.preventDefault();
 		});
 		$('#btnAddPerformance').click(function(event){
-			$('.new-performance').append('<div class="ngText"><input type="text" name="ele_goal" class="form-control" id="nEvidence" /><i class="fa fa-minus-square-o minus fa-lg"></i><button class="btn btn-small" data-toggle="modal" data-target="#new_rubric_modal">Add Rubric</button> <button class="btn btn-small" data-toggle="modal" data-target="#new_assignment_modal">Add Assignment</button> <button class="btn btn-small" data-toggle="modal" data-target="#assignment_list_modal">Choose Assignment</button></div>');
+			$('.new-performance').append('<div class="ngText"><input type="text" name="ele_goal" class="form-control" id="nEvidence" /><i class="fa fa-minus-square-o minus fa-lg"></i><button class="btn btn-small btn-default" data-toggle="modal" data-target="#new_rubric_modal">Add Rubric</button> <button class="btn btn-small btn-default" data-toggle="modal" data-target="#new_assignment_modal">Add Assignment</button> <button class="btn btn-small" data-toggle="modal" data-target="#assignment_list_modal">Choose Assignment</button></div>');
 			
 			$('.minus').click(function () {
 				$('.ngText').last().remove();
@@ -1017,7 +947,7 @@
 			event.preventDefault();
 		});
 		$('#btnAddEvidence').click(function(event){
-			$('.new-evidence').append('<div class="ngText"><input type="text" name="ele_goal" class="form-control" id="nEvidence" /><i class="fa fa-minus-square-o minus fa-lg"></i><button class="btn btn-small" data-toggle="modal" data-target="#lesson_modal">Create Lesson</button> <button class="btn btn-small" data-toggle="modal" data-target="#criteria_modal">Add Criteria</button></div>');
+			$('.new-evidence').append('<div class="ngText"><input type="text" name="ele_goal" class="form-control" id="nEvidence" /><i class="fa fa-minus-square-o minus fa-lg"></i><button class="btn btn-small btn-default" data-toggle="modal" data-target="#lesson_modal">Create Lesson</button> <button class="btn btn-small btn-default" data-toggle="modal" data-target="#criteria_modal">Add Criteria</button></div>');
 			
 			$('.minus').click(function () {
 				$('.ngText').last().remove();

@@ -869,172 +869,75 @@ function openHighlightDialog(highlightid){
 	</div> <!-- end page container -->
 	
 	
-<!--<input type="hidden" id="ele_submissionid" value="{{ id }}">
-<input type="hidden" id="ele_submissionversionid">
-<div id="diveditbg" style="background-color:gray;z-index:1;width:100%;height:100%;position:absolute;opacity:0.4;"></div>
-<div id="submitpopup" style="z-index:2;width:500px;position:absolute;background-color:white;margin-top:10%;margin-left:35%;padding:10px;display:none;">
-<table style="width:100%;">
-<tr>
-	<td>Stage :</td>
-	<td><select id="submit_stage"></select></td>	
-</tr>
-<tr>
-	<td>Comment :</td>
-	<td>
-		<textarea id="submit_comment"></textarea>
-	</td>
-</tr>
-<tr>
-	<td>Progress :</td>
-	<td><input type="text" id="submit_progress"></td>
-</tr>
-<tr id="editSubmit">
-	<td colspan="2" style="text-align:center;">
-		<input id="btnsavesubmit" type="button" class="button" style="width:80px;height:26px;" value="Save">&nbsp;
-		<input id="btncancelsubmit" type="button" class="button" style="width:80px;height:26px;" value="Cancel">
-	</td>
-</tr>
-</table>
-</div>
-<div id="divedithighlight" style="z-index:2;width:500px;position:absolute;background-color:white;margin-top:10%;margin-left:35%;padding:10px;">
-	<input id="ele_highlightid" type="hidden">
-	<input id="ele_highlighttext" type="hidden">
-	<table style="width:100%;">
-		<tr>
-			<td>Tag:</td>
-			<td id="tdtag">
-				<input id="ele_highlightTag" type="text" name="tag[]" value="" class="tag" style="width:420px;"/>
-			</td>
-			<td id="tdtagdisplay">
-				<label id="ele_highlightTagDisplay"></label>
-			</td>
-		</tr>
-		<tr class="editHighlightSuggest">
-			<td>Suggest tags:</td>
-			<td>
-				<select id="ele_suggestTags" size="4"></select>
-			</td>
-		</tr>
-		<tr>
-			<td style="vertical-align:top;">Comment:</td>
-			<td><textarea id="ele_highlightComment" style="width:420px;height:100px;resize:none;"></textarea></td>
-		</tr>
-		<tr id="viewhighlight">
-			<td colspan="2" style="text-align:center;">
-				<input id="btnedithighlight" type="button" class="button" style="width:80px;height:26px;" value="Edit">&nbsp;
-				<input id="btncloseedithighlight" type="button" class="button" style="width:80px;height:26px;" value="Close">
-			</td>
-		</tr>
-		<tr id="edithighlight">
-			<td colspan="2" style="text-align:center;">
-				<input id="btnsavehighlight" type="button" class="button" style="width:80px;height:26px;" value="Save">&nbsp;
-				<input id="btndeletehighlight" type="button" class="button" style="width:80px;height:26px;" value="Delete">&nbsp;
-				<input id="btncancelhighlight" type="button" class="button" style="width:80px;height:26px;" value="Cancel">
-			</td>
-		</tr>
-	</table>
-</div>
-<div class="placeholder">
-<div class="header">
-<div class="headertext">
-<h1>Application Name - Submission Review</h1>
-</div>
-<div class="headerbutton">
-<a href="{% url 'tsweb:logout' %}"><img src="{% static 'tsweb/image/logout.png' %}"/></a>
-<a href=""><img src="{% static 'tsweb/image/userdetails.png' %}" /></a>
-<a href=""><img src="{% static 'tsweb/image/username.png' %}" style="margin-top:12px;" /></a>
-</div>
-</div>
-<div style="width:130px;position:relative;float:left;top:40px;margin-left:10px;text-align:center;">
-<img src="{% static 'tsweb/image/anonymous.png' %}" />
-</div>
-<div style="width:540px;position:relative;float:left;top:40px;margin-left:40px;padding-bottom:52px;">
-<div style="border:1px #666666 solid;height:63px;">
-<span style="font-size:34px;line-height:63px;margin-left:10px;float:left;position:relative;width:480px;">{{ studentname }}</span>
-<img src="{% static 'tsweb/image/downarrow-gray.png' %}" style="float:right;position:relative;top:20px;right:20px;" />
-</div>
-<div style="margin-top:10px;">
-<select id="ele_submissionversionversion" class="selection" style="position:relative;float:left;">
-{% for row in submissionversionlist %}
-	<option value="{{ row.version }}">Revision {{ row.version }}</option>
-{% endfor %}
-</select>
-<input type="button" class="button" style="width:80px;height:26px;position:relative;float:right;" value="Return" id="btnReturn">
-<input type="button" class="button" style="width:80px;height:26px;position:relative;float:right;margin-right:10px;" value="Submit" id="btnSubmit">
-</div>
-<div class="clear"></div>
-<div style="margin-top:10px;">
-<div id="ele_submissionversionessay" style="width:536px;height:540px;border:1px #B9B9B9 solid;overflow-y:scroll;"></div>
-</div>
-</div>
-<div style="width:270px;position:relative;float:left;top:40px;margin-left:20px;">
-<span style="text-decoration:underline;font-weight:bold;">Assigment Details</span>
-<table>
-<tr>
-<td style="width:100px;">Name:</td>
-<td><span id="ele_assignmentname"></span>&nbsp;r #: <span id="ele_submissionversionversion"></span></td>
-</tr>
-<tr>
-<td>Description:</td>
-<td>&nbsp;</td>
-</tr>
-<tr>
-<td colspan="2">
-<textarea id="ele_assignmentdesc" style="width:257px;height:58px;color:#282828;background-color:#E2E2E2;border:0px;resize:none;" readonly="readonly"></textarea>
-</td>
-</tr>
-<tr>
-<td>Max Words:</td>
-<td><span id="ele_assignmentmaxword"></span></td>
-</tr>
-<!--<tr>
-<td>Category:</td>
-<td>&nbsp;Homework</td>
-</tr>
---*>
-<tr>
-<td>Grading Criteria:</td>
-<td><span id="ele_assignmentrubric"></span></td>
-</tr>
-<tr>
-<td>Due Date:</td>
-<td><span id="ele_submissionduedate"></span></td>
-</tr>
-<tr>
-<td>Completion %:</td>
-<td><div id="progressbar" style="height:12px;width:144px;"></div></td>
-</tr>
-</table>
-<span style="text-decoration:underline;font-weight:bold;">Comment</span><br/>
-<textarea id="ele_submissioncomment" style="width:264px;height:98px;background-color:#E2E2E2;margin-top:5px;resize:none;"></textarea>
-<span style="text-decoration:underline;font-weight:bold;">Tagging</span><br/>
-<style>
-#tagBox { 
-	background-color:#575454;
- 	text-align:center;
- 	padding:5px;
- 	overflow:auto;
- 	font-size:70%;
- 	font-family:arial;
-}
-#tagBox h2 { 
-	color:#ffffff; 
-	font-size:2.5em; 
-	margin:0 0 10px -150px; 
-}
-#tagList { margin:0; padding:0; }
-#tagList li { list-style-type:none; float:left; margin:0 10px; height:35px; }
-#tagList li a { text-decoration:none; color:#ffffff; }
-#tagList li a:hover { text-decoration:underline; }
-</style>
-<div id="tagBox"></div>
-<span style="text-decoration:underline;font-weight:bold;">Tag Comment</span><br/>
-<textarea id="commentArea" style="width:264px;height:98px;background-color:#E2E2E2;margin-top:5px;resize:none;"></textarea>
-</div>
-<div class="clear" style="height:52px;position:relative;margin-top:716px;background-color:#555555;"></div>
-</div>-->
-
+	<div class="lesson" id="lessonSmall" style="display: none;">
 	
-
+		<div class="lesson-body">
+			<div class="lesson-section">
+				<div class="lesson-section-header lesson-header-small">{% lesson_name %}
+					<button type="button" class="close" aria-hidden="true">&times;</button>
+				</div>
+				<div class="lesson-section-body">
+					<form class="form form-inline" role="form">
+						<div class="section-one">
+							<select class="form-control">
+								<option>Choose Unit</option>
+							</select>
+							<select class="form-control">
+								<option>Lesson</option>
+							</select>
+							<select class="form-control">
+								<option>Activity</option>
+							</select>
+						</div><!-- /.section-one -->
+						
+						<div class="section-two ">
+							<legend>Explanation:</legend>
+							<p>{% question %}</p>
+							
+							<legend>Explanation:</legend>
+							<p>{% answer %}</p>
+						</div>
+						
+						<div class="section-three text-center">
+							<div class="row form-group">
+								<a href="unitlist.html" class="btn btn-danger" role="button" id="pfbBtn"><i class="fa fa-angle-left"></i> Return to Unit</a>
+							</div>
+							<div class="row form-group">
+								<button class="btn btn-success" role="button" id="answerBtn">Answer</button>
+								<button class="btn btn-info" role="button">Chronology: {{ }}</button>
+							</div>
+							<div class="row form-group">
+								<button class="btn btn-warning" role="button">Type: Dynamic</button>
+							</div>
+							<div class="row form-group">
+								<button class="btn btn-default" role="button"><i class="fa fa-angle-left"></i> Back</button>
+								<button class="btn btn-default" role="button">Next <i class="fa fa-angle-right"></i></button>
+								<button class="btn btn-primary" type="submit" role="button">Submit</button>
+							</div>
+							<!--<button class="btn btn-info" role="button">Record Answer</button>-->
+						</div>
+						
+					</form>
+				</div>
+			</div>
+		</div>
+		
+	</div> <!-- /. lesson small -->
+	<script>
+		$(window).load(function () {
+			openDynamicLesson();
+		});
+		$('#tag-details').click(function () {
+			openDynamicLesson();
+		});
+		
+		function openDynamicLesson() {
+			$('#lessonSmall').toggle(1000, 'easeOutExpo');
+			$('#lessonSmall').css('display', 'block').css('z-index', '99999');	
+		}
+		$('#lessonSmall .close').click(function () {
+			openDynamicLesson();
+		});
+	</script>
 </body>
 </html>

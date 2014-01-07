@@ -68,6 +68,7 @@ class Rubric(models.Model):
     entityid = models.IntegerField(db_column='EntityId') # Field name made lowercase.
     description = models.TextField(db_column='Description', blank=True) # Field name made lowercase.
     typeid = models.ForeignKey(Selectionlist,related_name="Rubrictoselectionlist",db_column='TypeId') # Field name made lowercase.
+    maxscalevalue = models.IntegerField(db_column='MaxScaleValue')
     createddt = models.DateTimeField(db_column='CreatedDT') # Field name made lowercase.
     createdby = models.IntegerField(db_column='CreatedBy') # Field name made lowercase.
     modifieddt = models.DateTimeField(db_column='ModifiedDT') # Field name made lowercase.
@@ -75,6 +76,15 @@ class Rubric(models.Model):
     disabled = models.IntegerField(db_column='Disabled') # Field name made lowercase.
     deleted = models.IntegerField(db_column='Deleted') # Field name made lowercase.
     clientid = models.IntegerField(db_column='ClientId') # Field name made lowercase.
+    
+    def getStudentAllClass(self):
+        stdtypeid=self.typeid
+        #cursor = connection.cursor()
+        #cursor.execute('select cs.code from studentlist as st join studentclass as sc on st.id = sc.studentid join classschedule as cs on sc.classscheduleid = cs.id where st.id = %s',[stdid])
+        #row = cursor.fetchone()
+        #row = [item[0] for item in cursor.fetchall()]
+        return stdtypeid
+    
     class Meta:
         db_table = 'rubric'
 
@@ -320,10 +330,26 @@ class Module(models.Model):
     class Meta:
         db_table = 'module'
 
+class Category(models.Model):
+    id = models.IntegerField(primary_key=True, db_column='ID') # Field name made lowercase.
+    name = models.CharField(max_length=100L, db_column='Name') # Field name made lowercase.
+    parentid = models.IntegerField(db_column='ParentId') # Field name made lowercase.
+    createddt = models.DateTimeField(db_column='CreatedDT') # Field name made lowercase.
+    createdby = models.IntegerField(db_column='CreatedBy') # Field name made lowercase.
+    modifieddt = models.DateTimeField(db_column='ModifiedDT') # Field name made lowercase.
+    modifiedby = models.IntegerField(db_column='ModifiedBy') # Field name made lowercase.
+    disabled = models.IntegerField(db_column='Disabled') # Field name made lowercase.
+    deleted = models.IntegerField(db_column='Deleted') # Field name made lowercase.
+    clientid = models.IntegerField(db_column='ClientId') # Field name made lowercase.
+    system = models.IntegerField(db_column='System') # Field name made lowercase.
+    class Meta:
+        db_table = 'Category'
+
 class Rubriccriteria(models.Model):
     id = models.IntegerField(primary_key=True, db_column='ID') # Field name made lowercase.
     rubricid = models.IntegerField(db_column='RubricId') # Field name made lowercase.
-    criteria = models.CharField(max_length=100L, db_column='Criteria') # Field name made lowercase.
+    criteria = models.TextField(max_length=100L, db_column='Criteria') # Field name made lowercase.
+    categoryid = models.ForeignKey(Category,related_name="Rubriccriteriatocategory", db_column='CategoryId') # Field name made lowercase.
     createddt = models.DateTimeField(db_column='CreatedDT') # Field name made lowercase.
     createdby = models.IntegerField(db_column='CreatedBy') # Field name made lowercase.
     modifieddt = models.DateTimeField(db_column='ModifiedDT') # Field name made lowercase.
@@ -338,6 +364,7 @@ class Rubricscale(models.Model):
     id = models.IntegerField(primary_key=True, db_column='ID') # Field name made lowercase.
     rubricid = models.IntegerField(db_column='RubricId') # Field name made lowercase.
     scale = models.CharField(max_length=100L, db_column='Scale') # Field name made lowercase.
+    scalevalue = models.IntegerField(db_column='ScaleValue') # Field name made lowercase.
     createddt = models.DateTimeField(db_column='CreatedDT') # Field name made lowercase.
     createdby = models.IntegerField(db_column='CreatedBy') # Field name made lowercase.
     modifieddt = models.DateTimeField(db_column='ModifiedDT') # Field name made lowercase.
@@ -353,10 +380,18 @@ class Rubriclink(models.Model):
     id = models.IntegerField(primary_key=True, db_column='ID') # Field name made lowercase.
     entityid = models.ForeignKey(Entity,related_name="Rubriclinktoentity", db_column='EntityId') # Field name made lowercase.
     recid = models.IntegerField(db_column='RecId') # Field name made lowercase.
-    rubiccriteriaid = models.ForeignKey(Rubriccriteria,related_name="Rubriclinktorubriccriteria",db_column='RubicCriteriaId') # Field name made lowercase.
-    rubricscaleid = models.ForeignKey(Rubricscale,related_name="Rubriclinktorubricscale",db_column='RubricScaleId') # Field name made lowercase.
+    rubricid = models.ForeignKey(Rubric,related_name="Rubriclinktorubric",db_column='RubricId') # Field name made lowercase.
+    totalscore = models.IntegerField(db_column='TotalScore') # Field name made lowercase.
     class Meta:
         db_table = 'rubriclink'
+        
+class Rubriclinkselectedscale(models.Model):
+    id = models.IntegerField(primary_key=True, db_column='ID') # Field name made lowercase.
+    rubriclinkid = models.ForeignKey(Rubriclink,related_name="RubriclinkselectedscaletoRubriclink", db_column='RubriclinkId') # Field name made lowercase.
+    rubiccriteriaid = models.ForeignKey(Rubriccriteria,related_name="RubriclinkselectedscaletoRubriccriteria", db_column='RubicCriteriaId') # Field name made lowercase.RubicCriteriaId = models.IntegerField(db_column='RecId') # Field name made lowercase.
+    rubriclinkid = models.ForeignKey(Rubricscale,related_name="RubriclinkselectedscaletoRubricscale", db_column='RubricScaleId') # Field name made lowercase.
+    class Meta:
+        db_table = 'rubriclinkselectedscale'
 
 class Security(models.Model):
     id = models.IntegerField(primary_key=True, db_column='ID') # Field name made lowercase.
@@ -550,6 +585,7 @@ class Tag(models.Model):
     name = models.CharField(max_length=100L, db_column='Name') # Field name made lowercase.
     parentid = models.IntegerField(db_column='ParentId') # Field name made lowercase.
     tagcolor = models.CharField(max_length=7L,db_column='TagColor') # Field name made lowercase.
+    abilitylevel = models.ForeignKey(Selectionlist,related_name="Tagtoselectionlist",db_column='AbilityLevel') # Field name made lowercase.
     createddt = models.DateTimeField(db_column='CreatedDT') # Field name made lowercase.
     createdby = models.IntegerField(db_column='CreatedBy') # Field name made lowercase.
     modifieddt = models.DateTimeField(db_column='ModifiedDT') # Field name made lowercase.
@@ -610,21 +646,6 @@ class TagEntity(models.Model):
     clientid = models.IntegerField(db_column='ClientId') # Field name made lowercase.
     class Meta:
         db_table = 'TagEntity'
-
-class Category(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='ID') # Field name made lowercase.
-    name = models.CharField(max_length=100L, db_column='Name') # Field name made lowercase.
-    parentid = models.IntegerField(db_column='ParentId') # Field name made lowercase.
-    createddt = models.DateTimeField(db_column='CreatedDT') # Field name made lowercase.
-    createdby = models.IntegerField(db_column='CreatedBy') # Field name made lowercase.
-    modifieddt = models.DateTimeField(db_column='ModifiedDT') # Field name made lowercase.
-    modifiedby = models.IntegerField(db_column='ModifiedBy') # Field name made lowercase.
-    disabled = models.IntegerField(db_column='Disabled') # Field name made lowercase.
-    deleted = models.IntegerField(db_column='Deleted') # Field name made lowercase.
-    clientid = models.IntegerField(db_column='ClientId') # Field name made lowercase.
-    system = models.IntegerField(db_column='System') # Field name made lowercase.
-    class Meta:
-        db_table = 'Category'
 
 class Categoryentity(models.Model):
     id = models.IntegerField(primary_key=True, db_column='ID') # Field name made lowercase.

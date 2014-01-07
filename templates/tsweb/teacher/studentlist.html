@@ -197,14 +197,12 @@
 			$("#txtSearch").show();
 			$(".searchboximg").show();
 			thisClass.getData('');
-			
 			//return and hide
 			$(".viewTD").show();
 			$(".editorTD").hide();
 		}
-	
+
 		this.editTable = function(id){
-			
 			$.getJSON(
 				url,
 				{	class: evalClass,
@@ -262,9 +260,9 @@
 					$(this).val('');
 				});
 			});
-			
+
 			$( "#ele_dob").datepicker({ dateFormat: 'dd-mm-yy' });
-			
+
 			thisClass.selectGender();
 			thisClass.selectSalutation();
 			thisClass.hideEditTable();
@@ -273,7 +271,7 @@
 			var profile = new EDITPROFILE(url);
 			profile.iniControl();
 		}
-	
+
 		this.selectGender = function(){
 			var html ='';
 			$.getJSON(

@@ -10,6 +10,7 @@
 	<link rel="stylesheet" href="{% static 'tsweb/css/topscholars.css' %}" type="text/css" />
 	<link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
 	<link rel="stylesheet" type="text/css" href="{% static 'tsweb/css/smoothness/jquery-ui-1.10.3.custom.css' %}" />
+	<link rel="stylesheet" type="text/css" href="{% static 'tsweb/css/jquery.multiselect.css' %}" />
 		
 <!--	<script src="{% static 'tsweb/js/jQuery1.10.1.js' %}"></script>
 	<script src="{% static 'tsweb/js/jquery-ui-1.10.3.custom.min.js' %}"></script>-->
@@ -21,6 +22,7 @@
 	<script src="{% static 'tsweb/js/jquery-ui-1.10.3.custom.min.js' %}"></script>
 	<script src="{% static 'tsweb/js/jquery-ui-timepicker-addon.js' %}"></script>
 	<script src="{% static 'tsweb/js/jquery.cookie.js' %}"></script>
+	<script src="{% static 'tsweb/js/jquery.multiselect.js' %}"></script>
 	<script src="{% static 'tsweb/js/util.js' %}"></script>
 	<script src="{% static 'tsweb/js/jquery.validate.js' %}"></script>
 
@@ -81,6 +83,8 @@ function EDITTABLE(){
 					thisClass.seperateView(ini,val);
 				});
 				
+				thisClass.getClassSelect();
+				thisClass.getAssignclass();
 				thisClass.showEditTable();
 				thisClass.showAssignmentClass(id);
 				thisClass.showAssignmentStudent();
@@ -117,12 +121,55 @@ function EDITTABLE(){
 				$.each(result, function(ini,val){
 						html += "<option value='"+val.id+"'>"+val.name+"</option>";
 				});
+				$("#ele_rubricid").append(html);
+		})
+		.error(function(xhr, status, error) {
+    		alert('Error occur. Please contact the administrator.');
+    	});
+	}
+	
+	this.getAssignclass = function(){
+		var assignmentid = $("#ele_id").val();
+		var html ='';
+		$.getJSON(
+			url,
+			{	class: evalClass,
+				method: 'getAssignclass',
+				id: assignmentid },
+			function(result){
+				$("#ele_classid option").remove();
+				$.each(result, function(ini,val){
+						html += "<option value='"+val.id+"'>"+val.code+"</option>";
+				});
 				$("#ele_classid").append(html);
 		})
 		.error(function(xhr, status, error) {
     		alert('Error occur. Please contact the administrator.');
     	});
 	}
+	
+	this.getClassSelect = function(){
+		var assignmentid = $("#ele_id").val();
+		var html ='';
+		$.getJSON(
+			url,
+			{	class: evalClass,
+				method: 'getClassSelect',
+				id: assignmentid },
+			function(result){
+				$("#ele_classname option").remove();
+				$.each(result, function(ini,val){
+						html += "<option value='"+val.id+"'>"+val.code+"</option>";
+				});
+				$("#ele_classname").append(html);
+				$("#ele_classname").multiselect("refresh");
+				$("#ele_classname").multiselect("uncheckAll");
+		})
+		.error(function(xhr, status, error) {
+    		alert('Error occur. Please contact the administrator.');
+    	});
+	}
+	
 	
 	this.getData = function(assignmentname ,classid) {
 		$("#list").html("<div style='width:100%;position=relative;text-align:center;'><img src='{% static 'tsweb/image/ajax-loader.gif' %}' alt='' style='margin:auto;width=100px;height=100px;position=relative;' /></div>");
@@ -148,13 +195,17 @@ function EDITTABLE(){
 	}
 	
 	this.save = function(){
-		var odata;
+		var odata, classname;
 		if($("#ele_id").val() == ""){
 			odata = {'class' :  evalClass, 'method' : "add" };
 		}else{
 			odata = {'class' :  evalClass, 'method' : "save" };
 		}
 		odata = thisClass.oData(odata);
+		
+		classname = {'classname' : checkboxChecked("input[name='multiselect_ele_classname']:checked") };
+		
+		$.extend(odata, classname);
 		$.post(url,odata,
 			function(result){
 				thisClass.hideEditTable();
@@ -186,7 +237,6 @@ function EDITTABLE(){
 	
 	this.showAssignmentStudent = function(id){
 		var assignmentid = $("#ele_id").val();
-		
 		$.get( url,
 			{	class: evalClass,
 				method: 'tAssignmentStudent',
@@ -218,14 +268,12 @@ function EDITTABLE(){
 						var id = $(this).attr('text');
 						var date = $(".datepicker").attr('text', id).val();
 						thisClass.addClassToAssignment(id, date);
-						
 					});
 				}else if(select == 'tStudentAssignlist'){
 					$(".addStudentassignment").click(function(){
 						var id = $(this).attr('text');
 						var date = $(".datepicker").attr('text', id).val();
 						thisClass.addStudentToAssignment(id, date);
-						
 					});
 				}
 		})
@@ -234,7 +282,7 @@ function EDITTABLE(){
     	});
 	}
 	
-	this.addClassToAssignment = function(id, date){	
+	this.addClassToAssignment = function(id, date){
 		var assignmentid = $("#ele_id").val();
 		$.post(url,
 			{ class: evalClass,
@@ -252,7 +300,7 @@ function EDITTABLE(){
     	});
 	}
 	
-	this.addStudentToAssignment = function(id, date){	
+	this.addStudentToAssignment = function(id, date){
 		var assignmentid = $("#ele_id").val();
 		$.post(url,
 			{ class: evalClass,
@@ -273,6 +321,8 @@ function EDITTABLE(){
 	this.iniControl = function(){
 		thisClass.getData('','');
 		Watermark('txtSearch', 'Search', 'noclass');
+		
+		$("#ele_classname").multiselect();
 		
 		$('#lstClassid').change(function() {
 			thisClass.getData('', $('#lstClassid').val());
@@ -381,9 +431,16 @@ $(function() {
 	        	</div>
 	        	
 	        	<div class="form-group">
-	        		<label for="ele_goal" class="col-sm-4 control-label">Goal of Task</label>
+	        		<label for="description" class="col-sm-4 control-label">Description</label>
 	        		<div class="col-sm-8">
 	        			<input type="text" id="ele_description" class="form-control" name="description" />
+	        		</div>
+	        	</div>
+	        	
+	        	<div class="form-group">
+	        		<label for="ele_goal" class="col-sm-4 control-label">Goal of Task</label>
+	        		<div class="col-sm-8">
+	        			<input type="text" id="ele_goal" class="form-control" name="goal" />
 	        		</div>
 	        	</div>
 	        	
@@ -404,7 +461,21 @@ $(function() {
 	        	<div class="form-group">
 	        		<label for="ele_parameters" class="col-sm-4 control-label">Parameters(Word Length)</label>
 	        		<div class="col-sm-8">
-	        			<input type="text" id="ele_maxwords" class="form-control" name="maxwords" />
+	        			<input type="text" id="ele_parameters" class="form-control" name="parameters" />
+	        		</div>
+	        	</div>
+	        	
+	        	<div class="form-group">
+	        		<label for="classname" class="col-sm-4 control-label">Class Name</label>
+	        		<div class="col-sm-8">
+	        			<select id="ele_classname" name="classname" class="form-control"></select>
+	        		</div>
+	        	</div>
+	        	
+	        	<div class="form-group">
+	        		<label for="studentid" class="col-sm-4 control-label">Student Name</label>
+	        		<div class="col-sm-8">
+	        			<select id="ele_studentid" name="studentid" class="form-control"></select>
 	        		</div>
 	        	</div>
 	        	
@@ -422,6 +493,7 @@ $(function() {
 	        		</div>
 	        	</div>
 	        	
+	        	
 	        	<div class="form-group">
 	        		<label for="ele_classid" class="col-sm-4 control-label">Assigned Class</label>
 	        		<div class="col-sm-8">
@@ -430,12 +502,20 @@ $(function() {
 	        		</div>
 	        	</div>
 	        	
-<!--	        	<div class="form-group">
+	        	
+	        	<div class="form-group">
 	        		<label for="rubricid" class="col-sm-4 control-label">Rubric ID</label>
 	        		<div class="col-sm-8">
 	        			<select id="ele_rubricid" name="rubricid" class="form-control"></select>
 	        		</div>
-	        	</div>-->
+	        	</div>
+	        	
+	        	<div class="form-group">
+	        		<label for="maxwords" class="col-sm-4 control-label">Maximum Word</label>
+	        		<div class="col-sm-8">
+	        			<input type="text" id="ele_maxwords" name="maxwords" class="form-control" />
+	        		</div>
+	        	</div>
 	        	
 	        	<div class="form-group">
 	        		<label for="diabled" class="col-sm-4 control-label">Disable</label>

@@ -289,7 +289,8 @@ class SUBMISSIONCREATE():
                 submissionvs.deleted = 0
                 submissionvs.save()
 
-                data_json = {'status': 'success'}
+                data_json = {'status': 'success',
+                             'submissionversionid': submissionversionid}
                 data = simplejson.dumps(data_json)
                 return HttpResponse(data, mimetype='application/json')
 

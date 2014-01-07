@@ -864,7 +864,7 @@ $(function() {
 		$('#btnAddGoal').click(function(event){
 			$('.new-goal').append('<div class="ngText"><input type="text" name="ele_goal" class="form-control" id="nGoal" /><i class="fa fa-minus-square-o minus fa-lg"></i></div>');
 			
-			$('.minus').click(function () {
+			$('.minus').unbind( "click" ).click(function () {
 				$('.ngText').last().remove();
 			});
 			event.preventDefault();
@@ -872,14 +872,14 @@ $(function() {
 		$('#btnAddUnderstanding').click(function(event){
 			$('.new-understanding').append('<div class="ngText"><input type="text" name="ele_goal" class="form-control" id="nUnderstanding" /><i class="fa fa-minus-square-o minus fa-lg"></i></div>');
 			
-			$('.minus').click(function () {
+			$('.minus').unbind( "click" ).click(function () {
 				$('.ngText').last().remove();
 			});
 			event.preventDefault();
 		});$('#btnAddQuestion').click(function(event){
 			$('.new-question').append('<div class="ngText"><input type="text" name="ele_goal" class="form-control" id="nQuestion" /><i class="fa fa-minus-square-o minus fa-lg"></i></div>');
 			
-			$('.minus').click(function () {
+			$('.minus').unbind( "click" ).click(function () {
 				$('.ngText').last().remove();
 			});
 			event.preventDefault();
@@ -887,7 +887,7 @@ $(function() {
 		$('#btnAddKnow').click(function(event){
 			$('.new-know').append('<div class="ngText"><input type="text" name="ele_goal" class="form-control" id="nKnow" /><i class="fa fa-minus-square-o minus fa-lg"></i></div>');
 			
-			$('.minus').click(function () {
+			$('.minus').unbind( "click" ).click(function () {
 				$('.ngText').last().remove();
 			});
 			event.preventDefault();
@@ -895,7 +895,7 @@ $(function() {
 		$('#btnAddAble').click(function(event){
 			$('.new-able').append('<div class="ngText"><input type="text" name="ele_goal" class="form-control" id="nAble" /><i class="fa fa-minus-square-o minus fa-lg"></i></div>');
 			
-			$('.minus').click(function () {
+			$('.minus').unbind( "click" ).click(function () {
 				$('.ngText').last().remove();
 			});
 			event.preventDefault();
@@ -903,7 +903,7 @@ $(function() {
 		$('#btnAddPerformance').click(function(event){
 			$('.new-performance').append('<div class="ngText"><input type="text" name="ele_goal" class="form-control" id="nEvidence" /><i class="fa fa-minus-square-o minus fa-lg"></i><button class="btn btn-small" data-toggle="modal" data-target="#new_rubric_modal">Add Rubric</button> <button class="btn btn-small" data-toggle="modal" data-target="#new_assignment_modal">Add Assignment</button> <button class="btn btn-small" data-toggle="modal" data-target="#assignment_list_modal">Choose Assignment</button></div>');
 			
-			$('.minus').click(function () {
+			$('.minus').unbind( "click" ).click(function () {
 				$('.ngText').last().remove();
 			});
 			event.preventDefault();
@@ -911,7 +911,7 @@ $(function() {
 		$('#btnAddEvidence').click(function(event){
 			$('.new-evidence').append('<div class="ngText"><input type="text" name="ele_goal" class="form-control" id="nEvidence" /><i class="fa fa-minus-square-o minus fa-lg"></i><button class="btn btn-small" data-toggle="modal" data-target="#lesson_modal">Create Lesson</button> <button class="btn btn-small" data-toggle="modal" data-target="#criteria_modal">Add Criteria</button></div>');
 			
-			$('.minus').click(function () {
+			$('.minus').unbind( "click" ).click(function () {
 				$('.ngText').last().remove();
 			});
 			event.preventDefault();
@@ -919,7 +919,7 @@ $(function() {
 		$('#btnAddLessonQuestion').click(function (event) {
 			$('.new-lesson-question').append('<div class="ngText"><input type="text" name="ele_goal" class="form-control" id="nQuestion" /><i class="fa fa-minus-square-o minus fa-lg"></i></div>');
 			
-			$('.minus').click(function () {
+			$('.minus').unbind( "click" ).click(function () {
 				$('.ngText').last().remove();
 			});
 			event.preventDefault();

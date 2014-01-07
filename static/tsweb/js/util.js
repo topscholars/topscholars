@@ -1,3 +1,11 @@
+function checkboxChecked(selector) {
+    var allVals = [];
+    $(selector).each(function() {
+        allVals.push($(this).val());
+    });
+    return allVals;
+}
+
 function GridBase(){
 	var thisClass = this;
 	
@@ -89,14 +97,27 @@ function GridBase(){
 			var thisType = $(this).attr("type");
 			
 			var thisVal;
+			
 			if(thisType == 'checkbox'){
 				if($(this).prop('checked')){
 					thisVal = 1;
 				}else{
 					thisVal = 0;
 				}
+			/*
+			}else if(thisType==undefined){
+				if($(this).is('select')){
+					if($(this).next().hasClass('ui-multiselect')){
+						var attrId = $(this).attr("id");
+						thisVal = checkboxChecked("input[name='multiselect_"+attrId+"']:checked");
+					}else{
+						thisVal = $(this).val();
+					}
+				}else{
+					thisVal = $(this).val();
+				}
+				*/
 			}else{
-				
 				thisVal = $(this).val();
 			}
 			

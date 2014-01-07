@@ -158,10 +158,6 @@ function EDITTABLE(){
 			});
 	}
 	
-	this.save = function() {
-		window.location = "{% url 'tsweb:tsubmissionlist' %}";
-	}
-	
 	this.getSelectionCharOffsetsWithin = function(element) {
 	    var start = 0, end = 0;
 	    var sel, range, priorRange;
@@ -375,63 +371,6 @@ function EDITTABLE(){
 		}).error(function(xhr, status, error) {
     		alert('Error occur. Please contact the administrator.');
     	});
-	}
-	
-	this.save = function(){
-		var highlightid = $('#ele_highlightid').val();
-		var tagids = [];
-		//var tagids = new Array();
-		var i=0;
-		$('input[name*="-a"]').each(function(index) {
-			var name = $(this).attr('name');
-			name = name.replace('tag[','');
-			name = name.replace('-a]', '');
-			tagids.push(name);
-		});
-
-		if (highlightid != '') {
-			//update
-			thisClass.saveEditTags(tagids,'save');
-		}
-		else {
-			//insert
-			thisClass.saveEditTags(tagids,'add');
-		}
-	}
-	
-	this.saveEditTags = function(tagids, method){
-		var odata;
-		if(method == 'add')
-		{
-			odata = {	class: evalClass,
-				method: 'addSubmissionversionHighlight',
-				submissionversionid: $('#ele_submissionversionid').val(),
-				start : thisClass.startHighlightPositon,
-				highlighttext : $('#ele_highlighttext').val(),
-				highlightComment : $('#ele_highlightComment').val(),
-				tagids: tagids
-			};
-		}else if(method == 'save'){
-			odata = {	class: evalClass,
-				method: 'saveSubmissionversionHighlight',
-				highlightid : $('#ele_highlightid').val(),
-				submissionversionid: $('#ele_submissionversionid').val(),
-				highlightComment : $('#ele_highlightComment').val(),
-				tagids: tagids
-			};
-		}
-		
-		$.post( url, odata,
-			function(result){
-				$('#ele_highlightid').val(result.recid);
-				thisClass.editHighlightDialog(false);
-				thisClass.getHighlightData(result.recid);
-				thisClass.getData($('#ele_submissionid').val(),$('#ele_submissionversionversion').val());
-				thisClass.getHighlightData(result.recid);
-			})
-			.error(function(xhr, status, error) {
-	    		alert('Error occur. Please contact the administrator.');
-	    	});
 	}
 	
 	this.del = function(){
@@ -708,7 +647,7 @@ function EDITTABLE(){
 		
 		$('#btnSubmit').click(function() {
 			//thisClass.showSubmitDialog(true);
-			var essay = $("#redactor_content").text();
+			var essay = $("#redactor_content").html();
 			var submissionid = $("#ele_submissionid").val();
 			var submissionversionid = $('#ele_submissionversionid').val();
 			odata = {'class' :  evalClass,
@@ -1038,9 +977,9 @@ function openHighlightDialog(highlightid){
 		  </div>
 			  
 		</div> <!--End Side Panel-->
-		<input type="button" class="button btn btn-default" style="bottom: 100px; position: absolute; right: 270px;" value="Draft" id="btnSave">
+		<input type="button" class="button btn btn-default" style="bottom: 100px; position: absolute; right: 240px;" value="Save" id="btnSave">
 		<input type="button" class="button btn btn-default" style="bottom: 100px; position: absolute; right: 110px;" value="Revise" id="btnRevise">
-		<input type="submit" id="btnSubmit" class="btn btn-info btn-lg new-btn" value="Submit Assignment" />
+		<input type="submit" id="btnSubmit" class="btn btn-info btn-lg new-btn" value="Send Teacher" />
 		<a href="{% url 'tsweb:sindex' %}" class="btn btn-warning new-btn" style="display: inline-block; right: 50px;">Exit</a>			
 		
 	</div> <!--End Page Container-->

@@ -443,29 +443,26 @@ $(function() {
 				
 		</div> <!-- End side panel -->
 		
-		<button id="new_assignment_btn" class="btn btn-info btn-lg new-btn" data-toggle="modal" data-target="#new_assignment_modal">
-		  New Assignment <i class="fa fa-plus"></i>
-		</button>
 		
-		<div class="searchlist">
-			<div class="form-group">
-				<label for="lstClassid" class="col-sm-4 control-label">Class Filter:&nbsp;</label>
-				<div class="col-sm-8">
-					<select class="form-control" id="lstClassid">
-						<option value="">Please Select</option>
-						{% for class in classlist %}
-						<option value="{{ class.id  }}">{{ class.id }} - {{ class.classname }}</option>
-						{% endfor %}
-					</select>
-				</div>
-			</div>
-		</div>
 		
 		<div class="block-cell block-wide">
 			<div id="list"></div>
 			
 			<!--Assignment table insert here-->
 			
+			<div class="searchlist">
+				<div class="col-lg-4">
+					<select class="form-control" id="lstClassid">
+						<option value="">Class Filter</option>
+						{% for class in classlist %}
+						<option value="{{ class.id  }}">{{ class.id }} - {{ class.classname }}</option>
+						{% endfor %}
+					</select>
+				</div>
+			</div>
+			<button id="new_assignment_btn" class="btn btn-info btn-lg new-btn" data-toggle="modal" data-target="#new_assignment_modal">
+			  New Assignment <i class="fa fa-plus"></i>
+			</button>
 		</div> <!--End Block Cell-->
 		
 		

@@ -718,35 +718,27 @@ function openHighlightDialog(highlightid){
 		<div class="assignment-edit-section">
 		
 			<div class="block-cell block-wide">
-				<div class="searchlist">
-					
-					<div class="form-group">
-						<label for="lstClassid" class="col-sm-4 control-label">Revision Filter:&nbsp;</label>
-						<div class="col-sm-8">
-							<select class="form-control" id="lstClassid">
-								<option value="">Please Select</option>
-								{% for class in classlist %}
-								<option value="{{ revision.id  }}">{{ revision.id }}</option>
-								{% endfor %}
-							</select>
+				
+				<div class="controls">
+					<a href="{% submissionlist %}" class="btn btn-warning btn-small pull-right" id="exitBtn" style="margin-left: 10px;">Exit</a>
+					<input type="submit" id="saveAssignment" class="btn btn-info btn-small pull-right" value="Save Assignment" style="margin-left: 10px;" />
+					<div class="searchlist pull-right">
+						<div class="form-group">
+							<!--<label for="lstClassid" class="col-sm-4 control-label">Revision Filter:&nbsp;</label>-->
+								<select class="form-control input-small" id="lstClassid">
+									<option value="">Please Select</option>
+									{% for class in classlist %}
+									<option value="{{ revision.id  }}">{{ revision.id }}</option>
+									{% endfor %}
+								</select>
 						</div>
 					</div>
-					
 				</div>
-				
-				<a href="{% submissionlist %}" class="btn btn-warning pull-right" id="exitBtn" style="margin-left: 10px;">Exit</a>
-				<input type="submit" id="saveAssignment" class="btn btn-info btn-lg pull-right" value="Save Assignment" />
-				
 				
 				<div id="redactor_editor" name="content" style="width: 100%; height: auto;">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum</div>
 						<!--ADD TAGGING BUTTON OR HIGHLIGHT STATE-->
 			</div>
 		</div>	
-		<style>
-			.redactor_box{
-				top: 50px;
-			}
-		</style>	
 		
 		<div class="tag-list-dropdown col-lg-2" style="display: none;">
 			<form class="form" role="form">

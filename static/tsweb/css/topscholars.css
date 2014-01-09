@@ -382,6 +382,9 @@ form{
 .criteriaItem{
 	background-color: rgba(234, 97, 65, 0.3)!important;
 }
+.criteriaItem a{
+	font-size: 1em!important;
+}
 .tag{
 	border: 1px dashed #91faaa;
 }
@@ -567,24 +570,33 @@ form{
 	background: -ms-linear-gradient(left, #c2e617 2.8%, rgba(214, 159, 99, 0) 3.4%) rgba(70, 172, 183, 0);
 	background: linear-gradient(to right, #c2e617 2.8%, rgba(214, 159, 99, 0) 3.4%) rgba(70, 172, 183, 0);
 }
-/*.new-btn{
+.new-btn{
 	position: absolute;
-	bottom: 100px;
-	right: 110px;
-}*/
+	top: 5px;
+	right: 5px;
+}
 #saveAssignment, #exitBtn{
 	bottom: 20px!important;
 }
 .modal-header.teacher-header{
 	background-color: #46b8da!important;
 }
+.responsive-table{
+	margin-top: 20px;
+}
 .rowheader{
 	background-color: #81BB84;
 	color: #ffffff;
 }
 .searchlist{
-	position: absolute;
+	/*position: absolute;*/
 	z-index: 2;
+}
+.controls{
+	position: absolute;
+	top: 5px;
+	right: 10px;
+	z-index: 4;
 }
 .modal-wide .modal-dialog{
 	width: 60%;

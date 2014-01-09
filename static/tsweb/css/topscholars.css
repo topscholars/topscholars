@@ -824,6 +824,8 @@ form{
 }
 #new_rubric_form .modal-footer{
 	border-top: none !important;
+	padding: 0;
+	margin-bottom: -15px;
 }
 
 .fileUpload {

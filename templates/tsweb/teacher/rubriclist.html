@@ -238,48 +238,56 @@ function CloseEdit() {
 		        <form role="form" class="form-inline" id="new_rubric_form">
 		        	<!--Create rubric here-->
 		        	<div class="col-lg-5 clearfix">
+		        		<div class="form-group">
+		        			<label for="rubric_name">Rubric Name</label>
+		        			<input type="text" name="rubric_name" id="rubric_name" class="form-control input-small" required="required"/>
+		        		</div>
+		        		<div class="form-group">
+		        			<label for="rubric_desc">Description</label>
+		        			<input type="text" name="rubric_desc" id="rubric_desc" class="form-control input-small" required="required"/>
+		        		</div>
 			        	<div class="form-group">
 			        		<label for="rubric_goal">Goal Of Task</label>
-			        		<input type="text" name="rubric_goal" id="rubric_goal" class="form-control" required="required"/>
+			        		<input type="text" name="rubric_goal" id="rubric_goal" class="form-control input-small" required="required"/>
 			        	</div>
 			        	<div class="form-group">
 			        		<label for="rubric_audience">Audience</label>
-			        		<input type="text" name="rubric_audience" id="rubric_audience" class="form-control" />
+			        		<input type="text" name="rubric_audience" id="rubric_audience" class="form-control input-small" />
 			        	</div>
 			        	<div class="form-group">
 			        		<label for="rubric_context">Context/Situation</label>
-			        		<input type="text" name="rubric_context" id="rubric_context" class="form-control" />
+			        		<input type="text" name="rubric_context" id="rubric_context" class="form-control input-small" />
 			        	</div>
 			        	<div class="form-group">
 			        		<label for="rubric_parameters">Product Parameters</label>
-			        		<input type="text" name="rubric_parameters" id="rubric_parameters" class="form-control" />
+			        		<input type="text" name="rubric_parameters" id="rubric_parameters" class="form-control input-small" />
 			        	</div>
 			        	
 			        	<!--Criteria Section-->
 			        	<div class="well" id="add_impact_criteria_text" style="display: none;">
-				        	<input type="text" name="add_impact_criteria" id="add_impact_criteria" class="form-control" placeholder="Add Impact Criteria"/>
-				        	<input type="text" name="add-impact-tag" placeholder="Add Tag" id="add_impact_tag" class="form-control add-tag" />
+				        	<input type="text" name="add_impact_criteria" id="add_impact_criteria" class="form-control input-small" placeholder="Add Impact Criteria"/>
+				        	<input type="text" name="add-impact-tag" placeholder="Add Tag" id="add_impact_tag" class="form-control add-tag input-small" />
 				        	<input type="button" class="btn btn-blue" value="+" id="add_impact_criteria_btn"/>
 			        	</div>
 			        	<div class="alert alert-danger alertImpact" style="display: none;">Please enter text.</div>
 			        	
 								<div class="well" id="add_quality_criteria_text" style="display: none;">
-			        		<input type="text" name="add_quality_criteria" id="add_quality_criteria" class="form-control" placeholder="Add Quality Criteria" />
-			        		<input type="text" name="add-quality-tag" placeholder="Add Tag" id="add_quality_tag" class="form-control add-tag" />
+			        		<input type="text" name="add_quality_criteria" id="add_quality_criteria" class="form-control input-small" placeholder="Add Quality Criteria" />
+			        		<input type="text" name="add-quality-tag" placeholder="Add Tag" id="add_quality_tag" class="form-control add-tag input-small" />
 		        			<input type="button" class="btn btn-green" value="+" id="add_quality_criteria_btn"/>
 				        </div>
 			        	<div class="alert alert-danger alertQuality" style="display: none;">Please enter text.</div>
 			        	
 			        	<div class="well" id="add_content_criteria_text" style="display: none;">
-			        		<input type="text" name="add_content_criteria" id="add_content_criteria" class="form-control" placeholder="Add Content Criteria"/>
-				        	<input type="text" name="add-content-tag" placeholder="Add Tag" id="add_content_tag" class="form-control add-tag" />
+			        		<input type="text" name="add_content_criteria" id="add_content_criteria" class="form-control input-small" placeholder="Add Content Criteria"/>
+				        	<input type="text" name="add-content-tag" placeholder="Add Tag" id="add_content_tag" class="form-control add-tag input-small" />
 					        <input type="button" class="btn btn-purple" value="+" id="add_content_criteria_btn"/>
 				        </div>
 			        	<div class="alert alert-danger alertContent" style="display: none;">Please enter text.</div>
 			        	
 			        	<div class="well" id="add_process_criteria_text" style="display: none;">
-			        		<input type="text" name="add_process_criteria" id="add_process_criteria" class="form-control" placeholder="Add Process Criteria"/>
-				        	<input type="text" name="add-process-tag" placeholder="Add Tag" id="add_process_tag" class="form-control add-tag" />
+			        		<input type="text" name="add_process_criteria" id="add_process_criteria" class="form-control input-small" placeholder="Add Process Criteria"/>
+				        	<input type="text" name="add-process-tag" placeholder="Add Tag" id="add_process_tag" class="form-control add-tag input-small" />
 				        	<input type="button" class="btn btn-red" value="+" id="add_process_criteria_btn"/>
 				        </div>
 			        	<div class="alert alert-danger alertProcess" style="display: none;">Please enter text.</div>

@@ -892,6 +892,53 @@ class Lessonactivityanswer(models.Model):
     clientid = models.IntegerField(db_column='ClientId') # Field name made lowercase.
     class Meta:
         db_table = 'lessonactivityanswer'
+        
+class Studentlessonactivity(models.Model):
+    id = models.IntegerField(primary_key=True, db_column='ID') # Field name made lowercase.
+    studentid = models.ForeignKey(Studentlist,related_name="Studentlessonactivitytostudents",db_column='StudentId') # Field name made lowercase.
+    lessonactivitylnkid = models.ForeignKey(Lessonactivitylnk,related_name="Studentlessonactivitytolessonactivitylnk",db_column='LessonActivityLnkID') # Field name made lowercase.
+    autoscore = models.IntegerField(db_column='AutoScore') # Field name made lowercase.
+    manualscore = models.IntegerField(db_column='ManualScore') # Field name made lowercase.
+    createddt = models.DateTimeField(db_column='CreatedDT') # Field name made lowercase.
+    createdby = models.IntegerField(db_column='CreatedBy') # Field name made lowercase.
+    modifieddt = models.DateTimeField(db_column='ModifiedDT') # Field name made lowercase.
+    modifiedby = models.IntegerField(db_column='ModifiedBy') # Field name made lowercase.
+    deleted = models.IntegerField(db_column='Deleted') # Field name made lowercase.
+    clientid = models.IntegerField(db_column='ClientId') # Field name made lowercase.
+    class Meta:
+        db_table = 'studentlessonactivity'
+        
+class Studentlessonactivityanswer(models.Model):
+    id = models.IntegerField(primary_key=True, db_column='ID') # Field name made lowercase.
+    studentlessonactivityid = models.ForeignKey(Studentlessonactivity,related_name="Studentlessonactivityanswertostudentlessonactivity",db_column='StudentLessonActivityID') # Field name made lowercase.
+    answertext = models.TextField(db_column='AnswerText', blank=True) # Field name made lowercase.
+    lessonactivityanswerid = models.ForeignKey(Lessonactivityanswer,related_name="Studentlessonactivityanswertolessonactivityanswer",db_column='LessonActivityAnswerID') # Field name made lowercase.
+    score = models.IntegerField(db_column='Score') # Field name made lowercase.
+    createddt = models.DateTimeField(db_column='CreatedDT') # Field name made lowercase.
+    createdby = models.IntegerField(db_column='CreatedBy') # Field name made lowercase.
+    modifieddt = models.DateTimeField(db_column='ModifiedDT') # Field name made lowercase.
+    modifiedby = models.IntegerField(db_column='ModifiedBy') # Field name made lowercase.
+    deleted = models.IntegerField(db_column='Deleted') # Field name made lowercase.
+    clientid = models.IntegerField(db_column='ClientId') # Field name made lowercase.
+    class Meta:
+        db_table = 'studentlessonactivityanswer'
+
+class Textcomment(models.Model):
+    id = models.IntegerField(primary_key=True, db_column='ID') # Field name made lowercase.
+    entityid = models.ForeignKey(Entity,related_name="Textcommenttoentity", db_column='EntityId') # Field name made lowercase.
+    recid = models.IntegerField(db_column='RecId') # Field name made lowercase.
+    startposition = models.IntegerField(db_column='StartPosition') # Field name made lowercase.
+    endposition = models.IntegerField(db_column='EndPosition') # Field name made lowercase.
+    hightlighttext = models.TextField(db_column='HightlightText', blank=True) # Field name made lowercase.
+    comment = models.TextField(db_column='Comment', blank=True) # Field name made lowercase.
+    createddt = models.DateTimeField(db_column='CreatedDT') # Field name made lowercase.
+    createdby = models.IntegerField(db_column='CreatedBy') # Field name made lowercase.
+    modifieddt = models.DateTimeField(db_column='ModifiedDT') # Field name made lowercase.
+    modifiedby = models.IntegerField(db_column='ModifiedBy') # Field name made lowercase.
+    disabled = models.IntegerField(db_column='Disabled') # Field name made lowercase.
+    deleted = models.IntegerField(db_column='Deleted') # Field name made lowercase.
+    class Meta:
+        db_table = 'textcomment'
 
 class Example(models.Model):
     id = models.IntegerField(primary_key=True, db_column='ID') # Field name made lowercase.

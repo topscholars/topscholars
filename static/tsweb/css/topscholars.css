@@ -379,6 +379,9 @@ form{
 	padding: 3px;
 	border-radius: 3px;
 }
+.criteriaItem{
+	background-color: rgba(234, 97, 65, 0.3)!important;
+}
 .tag{
 	border: 1px dashed #91faaa;
 }
@@ -564,11 +567,11 @@ form{
 	background: -ms-linear-gradient(left, #c2e617 2.8%, rgba(214, 159, 99, 0) 3.4%) rgba(70, 172, 183, 0);
 	background: linear-gradient(to right, #c2e617 2.8%, rgba(214, 159, 99, 0) 3.4%) rgba(70, 172, 183, 0);
 }
-.new-btn{
+/*.new-btn{
 	position: absolute;
 	bottom: 100px;
 	right: 110px;
-}
+}*/
 #saveAssignment, #exitBtn{
 	bottom: 20px!important;
 }

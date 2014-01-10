@@ -379,6 +379,12 @@ form{
 	padding: 3px;
 	border-radius: 3px;
 }
+.criteriaItem{
+	background-color: rgba(234, 97, 65, 0.3)!important;
+}
+.criteriaItem a{
+	font-size: 1em!important;
+}
 .tag{
 	border: 1px dashed #91faaa;
 }
@@ -479,9 +485,6 @@ form{
 #lessonLarge{
 	min-height: 85% !important;
 }
-#lessonSmall{
-	height: 40% !important;
-}
 .assignment-edit-section .block-wide textarea{
 	width: 100%;
 	height: 100%;
@@ -569,8 +572,8 @@ form{
 }
 .new-btn{
 	position: absolute;
-	bottom: 100px;
-	right: 110px;
+	top: 5px;
+	right: 5px;
 }
 #saveAssignment, #exitBtn{
 	bottom: 20px!important;
@@ -578,17 +581,27 @@ form{
 .modal-header.teacher-header{
 	background-color: #46b8da!important;
 }
+.responsive-table{
+	margin-top: 20px;
+}
 .rowheader{
 	background-color: #81BB84;
 	color: #ffffff;
 }
 .searchlist{
-	position: absolute;
+	/*position: absolute;*/
 	z-index: 2;
+}
+.controls{
+	position: absolute;
+	top: 5px;
+	right: 10px;
+	z-index: 4;
 }
 .modal-wide .modal-dialog{
 	width: 60%;
 	position: relative;
+	margin-top: 5px!important;
 	margin: 10px auto;
 	left: 0;
 	right: 0;
@@ -811,6 +824,8 @@ form{
 }
 #new_rubric_form .modal-footer{
 	border-top: none !important;
+	padding: 0;
+	margin-bottom: -15px;
 }
 
 .fileUpload {
@@ -922,7 +937,73 @@ form{
 .ui-sortable-helper .panel-heading{
 	background: #a2db8b;
 }
+#sortableActivities{
+	margin-left: -20px!important;
+}
+#sortableActivities a{
+	margin-top: -45px;
+}
+.onoffswitch {
+    position: relative; width: 102px;
+    -webkit-user-select:none; -moz-user-select:none; -ms-user-select: none;
+}
+
+.onoffswitch-checkbox {
+    display: none;
+}
+
+.onoffswitch-label {
+    display: block; overflow: hidden; cursor: pointer;
+    border: 2px solid #999999; border-radius: 4px;
+}
+
+.onoffswitch-inner {
+    width: 200%; margin-left: -100%;
+    -moz-transition: margin 0.3s ease-in 0s; -webkit-transition: margin 0.3s ease-in 0s;
+    -o-transition: margin 0.3s ease-in 0s; transition: margin 0.3s ease-in 0s;
+}
+
+.onoffswitch-inner:before, .onoffswitch-inner:after {
+    float: left; width: 50%; height: 30px; padding: 0; line-height: 30px;
+    font-size: 14px; color: white; font-family: Trebuchet, Arial, sans-serif; font-weight: bold;
+    -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box;
+}
+
+.onoffswitch-inner:before {
+    content: "Auto";
+    padding-left: 10px;
+    background-color: #DE6B28; color: #FFFFFF;
+}
+
+.onoffswitch-inner:after {
+    content: "Manual";
+    padding-right: 10px;
+    background-color: #EEEEEE; color: #999999;
+    text-align: right;
+}
+
+.onoffswitch-switch {
+    width: 22px; margin: 4px;
+    background: #FFFFFF;
+    border: 2px solid #999999; border-radius: 4px;
+    position: absolute; top: 0; bottom: 0; right: 68px;
+    -moz-transition: all 0.3s ease-in 0s; -webkit-transition: all 0.3s ease-in 0s;
+    -o-transition: all 0.3s ease-in 0s; transition: all 0.3s ease-in 0s; 
+}
+
+.onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-inner {
+    margin-left: 0;
+}
+
+.onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-switch {
+    right: 0px; 
+}
+
+
+
 /*End*/
+
+
 
 
 @media only screen 

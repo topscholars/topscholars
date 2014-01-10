@@ -91,6 +91,45 @@ class ASSSIGNMENTLIST():
             classlist = list(Classschedule.objects.filter(Q(id__in=classassignid), Q(disabled=0,deleted=0,clientid=clientid)).values('id','code'))
             data = simplejson.dumps(classlist)
             return HttpResponse(data, mimetype='application/json')
+        
+    def getStudentSelect(self,request):
+        try:
+            userid = request.session['userid']
+            login = Login.objects.get(id=userid)
+            clientid = login.clientid
+            assignclass = request.GET.get('assignclass', False)
+            assignmentid = request.GET.get('assignmentid', False)
+        except KeyError:
+            return HttpResponse('error', mimetype='application/json')
+        else:
+            if assignclass == '' or assignclass == 0:
+                classid = Classassignment.objects.filter(assignmentid=assignmentid).values_list('classid')
+                studentid = Studentclass.objects.filter(classscheduleid__in=classid, clientid=clientid,disabled=0,deleted=0).values_list('studentid')
+                submissionlist = Submission.objects.filter(studentid__in=studentid,assignmentid=assignmentid,disabled=0,deleted=0).values_list('studentid')
+                
+                studentlist = list(Studentlist.objects.filter(id__in=submissionlist).values('id','firstname','lastname'))
+                for student in studentlist:
+                    student.update({'selected': 'selected'})
+                
+                studentlistnonselect = list(Studentlist.objects.filter(~Q(id__in=submissionlist)).values('id','firstname','lastname'))
+                for studentn in studentlistnonselect:
+                    studentn.update({'selected': ''})
+                    studentlist.append(studentn)
+            else:
+                studentid = Studentclass.objects.filter(classscheduleid=assignclass, clientid=clientid,disabled=0,deleted=0).values_list('studentid')
+                submissionlist = Submission.objects.filter(studentid__in=studentid,assignmentid=assignmentid,disabled=0,deleted=0).values_list('studentid')
+                studentlist = list(Studentlist.objects.filter(id__in=submissionlist).values('id','firstname','lastname'))
+                for student in studentlist:
+                    student.update({'selected': 'selected'})
+                
+                studentlistnonselect = list(Studentlist.objects.filter(Q(id__in=studentid),~Q(id__in=submissionlist)).values('id','firstname','lastname'))
+                for studentn in studentlistnonselect:
+                    studentn.update({'selected': ''})
+                    studentlist.append(studentn)
+                
+            data = simplejson.dumps(studentlist)
+            #data = simplejson.dumps({'data': 'success'})
+            return HttpResponse(data, mimetype='application/json')
     
     def save(self,request):
         try:

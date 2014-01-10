@@ -75,16 +75,7 @@ class Rubric(models.Model):
     modifiedby = models.IntegerField(db_column='ModifiedBy') # Field name made lowercase.
     disabled = models.IntegerField(db_column='Disabled') # Field name made lowercase.
     deleted = models.IntegerField(db_column='Deleted') # Field name made lowercase.
-    clientid = models.IntegerField(db_column='ClientId') # Field name made lowercase.
-    
-    def getStudentAllClass(self):
-        stdtypeid=self.typeid
-        #cursor = connection.cursor()
-        #cursor.execute('select cs.code from studentlist as st join studentclass as sc on st.id = sc.studentid join classschedule as cs on sc.classscheduleid = cs.id where st.id = %s',[stdid])
-        #row = cursor.fetchone()
-        #row = [item[0] for item in cursor.fetchall()]
-        return stdtypeid
-    
+    clientid = models.IntegerField(db_column='ClientId') # Field name made lowercase. 
     class Meta:
         db_table = 'rubric'
 

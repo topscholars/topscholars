@@ -84,6 +84,7 @@ function EDITTABLE(){
 				});
 				
 				thisClass.getClassSelect();
+				thisClass.getStudentSelect();
 				thisClass.getAssignclass();
 				thisClass.showEditTable();
 				thisClass.showAssignmentClass(id);
@@ -138,6 +139,7 @@ function EDITTABLE(){
 				id: assignmentid },
 			function(result){
 				$("#ele_classid option").remove();
+				html += "<option value='0'>All Student</option>";
 				$.each(result, function(ini,val){
 						html += "<option value='"+val.id+"'>"+val.code+"</option>";
 				});
@@ -164,6 +166,29 @@ function EDITTABLE(){
 				$("#ele_classname").append(html);
 				$("#ele_classname").multiselect("refresh");
 				$("#ele_classname").multiselect("uncheckAll");
+		})
+		.error(function(xhr, status, error) {
+    		alert('Error occur. Please contact the administrator.');
+    	});
+	}
+	
+	this.getStudentSelect = function(){
+		var assignmentid = $("#ele_id").val();
+		var html ='';
+		$.getJSON(
+			url,
+			{	class: evalClass,
+				method: 'getStudentSelect',
+				assignmentid: assignmentid,
+				assignclass: $("#ele_classid").val() },
+			function(result){
+				$("#ele_studentid option").remove();
+				$.each(result, function(ini,val){
+						html += "<option value='"+val.id+"' "+val.selected+">"+val.firstname+" "+val.lastname+"</option>";
+				});
+				$("#ele_studentid").append(html);
+				$("#ele_studentid").multiselect("refresh");
+				//$("#ele_studentid").multiselect("uncheckAll");
 		})
 		.error(function(xhr, status, error) {
     		alert('Error occur. Please contact the administrator.');
@@ -323,6 +348,8 @@ function EDITTABLE(){
 		Watermark('txtSearch', 'Search', 'noclass');
 		
 		$("#ele_classname").multiselect();
+		$("#ele_studentid").multiselect();
+		
 		
 		$('#lstClassid').change(function() {
 			thisClass.getData('', $('#lstClassid').val());
@@ -343,6 +370,10 @@ function EDITTABLE(){
 		$("#btnEdit").click(function(){
 			$(".editorTD").show();
 			$(".viewTD").hide();
+		});
+		
+		$("#ele_classid").change(function(){
+			thisClass.getStudentSelect();
 		});
 		
 		$("#ele_duedate").datetimepicker({ dateFormat: "dd-mm-yy",timeFormat: "HH:mm" });
@@ -475,7 +506,7 @@ $(function() {
 	        	<div class="form-group">
 	        		<label for="studentid" class="col-sm-4 control-label">Student Name</label>
 	        		<div class="col-sm-8">
-	        			<select id="ele_studentid" name="studentid" class="form-control"></select>
+	        			<select id="ele_studentid" name="studentid" multiple class="form-control"></select>
 	        		</div>
 	        	</div>
 	        	

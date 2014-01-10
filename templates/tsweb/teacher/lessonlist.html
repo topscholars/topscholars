@@ -37,15 +37,14 @@ $(function() {
 	
 		{% include "tsweb/main/sidepanel.html" %}
 		
-		<button id="new_class_btn" class="btn btn-info btn-lg new-btn" data-toggle="modal" data-target="#new_lesson_modal">
-		  New Lesson <i class="fa fa-plus"></i>
-		</button>
 		<div class="block-cell block-wide">
 			<div id="list"></div>
 			
 			<!--Class table insert here-->
 			
-			
+			<button id="new_lesson_btn" class="btn btn-info btn-lg new-btn" data-toggle="modal" data-target="#new_lesson_modal">
+			  New Lesson <i class="fa fa-plus"></i>
+			</button>
 		</div> <!--End Block Cell-->
 		
 		<div class="modal fade modal-wide" id="new_lesson_modal" tabindex="-1" role="dialog" aria-labelledby="newLessonLabel" aria-hidden="true" data-dismiss="false">

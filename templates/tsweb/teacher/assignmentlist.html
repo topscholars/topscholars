@@ -38,17 +38,7 @@ function EDITTABLE(){
 	
 	this.showEditTable = function(){
 		$(".pagename").text(thisClass.pagename + " - Edit");
-		
-		$("#editField").show();
-		
-		$(".filter").hide();
-		$(".tablelist").hide();
-		//$(".listnewbutton").hide();
-		//$("#txtSearch").hide();
-		//$(".searchboximg").hide();
-		
-		//$("#listAssignmentClass").show();
-		//$("#listAssignmentStudent").show();
+
 		$("#selectAssignmentHeader").show();
 		$("#list_by_select").show();
 	}
@@ -82,6 +72,9 @@ function EDITTABLE(){
 					thisClass.seperateElement($("#ele_"+ini), val);
 					thisClass.seperateView(ini,val);
 				});
+				
+				$('#editAssignmentBtn').show();
+				$('.modal .form-control, .modal input[type="checkbox"]').attr('disabled', 'disabled');
 				
 				thisClass.getClassSelect();
 				thisClass.getStudentSelect();
@@ -416,31 +409,28 @@ $(function() {
 
 	{% include "tsweb/main/sidepanel.html" %}
 	
-	<button id="new_assignment_btn" class="btn btn-info btn-lg new-btn" data-toggle="modal" data-target="#new_assignment_modal">
-	  New Assignment <i class="fa fa-plus"></i>
-	</button>
-	
-	<div class="searchlist form form-horizontal">
-		
-		<div class="form-group">
-			<label for="lstClassid" class="col-sm-4 control-label">Class Filter:&nbsp;</label>
-			<div class="col-sm-8">
-				<select class="form-control" id="lstClassid">
-					<option value="">Please Select</option>
-					{% for class in classlist %}
-					<option value="{{ class.id  }}">{{ class.id }} - {{ class.classname }}</option>
-					{% endfor %}
-				</select>
+		<div class="block-cell block-wide">
+			
+			
+			<!--Assignment table insert here-->
+			
+			<div class="searchlist">
+				<div class="col-lg-4">
+					<select class="form-control" id="lstClassid">
+						<option value="">Class Filter</option>
+						{% for class in classlist %}
+						<option value="{{ class.id  }}">{{ class.id }} - {{ class.classname }}</option>
+						{% endfor %}
+					</select>
+				</div>
 			</div>
-		</div>
-	</div>
-	
-	<div class="block-cell block-wide">
-		<div id="list"></div>
+			<button id="new_assignment_btn" class="btn btn-info btn-lg new-btn" data-toggle="modal" data-target="#new_assignment_modal">
+			  New Assignment <i class="fa fa-plus"></i>
+			</button>
+			
+			<div id="list"></div>
+		</div> <!--End Block Cell-->
 		
-		<!--Assignment table insert here-->
-		
-	</div> <!--End Block Cell-->
 	
 	
 	<!--New Assignment Modal Form--> 
@@ -449,6 +439,7 @@ $(function() {
 	    <div class="modal-content">
 	      <div class="modal-header teacher-header">
 	        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+	        <button type="button" class="btn btn-default btn-small btn-edit pull-right" id="editAssignmentBtn">Edit</button>
 	        <h4 class="modal-title">New Assignment</h4>
 	      </div>
 	      <div class="modal-body">
@@ -567,8 +558,7 @@ $(function() {
 	{% include "tsweb/main/editprofile.html" %}
 </div> <!-- End Page Container -->
 
-
-	<script>
+<script>
 		$('#new_assignment_form').on("submit",function(e){
 	    e.preventDefault();
 	    var f = $(this);
@@ -578,9 +568,18 @@ $(function() {
 	  });
 	
 		$('#new_assignment_modal').on("hidden.bs.modal",function(){
-	    //$('#new_assignment_form')[0].reset();
+	    $('#new_assignment_form')[0].reset();
 	    $('#new_assignment_form .form-error').remove();
 	  });
+	  
+	  $('.modal .form-control, .modal input[type="checkbox"]').attr('disabled', 'disabled');
+	  
+	  $('#new_assignment_btn').click(function () {
+	  	$('#editAssignmentBtn').hide();
+	  	$('.modal .form-control, .modal input[type="checkbox"]').removeAttr('disabled', 'disabled');
+	  });
+	  
+	  $('#editAssignmentBtn').click(function(){$('.modal .form-control, .modal input[type="checkbox"]').removeAttr('disabled', 'disabled')});
 	</script>
 </body>
 </html>

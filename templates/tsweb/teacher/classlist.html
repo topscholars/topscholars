@@ -96,9 +96,16 @@ function EDITTABLE(){
 				$.each(result, function(ini,val){
 					thisClass.seperateElement($("#ele_"+ini), val);
 					thisClass.seperateView(ini,val);
+
+					if(ini == 'dayofweek'){
+						$.each(val.split(","), function(i,e){
+							$(".day-week[value='"+e+"']").prop("checked", true);
+						    //$("#"+attrid+" option[value='" + e + "']").prop("selected", true);
+						});
+					}
 				});
-				
-				$("#ele_dayofweek").multiselect('refresh'); 
+				$('#editClassBtn').show();
+				$('.modal .form-control, .modal input[type="checkbox"]').attr('disabled', 'disabled');
 				
 				thisClass.showEditTable();
 		})
@@ -225,13 +232,30 @@ function EDITTABLE(){
 	}
 	
 	this.save = function(){
-		var odata;
+		var odata, dayofweek, dayObj, i;
 		if($("#ele_id").val() == ""){
 			odata = {'class' :  evalClass, 'method' : "add" };
 		}else{
 			odata = {'class' :  evalClass, 'method' : "save" };
 		}
 		odata = thisClass.oData(odata);
+		
+		
+		dayofweek = '';
+		i = 0
+		$(".day-week").each(function(){
+			if($(this).prop('checked')){
+				if(i > 0){
+					dayofweek += ","+$(this).val();
+				}else{
+					dayofweek += $(this).val();
+				}
+				i++;
+			}
+		});
+		dayObj = {'dayofweek' : dayofweek};
+		$.extend(odata, dayObj);
+		
 		$.post(url,odata,
 			function(result){
 				thisClass.hideEditTable();
@@ -283,6 +307,10 @@ function EDITTABLE(){
 			$("#ele_dayofweek").multiselect('refresh'); 
 		});
 		
+		$(".day-all").click(function(){
+			$(".day-week").prop('checked',$(this).prop('checked'));
+		});
+		
 		thisClass.iniEventEditor();
 		thisClass.selectTeacher();
 		thisClass.selectClass();
@@ -303,15 +331,13 @@ $(function() {
 	
 		{% include "tsweb/main/sidepanel.html" %}
 		
-		<button id="new_class_btn" class="btn btn-info btn-lg new-btn" data-toggle="modal" data-target="#new_class_modal">
-		  New Class <i class="fa fa-plus"></i>
-		</button>
 		<div class="block-cell block-wide">
+			<button id="new_class_btn" class="btn btn-info btn-lg new-btn" data-toggle="modal" data-target="#new_class_modal">
+			  New Class <i class="fa fa-plus"></i>
+			</button>			
 			<div id="list"></div>
 			
 			<!--Class table insert here-->
-			
-			
 		</div> <!--End Block Cell-->
 		
 		
@@ -321,6 +347,7 @@ $(function() {
 		    <div class="modal-content">
 		      <div class="modal-header teacher-header">
 		        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+		        <button type="button" class="btn btn-default btn-small btn-edit pull-right" id="editClassBtn">Edit</button>
 		        <h4 class="modal-title">New Class</h4>
 		      </div>
 		      <div class="modal-body">
@@ -355,6 +382,13 @@ $(function() {
 		        	</div>
 		        	
 		        	<div class="form-group">
+		        		<label for="studentid" class="col-sm-3 control-label">Student Name</label>
+		        		<div class="col-sm-9">
+		        			<select id="ele_studentid" name="studentid" class="form-control"></select>
+		        		</div>
+		        	</div>
+		        	
+		        	<div class="form-group">
 		        		<label for="startdate" class="col-sm-3 control-label">Start Date</label>
 		        		<div class="col-sm-9">
 			        		<input type="text" id="ele_startdate" class="form-control" name="startdate" />
@@ -382,19 +416,43 @@ $(function() {
 		        		</div>
 		        	</div>
 		        	
-		        	<div class="form-group">
+					<div class="form-group">
 		        		<label for="dayofweek" class="col-sm-3 control-label">Day of Week</label>
-		        			<div class="col-sm-9">
-					        	<select id="ele_dayofweek" name="dayofweek" class="form-control">
-					        		<option value="Mon">Monday</option>
-					        		<option value="Tue">Tuesday</option>
-					        		<option value="Wed">Wednesday</option>
-					        		<option value="Thu">Thursday</option>
-					        		<option value="Fri">Friday</option>
-					        		<option value="Sat">Saturday</option>
-					        		<option value="Sun">Sunday</option>
-					        	</select>
-					       	</div>
+	        			<div class="col-lg-9" style="border: 1px solid #eee; border-radius: 4px; background-color: #ddd;">
+	        				
+	        				<label for="select-all" class="checkbox-inline">
+	        					<input type="checkbox"  class="day-all" name="select-all" value="Selet All" />Select All
+	        				</label>
+
+		        			<label for="monday" class="checkbox-inline">
+			        			<input type="checkbox" class="day-week" name="monday" value="Mon" />Monday
+		        			</label>
+
+		        			<label for="tuesday" class="checkbox-inline">
+			        			<input type="checkbox" class="day-week" name="tuesday" value="Tue" />Tuesday
+		        			</label>
+		        			
+		        			<label for="wednesday" class="checkbox-inline">
+			        			<input type="checkbox" class="day-week" name="wednesday" value="Wed" />Wednesday
+		        			</label>
+
+		        			<label for="thursday" class="checkbox-inline">
+			        			<input type="checkbox" class="day-week" name="thursday" value="Thu" />Thursday
+		        			</label>
+
+		        			<label for="friday" class="checkbox-inline">
+			        			<input type="checkbox" class="day-week" name="friday" value="Fri" />Friday
+		        			</label>
+		        			
+		        			<label for="saturday" class="checkbox-inline">
+		        				<input type="checkbox" class="day-week" name="saturday" value="Sat" />Saturday
+		        			</label>
+		        			
+		        			<label for="sunday" class="checkbox-inline">
+		        				<input type="checkbox" class="day-week" name="sunday" value="Sun" />Sunday
+		        			</label>
+
+				       	</div>
 		        	</div>
 		        	
 		        	<div class="form-group">
@@ -416,153 +474,30 @@ $(function() {
 		{% include "tsweb/main/editprofile.html" %}
 	
 	</div> <!-- End Page Container -->
-<!--
-<div class="placeholder">
-<div class="header">
-<div class="headertext">
-<h1>Teacher Name - My Classroom</h1>
-</div>
-<div class="headerbutton">
-<a href="{% url 'tsweb:logout' %}"><img src="{% static 'tsweb/image/logout.png' %}"/></a>
-<a href=""><img src="{% static 'tsweb/image/userdetails.png' %}" /></a>
-<a href=""><img src="{% static 'tsweb/image/username.png' %}" style="margin-top:12px;" /></a>
-</div>
-</div>
-<h1 class="pagename">Class List</h1>
-<input id="txtSearch" class="searchbox searchboxnofilter" type="text"/>
-<img src="{% static 'tsweb/image/searchbox.png' %}" class="searchboximg searchboximgnofilter" />
-<div class="clear"></div>
-<br/>
-<div class="leftnav">
-<div class="active">
-	<table>
-		<tr>
-			<td class="tdimg"><img src="{% static 'tsweb/image/classlist.png' %}"/></td>
-			<td><a href="{% url 'tsweb:tclasslist' %}">Class List</a></td>
-		</tr>
-	</table>
-</div>
-<div>
-	<table>
-		<tr>
-			<td class="tdimg"><img src="{% static 'tsweb/image/assignmentlist.png' %}"/></td>
-			<td><a href="{% url 'tsweb:tassignmentlist' %}">Assignment List</a></td>
-		</tr>
-	</table>
-</div>
-<div>
-	<table>
-		<tr>
-			<td class="tdimg"><img src="{% static 'tsweb/image/studentlist.png' %}"/></td>
-			<td><a href="{% url 'tsweb:tstudentlist' %}">Student List</a></td>
-		</tr>
-	</table>
-</div>
-<div>
-	<table>
-		<tr>
-			<td class="tdimg"><img src="{% static 'tsweb/image/rubriclist.png' %}"/></td>
-			<td><a href="{% url 'tsweb:trubriclist' %}">Rubric List</a></td>
-		</tr>
-	</table>
-</div>
-<div>
-	<table>
-		<tr>
-			<td class="tdimg"><img src="{% static 'tsweb/image/submissionlist.png' %}"/></td>
-			<td><a href="{% url 'tsweb:tsubmissionlist' %}">Submission List</a></td>
-		</tr>
-	</table>
-</div>
-</div>
-<div class="content">
-<div id="list"></div>
-<div id="editField">
-	<form>
-	<table class="editor">
-		<tr>
-			<td class="col">Class Id</td>
-			<td class="editorTD">
-				<select id="ele_classid" name='classid'></select>
-				<input type="hidden" id="ele_id" name="id" value="" />
-			</td>
-			<td class="viewTD"><span id="textView_classid"></span></td>
-		</tr>
-		<tr>
-			<td class="col">Code</td>
-			<td class="editorTD"><input type="text" id="ele_code" name="code" class="text" value="" /></td>
-			<td class="viewTD"><span id="textView_code"></span></td>
-		</tr>
-		<tr>
-			<td class="col">Subcode</td>
-			<td class="editorTD"><input type="text" id="ele_subcode" name="subcode" class="text" value="" /></td>
-			<td class="viewTD"><span id="textView_subcode"></span></td>
-		</tr>
-		<tr>
-			<td class="col">Teacher Name</td>
-			<td class="editorTD">
-				<select id="ele_teacherid" name="teacherid"></select>
-			</td>
-			<td class="viewTD"><span id="textView_teacherid"></span></td>
-		</tr>
-		<tr>
-			<td class="col">Start Date</td>
-			<td class="editorTD"><input type="text" id="ele_startdate" name="startdate" class="text" value="" /></td>
-			<td class="viewTD"><span id="textView_startdate"></span></td>
-		</tr>
-		<tr>
-			<td class="col">End Date</td>
-			<td class="editorTD"><input type="text" id="ele_enddate" name="enddate" class="text" value="" /></td>
-			<td class="viewTD"><span id="textView_enddate"></span></td>
-		</tr>
-		<tr>
-			<td class="col">Start Time</td>
-			<td class="editorTD"><input type="text" id="ele_starttime" name="starttime" class="text" value="" /></td>
-			<td class="viewTD"><span id="textView_starttime"></span></td>
-		</tr>
-		<tr>
-			<td class="col">End Time</td>
-			<td class="editorTD"><input type="text" id="ele_endtime" name="endtime" class="text" value="" /></td>
-			<td class="viewTD"><span id="textView_endtime"></span></td>
-		</tr>
-		<tr>
-			<td class="col">Day of week</td>
-			<td class="editorTD">
-				<select id="ele_dayofweek" name="dayofweek" multiple>
-					<option value="Mon">Monday</option>
-					<option value="Tue">Tuesday</option>
-					<option value="Wed">Wednesday</option>
-					<option value="Thu">Thursday</option>
-					<option value="Fri">Friday</option>
-					<option value="Sat">Saturday</option>
-					<option value="Sun">Sunday</option>
-				</select>
-			</td>
-			<td class="viewTD"><span id="textView_dayofweek"></span></td>
-		</tr>
-		<tr>
-			<td class="col">Disable</td>
-			<td class="editorTD"><input type="checkbox" id="ele_disabled" name="disabled" /></td>
-			<td class="viewTD"><span id="textView_disabled"></span></td>
-		</tr>
-		<tr>
-			<td>&nbsp;</td>
-		</tr>
-		<tr>
-			<td><div id="btnBack"><span class="ui-icon ui-icon-arrowreturnthick-1-w" style="float:left;"></span>back</div></td>
-			<td class="editorTD" style="float:right;"><div id="btnSave"><span class="ui-icon ui-icon-disk" style="float:left;"></span>Save</div></td>
-			<td class="viewTD"><div id="btnEdit"><span class="ui-icon ui-icon-wrench" style="float:left;"></span>Edit</div></td>
-		</tr>
-	</table>
-	</form>
-	<div id="list_student"></div>
-	<div id="list_add_student"></div>
-</div>
-<input type="button" value="New Class" class="button listnewbutton"/>
-</div>
-<div style="clear:both"></div>
-</div>
--->
+<script>
+	$('#new_class_form').on("submit",function(e){
+      e.preventDefault();
+      var f = $(this);
+		        
+      $(".form-error").remove();
+   	 	$('#class-submit').val("PROCESSING...").attr("disabled","disabled");
+    });
+	
+		$('#new_class_modal').on("hidden.bs.modal",function(){
+      $('#new_class_form')[0].reset();
+      $('#new_class_form .form-error').remove();
+    });
+    
+    $('.modal .form-control, .modal input[type="checkbox"]').attr('disabled', 'disabled');
+    
+    $('#new_class_btn').click(function () {
+    	$('#editClassBtn').hide();
+    	$('.modal .form-control, .modal input[type="checkbox"]').removeAttr('disabled', 'disabled');
+    });
+    
+    $('#editClassBtn').click(function(){$('.modal .form-control, .modal input[type="checkbox"]').removeAttr('disabled', 'disabled')});
+</script>
+
 </body>
 
 </html>

@@ -808,11 +808,43 @@ function openHighlightDialog(highlightid){
 							</div>
 							
 							
+							<ul class="block-list hide" id="criteriaList">
+								<li><label>Criteria</label></li>
+								<li class="criteriaItem tag">
+									<a href="#">{% criteria-name-which-could-be-really-long-or-not %}</a>
+								</li>
+								
+								<li class="criteriaItem tag">
+									<a href="#">{% criteria-name %}</a>
+								</li>
+								
+								<li class="criteriaItem tag">
+									<a href="#">{% criteria-name %}</a>
+								</li>
+								
+								<li class="criteriaItem tag">
+									<a href="#">{% criteria-name %}</a>
+								</li>
+								
+								<li class="criteriaItem tag">
+									<a href="#">{% criteria-name %}</a>
+								</li>
+								
+								<li class="criteriaItem tag">
+									<a href="#">{% criteria-name %}</a>
+								</li>
+								
+								<li class="criteriaItem tag">
+									<a href="#">{% criteria-name %}</a>
+								</li>
+								
+							</ul>
+							
 						</div>
 					</div>
 				</div>
 				
-				<div class="panel panel-default block-cell block-thin block-expanded">
+<!--				<div class="panel panel-default block-cell block-thin block-expanded">
 					<div class="panel-heading block-header">
 						<h3 class="panel-title">
 							<a data-toggle="collapse" data-parent="#side-panel" href="#collapseFive">
@@ -831,7 +863,7 @@ function openHighlightDialog(highlightid){
 						</div>
 					</div>
 					
-				</div>
+				</div>-->
 					  
 			  <div class="panel panel-default block-cell block-thin">
 			  	
@@ -1112,6 +1144,11 @@ function openHighlightDialog(highlightid){
 		});
 		$('#tag-details').click(function () {
 			openDynamicLesson();
+		});
+		
+		
+		$('.circle').click(function () {
+			$('#criteriaList').removeClass('hide');
 		});
 		
 		function openDynamicLesson() {

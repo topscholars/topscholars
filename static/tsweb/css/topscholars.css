@@ -379,8 +379,12 @@ form{
 	padding: 3px;
 	border-radius: 3px;
 }
+#criteriaList{
+	margin-top: -25px;
+}
 .criteriaItem{
 	background-color: rgba(234, 97, 65, 0.3)!important;
+	margin: 2px;
 }
 .criteriaItem a{
 	font-size: 1em!important;

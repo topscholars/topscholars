@@ -521,16 +521,23 @@ $(function() {
 		        	</div>
 		        	
 		        	<div class="form-group">
-		        		<label for="classid" class="col-sm-4 control-label">Class Name</label>
+		        		<label for="classid" class="col-sm-4 control-label">Class Name <div class="text-muted" style="font-size: .8em;">Hold Command or Ctrl to select multiple classes</div></label>
 		        		<div class="col-sm-8">
-		        			<select id="ele_classid" name="classid" class="form-control"></select>
+		        			<select id="ele_classid" name="classid" class="form-control" multiple="multiple">
+		        				<option>{{ ele_class_name }}</option>
+		        			</select>
 		        		</div>
 		        	</div>
 		        	
 		        	<div class="form-group">
-		        		<label for="studentid" class="col-sm-4 control-label">Student Name</label>
+		        		<label for="studentid" class="col-sm-4 control-label">Student Name <div class="text-muted" style="font-size: .8em;">Hold Command or Ctrl to select multiple students</div></label>
 		        		<div class="col-sm-8">
-		        			<select id="ele_studentid" name="studentid" class="form-control"></select>
+		        			<select id="ele_studentid" name="studentid" class="form-control" multiple="multiple">
+		        				<option>{{ student_name }}</option>
+		        				<option>{{ student_name }}</option>
+		        				<option>{{ student_name }}</option>
+		        				<option>{{ student_name }}</option>
+		        			</select>
 		        		</div>
 		        	</div>
 		        	

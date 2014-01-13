@@ -342,30 +342,27 @@
 		
 		{% include "tsweb/main/sidepanel.html" %}
 		
-		<div class="searchlist form form-horizontal">
-			
-			<div class="form-group">
-				<label for="lstClassid" class="col-sm-4 control-label">Class Filter:&nbsp;</label>
-				<div class="col-sm-8">
+
+		
+		<div class="block-cell block-wide">
+			<div class="searchlist">
+				<div class="col-lg-4">
 					<select class="form-control" id="lstClassid">
-						<option value="">Please Select</option>
+						<option value="">Class Filter</option>
 						{% for class in classlist %}
 						<option value="{{ class.id  }}">{{ class.id }} - {{ class.classname }}</option>
 						{% endfor %}
 					</select>
 				</div>
 			</div>
-		</div>
-		
-		<div class="block-cell block-wide">
+			
+			<button id="new_student_btn" class="btn btn-info btn-lg new-btn" data-toggle="modal" data-target="#new_student_modal">
+			  New Student <i class="fa fa-plus"></i>
+			</button>		
 			<div id="list"></div>
 			
 			
 		</div> <!--End Block Cell-->
-		
-		<button id="new_student_btn" class="btn btn-info btn-lg new-btn" data-toggle="modal" data-target="#new_student_modal">
-		  New Student <i class="fa fa-plus"></i>
-		</button>
 		
 		<!--New Student Modal Form--> 
 		<div class="modal fade" id="new_student_modal" tabindex="-1" role="dialog" aria-labelledby="newStudentLabel" aria-hidden="true" data-dismiss="false">

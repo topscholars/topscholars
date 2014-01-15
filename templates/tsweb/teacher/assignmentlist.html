@@ -67,6 +67,9 @@ function EDITTABLE(){
 			{	class: evalClass,
 				id: id  },
 			function(result){
+				$("#ele_classname").multiselect('disable');
+				$("#ele_studentid").multiselect('disable');
+				
 				$("[id^=ele_]").val('');
 				$.each(result, function(ini,val){
 					thisClass.seperateElement($("#ele_"+ini), val);
@@ -568,7 +571,7 @@ $(function() {
 	  });
 	
 		$('#new_assignment_modal').on("hidden.bs.modal",function(){
-	    $('#new_assignment_form')[0].reset();
+	    //$('#new_assignment_form')[0].reset();
 	    $('#new_assignment_form .form-error').remove();
 	  });
 	  
@@ -579,7 +582,11 @@ $(function() {
 	  	$('.modal .form-control, .modal input[type="checkbox"]').removeAttr('disabled', 'disabled');
 	  });
 	  
-	  $('#editAssignmentBtn').click(function(){$('.modal .form-control, .modal input[type="checkbox"]').removeAttr('disabled', 'disabled')});
+	  $('#editAssignmentBtn').click(function(){
+	  	$('.modal .form-control, .modal input[type="checkbox"]').removeAttr('disabled', 'disabled');
+		$("#ele_classname").multiselect('enable');
+		$("#ele_studentid").multiselect('enable');
+  	  });
 	</script>
 </body>
 </html>

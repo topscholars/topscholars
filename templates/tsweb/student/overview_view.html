@@ -79,6 +79,7 @@
 				<li class="dropdown">
 					<a href="#" class="dropdown-toggle student-name" data-toggle="dropdown">Student Name</a>
 					<ul class="dropdown-menu">
+						<li><a href="#passwordResetModal" data-toggle="modal" data-target="#passwordResetModal"><i class="fa fa-ellipsis-h"></i> Reset Password</a></li>
 						<li><a href="#"><i class="fa fa-power-off"></i> Log Out</a></li>
 					</ul>
 				</li>
@@ -209,6 +210,40 @@
 		});
 		</script>
 		
+	<!--New Student Modal Form--> 
+	<div class="modal fade" id="passwordResetModal" tabindex="-1" role="dialog" aria-labelledby="passwordResetLabel" aria-hidden="true" data-dismiss="false">
+	  <div class="modal-dialog">
+	    <div class="modal-content">
+	      <div class="modal-header teacher-header">
+	        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+	        <h4 class="modal-title">Password Reset</h4>
+	      </div>
+	      <div class="modal-body">
+	        <form role="form" class="form-horizontal" id="password_reset">
+	        
+	        	<div class="form-group">
+	        		<label for="pword" class="col-sm-4 control-label">New Password</label>
+	        		<div class="col-sm-8">
+	        			<input type="password" name="pword" class="form-control"/>
+	        		</div>
+	        	</div>		        		
+	        	<div class="form-group">
+	        		<label for="pwordConfirm" class="col-sm-4 control-label">Confirm Password</label>
+	        		<div class="col-sm-8">
+		        		<input type="password" name="pwordConfirm" class="form-control"/>
+		        	</div>
+	        	</div>
+	        </form>
+	      </div>
+	      <div class="modal-footer">
+	        <input type="reset" class="btn btn-default" data-dismiss="modal" value="Close"/>
+	        <input type="submit" class="btn btn-primary" value="Update Password" id="btnSave"/>
+	      </div>
+	    </div><!-- /.modal-content -->
+	  </div><!-- /.modal-dialog -->
+	</div><!-- /.modal -->
+	
+	
 			
 	</div> <!--End Container-->
 <!--	

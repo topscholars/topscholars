@@ -15,6 +15,7 @@ function GridBase(){
 		if(tagName !== undefined){
 			switch (tagName)
 			{
+				
 				case "SPAN":
 				{
 					$(id).text(val);
@@ -33,6 +34,10 @@ function GridBase(){
 					}else{
 						$(id).val(val);
 					}
+				}
+				default:
+				{
+					$(id).val(val);
 				}
 			}
 		}
@@ -97,7 +102,7 @@ function GridBase(){
 			var thisType = $(this).attr("type");
 			
 			var thisVal;
-			
+
 			if(thisType == 'checkbox'){
 				if($(this).prop('checked')){
 					thisVal = 1;

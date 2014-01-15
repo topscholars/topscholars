@@ -29,11 +29,99 @@
 <!--	<script src="{% static 'tsweb/js/jQuery1.10.1.js' %}"></script>
 	<script src="{% static 'tsweb/js/jquery-ui-1.10.3.custom.min.js' %}"></script>-->
 <script>
-$(function() {
+EDITTABLE.prototype = new GridBase();
+function EDITTABLE(){
+	var thisClass = this;
 	var url = "{% url 'tsweb:tprocessajax' %}";
-	var profile = new EDITPROFILE(url);
-	profile.iniControl();
+	var evalClass = 'UNITLIST';
+	var tableClassAjax = 'TUNITLISTAJAX'
+	
+	this.editTable = function(id){
+		
+		$.getJSON(
+			url,
+			{	class: evalClass,
+				id: id  },
+			function(result){
+				$("[id^=ele_]").val('');
+				$.each(result, function(ini,val){
+					thisClass.seperateElement($("#ele_"+ini), val);
+					thisClass.seperateView(ini,val);
+				});
+		})
+		.error(function(xhr, status, error) {
+    		alert('Error occur. Please contact the administrator.');
+    	});
+		return false;
+	}
+
+	this.hideEditTable =function(){
+		$("#new_unit_modal").modal('hide');
+		
+		thisClass.getData('');
+	}
+	
+	this.getData = function(assignmentname ,classid) {
+		$("#list").html("<div style='width:100%;position=relative;text-align:center;'><img src='{% static 'tsweb/image/ajax-loader.gif' %}' alt='' style='margin:auto;width=100px;height=100px;position=relative;' /></div>");
+		$.get("{% url 'tsweb:tprocessajax' %}?class="+tableClassAjax,
+		{ assignmentname : assignmentname ,
+  		classid : classid},
+		function(result){
+		      $("#list").html(result);
+		}
+		);
+	}
+	
+	this.save = function(){
+		var odata;
+		if($("#ele_id").val() == ""){
+			odata = {'class' :  evalClass, 'method' : "add" };
+		}else{
+			odata = {'class' :  evalClass, 'method' : "save" };
+		}
+		odata = thisClass.oData(odata);
+		
+		$.post(url,odata,
+			function(result){
+				thisClass.hideEditTable();
+			})
+		.error(function(xhr, status, error) {
+    		alert('Error occur. Please contact the administrator.');
+    	});
+	}
+	
+	this.Search = function(ele,event)
+	{
+		if (event.keyCode == 13) {
+			thisClass.getData($('#txtSearch').val(), '');
+		}
+		else
+			ele.onKeyPress=event.keyCode;
+	}
+
+	this.iniControl = function(){
+		thisClass.getData('','');
+		Watermark('txtSearch', 'Search', 'noclass');
+		
+		$("#new_unit_btn").click(function(){
+			$("[id^='ele_']").each(function(){
+				$(this).val('');
+			});
+		});
+		
+		$("#btnSave").click(function(){
+			thisClass.save();
+		});
+	
+		var profile = new EDITPROFILE(url);
+		profile.iniControl();
+	}
+}
+$(function() {
+	var gen = new EDITTABLE();
+	gen.iniControl();
 });
+
 </script>
 </head>
 
@@ -78,7 +166,8 @@ $(function() {
 			        		  </div>
 			        		  <div id="collapseName" class="panel-collapse collapse in">
 			        		    <div class="panel-body">
-			        		      <input type="text" name="ele_unit_name" class="form-control" id="ele_unit_name"/>			        		      
+		        		    		<input type="hidden" name="id" class="form-control" id="ele_id"/>	
+			        		      	<input type="text" name="name" class="form-control" id="ele_name"/>			        		      
 			        		    </div>
 			        		  </div>
 			        		</div>
@@ -93,7 +182,7 @@ $(function() {
 			        		  </div>
 			        		  <div id="collapseDesc" class="panel-collapse collapse">
 			        		    <div class="panel-body">
-			        		      <input type="text" name="ele_unit_desc" class="form-control" id="ele_unit_desciption"/>			        		      
+			        		      <input type="text" name="description" class="form-control" id="ele_description"/>			        		      
 			        		    </div>
 			        		  </div>
 			        		</div>
@@ -108,7 +197,7 @@ $(function() {
 			        	    </div>
 			        	    <div id="collapseOne" class="panel-collapse collapse">
 			        	      <div class="panel-body">
-				        	      <textarea type="text" name="ele_goal" class="form-control" id="ele_goal"></textarea>
+				        	      <textarea type="text" name="establishedgoal" class="form-control" id="ele_establishedgoal"></textarea>
 			        	        
 			        	        <!--<div class="new-goal"></div>-->
 			        	        
@@ -126,7 +215,7 @@ $(function() {
 			        	    </div>
 			        	    <div id="collapseTwo" class="panel-collapse collapse">
 			        	      <div class="panel-body">
-		        	          <textarea type="text" name="ele_understanding" class="form-control" id="ele_understanding"></textarea>
+		        	          <textarea type="text" name="understanding" class="form-control" id="ele_understanding"></textarea>
 			        	        
 			        	        <!--<div class="new-understanding"></div>
 			        	        
@@ -144,7 +233,7 @@ $(function() {
 			        	    </div>
 			        	    <div id="collapseThree" class="panel-collapse collapse">
 			        	      <div class="panel-body">
-		        	          <textarea type="text" name="ele_question" class="form-control" id="ele_question"></textarea>
+		        	          <textarea type="text" name="essentialquestion" class="form-control" id="ele_essentialquestion"></textarea>
 			        	        
 			        	       <!-- <div class="new-question"></div>
 			        	        
@@ -163,7 +252,7 @@ $(function() {
 			        	    </div>
 			        	    <div id="collapseFour" class="panel-collapse collapse">
 			        	      <div class="panel-body">
-		        	          <textarea type="text" name="ele_know" class="form-control" id="ele_know"></textarea>
+		        	          <textarea type="text" name="knowledge" class="form-control" id="ele_knowledge"></textarea>
 			        	        
 			        	        <!--<div class="new-know"></div>
 			        	        
@@ -182,7 +271,7 @@ $(function() {
 			        	    </div>
 			        	    <div id="collapseFive" class="panel-collapse collapse">
 			        	      <div class="panel-body">
-		        	          <textarea type="text" name="ele_able" class="form-control" id="ele_able"></textarea>
+		        	          <textarea type="text" name="skill" class="form-control" id="ele_skill"></textarea>
 			        	        
 			        	        <!--<div class="new-able"></div>
 			        	        
@@ -289,7 +378,7 @@ $(function() {
 	        <input type="reset" id="closeBtn" data-dismiss="modal" class="btn btn-default" value="Close" />
 	        <a href="#" id="goStage1" class="btn btn-default hide"><i class="fa fa-arrow-left"></i> Stage 1</a>
 	        <a href="#" id="goStage2" class="btn btn-default hide"><i class="fa fa-arrow-left"></i> Stage 2</a>
-	        <input type="submit" id="unit-submit" class="btn btn-primary hide" value="Save Unit" />
+	        <input type="submit" id="btnSave" class="btn btn-primary hide" value="Save Unit" />
 	        <input type="button" id="stage2Btn" class="btn btn-success" value="Go to stage 2 "/>
 	        <input type="button" id="stage3Btn" class="btn btn-success hide" value="Go to stage 3"/>
 	      </div><!-- /.modal-footer -->
@@ -326,13 +415,13 @@ $(function() {
 			$('#goStage2').removeClass('hide').show();
 			$('#goStage1').addClass('hide');
 			$('#stage3Btn').addClass('hide');
-			$('#unit-submit').removeClass('hide');
+			$('#btnSave').removeClass('hide');
 			
 		});
 		
 		$('#goStage1').click(function () {
 			$('#new_unit_modal .modal-title').text('New Unit - Stage 1 - Desired Results');
-			$('#unit-submit').addClass('hide');
+			$('#btnSave').addClass('hide');
 			$('#stage2Btn').show();
 			$('#closeBtn').show();
 			$('#stage3Btn').addClass('hide');
@@ -356,7 +445,7 @@ $(function() {
 			$('#stage3Btn').removeClass('hide');
 			$('#stage3Btn').show();
 			$('#goStage1').removeClass('hide');
-			$('#unit-submit').addClass('hide');
+			$('#btnSave').addClass('hide');
 			
 		});
 		$("#sortable").sortable();
@@ -390,14 +479,14 @@ $(function() {
 	        		<label for="ele_name" class="col-sm-4 control-label">Assignment Name</label>
 	        		<div class="col-sm-8">
 	        			<input type="text" name="ele_name" id="ele_name" class="form-control"/>
-	        			<input type="hidden" id="ele_id" name="id" class="form-control" />
+	        			<!--<input type="hidden" id="ele_id" name="id" class="form-control" />-->
 	        		</div>
 	        	</div>
 	        	
 	        	<div class="form-group">
 	        		<label for="description" class="col-sm-4 control-label">Description</label>
 	        		<div class="col-sm-8">
-	        			<input type="text" id="ele_description" class="form-control" name="description" />
+	        			<!--<input type="text" id="ele_description" class="form-control" name="description" />-->
 	        		</div>
 	        	</div>
 	        	

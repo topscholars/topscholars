@@ -720,6 +720,7 @@ class Categoryweight(models.Model):
 class Unit(models.Model):
     id = models.IntegerField(primary_key=True, db_column='ID') # Field name made lowercase.
     name = models.CharField(max_length=100L, db_column='Name') # Field name made lowercase.
+    description = models.TextField(db_column='Description', blank=True) # Field name made lowercase.
     abilitylevel = models.ForeignKey(Selectionlist,related_name="Unittoselectionlist", db_column='AbilityLevel') # Field name made lowercase.
     establishedgoal = models.TextField(db_column='EstablishedGoal') # Field name made lowercase.
     understanding = models.TextField(db_column='Understanding') # Field name made lowercase.

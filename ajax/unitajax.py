@@ -111,7 +111,21 @@ class UNITLIST():
             data_json = { 'status': 'success', }
             data = simplejson.dumps(data_json)
             return HttpResponse(data, mimetype='application/json')
-    
+        
+    def loadAvailableTags(self,request):
+        try:
+            userid = request.session['userid']
+            login = Login.objects.get(id=userid)
+            clientid = login.clientid
+            taglist = list(Tag.objects.filter().values('name'))
+        except Tag.DoesNotExist:
+            data_json = { 'status': 'error' }
+            data = simplejson.dumps(data_json)
+            return HttpResponse(data, mimetype='application/json')
+        else:
+            data = simplejson.dumps(taglist)
+            return HttpResponse(data, mimetype='application/json')
+        
 class TUNITLISTAJAX():
     def get(self,request):
         try:

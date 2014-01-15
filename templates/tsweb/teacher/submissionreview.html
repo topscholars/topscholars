@@ -326,7 +326,7 @@ function EDITTABLE(){
 			    'submissionversionid': $('#ele_submissionversionid').val()
 			},
 			function (result) {
-				$("#tagList li").remove();
+				//$("#tagList li").remove();
 			    $("#tagBox").html('');
 			    $("#commentArea").val('');
 			    $("<ul>").attr("id", "tagList").appendTo("#tagBox");
@@ -879,11 +879,43 @@ function openHighlightDialog(highlightid){
 							</div>
 						</div>
 						
-						
+						<ul class="block-list hide" id="criteriaList">
+							<li><label>Criteria</label></li>
+							<li class="criteriaItem tag">
+								<a href="#" data-toggle="modal" data-target="#criteria_modal">a{# criteria-name-which-could-be-really-long-or-not #}</a>
+							</li>
+							
+							<li class="criteriaItem tag">
+								<a href="#">{# criteria-name #}</a>
+							</li>
+							
+							<li class="criteriaItem tag">
+								<a href="#">{# criteria-name #}</a>
+							</li>
+							
+							<li class="criteriaItem tag">
+								<a href="#">{# criteria-name #}</a>
+							</li>
+							
+							<li class="criteriaItem tag">
+								<a href="#">{# criteria-name #}</a>
+							</li>
+							
+							<li class="criteriaItem tag">
+								<a href="#">{# criteria-name #}</a>
+							</li>
+							
+							<li class="criteriaItem tag">
+								<a href="#">{# criteria-name #}</a>
+							</li>
+							
+						</ul>
 					</div>
 				</div>
 			</div>
 			
+			
+			<!--
 			<div class="panel panel-default block-cell block-thin block-expanded">
 				<div class="panel-heading block-header">
 					<h3 class="panel-title">
@@ -904,6 +936,7 @@ function openHighlightDialog(highlightid){
 				</div>
 				
 			</div>
+			-->
 					  
 			  <div class="panel panel-default block-cell block-thin">
 			  	
@@ -1177,6 +1210,31 @@ function openHighlightDialog(highlightid){
 				  </div><!-- /.modal-dialog -->
 				</div><!-- /.modal -->
 	
+					
+				<!--Modal for Objective-->
+				<div class="modal fade" id="criteria_modal" tabindex="-1" role="dialog" aria-labelledby="criteriaModal" aria-hidden="true" data-dismiss="false">
+					  <div class="modal-dialog">
+					    <div class="modal-content">
+					      <div class="modal-header teacher-header">
+					        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					        <h4 class="modal-title">Criteria Details</h4>
+					      </div>
+					      <div class="modal-body">
+									
+									<h5>{# criteria_name #}</h5>
+			
+											
+									<div class="modal-footer">
+									  <input type="reset" class="btn btn-default" data-dismiss="modal" value="Close"/>
+									  <!--<input type="submit" class="btn btn-primary" value="Save" id="btnSave"/>-->
+									</div>
+											
+					      </div>
+					      
+					    </div><!-- /.modal-content -->
+					  </div><!-- /.modal-dialog -->
+					</div><!-- /.modal -->
+	
 	
 <div id="divedithighlight" style="z-index:2;width:500px;position:absolute;background-color:white;margin-top:10%;margin-left:35%;padding:10px;">
 	<input id="ele_highlightid" type="hidden">
@@ -1240,6 +1298,10 @@ function openHighlightDialog(highlightid){
 		});
 		$('#tag-details').click(function () {
 			openDynamicLesson();
+		});
+		
+		$('.circle').click(function () {
+			$('#criteriaList').removeClass('hide');
 		});
 		
 		function openDynamicLesson() {

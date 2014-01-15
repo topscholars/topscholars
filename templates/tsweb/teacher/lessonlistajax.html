@@ -1,4 +1,4 @@
-﻿<div class="responsive-table">
+<div class="responsive-table">
 <table class="table table-bordered">
 <tr class="rowheader">
 <td class="cellitem">Id</td>
@@ -9,7 +9,7 @@
 <td class="cellitem">Rublic</td>
 </tr>
 {% for class in classlist %}
-    <tr id="{{ class.id }}" class="rowitem" data-toggle="modal" data-target="#new_class_modal">
+    <tr id="{{ class.id }}" class="rowitem">
 	<td class="cellitem">{{ class.id }}</td>
 	<td class="cellitem">{{ class.code }}</td>
 	<td class="cellitem">{{ class.classid.description }}</td>
@@ -25,7 +25,7 @@ $(function() {
 	//var gen = new EDITTABLE();
 	$('.rowitem').click(function() {
 		var id = $(this).attr('id');
-		//alert($(this).attr('id'));
+		alert($(this).attr('id'));
 		new EDITTABLE().editTable(id);
 	});
 });

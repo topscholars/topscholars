@@ -1,4 +1,5 @@
-﻿<table class="tablelist">
+﻿<div class="responsive-table">
+<table class="table table-bordered">
 <tr class="rowheader">
 <td class="cellitem">Id</td>
 <td class="cellitem">Name</td>
@@ -6,7 +7,7 @@
 <td class="cellitem">Type</td>
 </tr>
 {% for row in rubriclist %}
-<tr class="rowitem">
+<tr class="rowitem" data-toggle="modal" data-target="created_rubric">
 <td class="cellitem">{{ row.id }}</td>
 <td class="cellitem">{{ row.name }}</td>
 <td class="cellitem">{{ row.description }}</td>
@@ -14,6 +15,7 @@
 </tr>
 {% endfor %}
 </table>
+</div>
 <script>
 $(function() {
 	$('.rowitem').click(function() {

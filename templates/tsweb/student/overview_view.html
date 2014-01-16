@@ -79,6 +79,7 @@
 				<li class="dropdown">
 					<a href="#" class="dropdown-toggle student-name" data-toggle="dropdown">Student Name</a>
 					<ul class="dropdown-menu">
+						<li><a href="#studentInfoModal" data-toggle="modal" data-target="#studentInfoModal"><i class="fa fa-user"></i> My Information</a></li>
 						<li><a href="#passwordResetModal" data-toggle="modal" data-target="#passwordResetModal"><i class="fa fa-ellipsis-h"></i> Reset Password</a></li>
 						<li><a href="#"><i class="fa fa-power-off"></i> Log Out</a></li>
 					</ul>
@@ -114,18 +115,17 @@
 			<div class="panel panel-default block-cell block-thin">
 				<div class="panel-heading block-header">
 					<h3 class="panel-title">
-						<a data-toggle="collapse" data-parent="#side-panel" href="#profileCollapse">
-							My Information<i class="fa fa-user fa-large pull-right"></i>
+						<a data-toggle="collapse" data-parent="#side-panel" href="#activityUpdates">
+							Activity Updates<i class="fa fa-road fa-large pull-right"></i>
 						</a>
 					</h3>
 				</div>
-				<div id="profileCollapse" class="panel-collapse  in">
+				<div id="activityUpdates" class="panel-collapse  in">
 					<div class="block-body">
-						<h4>{% user-name %}</h4>
-						<p><b>Email:</b> {% user-email %}</p>
-						<p><b>Current Grade:</b> {% current-grade %}</p>
-						<p><b>Class Enrolled:</b> {% class-enrolled %}</p>
-						<p><b>Teachers:</b> {% teacher-name %}</p>
+						<p><b>Next:</b> {% next %}</p>
+						<p><b>Next:</b> {% next %}</p>
+						<p><b>Next:</b> {% next %}</p>
+						<p><b>Next:</b> {% next %}</p>
 					</div>
 				</div>
 			</div>
@@ -210,7 +210,7 @@
 		});
 		</script>
 		
-	<!--New Student Modal Form--> 
+	<!--Reset Password Modal Form--> 
 	<div class="modal fade" id="passwordResetModal" tabindex="-1" role="dialog" aria-labelledby="passwordResetLabel" aria-hidden="true" data-dismiss="false">
 	  <div class="modal-dialog">
 	    <div class="modal-content">
@@ -238,6 +238,32 @@
 	      <div class="modal-footer">
 	        <input type="reset" class="btn btn-default" data-dismiss="modal" value="Close"/>
 	        <input type="submit" class="btn btn-primary" value="Update Password" id="btnSave"/>
+	      </div>
+	    </div><!-- /.modal-content -->
+	  </div><!-- /.modal-dialog -->
+	</div><!-- /.modal -->
+	
+	<!--Student info Modal Form--> 
+	<div class="modal fade" id="studentInfoModal" tabindex="-1" role="dialog" aria-labelledby="studentInfoLabel" aria-hidden="true" data-dismiss="false">
+	  <div class="modal-dialog">
+	    <div class="modal-content">
+	      <div class="modal-header teacher-header">
+	        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+	        <h4 class="modal-title">My Information</h4>
+	      </div>
+	      <div class="modal-body">
+	        <div id="profileCollapse" class="panel-collapse  in">
+	        	<div class="block-body">
+	        		<h4>{% user-name %}</h4>
+	        		<p><b>Email:</b> {% user-email %}</p>
+	        		<p><b>Current Grade:</b> {% current-grade %}</p>
+	        		<p><b>Class Enrolled:</b> {% class-enrolled %}</p>
+	        		<p><b>Teachers:</b> {% teacher-name %}</p>
+	        	</div>
+	        </div>
+	      </div>
+	      <div class="modal-footer">
+	        <input type="reset" class="btn btn-default" data-dismiss="modal" value="Close"/>
 	      </div>
 	    </div><!-- /.modal-content -->
 	  </div><!-- /.modal-dialog -->

@@ -10,21 +10,26 @@
 	<link rel="stylesheet" type="text/css" href="{% static 'tsweb/css/bootstrap.css' %}" />
 	<link rel="stylesheet" type="text/css" href="{% static 'tsweb/css/topscholars.css' %}" />-->
 	
-	<link rel="stylesheet" href="../../../static/tsweb/css/bootstrap.css" type="text/css" />
-	<link rel="stylesheet" href="../../../static/tsweb/css/topscholars.css" type="text/css" />
+	<link rel="stylesheet" href="{% static 'tsweb/css/bootstrap.css' %}" type="text/css" />
+	<link rel="stylesheet" href="{% static 'tsweb/css/topscholars.css' %}" type="text/css" />
 	<link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
-	<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
+	<link rel="stylesheet" type="text/css" href="{% static 'tsweb/css/smoothness/jquery-ui-1.10.3.custom.css' %}" />
 	
 <!--	<script src="{% static 'tsweb/js/jQuery1.10.1.js' %}"></script>
 	<script src="{% static 'tsweb/js/jquery-ui-1.10.3.custom.min.js' %}"></script>-->
 	
-	<script src="../../../static/tsweb/js/jQuery1-10-1.js" type="text/javascript"></script>
-	<script src="../../../static/tsweb/js/jquery-ui-1-10-3-custom-min.js" type="text/javascript"></script>
+	<script src="{% static 'tsweb/js/jQuery1-10-1.js' %}" type="text/javascript"></script>
+	<script src="{% static 'tsweb/js/WaterMark.js' %}"></script>
+
+	<script src="{% static 'tsweb/js/jquery-ui-1.10.3.custom.min.js' %}"></script>
 	<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
-	<script src="../../../static/tsweb/js/bootstrap.js" type="text/javascript"></script>
-	<script src="../../../static/tsweb/js/transition.js" type="text/javascript"></script>
-	<script src="../../../static/tsweb/js/popover.js" type="text/javascript"></script>
-	<script src="../../../static/tsweb/js/jquery-jeditable-min.js" type="text/javascript"></script>
+	<script src="{% static 'tsweb/js/bootstrap.js' %}" type="text/javascript"></script>
+	<script src="{% static 'tsweb/js/transition.js' %}" type="text/javascript"></script>
+	<script src="{% static 'tsweb/js/popover.js' %}" type="text/javascript"></script>
+	<script src="{% static 'tsweb/js/jquery-jeditable-min.js' %}" type="text/javascript"></script>
+	<script src="{% static 'tsweb/js/jquery.cookie.js' %}"></script>
+	<script src="{% static 'tsweb/js/util.js' %}"></script>
+	<script src="{% static 'tsweb/js/jquery.validate.js' %}"></script>
 
 <script>
 $(function() {
@@ -78,121 +83,24 @@ function CloseEdit() {
 	$('#editrubric').hide();
 	$('#editrubricbackground').hide();
 }
+$(function() {
+	var url = "{% url 'tsweb:tprocessajax' %}";
+	var profile = new EDITPROFILE(url);
+	profile.iniControl();
+});
 </script>
 </head>
 
 <body>
-	<nav class="navbar" role="navigation">
-		<div class="container">
-			<h1 class="logo"><a href="#">Writability - My Classroom</a></h1>
-			<ul class="nav navbar-nav pull-right student-nav" >
-				
-				<li class="dropdown">
-					<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-bullhorn fa-lg notification"></i></a>
-					<ul class="dropdown-menu">
-						<li class="dropdown-title">Notifications</li>
-						<li><a href="#">{% notification-name %}</a></li>
-					</ul>
-				</li>
-				
-				<li class="dropdown">
-					<a href="#" class="dropdown-toggle student-name" data-toggle="dropdown">{% user_name %}</a>
-					<ul class="dropdown-menu">
-						<li><a href="{% url 'tsweb:logout' %}"><i class="fa fa-power-off"></i> Log Out</a></li>
-					</ul>
-				</li>
-			</ul>
-			
-			<form class="navbar-form navbar-left" role="search" id="search-form" method="" action="null">
-				<div class="input-group col-lg-3 col-offset-6">
-					<input type="text" class="form-control" id="txtSearch">
-			    <span class="input-group-btn">
-			      <input class="btn btn-default" type="submit" value="Search">
-			    </span>
-			  </div><!-- /input-group -->
-			</form>
-	    
-		</div>
-	</nav> <!-- End Nav -->
-	<div class="page-container">
-	
-		<div class="side-panel">
-		
-			<div class="panel block-cell block-thin">
-				<div class="panel-heading block-header">
-					<h3 class="panel-title">
-						<a href="{% url 'tsweb:tclasslist' %}">
-							Class List <i class="fa fa-book pull-right"></i>
-						</a>
-					</h3>
-				</div>
-			</div>
-			
-			<div class="panel block-cell block-thin">
-				<div class="panel-heading block-header">
-					<h3 class="panel-title">
-						<a href="{% url 'tsweb:tassignmentlist' %}">
-							Assignment List <i class="fa fa-file-text pull-right"></i>
-						</a>
-					</h3>
-				</div>
-			</div>
-			
-			<div class="panel block-cell block-thin">
-				<div class="panel-heading block-header">
-					<h3 class="panel-title">
-						<a href="{% url 'tsweb:tstudentlist' %}">
-							Student List <i class="fa fa-users pull-right"></i>
-						</a>
-					</h3>
-				</div>
-			</div>
-			
-			<div class="panel block-cell block-thin">
-				<div class="panel-heading block-header active">
-					<h3 class="panel-title">
-						<a href="{% url 'tsweb:trubriclist' %}">
-							Rubric List <i class="fa fa-th-large pull-right"></i>
-						</a>
-					</h3>
-				</div>
-			</div>
-			
-			<div class="panel block-cell block-thin">
-				<div class="panel-heading block-header">
-					<h3 class="panel-title">
-						<a href="{% url 'tsweb:tsubmissionlist' %}">
-							Submission List <i class="fa fa-files-o pull-right"></i>
-						</a>
-					</h3>
-				</div>
-			</div>
-			
-			<div class="panel block-cell block-thin">
-				<div class="panel-heading block-header">
-					<h3 class="panel-title">
-						<a href="{% url 'tsweb:tlessonlist' %}">
-							Lesson List <i class="fa fa-lightbulb-o pull-right"></i>
-						</a>
-					</h3>
-				</div>
-			</div>	
-			
-			<div class="panel block-cell block-thin">
-				<div class="panel-heading block-header">
-					<h3 class="panel-title">
-						<a href="{% url 'tsweb:tlessonlist' %}">
-							Tag List <i class="fa fa-tags pull-right"></i>
-						</a>
-					</h3>
-				</div>
-			</div>
-			
-		</div> <!-- End side panel -->
+{% include "tsweb/main/navbar.html" %}
+
+	<div class="page-container"> <!-- Begin Page -->
+
+	{% include "tsweb/main/sidepanel.html" %}
 		
 		<div class="block-cell block-wide">
 			<div id="list"></div>
-			
+			<!--
 			<div class="responsive-table">
 			<table class="table table-bordered table-hover">
 			<tr class="rowheader">
@@ -219,12 +127,13 @@ function CloseEdit() {
 				});
 			});
 			</script>
+			-->
 			<!--Rubric table insert here-->
 			<button id="new_rubric_btn" class="btn btn-info btn-lg new-btn" data-toggle="modal" data-target="#new_rubric_modal">
 			  New Rubric <i class="fa fa-plus"></i>
 			</button>
+			
 		</div> <!--End Block Cell-->
-		
 		
 		<!--New Rubric Modal Form--> 
 		<div class="modal fade modal-wide" id="new_rubric_modal" tabindex="-1" role="dialog" aria-labelledby="newRubricLabel" aria-hidden="true" data-dismiss="false">
@@ -238,56 +147,48 @@ function CloseEdit() {
 		        <form role="form" class="form-inline" id="new_rubric_form">
 		        	<!--Create rubric here-->
 		        	<div class="col-lg-5 clearfix">
-		        		<div class="form-group">
-		        			<label for="rubric_name">Rubric Name</label>
-		        			<input type="text" name="rubric_name" id="rubric_name" class="form-control input-small" required="required"/>
-		        		</div>
-		        		<div class="form-group">
-		        			<label for="rubric_desc">Description</label>
-		        			<input type="text" name="rubric_desc" id="rubric_desc" class="form-control input-small" required="required"/>
-		        		</div>
 			        	<div class="form-group">
 			        		<label for="rubric_goal">Goal Of Task</label>
-			        		<input type="text" name="rubric_goal" id="rubric_goal" class="form-control input-small" required="required"/>
+			        		<input type="text" name="rubric_goal" id="rubric_goal" class="form-control" required="required"/>
 			        	</div>
 			        	<div class="form-group">
 			        		<label for="rubric_audience">Audience</label>
-			        		<input type="text" name="rubric_audience" id="rubric_audience" class="form-control input-small" />
+			        		<input type="text" name="rubric_audience" id="rubric_audience" class="form-control" />
 			        	</div>
 			        	<div class="form-group">
 			        		<label for="rubric_context">Context/Situation</label>
-			        		<input type="text" name="rubric_context" id="rubric_context" class="form-control input-small" />
+			        		<input type="text" name="rubric_context" id="rubric_context" class="form-control" />
 			        	</div>
 			        	<div class="form-group">
 			        		<label for="rubric_parameters">Product Parameters</label>
-			        		<input type="text" name="rubric_parameters" id="rubric_parameters" class="form-control input-small" />
+			        		<input type="text" name="rubric_parameters" id="rubric_parameters" class="form-control" />
 			        	</div>
 			        	
 			        	<!--Criteria Section-->
 			        	<div class="well" id="add_impact_criteria_text" style="display: none;">
-				        	<input type="text" name="add_impact_criteria" id="add_impact_criteria" class="form-control input-small" placeholder="Add Impact Criteria"/>
-				        	<input type="text" name="add-impact-tag" placeholder="Add Tag" id="add_impact_tag" class="form-control add-tag input-small" />
+				        	<input type="text" name="add_impact_criteria" id="add_impact_criteria" class="form-control" placeholder="Add Impact Criteria"/>
+				        	<input type="text" name="add-impact-tag" placeholder="Add Tag" id="add_impact_tag" class="form-control add-tag" />
 				        	<input type="button" class="btn btn-blue" value="+" id="add_impact_criteria_btn"/>
 			        	</div>
 			        	<div class="alert alert-danger alertImpact" style="display: none;">Please enter text.</div>
 			        	
 								<div class="well" id="add_quality_criteria_text" style="display: none;">
-			        		<input type="text" name="add_quality_criteria" id="add_quality_criteria" class="form-control input-small" placeholder="Add Quality Criteria" />
-			        		<input type="text" name="add-quality-tag" placeholder="Add Tag" id="add_quality_tag" class="form-control add-tag input-small" />
+			        		<input type="text" name="add_quality_criteria" id="add_quality_criteria" class="form-control" placeholder="Add Quality Criteria" />
+			        		<input type="text" name="add-quality-tag" placeholder="Add Tag" id="add_quality_tag" class="form-control add-tag" />
 		        			<input type="button" class="btn btn-green" value="+" id="add_quality_criteria_btn"/>
 				        </div>
 			        	<div class="alert alert-danger alertQuality" style="display: none;">Please enter text.</div>
 			        	
 			        	<div class="well" id="add_content_criteria_text" style="display: none;">
-			        		<input type="text" name="add_content_criteria" id="add_content_criteria" class="form-control input-small" placeholder="Add Content Criteria"/>
-				        	<input type="text" name="add-content-tag" placeholder="Add Tag" id="add_content_tag" class="form-control add-tag input-small" />
+			        		<input type="text" name="add_content_criteria" id="add_content_criteria" class="form-control" placeholder="Add Content Criteria"/>
+				        	<input type="text" name="add-content-tag" placeholder="Add Tag" id="add_content_tag" class="form-control add-tag" />
 					        <input type="button" class="btn btn-purple" value="+" id="add_content_criteria_btn"/>
 				        </div>
 			        	<div class="alert alert-danger alertContent" style="display: none;">Please enter text.</div>
 			        	
 			        	<div class="well" id="add_process_criteria_text" style="display: none;">
-			        		<input type="text" name="add_process_criteria" id="add_process_criteria" class="form-control input-small" placeholder="Add Process Criteria"/>
-				        	<input type="text" name="add-process-tag" placeholder="Add Tag" id="add_process_tag" class="form-control add-tag input-small" />
+			        		<input type="text" name="add_process_criteria" id="add_process_criteria" class="form-control" placeholder="Add Process Criteria"/>
+				        	<input type="text" name="add-process-tag" placeholder="Add Tag" id="add_process_tag" class="form-control add-tag" />
 				        	<input type="button" class="btn btn-red" value="+" id="add_process_criteria_btn"/>
 				        </div>
 			        	<div class="alert alert-danger alertProcess" style="display: none;">Please enter text.</div>
@@ -360,7 +261,7 @@ function CloseEdit() {
 		    <div class="modal-content">
 		      <div class="modal-header teacher-header">
 		        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-		        <h4 class="modal-title">{% rubric_name %}</h4>
+		        <h4 class="modal-title">{# rubric_name #}</h4>
 		      </div>
 		      <div class="modal-body">
 		      	<p class="text-muted">Click on the text to edit your rubric.  Then hit &#8984;Enter</p>
@@ -368,10 +269,10 @@ function CloseEdit() {
 		      	<form role="form" class="form" style="margin-top: -85px;">
 			      	<div class="rubric-overview col-lg-6">
 			      		<ul>
-			      			<li><b>Goal:</b><p class="edit">{% rubric_goal %}</p></li>
-			      			<li><b>Audience:</b> <p class="edit">{% rubric_audience %}</p></li>
-			      			<li><b>Context:</b> <p class="edit">{% rubric_context %}</p></li>
-			      			<li><b>Product Parameters:</b> <p class="edit">{% rubric_parameters %}</p></li>
+			      			<li><b>Goal:</b><p class="edit">{# rubric_goal #}</p></li>
+			      			<li><b>Audience:</b> <p class="edit">{# rubric_audience #}</p></li>
+			      			<li><b>Context:</b> <p class="edit">{# rubric_context #}</p></li>
+			      			<li><b>Product Parameters:</b> <p class="edit">{# rubric_parameters #}</p></li>
 			      		</ul>
 			      	</div>
 			      	<div class="category-info col-lg-6">
@@ -384,14 +285,14 @@ function CloseEdit() {
 			      						<a data-toggle="collapse" data-parent="#rubric-panel" href="#collapseTen">
 			      							Impact 
 			      						</a>
-			      						<span class="pull-right">{% impact_percent %}</span>
+			      						<span class="pull-right">{# impact_percent #}</span>
 			      					</h3>
 			      				</div>
 			      				
 			      				<div id="collapseTen" class="panel-collapse collapse">
 			      					<div class="block-body">
 			      						<ul>
-			      							<li class="edit">{% impact_criteria %}</li>
+			      							<li class="edit">{# impact_criteria #}</li>
 			      						</ul>
 			      					</div>
 			      				</div>
@@ -403,14 +304,14 @@ function CloseEdit() {
 			      						<a data-toggle="collapse" data-parent="#rubric-panel" href="#collapseEleven">
 			      							Quality
 			      						</a>
-			      						<span class="pull-right">{% quality_percent %}</span>
+			      						<span class="pull-right">{# quality_percent #}</span>
 			      					</h3>
 			      				</div>
 			      				
 			      				<div id="collapseEleven" class="panel-collapse collapse">
 			      					<div class="block-body">
 			      						<ul>
-			      							<li class="edit">{% quality_criteria %}</li>
+			      							<li class="edit">{# quality_criteria #}</li>
 			      						</ul>
 			      					</div>
 			      				</div>
@@ -422,14 +323,14 @@ function CloseEdit() {
 												<a data-toggle="collapse" data-parent="#rubric-panel" href="#collapseTwelve">
 													Content
 												</a>
-												<span class="pull-right">{% content_percent %}</span>
+												<span class="pull-right">{# content_percent #}</span>
 											</h3>
 										</div>
 										
 										<div id="collapseTwelve" class="panel-collapse collapse">
 											<div class="block-body">
 												<ul>
-													<li class="edit">{% content_criteria %}</li>
+													<li class="edit">{# content_criteria #}</li>
 												</ul>
 											</div>
 										</div>
@@ -441,14 +342,14 @@ function CloseEdit() {
 												<a data-toggle="collapse" data-parent="#rubric-panel" href="#collapseThirteen">
 													Process
 												</a>
-												<span class="pull-right">{% process_percent %}</span>
+												<span class="pull-right">{# process_percent #}</span>
 											</h3>
 										</div>
 										
 										<div id="collapseThirteen" class="panel-collapse collapse">
 											<div class="block-body">
 												<ul>
-													<li class="edit">{% process_criteria %}</li>
+													<li class="edit">{# process_criteria #}</li>
 												</ul>
 											</div>
 										</div>
@@ -465,7 +366,7 @@ function CloseEdit() {
 	      </div> <!-- /.modal-content -->
       </div> <!-- /.modal-dialog -->
     </div> <!-- /.modal -->
-		
+		{% include "tsweb/main/editprofile.html" %}
 		<script>
 			document.getElementById("uploadBtn").onchange = function () {
 		    document.getElementById("uploadFile").value = this.value;
@@ -583,7 +484,8 @@ function CloseEdit() {
 			
 			$('.btn-add').click(function (e) {e.preventDefault();});
 		
-		</script>
+		</script>	
+
 
 	</div> <!-- End page container --> 
 </body>

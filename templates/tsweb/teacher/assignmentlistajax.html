@@ -10,7 +10,7 @@
 <td class="cellitem">Word Limit</td>
 </tr>
 {% for row in assignmentlist %}
-	<tr class="rowitem" id="{{ row.id }}">
+	<tr class="rowitem" id="{{ row.id }}" data-toggle="modal" data-target="#new_assignment_modal">
 	<td class="cellitem">{{ row.id }}</td>
 	<td class="cellitem"><i class="fa fa-file-text fa-2x" style="color: #777777;"></i></td>
 	<td class="cellitem">{{ row.name }}</td>

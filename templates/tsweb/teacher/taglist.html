@@ -134,33 +134,45 @@
 		<div class="block-cell block-wide">
 			<div class="row">
 				<form class="form" role="form" id="newTagForm" method="POST" action="#taglist">
-			    <div class="col-lg-4">
+			    <div class="col-lg-2">
 				    <div class="form-group">
-				      <input id="tagName" type="text" class="form-control" placeholder="Tag Name"> 
+				      <input id="tagName" type="text" class="form-control input-small" placeholder="Tag Name"> 
 				    </div><!-- /input-group -->
 			    </div>
-			    <div class="col-lg-8">
-				    <div class="input-group">
-				      <input id="tagDescription" type="text" class="form-control" placeholder="Tag Description"> 
-				      <span class="input-group-btn">
-				        <input type="button" class="btn btn-success" type="button" id="addTagBtn" value="Add Tag"/>
-				      </span>
-				    </div><!-- /input-group -->
-				  </div><!-- /.col-lg-6 -->    
+			    <div class="col-lg-2">
+			      <div class="form-group">
+			        <input id="tag_category" type="text" class="form-control input-small" placeholder="Category"> 
+			      </div><!-- /input-group -->
+			    </div>
+			    <div class="col-lg-4">
+			    	<div class="form-group">
+			   			<input id="tagDescription" type="text" class="form-control input-small" placeholder="Descriptions">
+			   		</div>
+				  </div><!-- /.col-lg-6 -->
+				  <div class="col-lg-2">
+				  	<div class="form-group">
+			  			<input id="sub_tag" type="text" class="form-control input-small" placeholder="Sub Tag">
+			  		</div>
+				  </div><!-- /.col-lg-6 -->  
+				  <input type="button" class="btn btn-success btn-small" type="button" id="addTagBtn" value="Add Tag"/>  
 			  </form>
 			</div><!-- /.row -->
+			<hr />
 			<div>
-				<!--<ul id="taglist">
-					<li></li>
-				</ul>-->
-				<table class="table table-bordered table-condensed">
+
+				<table class="table table-bordered table-condensed table-hover">
 					<tr class="rowheader">
 						<td class="cellitem">Tag Name</td>
-						<td class="cellitem">Tag Description</td>
+						<td class="cellitem">Description</td>
+						<td class="cellitem">Category</td>
+						<td class="cellitem">Sub Tag</td>
+						
 					</tr>
 					<tr id="{{ student.id }}" class="rowitem">
 						<td class="cellitem">{{ tag.name }}</td>
 						<td class="cellitem">{{ tag.desciption }}</td>
+						<td class="cellitem">{{ tag.category }}</td>
+						<td class="cellitem">{{ tag.subtag }}</td>
 					</tr>
 				</table>
 			</div>
@@ -171,9 +183,62 @@
 				$('#newTagForm').submit(function () {
 					$('#tagDecription').val().appendTo($('#taglist'));
 				});
+				
+				$('.rowitem').click(function () {
+					$('#tag_modal').modal();
+				});
 			});
 			</script>
 		</div> <!--End Block Cell-->
 	</div> <!-- End Page Container -->
+	
+	<!--New Class Modal Form--> 
+	<div class="modal fade" id="tag_modal" tabindex="-1" role="dialog" aria-labelledby="tagLabel" aria-hidden="true" data-dismiss="false" style="background-color: rgba(20, 20, 20, .75);">
+	  <div class="modal-dialog">
+	    <div class="modal-content">
+	      <div class="modal-header teacher-header">
+	        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+	        <button type="button" class="btn btn-default btn-small btn-edit pull-right hide" id="editClassBtn">Edit</button>
+	        <h4 class="modal-title">Tag</h4>
+	      </div>
+	      <div class="modal-body">
+	        <form role="form" class="form form-horizontal" id="tag_form">
+        		<div class="form-group">
+        			<label for="tag_name" class="col-sm-4 control-label">Tag Name</label>
+        			<div class="col-sm-8">
+        				<input type="text" name="tag_name" id="tag_name" class="form-control input-small"/>
+        			</div>
+        		</div>
+        		
+        		<div class="form-group">
+        			<label for="descriptions" class="col-sm-4 control-label">Descriptions</label>
+        			<div class="col-sm-8">
+        				<input type="text" id="tag_descriptions" class="form-control input-small" name="descriptions" />
+        			</div>
+        		</div>
+        		
+        		<div class="form-group">
+        			<label for="tag_category" class="col-sm-4 control-label">Category</label>
+        			<div class="col-sm-8">
+        				<input type="text" id="tag_category" class="form-control input-small" name="tag_category" />
+        			</div>
+        		</div>
+        		
+        		<div class="form-group">
+        			<label for="sub_tags" class="col-sm-4 control-label">Sub Tags</label>
+        			<div class="col-sm-8">
+        				<input type="text" id="sub_tags" class="form-control input-small" name="sub_tags" />
+        			</div>
+        		</div>
+        		
+        	</form>
+        </div><!-- /.modal-body -->
+        
+        <div class="modal-footer">
+        	<input type="submit" name="save" value="Save Tag" class="btn btn-primary" />
+	      </div><!-- /.modal-footer -->
+	    </div><!-- /.modal-content -->
+	  </div><!-- /.modal-dialog -->
+	</div><!-- /.modal -->
 </body>
 </html>

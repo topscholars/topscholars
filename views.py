@@ -14,6 +14,9 @@ from ajax.submissionajax import *
 from ajax.submissionreviewajax import *
 from ajax.submissionreviewstudentajax import *
 from ajax.loginajax import *
+from ajax.userajax import *
+from ajax.tagajax import *
+from ajax.unitajax import *
 
 #Login View
 def login(request):
@@ -56,9 +59,10 @@ def sindex(request):
         login = Login.objects.get(id=userid)
         clientid = login.clientid
         studentid = login.recid
+        user_name = login.loginname
         studentlist = Studentlist.objects.filter(id=studentid)
         submissionlist = Submission.objects.filter(studentid=studentid)
-        context= {'studentlist' : studentlist, 'submissionlist' : submissionlist}
+        context= {'studentlist' : studentlist, 'submissionlist' : submissionlist, 'user_name' : user_name}
         #data = simplejson.dumps(submissionlist)
         #return HttpResponse(data, mimetype='application/json')
         return render(request, 'tsweb/student/index.html', context)
@@ -70,7 +74,17 @@ def tclasslist(request):
     except KeyError:
         return HttpResponseRedirect(reverse('tsweb:login'))
     else:
-        return render(request, 'tsweb/teacher/classlist.html', '')
+        login = Login.objects.get(id=userid)
+        user_name = login.loginname
+        recid = login.recid
+        userlist = Userlist.objects.get(id=recid)
+        
+        securityprofile = userlist.securityprofileid
+        urlActive = 'classlist'
+        context= {'user_name' : user_name,
+                  'securityprofile' : securityprofile,
+                  'urlActive': urlActive, }
+        return render(request, 'tsweb/teacher/classlist.html', context)
 
 def tassignmentlist(request):
     try:
@@ -80,8 +94,17 @@ def tassignmentlist(request):
     else:
         login = Login.objects.get(id=userid)
         clientid = login.clientid
+        user_name = login.loginname
+        recid = login.recid
+        userlist = Userlist.objects.get(id=recid)
+        
+        securityprofile = userlist.securityprofileid
         classlist = Classlist.objects.filter(clientid=clientid)
-        context= {'classlist' : classlist}
+        urlActive = 'assignmentlist'
+        context= {'classlist' : classlist,
+                  'user_name' : user_name,
+                  'securityprofile' : securityprofile,
+                  'urlActive': urlActive,}
         return render(request, 'tsweb/teacher/assignmentlist.html', context)
 
 def tstudentlist(request):
@@ -92,8 +115,16 @@ def tstudentlist(request):
     else:
         login = Login.objects.get(id=userid)
         clientid = login.clientid
+        user_name = login.loginname
+        recid = login.recid
+        userlist = Userlist.objects.get(id=recid)
+        securityprofile = userlist.securityprofileid
         classlist = Classlist.objects.filter(clientid=clientid)
-        context= {'classlist' : classlist}
+        urlActive = 'studentlist'
+        context= {'classlist' : classlist,
+                  'user_name' : user_name,
+                  'securityprofile' : securityprofile,
+                  'urlActive': urlActive,}
         return render(request, 'tsweb/teacher/studentlist.html', context)
 
 def trubriclist(request):
@@ -102,7 +133,16 @@ def trubriclist(request):
     except KeyError:
         return HttpResponseRedirect(reverse('tsweb:login'))
     else:
-        return render(request, 'tsweb/teacher/rubriclist.html', '')
+        login = Login.objects.get(id=userid)
+        user_name = login.loginname
+        recid = login.recid
+        userlist = Userlist.objects.get(id=recid)
+        securityprofile = userlist.securityprofileid
+        urlActive = 'rubriclist'
+        context= {'user_name' : user_name,
+                  'securityprofile' : securityprofile,
+                  'urlActive': urlActive,}
+        return render(request, 'tsweb/teacher/rubriclist.html', context)
 
 def tsubmissionlist(request):
     try:
@@ -110,14 +150,92 @@ def tsubmissionlist(request):
     except KeyError:
         return HttpResponseRedirect(reverse('tsweb:login'))
     else:
-        
-        return render(request, 'tsweb/teacher/submissionlist.html', '')
+        login = Login.objects.get(id=userid)
+        user_name = login.loginname
+        recid = login.recid
+        userlist = Userlist.objects.get(id=recid)
+        securityprofile = userlist.securityprofileid
+        urlActive = 'submissionlist'
+        context= {'user_name' : user_name,
+                  'securityprofile' : securityprofile,
+                  'urlActive': urlActive,}
+        return render(request, 'tsweb/teacher/submissionlist.html', context)
+    
+def tlessonlist(request):
+    try:
+        userid = request.session['userid']
+    except KeyError:
+        return HttpResponseRedirect(reverse('tsweb:login'))
+    else:
+        login = Login.objects.get(id=userid)
+        user_name = login.loginname
+        recid = login.recid
+        userlist = Userlist.objects.get(id=recid)
+        securityprofile = userlist.securityprofileid
+        urlActive = 'lessonlist'
+        context= {'user_name' : user_name,
+                  'securityprofile' : securityprofile,
+                  'urlActive': urlActive,}
+        return render(request, 'tsweb/teacher/lessonlist.html', context)
+    
+def ttaglist(request):
+    try:
+        userid = request.session['userid']
+    except KeyError:
+        return HttpResponseRedirect(reverse('tsweb:login'))
+    else:
+        login = Login.objects.get(id=userid)
+        user_name = login.loginname
+        recid = login.recid
+        userlist = Userlist.objects.get(id=recid)
+        securityprofile = userlist.securityprofileid
+        urlActive = 'taglist'
+        context= {'user_name' : user_name,
+                  'securityprofile' : securityprofile,
+                  'urlActive': urlActive,}
+        return render(request, 'tsweb/teacher/taglist.html', context)
+    
+def tuserlist(request):
+    try:
+        userid = request.session['userid']
+    except KeyError:
+        return HttpResponseRedirect(reverse('tsweb:login'))
+    else:
+        login = Login.objects.get(id=userid)
+        user_name = login.loginname
+        recid = login.recid
+        userlist = Userlist.objects.get(id=recid)
+        securityprofile = userlist.securityprofileid
+        urlActive = 'userlist'
+        context= {'user_name' : user_name,
+                  'securityprofile' : securityprofile,
+                  'urlActive': urlActive,}
+        return render(request, 'tsweb/teacher/userlist.html', context)
+    
+def tunitlist(request):
+    try:
+        userid = request.session['userid']
+    except KeyError:
+        return HttpResponseRedirect(reverse('tsweb:login'))
+    else:
+        login = Login.objects.get(id=userid)
+        user_name = login.loginname
+        recid = login.recid
+        userlist = Userlist.objects.get(id=recid)
+        securityprofile = userlist.securityprofileid
+        urlActive = 'unitlist'
+        context= {'user_name' : user_name,
+                  'securityprofile' : securityprofile,
+                  'urlActive': urlActive,}
+        return render(request, 'tsweb/teacher/unitlist.html', context)
+
 
 def tsubmissionreview(request, id):
     try:
         userid = request.session['userid']
         login = Login.objects.get(id=userid)
         usertypeid = login.usertypeid
+        user_name = login.loginname
     except KeyError:
         return HttpResponseRedirect(reverse('tsweb:login'))
     else:
@@ -126,12 +244,15 @@ def tsubmissionreview(request, id):
         studentname = submission.studentid.getFullName()
         context= {'id' : id,
                   'studentname' : studentname,
+                  'user_name' : user_name,
                   'submissionversionlist' : submissionversionlist }
         return render(request, 'tsweb/teacher/submissionreview.html', context)
         
 def stsubmissionreview(request, id):
     try:
         userid = request.session['userid']
+        login = Login.objects.get(id=userid)
+        user_name = login.loginname
     except KeyError:
         return HttpResponseRedirect(reverse('tsweb:login'))
     else:
@@ -139,9 +260,10 @@ def stsubmissionreview(request, id):
         submission = Submission.objects.get(id=id)
         studentname = submission.studentid.getFullName()
         context= {'id' : id,
+                  'user_name' : user_name,
                   'studentname' : studentname,
                   'submissionversionlist' : submissionversionlist }
-        return render(request, 'tsweb/student/submissionreview.html', context)
+        return render(request, 'tsweb/student/revision_editor.html', context)
                 
 
 def gettags(request, entityid):

@@ -9,6 +9,7 @@
 	<link rel="stylesheet" type="text/css" href="{% static 'tsweb/css/smoothness/jquery-ui-1.10.3.custom-edited.css' %}" />
 	<link rel="stylesheet" type="text/css" href="{% static 'tsweb/css/bootstrap.css' %}" />
 	<link rel="stylesheet" type="text/css" href="{% static 'tsweb/css/topscholars.css' %}" />-->
+<<<<<<< HEAD
 	
 	<link rel="stylesheet" href="../../../static/tsweb/css/bootstrap.css" type="text/css" />
 	<link rel="stylesheet" href="../../../static/tsweb/css/bootstrap-glyphicons.css" type="text/css" />
@@ -21,11 +22,30 @@
 	<script src="../../../static/tsweb/js/jQuery1.10.1.js" type="text/javascript"></script>
 	<script src="../../../static/tsweb/js/bootstrap.js" type="text/javascript"></script>
 	<script src="../../../static/tsweb/js/transition.js" type="text/javascript"></script>
+=======
+	<link rel="stylesheet" href="{% static 'tsweb/css/bootstrap.css' %}" type="text/css" />
+	<link rel="stylesheet" href="{% static 'tsweb/css/bootstrap-glyphicons.css' %}" type="text/css" />
+	<link rel="stylesheet" href="{% static 'tsweb/css/topscholars.css' %}" type="text/css" />
+	<link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+	
+	
+<!--	<script src="{% static 'tsweb/js/jQuery1.10.1.js' %}"></script>
+	<script src="{% static 'tsweb/js/jquery-ui-1.10.3.custom.min.js' %}"></script>-->
+
+	
+	<script src="{% static 'tsweb/js/jQuery1-10-1.js' %}" type="text/javascript"></script>
+	<script src="{% static 'tsweb/js/WaterMark.js' %}"></script>
+	<script src="{% static 'tsweb/js/bootstrap.js' %}" type="text/javascript"></script>
+	<script src="{% static 'tsweb/js/transition.js' %}" type="text/javascript"></script>
+>>>>>>> origin/rittidate
 
 </head>
 
 <body>
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> origin/rittidate
 	<nav class="navbar" role="navigation">
 		<div class="container">
 			<h1 class="logo"><a href="#">Writability - My Desk</a></h1>
@@ -62,10 +82,17 @@
 				</li>
 				
 				<li class="dropdown">
+<<<<<<< HEAD
 					<a href="#" class="dropdown-toggle student-name" data-toggle="dropdown">Student Name</a>
 					<ul class="dropdown-menu">
 						<li><a href="#"><i class="fa fa-user"></i> Profile</a></li>
 						<li><a href="#"><i class="fa fa-power-off"></i> Log Out</a></li>
+=======
+					<a href="#" class="dropdown-toggle student-name" data-toggle="dropdown">{{ user_name }}</a>
+					<ul class="dropdown-menu">
+						<li><a href="#"><i class="fa fa-user"></i> Profile</a></li>
+						<li><a href="{% url 'tsweb:logout' %}"><i class="fa fa-power-off"></i> Log Out</a></li>
+>>>>>>> origin/rittidate
 					</ul>
 				</li>
 			</ul>
@@ -81,6 +108,7 @@
 	    
 		</div>
 	</nav> <!-- End Nav -->
+<<<<<<< HEAD
 	
 	<div class="container">
 		<h2 class="page-title">Course Overview</h2>
@@ -115,11 +143,19 @@
 		</script>
 		
 		<div class="panel-group" id="side-panel">
+=======
+	<div class="page-container"> 
+		<div class="panel-group side-panel" id="side-panel">
+>>>>>>> origin/rittidate
 		  <div class="panel panel-default block-cell block-thin">
 		    <div class="panel-heading block-header">
 		      <h3 class="panel-title">
 		        <a data-toggle="collapse" data-parent="#side-panel" href="#collapseOne" >
+<<<<<<< HEAD
 		          {%course_name%}
+=======
+		          {# course_name #}
+>>>>>>> origin/rittidate
 		        </a>
 		      </h3>
 		    </div>
@@ -143,11 +179,19 @@
 		    <div id="collapseTwo" class="panel-collapse collapse">
 		      <div class="block-body">
 		        <ul class="block-list" id="classesList">
+<<<<<<< HEAD
 		        	<li><a href="#">{%class_name%}</a></li>
 		        	<li><a href="#">{%class_name%}</a></li>
 		        	<li><a href="#">{%class_name%}</a></li>
 		        	<li><a href="#">{%class_name%}</a></li>
 		        	<li><a href="#">{%class_name%}</a></li>
+=======
+		        	<li><a href="#">{# class_name #}</a></li>
+		        	<li><a href="#">{# class_name #}</a></li>
+		        	<li><a href="#">{# class_name #}</a></li>
+		        	<li><a href="#">{# class_name #}</a></li>
+		        	<li><a href="#">{# class_name #}</a></li>
+>>>>>>> origin/rittidate
 		        </ul>
 		      </div>
 		    </div>
@@ -171,15 +215,25 @@
 		       			</tr>
 		       		</thead>
 		       		<tbody>
+<<<<<<< HEAD
 		       			<tr>
 		       				<td><a href="#">{% assignment_name %}</a></td>
 		       				<td>{% due_date %}</td>
 		       			</tr>
+=======
+		       			{% for submission in submissionlist %}
+		       			<tr>
+		       				<td><a href="{% url 'tsweb:stsubmissionreview' submission.id %}">{{ submission.getAssignment }}</a></td>
+		       				<td>{{ submission.duedate|date:"d-M-Y" }}</td>
+		       			</tr>
+		       			{% endfor %}
+>>>>>>> origin/rittidate
 		       		</tbody>
 		       	</table>
 		      </div>
 		    </div>
 		  </div>
+<<<<<<< HEAD
 		</div>
 		
 	</div> <!--End Container-->
@@ -189,6 +243,56 @@
 			<p>&copy; TopScholars 2013</p>
 		</div>
 	</footer>
+=======
+  		<footer class="footer">
+			<div class="container">
+				<p>&copy; TopScholars 2013</p>
+			</div>
+		</footer>
+		</div>
+		
+
+	</div>
+	
+	
+	<div class="container">
+		<h2 class="page-title">Course Overview</h2>
+		
+		<div class="overview-nav">
+			<ul>
+				<li class="active-white">Developmental</li>
+				<li>Structural</li>
+				<li>Style</li>
+				<li>Usage</li>
+				<li>Words &amp; Phrases</li>
+				<li>Grammar</li>
+			</ul>
+		</div>
+		<div class="block-cell block-wide">
+			<h4>Up next on Writability...</h4>
+			
+			<h5>Wordiness</h5>
+			<h5>Emphasis</h5>
+			<h5>Sentence Variety</h5>
+			
+			<div class="category-text pull-right col-lg-8">
+				<p>Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.</p>
+			</div>
+			
+		</div>
+		<script>
+			$(".overview-nav ul li").click(function () {
+				$(this).addClass('active-white');
+				$(this).parent().children('li').not(this).removeClass('active-white');
+			});
+		</script>
+		
+		
+		
+	</div> <!--End Container-->
+	
+
+>>>>>>> origin/rittidate
 	
 	<!--<div style="width:720px;position:relative;float:left;top:40px;margin-left:10px;padding-bottom:52px;">
 		<img src="{% static 'tsweb/image/anonymous-large.png' %}" style="width:162px;height:162px;" />
@@ -218,6 +322,7 @@
 		</table>
 	</div>
 	
+<<<<<<< HEAD
 =======
 <script>
 $(function(){
@@ -266,6 +371,8 @@ $(function(){
 {% endfor %}
 </div>
 >>>>>>> 814d9f0365a843b9fd7044a019f7748530fb192e
+=======
+>>>>>>> origin/rittidate
 <div id="tabs" class="clear" style="margin-top:10px;">
   <ul>
     <li><a href="#tabs-1">Overview</a></li>
@@ -396,16 +503,14 @@ words as the previous attempt
 <div style="width:270px;position:relative;float:right;top:40px;margin-right:10px;">
 <span style="text-decoration:underline;font-weight:bold;">Assigment List</span>
 <div style="margin-top:5px;">
-{% for submission in submissionlist %}
 <div style="border:1px #0090CA solid;height:50px;">
 	<img src="{% static 'tsweb/image/assignmenttype.png' %}" style="margin:10px;width:25px;float:left;">
 	<div style="float:right;text-align:right;margin:10px 30px;font-size:13px;">
-		<a href="{% url 'tsweb:stsubmissionreview' submission.id %}" style="color:black;">Assignment-{{ submission.getAssignment }}</a><br/>
-		Due Date: {{ submission.duedate|date:"d-M-Y" }}
+		<a href="" style="color:black;">Assignment-0001</a><br/>
+		Due Date: 17-Sep-2013
 	</div>
 </div>
-{% endfor %}
-<!-- <div style="border:1px #0090CA solid;height:50px;">
+<div style="border:1px #0090CA solid;height:50px;">
 	<img src="{% static 'tsweb/image/assignmenttype.png' %}" style="margin:10px;width:25px;float:left;">
 	<div style="float:right;text-align:right;margin:10px 30px;font-size:13px;">
 		<span style="text-decoration:underline;">Assignment-0002</span><br/>
@@ -432,8 +537,7 @@ words as the previous attempt
 		<span style="text-decoration:underline;">Assignment-0005</span><br/>
 		Due Date: 03-Oct-2013
 	</div>
-</div> -->
-
+</div>
 </div>
 <div id="tabs2" class="clear" style="margin-top:10px;">
   <ul>

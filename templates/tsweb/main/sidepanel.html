@@ -1,0 +1,94 @@
+<div class="side-panel">
+		
+			<div class="panel block-cell block-thin">
+				<div class="panel-heading block-header {% if urlActive == 'unitlist' %}active{% endif %}">
+					<h3 class="panel-title">
+						<a href="{% url 'tsweb:tunitlist' %}">
+							Unit List <i class="fa fa-sitemap pull-right"></i>
+						</a>
+					</h3>
+				</div>
+			</div>
+		
+			<div class="panel block-cell block-thin">
+				<div class="panel-heading block-header {% if urlActive == 'classlist' %}active{% endif %}">
+					<h3 class="panel-title">
+						<a href="{% url 'tsweb:tclasslist' %}">
+							Class List <i class="fa fa-book pull-right"></i>
+						</a>
+					</h3>
+				</div>
+			</div>
+			
+			<div class="panel block-cell block-thin">
+				<div class="panel-heading block-header {% if urlActive == 'assignmentlist' %}active{% endif %}">
+					<h3 class="panel-title">
+						<a href="{% url 'tsweb:tassignmentlist' %}">
+							Assignment List <i class="fa fa-file-text pull-right"></i>
+						</a>
+					</h3>
+				</div>
+			</div>
+			
+			<div class="panel block-cell block-thin">
+				<div class="panel-heading block-header {% if urlActive == 'studentlist' %}active{% endif %}">
+					<h3 class="panel-title">
+						<a href="{% url 'tsweb:tstudentlist' %}">
+							Student List <i class="fa fa-users pull-right"></i>
+						</a>
+					</h3>
+				</div>
+			</div>
+			
+			<div class="panel block-cell block-thin">
+				<div class="panel-heading block-header {% if urlActive == 'rubriclist' %}active{% endif %}">
+					<h3 class="panel-title">
+						<a href="{% url 'tsweb:trubriclist' %}">
+							Rubric List <i class="fa fa-th-large pull-right"></i>
+						</a>
+					</h3>
+				</div>
+			</div>
+			
+			<div class="panel block-cell block-thin">
+				<div class="panel-heading block-header {% if urlActive == 'submissionlist' %}active{% endif %}">
+					<h3 class="panel-title">
+						<a href="{% url 'tsweb:tsubmissionlist' %}">
+							Submission List <i class="fa fa-files-o pull-right"></i>
+						</a>
+					</h3>
+				</div>
+			</div>
+			
+			<div class="panel block-cell block-thin">
+				<div class="panel-heading block-header {% if urlActive == 'lessonlist' %}active{% endif %}">
+					<h3 class="panel-title">
+						<a href="{% url 'tsweb:tlessonlist' %}">
+							Lesson List <i class="fa fa-lightbulb-o pull-right"></i>
+						</a>
+					</h3>
+				</div>
+			</div>
+			
+			<div class="panel block-cell block-thin">
+				<div class="panel-heading block-header">
+					<h3 class="panel-title">
+						<a href="{% url 'tsweb:ttaglist' %}">
+							Tag List <i class="fa fa-tags pull-right"></i>
+						</a>
+					</h3>
+				</div>
+			</div>
+			{% if securityprofile == 2 %}
+			<div class="panel block-cell block-thin">
+				<div class="panel-heading block-header {% if urlActive == 'userlist' %}active{% endif %}">
+					<h3 class="panel-title">
+						<a href="{% url 'tsweb:tuserlist' %}">
+							User List <i class="fa fa-tags pull-right"></i>
+						</a>
+					</h3>
+				</div>
+			</div>
+			{% endif %}
+		</div> <!-- End side panel -->
+		

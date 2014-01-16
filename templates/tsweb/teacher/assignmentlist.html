@@ -4,17 +4,29 @@
 
 <head>
 	<meta charset="UTF-8"/> 
+	
+	<link rel="stylesheet" href="{% static 'tsweb/css/bootstrap.css' %}" type="text/css" />
+	<link rel="stylesheet" href="{% static 'tsweb/css/bootstrap-glyphicons.css' %}" type="text/css" />
+	<link rel="stylesheet" href="{% static 'tsweb/css/topscholars.css' %}" type="text/css" />
+	<link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
 	<link rel="stylesheet" type="text/css" href="{% static 'tsweb/css/smoothness/jquery-ui-1.10.3.custom.css' %}" />
-	<link rel="stylesheet" type="text/css" href="{% static 'tsweb/css/Prototype.css' %}" />
-	<link rel="stylesheet" type="text/css" href="{% static 'tsweb/css/jquery.datepick.css' %}" />
-	<script src="{% static 'tsweb/js/jQuery1.10.1.js' %}"></script>
-	<script src="{% static 'tsweb/js/jquery-ui-1.10.3.custom.min.js' %}"></script>
-	<script src="{% static 'tsweb/js/jquery.cookie.js' %}"></script>
-	<script src="{% static 'tsweb/js/util.js' %}"></script>
+	<link rel="stylesheet" type="text/css" href="{% static 'tsweb/css/jquery.multiselect.css' %}" />
+		
+<!--	<script src="{% static 'tsweb/js/jQuery1.10.1.js' %}"></script>
+	<script src="{% static 'tsweb/js/jquery-ui-1.10.3.custom.min.js' %}"></script>-->
+	
+	<script src="{% static 'tsweb/js/jQuery1-10-1.js' %}" type="text/javascript"></script>
 	<script src="{% static 'tsweb/js/WaterMark.js' %}"></script>
-	<script src="{% static 'tsweb/js/jquery.datepick.js' %}"></script>
-</head>
+	<script src="{% static 'tsweb/js/bootstrap.js' %}" type="text/javascript"></script>
+	<script src="{% static 'tsweb/js/transition.js' %}" type="text/javascript"></script>
+	<script src="{% static 'tsweb/js/jquery-ui-1.10.3.custom.min.js' %}"></script>
+	<script src="{% static 'tsweb/js/jquery-ui-timepicker-addon.js' %}"></script>
+	<script src="{% static 'tsweb/js/jquery.cookie.js' %}"></script>
+	<script src="{% static 'tsweb/js/jquery.multiselect.js' %}"></script>
+	<script src="{% static 'tsweb/js/util.js' %}"></script>
+	<script src="{% static 'tsweb/js/jquery.validate.js' %}"></script>
 
+<<<<<<< HEAD
 <body>-->
 
 <!DOCTYPE html>
@@ -35,6 +47,8 @@
 	<script src="../../../static/tsweb/js/bootstrap.js" type="text/javascript"></script>
 	<script src="../../../static/tsweb/js/transition.js" type="text/javascript"></script>
 
+=======
+>>>>>>> origin/rittidate
 <script>
 EDITTABLE.prototype = new GridBase();
 function EDITTABLE(){
@@ -47,31 +61,22 @@ function EDITTABLE(){
 	
 	this.showEditTable = function(){
 		$(".pagename").text(thisClass.pagename + " - Edit");
-		
-		$("#editField").show();
-		
-		$(".filter").hide();
-		$(".tablelist").hide();
-		$(".listnewbutton").hide();
-		$("#txtSearch").hide();
-		$(".searchboximg").hide();
-		
-		$("#listAssignmentClass").show();
-		$("#listAssignmentStudent").show();
+
 		$("#selectAssignmentHeader").show();
 		$("#list_by_select").show();
 	}
 	
 	this.hideEditTable =function(){
-		$(".pagename").text(thisClass.pagename);
-		
-		$("#editField").hide();
-		
-		$(".filter").show();
-		$(".tablelist").show();
-		$(".listnewbutton").show();
-		$("#txtSearch").show();
-		$(".searchboximg").show();
+		$("#new_assignment_modal").modal('hide');
+		// $(".pagename").text(thisClass.pagename);
+// 		
+		// $("#editField").hide();
+// 		
+		// $(".filter").show();
+		// $(".tablelist").show();
+		// $(".listnewbutton").show();
+		//$("#txtSearch").show();
+		//$(".searchboximg").show();
 		thisClass.getData('');
 		
 		//return and hide
@@ -85,11 +90,21 @@ function EDITTABLE(){
 			{	class: evalClass,
 				id: id  },
 			function(result){
+				$("#ele_classname").multiselect('disable');
+				$("#ele_studentid").multiselect('disable');
+				
+				$("[id^=ele_]").val('');
 				$.each(result, function(ini,val){
 					thisClass.seperateElement($("#ele_"+ini), val);
 					thisClass.seperateView(ini,val);
 				});
 				
+				$('#editAssignmentBtn').show();
+				$('.modal .form-control, .modal input[type="checkbox"]').attr('disabled', 'disabled');
+				
+				thisClass.getClassSelect();
+				thisClass.getStudentSelect();
+				thisClass.getAssignclass();
 				thisClass.showEditTable();
 				thisClass.showAssignmentClass(id);
 				thisClass.showAssignmentStudent();
@@ -133,6 +148,73 @@ function EDITTABLE(){
     	});
 	}
 	
+	this.getAssignclass = function(){
+		var assignmentid = $("#ele_id").val();
+		var html ='';
+		$.getJSON(
+			url,
+			{	class: evalClass,
+				method: 'getAssignclass',
+				id: assignmentid },
+			function(result){
+				$("#ele_classid option").remove();
+				html += "<option value='0'>All Student</option>";
+				$.each(result, function(ini,val){
+						html += "<option value='"+val.id+"'>"+val.code+"</option>";
+				});
+				$("#ele_classid").append(html);
+		})
+		.error(function(xhr, status, error) {
+    		alert('Error occur. Please contact the administrator.');
+    	});
+	}
+	
+	this.getClassSelect = function(){
+		var assignmentid = $("#ele_id").val();
+		var html ='';
+		$.getJSON(
+			url,
+			{	class: evalClass,
+				method: 'getClassSelect',
+				id: assignmentid },
+			function(result){
+				$("#ele_classname option").remove();
+				$.each(result, function(ini,val){
+						html += "<option value='"+val.id+"'>"+val.code+"</option>";
+				});
+				$("#ele_classname").append(html);
+				$("#ele_classname").multiselect("refresh");
+				$("#ele_classname").multiselect("uncheckAll");
+		})
+		.error(function(xhr, status, error) {
+    		alert('Error occur. Please contact the administrator.');
+    	});
+	}
+	
+	this.getStudentSelect = function(){
+		var assignmentid = $("#ele_id").val();
+		var html ='';
+		$.getJSON(
+			url,
+			{	class: evalClass,
+				method: 'getStudentSelect',
+				assignmentid: assignmentid,
+				assignclass: $("#ele_classid").val() },
+			function(result){
+				$("#ele_studentid option").remove();
+				$.each(result, function(ini,val){
+						html += "<option value='"+val.id+"' "+val.selected+">"+val.firstname+" "+val.lastname+"</option>";
+				});
+				$("#ele_studentid").append(html);
+				$("#ele_studentid").multiselect("refresh");
+				//$("#ele_studentid").multiselect("uncheckAll");
+		})
+		.error(function(xhr, status, error) {
+    		alert('Error occur. Please contact the administrator.');
+    	});
+	}
+	
+	
 	this.getData = function(assignmentname ,classid) {
 		$("#list").html("<div style='width:100%;position=relative;text-align:center;'><img src='{% static 'tsweb/image/ajax-loader.gif' %}' alt='' style='margin:auto;width=100px;height=100px;position=relative;' /></div>");
 		$.get("{% url 'tsweb:tprocessajax' %}?class="+tableClassAjax,
@@ -157,13 +239,17 @@ function EDITTABLE(){
 	}
 	
 	this.save = function(){
-		var odata;
+		var odata, classname;
 		if($("#ele_id").val() == ""){
 			odata = {'class' :  evalClass, 'method' : "add" };
 		}else{
 			odata = {'class' :  evalClass, 'method' : "save" };
 		}
 		odata = thisClass.oData(odata);
+		
+		classname = {'classname' : checkboxChecked("input[name='multiselect_ele_classname']:checked") };
+		
+		$.extend(odata, classname);
 		$.post(url,odata,
 			function(result){
 				thisClass.hideEditTable();
@@ -195,7 +281,6 @@ function EDITTABLE(){
 	
 	this.showAssignmentStudent = function(id){
 		var assignmentid = $("#ele_id").val();
-		
 		$.get( url,
 			{	class: evalClass,
 				method: 'tAssignmentStudent',
@@ -227,14 +312,12 @@ function EDITTABLE(){
 						var id = $(this).attr('text');
 						var date = $(".datepicker").attr('text', id).val();
 						thisClass.addClassToAssignment(id, date);
-						
 					});
 				}else if(select == 'tStudentAssignlist'){
 					$(".addStudentassignment").click(function(){
 						var id = $(this).attr('text');
 						var date = $(".datepicker").attr('text', id).val();
 						thisClass.addStudentToAssignment(id, date);
-						
 					});
 				}
 		})
@@ -243,7 +326,7 @@ function EDITTABLE(){
     	});
 	}
 	
-	this.addClassToAssignment = function(id, date){	
+	this.addClassToAssignment = function(id, date){
 		var assignmentid = $("#ele_id").val();
 		$.post(url,
 			{ class: evalClass,
@@ -261,7 +344,7 @@ function EDITTABLE(){
     	});
 	}
 	
-	this.addStudentToAssignment = function(id, date){	
+	this.addStudentToAssignment = function(id, date){
 		var assignmentid = $("#ele_id").val();
 		$.post(url,
 			{ class: evalClass,
@@ -282,6 +365,10 @@ function EDITTABLE(){
 	this.iniControl = function(){
 		thisClass.getData('','');
 		Watermark('txtSearch', 'Search', 'noclass');
+		
+		$("#ele_classname").multiselect();
+		$("#ele_studentid").multiselect();
+		
 		
 		$('#lstClassid').change(function() {
 			thisClass.getData('', $('#lstClassid').val());
@@ -304,7 +391,13 @@ function EDITTABLE(){
 			$(".viewTD").hide();
 		});
 		
-		$(".listnewbutton").click(function(){
+		$("#ele_classid").change(function(){
+			thisClass.getStudentSelect();
+		});
+		
+		$("#ele_duedate").datetimepicker({ dateFormat: "dd-mm-yy",timeFormat: "HH:mm" });
+		
+		$("#new_assignment_btn").click(function(){
 			$("[id^='ele_']").each(function(){
 				$(this).val('');
 			});
@@ -323,6 +416,8 @@ function EDITTABLE(){
 		thisClass.hideEditTable();
 		thisClass.iniEventEditor();
 		thisClass.selectRubric();
+		var profile = new EDITPROFILE(url);
+		profile.iniControl();
 	}
 }
 $(function() {
@@ -334,6 +429,7 @@ $(function() {
 </head>
 
 <body>
+<<<<<<< HEAD
 	<nav class="navbar" role="navigation">
 		<div class="container">
 			<h1 class="logo"><a href="#">Writability - My Classroom</a></h1>
@@ -590,6 +686,164 @@ $(function() {
 	</div> <!-- End Page Container -->
 
 	<script>
+=======
+{% include "tsweb/main/navbar.html" %}
+
+<div class="page-container"> <!-- Begin Page -->
+
+	{% include "tsweb/main/sidepanel.html" %}
+	
+		<div class="block-cell block-wide">
+			
+			
+			<!--Assignment table insert here-->
+			
+			<div class="searchlist">
+				<div class="col-lg-4">
+					<select class="form-control" id="lstClassid">
+						<option value="">Class Filter</option>
+						{% for class in classlist %}
+						<option value="{{ class.id  }}">{{ class.id }} - {{ class.classname }}</option>
+						{% endfor %}
+					</select>
+				</div>
+			</div>
+			<button id="new_assignment_btn" class="btn btn-info btn-lg new-btn" data-toggle="modal" data-target="#new_assignment_modal">
+			  New Assignment <i class="fa fa-plus"></i>
+			</button>
+			
+			<div id="list"></div>
+		</div> <!--End Block Cell-->
+		
+	
+	
+	<!--New Assignment Modal Form--> 
+	<div class="modal fade" id="new_assignment_modal" tabindex="-1" role="dialog" aria-labelledby="newAssignmentLabel" aria-hidden="true" data-dismiss="false">
+	  <div class="modal-dialog">
+	    <div class="modal-content">
+	      <div class="modal-header teacher-header">
+	        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+	        <button type="button" class="btn btn-default btn-small btn-edit pull-right" id="editAssignmentBtn">Edit</button>
+	        <h4 class="modal-title">New Assignment</h4>
+	      </div>
+	      <div class="modal-body">
+	        <form role="form" class="form-horizontal" id="new_assigment_form">
+	        	<div class="form-group">
+	        		<label for="ele_name" class="col-sm-4 control-label">Assignment Name</label>
+	        		<div class="col-sm-8">
+	        			<input type="text" name="name" id="ele_name" class="form-control"/>
+	        			<input type="hidden" id="ele_id" name="id" class="form-control" />
+	        		</div>
+	        	</div>
+	        	
+	        	<div class="form-group">
+	        		<label for="description" class="col-sm-4 control-label">Description</label>
+	        		<div class="col-sm-8">
+	        			<input type="text" id="ele_description" class="form-control" name="description" />
+	        		</div>
+	        	</div>
+	        	
+	        	<div class="form-group">
+	        		<label for="ele_goal" class="col-sm-4 control-label">Goal of Task</label>
+	        		<div class="col-sm-8">
+	        			<input type="text" id="ele_goal" class="form-control" name="goal" />
+	        		</div>
+	        	</div>
+	        	
+	        	<div class="form-group">
+	        		<label for="ele_audience" class="col-sm-4 control-label">Audience</label>
+	        		<div class="col-sm-8">
+	        			<input type="text" id="ele_audience" class="form-control" name="audience" />
+	        		</div>
+	        	</div>
+	        	
+	        	<div class="form-group">
+	        		<label for="ele_context" class="col-sm-4 control-label">Context/Situation</label>
+	        		<div class="col-sm-8">
+	        			<input type="text" id="ele_contextsituation" class="form-control" name="contextsituation" />
+	        		</div>
+	        	</div>
+	        	
+	        	<div class="form-group">
+	        		<label for="ele_parameters" class="col-sm-4 control-label">Parameters(Word Length)</label>
+	        		<div class="col-sm-8">
+	        			<input type="text" id="ele_parameters" class="form-control" name="parameters" />
+	        		</div>
+	        	</div>
+	        	
+	        	<div class="form-group">
+	        		<label for="classname" class="col-sm-4 control-label">Class Name</label>
+	        		<div class="col-sm-8">
+	        			<select id="ele_classname" name="classname" class="form-control"></select>
+	        		</div>
+	        	</div>
+	        	
+	        	<div class="form-group">
+	        		<label for="studentid" class="col-sm-4 control-label">Student Name</label>
+	        		<div class="col-sm-8">
+	        			<select id="ele_studentid" name="studentid" multiple class="form-control"></select>
+	        		</div>
+	        	</div>
+	        	
+	        	<div class="form-group">
+	        		<label for="ele_duedate" class="col-sm-4 control-label">Due Date/Time</label>
+	        		<div class="col-sm-8">
+	        			<input type="text" id="ele_duedate" class="form-control" name="duedate" />
+	        		</div>
+	        	</div>
+	        	
+	        	<div class="form-group">
+	        		<label for="ele_revisions" class="col-sm-4 control-label">Revisions</label>
+	        		<div class="col-sm-8">
+	        			<input type="text" id="ele_revisions" class="form-control" name="revisions" />
+	        		</div>
+	        	</div>
+	        	
+	        	
+	        	<div class="form-group">
+	        		<label for="ele_classid" class="col-sm-4 control-label">Assigned Class</label>
+	        		<div class="col-sm-8">
+	        			<select id="ele_classid" name="classid" class="form-control">
+	        			</select>
+	        		</div>
+	        	</div>
+	        	
+	        	
+	        	<div class="form-group">
+	        		<label for="rubricid" class="col-sm-4 control-label">Rubric ID</label>
+	        		<div class="col-sm-8">
+	        			<select id="ele_rubricid" name="rubricid" class="form-control"></select>
+	        		</div>
+	        	</div>
+	        	
+	        	<div class="form-group">
+	        		<label for="maxwords" class="col-sm-4 control-label">Maximum Word</label>
+	        		<div class="col-sm-8">
+	        			<input type="text" id="ele_maxwords" name="maxwords" class="form-control" />
+	        		</div>
+	        	</div>
+	        	
+	        	<div class="form-group">
+	        		<label for="diabled" class="col-sm-4 control-label">Disable</label>
+	        		<div class="col-sm-8">
+	        			<input type="checkbox" id="ele_disabled" name="disabled" />
+	        		</div>
+	        	</div>
+	        	
+	        	<div class="modal-footer">
+	        	  <input type="reset" class="btn btn-default" data-dismiss="modal" value="Close"/>
+	        	  <input type="button" class="btn btn-primary" value="Save Assignment" id="btnSave"/>
+	        	</div>
+	        </form>
+	      </div>
+	    </div><!-- /.modal-content -->
+	  </div><!-- /.modal-dialog -->
+	</div><!-- /.modal -->
+	{% include "tsweb/main/editprofile.html" %}
+</div> <!-- End Page Container -->
+
+<script>
+>>>>>>> origin/rittidate
 		$('#new_assignment_form').on("submit",function(e){
 	    e.preventDefault();
 	    var f = $(this);
@@ -599,7 +853,11 @@ $(function() {
 	  });
 	
 		$('#new_assignment_modal').on("hidden.bs.modal",function(){
+<<<<<<< HEAD
 	    $('#new_assignment_form')[0].reset();
+=======
+	    //$('#new_assignment_form')[0].reset();
+>>>>>>> origin/rittidate
 	    $('#new_assignment_form .form-error').remove();
 	  });
 	  
@@ -610,7 +868,15 @@ $(function() {
 	  	$('.modal .form-control, .modal input[type="checkbox"]').removeAttr('disabled', 'disabled');
 	  });
 	  
+<<<<<<< HEAD
 	  $('#editAssignmentBtn').click(function(){$('.modal .form-control, .modal input[type="checkbox"]').removeAttr('disabled', 'disabled')});
+=======
+	  $('#editAssignmentBtn').click(function(){
+	  	$('.modal .form-control, .modal input[type="checkbox"]').removeAttr('disabled', 'disabled');
+		$("#ele_classname").multiselect('enable');
+		$("#ele_studentid").multiselect('enable');
+  	  });
+>>>>>>> origin/rittidate
 	</script>
 </body>
 </html>

@@ -2,18 +2,6 @@
 <table class="table table-bordered" style="margin-top: 45px;">
 <tr class="rowheader">
 <td class="cellitem">Id</td>
-<<<<<<< HEAD
-<td class="cellitem">Student Name</td>
-<td class="cellitem">Next Assignment Due Date</td>
-<td class="cellitem">Student Grade</td>
-</tr>
-{% for student in studentlist %}
-    <tr id="{{ student.id }}" class="rowitem" data-toggle="modal" data-target="#new_student_modal">
-	<td class="cellitem">{{ student.id }}</td>
-	<td class="cellitem">{{ student.getFullName }}</td>
-	<td class="cellitem">{{ student.getNextAssginmentDate }}</td>
-	<td class="cellitem">{{ student.getStudentGrade }}</td>
-=======
 <td class="cellitem">Unit Name</td>
 <td class="cellitem">Description</td>
 <td class="cellitem">Ability Level</td>
@@ -24,7 +12,6 @@
 	<td class="cellitem">{{ unit.name }}</td>
 	<td class="cellitem">{{ unit.description }}</td>
 	<td class="cellitem">{{ unit.abilitylevel }}</td>
->>>>>>> origin/rittidate
 	</tr>
 {% endfor %}
 </table>

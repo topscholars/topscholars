@@ -1,0 +1,110 @@
+﻿{% load staticfiles %}
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8"/> 
+	<link rel="stylesheet" type="text/css" href="{% static 'tsweb/css/Prototype.css' %}" />
+	<script src="{% static 'tsweb/js/jQuery1.10.1.js' %}"></script>
+	<script src="{% static 'tsweb/js/WaterMark.js' %}"></script>
+</head>
+
+<body>
+<script>    
+$(function() {
+	Watermark('txtSearch', 'Search', 'noclass');
+	
+	$('#txtSearch').keypress(function(event) {
+		Search(this,event);
+	});
+	
+	getData('');
+});
+
+function getData(studentname) {
+$("#list").html("<div style='width:100%;position=relative;text-align:center;'><img src='{% static 'tsweb/image/ajax-loader.gif' %}' alt='' style='margin:auto;width=100px;height=100px;position=relative;' /></div>");
+$.get("{% url 'tsweb:tprocessajax' %}?class=TSUBMISSIONLISTAJAX",
+{ studentname : studentname },
+function(result){
+      $("#list").html(result);
+}
+)
+.error(function(xhr, status, error) {
+    $("#list").html("<img src='{% static 'tsweb/image/notificationcross.gif' %}' alt='' style='width:30px;' />&nbsp;Error: "+xhr.status+": "+xhr.statusText);
+});
+}
+
+function Search(ele,event)
+{
+if (event.keyCode == 13) 
+	getData($('#txtSearch').val());
+else
+	ele.onKeyPress=event.keyCode;
+}
+</script>
+<div class="placeholder">
+<div class="header">
+<div class="headertext">
+<h1>Teacher Name - My Classroom</h1>
+</div>
+<div class="headerbutton">
+<a href="{% url 'tsweb:logout' %}"><img src="{% static 'tsweb/image/logout.png' %}"/></a>
+<a href=""><img src="{% static 'tsweb/image/userdetails.png' %}" /></a>
+<a href=""><img src="{% static 'tsweb/image/username.png' %}" style="margin-top:12px;" /></a>
+</div>
+</div>
+<h1 class="pagename">Submission List</h1>
+<input id="txtSearch" class="searchbox searchboxnofilter" type="text" value="Search"/>
+<img src="{% static 'tsweb/image/searchbox.png' %}" class="searchboximg searchboximgnofilter" />
+<div class="clear"></div>
+<br/>
+<div class="leftnav">
+<div>
+	<table>
+		<tr>
+			<td class="tdimg"><img src="{% static 'tsweb/image/classlist.png' %}"/></td>
+			<td><a href="{% url 'tsweb:tclasslist' %}">Class List</a></td>
+		</tr>
+	</table>
+</div>
+<div>
+	<table>
+		<tr>
+			<td class="tdimg"><img src="{% static 'tsweb/image/assignmentlist.png' %}"/></td>
+			<td><a href="{% url 'tsweb:tassignmentlist' %}">Assignment List</a></td>
+		</tr>
+	</table>
+</div>
+<div>
+	<table>
+		<tr>
+			<td class="tdimg"><img src="{% static 'tsweb/image/studentlist.png' %}"/></td>
+			<td><a href="{% url 'tsweb:tstudentlist' %}">Student List</a></td>
+		</tr>
+	</table>
+</div>
+<div>
+	<table>
+		<tr>
+			<td class="tdimg"><img src="{% static 'tsweb/image/rubriclist.png' %}"/></td>
+			<td><a href="{% url 'tsweb:trubriclist' %}">Rubric List</a></td>
+		</tr>
+	</table>
+</div>
+<div class="active">
+	<table>
+		<tr>
+			<td class="tdimg"><img src="{% static 'tsweb/image/submissionlist.png' %}"/></td>
+			<td><a href="{% url 'tsweb:tsubmissionlist' %}">Submission List</a></td>
+		</tr>
+	</table>
+</div>
+</div>
+<div class="content">
+<div id="list"></div>
+</div>
+<div style="clear:both"></div>
+</div>
+</body>
+
+</html>

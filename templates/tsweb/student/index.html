@@ -1,0 +1,424 @@
+﻿<!--{% load staticfiles %}-->
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8"/> 
+	<!--<link rel="stylesheet" type="text/css" href="{% static 'tsweb/css/Prototype.css' %}" />-->
+<!--	<link rel="stylesheet" type="text/css" href="{% static 'tsweb/css/smoothness/jquery-ui-1.10.3.custom.min.css' %}" />
+	<link rel="stylesheet" type="text/css" href="{% static 'tsweb/css/smoothness/jquery-ui-1.10.3.custom-edited.css' %}" />
+	<link rel="stylesheet" type="text/css" href="{% static 'tsweb/css/bootstrap.css' %}" />
+	<link rel="stylesheet" type="text/css" href="{% static 'tsweb/css/topscholars.css' %}" />-->
+	<link rel="stylesheet" href="{% static 'tsweb/css/bootstrap.css' %}" type="text/css" />
+	<link rel="stylesheet" href="{% static 'tsweb/css/bootstrap-glyphicons.css' %}" type="text/css" />
+	<link rel="stylesheet" href="{% static 'tsweb/css/topscholars.css' %}" type="text/css" />
+	<link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+	
+	
+<!--	<script src="{% static 'tsweb/js/jQuery1.10.1.js' %}"></script>
+	<script src="{% static 'tsweb/js/jquery-ui-1.10.3.custom.min.js' %}"></script>-->
+
+	
+	<script src="{% static 'tsweb/js/jQuery1-10-1.js' %}" type="text/javascript"></script>
+	<script src="{% static 'tsweb/js/WaterMark.js' %}"></script>
+	<script src="{% static 'tsweb/js/bootstrap.js' %}" type="text/javascript"></script>
+	<script src="{% static 'tsweb/js/transition.js' %}" type="text/javascript"></script>
+
+</head>
+
+<body>
+	<nav class="navbar" role="navigation">
+		<div class="container">
+			<h1 class="logo"><a href="#">Writability - My Desk</a></h1>
+			<!--<p class="navbar-text pull-right"><a href="#" class="navbar-link">Student Name <span class="fa fa-reorder fa-lg"></span></a></p>-->
+			<ul class="nav navbar-nav pull-right student-nav" >
+				<li><a href="{% static 'tsweb/' %}"><i class="fa fa-dashboard fa-lg"></i></a></li>
+				<li class="dropdown">
+					<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-book fa-lg"></i></a>
+					<ul class="dropdown-menu">
+						<li class="dropdown-title">Classes</li>
+						<li><a href="#">Link Text</a></li>
+						<li><a href="#">Link Text</a></li>
+						<li><a href="#">Link Text</a></li>
+					</ul>
+				</li>
+				<li class="dropdown">
+					<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-file-o fa-lg"></i></a>
+					<ul class="dropdown-menu">
+						<li class="dropdown-title">Assignments</li>
+						<li><a href="#">Link Text</a></li>
+						<li><a href="#">Link Text</a></li>
+						<li><a href="#">Link Text</a></li>
+						<li><a href="#">Link Text</a></li>
+						
+					</ul>
+				</li>
+				
+				<li class="dropdown">
+					<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-bullhorn fa-lg notification"></i></a>
+					<ul class="dropdown-menu">
+						<li class="dropdown-title">Notifications</li>
+						<li><a href="#">Link Text</a></li>
+					</ul>
+				</li>
+				
+				<li class="dropdown">
+					<a href="#" class="dropdown-toggle student-name" data-toggle="dropdown">{{ user_name }}</a>
+					<ul class="dropdown-menu">
+						<li><a href="#"><i class="fa fa-user"></i> Profile</a></li>
+						<li><a href="{% url 'tsweb:logout' %}"><i class="fa fa-power-off"></i> Log Out</a></li>
+					</ul>
+				</li>
+			</ul>
+			
+			<form class="navbar-form navbar-left" role="search" id="search-form" method="" action="null">
+				<div class="input-group col-lg-3 col-offset-4">
+					<input type="text" class="form-control">
+		      <span class="input-group-btn">
+		        <input class="btn btn-default" type="submit" value="Search">
+		      </span>
+		    </div><!-- /input-group -->
+	    </form>
+	    
+		</div>
+	</nav> <!-- End Nav -->
+	<div class="page-container"> 
+		<div class="panel-group side-panel" id="side-panel">
+		  <div class="panel panel-default block-cell block-thin">
+		    <div class="panel-heading block-header">
+		      <h3 class="panel-title">
+		        <a data-toggle="collapse" data-parent="#side-panel" href="#collapseOne" >
+		          {# course_name #}
+		        </a>
+		      </h3>
+		    </div>
+		    <div id="collapseOne" class="panel-collapse collapse in">
+		      <div class="block-body">
+		      	<p id="courseDetails">
+		        Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+		        </p>
+		      </div>
+		    </div>
+		  </div>
+		  
+		  <div class="panel panel-default block-cell block-thin">
+		    <div class="panel-heading block-header">
+		      <h3 class="panel-title">
+		        <a data-toggle="collapse" data-parent="#side-panel" href="#collapseTwo">
+		          Classes
+		        </a>
+		      </h3>
+		    </div>
+		    <div id="collapseTwo" class="panel-collapse collapse">
+		      <div class="block-body">
+		        <ul class="block-list" id="classesList">
+		        	<li><a href="#">{# class_name #}</a></li>
+		        	<li><a href="#">{# class_name #}</a></li>
+		        	<li><a href="#">{# class_name #}</a></li>
+		        	<li><a href="#">{# class_name #}</a></li>
+		        	<li><a href="#">{# class_name #}</a></li>
+		        </ul>
+		      </div>
+		    </div>
+		  </div>
+		  
+		  <div class="panel panel-default block-cell block-thin">
+		    <div class="panel-heading block-header">
+		      <h3 class="panel-title">
+		        <a data-toggle="collapse" data-parent="#side-panel" href="#collapseThree">
+		          Assignments
+		        </a>
+		      </h3>
+		    </div>
+		    <div id="collapseThree" class="panel-collapse collapse">
+		      <div class="block-body">
+		       	<table class="table table-hover">
+		       		<thead>
+		       			<tr>
+		       				<th>Name</th>
+		       				<th>Due Date</th>
+		       			</tr>
+		       		</thead>
+		       		<tbody>
+		       			{% for submission in submissionlist %}
+		       			<tr>
+		       				<td><a href="{% url 'tsweb:stsubmissionreview' submission.id %}">{{ submission.getAssignment }}</a></td>
+		       				<td>{{ submission.duedate|date:"d-M-Y" }}</td>
+		       			</tr>
+		       			{% endfor %}
+		       		</tbody>
+		       	</table>
+		      </div>
+		    </div>
+		  </div>
+  		<footer class="footer">
+			<div class="container">
+				<p>&copy; TopScholars 2013</p>
+			</div>
+		</footer>
+		</div>
+		
+
+	</div>
+	
+	
+	<div class="container">
+		<h2 class="page-title">Course Overview</h2>
+		
+		<div class="overview-nav">
+			<ul>
+				<li class="active-white">Developmental</li>
+				<li>Structural</li>
+				<li>Style</li>
+				<li>Usage</li>
+				<li>Words &amp; Phrases</li>
+				<li>Grammar</li>
+			</ul>
+		</div>
+		<div class="block-cell block-wide">
+			<h4>Up next on Writability...</h4>
+			
+			<h5>Wordiness</h5>
+			<h5>Emphasis</h5>
+			<h5>Sentence Variety</h5>
+			
+			<div class="category-text pull-right col-lg-8">
+				<p>Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.</p>
+			</div>
+			
+		</div>
+		<script>
+			$(".overview-nav ul li").click(function () {
+				$(this).addClass('active-white');
+				$(this).parent().children('li').not(this).removeClass('active-white');
+			});
+		</script>
+		
+		
+		
+	</div> <!--End Container-->
+	
+
+	
+	<!--<div style="width:720px;position:relative;float:left;top:40px;margin-left:10px;padding-bottom:52px;">
+		<img src="{% static 'tsweb/image/anonymous-large.png' %}" style="width:162px;height:162px;" />
+	<div style="width:520px;height:167px;border:1px #666666 solid;position:relative;float:right;">
+	<span style="font-size:34px;line-height:36px;margin-left:10px;margin-top:10px;;float:left;position:relative;width:480px;">James McCracken</span>
+		<table style="margin-left:10px;">
+			<tr>
+				<td>Email:</td>
+				<td>mccracken.james@gmail.com</td>
+			</tr>
+			<tr>
+				<td>Current Grade:</td>
+				<td>9</td>
+			</tr>
+			<tr>
+				<td>Class Enrolled:</td>
+				<td>English, History, Maths</td>
+			</tr>
+			<tr>
+				<td>Teachers:</td>
+				<td>Mr. Lastname, Mrs. Lastname</td>
+			</tr>
+			<tr>
+				<td>Timeliness:</td>
+				<td>-% of Assignments Completed on Time</td>
+			</tr>
+		</table>
+	</div>
+	
+<div id="tabs" class="clear" style="margin-top:10px;">
+  <ul>
+    <li><a href="#tabs-1">Overview</a></li>
+    <li><a href="#tabs-2">Developmental</a></li>
+    <li><a href="#tabs-3">Structural</a></li>
+    <li><a href="#tabs-4">Style</a></li>
+    <li><a href="#tabs-5">Usage</a></li>
+    <li><a href="#tabs-6">Words&nbsp;&amp;&nbsp;Phrases</a></li>
+    <li><a href="#tabs-7">Grammar</a></li>
+  </ul>
+  <div id="tabs-1" style="height:308px;">
+  	<br/>
+    <div>
+    <div style="float:left;">
+	    <span style="font-weight:bold;font-size:medium;">Next up on Writability...</span><br/><br/>
+	    <b>Wordiness</b><br/><br/>
+	    Emphasis<br/><br/>
+	    Sentence variety
+    </div>
+    <textarea style="width:433px;height:228px;float:right;">
+			Two roads diverged in a yellow wood,
+			And sorry I could not travel both,
+			And be one traveler, long I stood,
+			To where one bent in the undergrowth.
+			
+			Then took the othe just as fair,
+			And having perhaps the better claim
+			Because it was grassy and wanted wear,
+			Though as for that the passing there,
+			Had worn them really about the same.
+			
+			And both that morning equally lay,
+			In leaves no step had trodden black.
+			Oh, I kept the first for another day!
+			Yet, knowing how way leads on to way,
+			I doubted if I should ever come back.
+			
+			I shall be telling this with a sigh,
+			Somewhere ages and ages hence.
+			Two roads diverege in a wood,
+			And I, I, took the road less traveled by,
+			And that has made all the difference.
+			-Robert Frost, 1916
+    </textarea>
+    </div>
+  </div>
+  <div id="tabs-2" style="height:308px;">
+  	<br/>
+    Missing evidence<br/><br/>
+    Thesis<br/><br/>
+    Ideas<br/><br/>
+    Voice
+  </div>
+  <div id="tabs-3" style="height:308px;">
+  	<br/>
+    Circular reasoning<br/><br/>
+    Faulty assumptions<br/><br/>
+    Transitions between paragraphs<br/><br/>
+    Ad hominen argument<br/><br/>
+    Narrative - Time<br/><br/>
+    Rebuttal
+  </div>
+  <div id="tabs-4" style="height:308px;">
+  	<br/>
+  	<table style="border:1px #CCCCCC solid;border-collapse:collapse;width:158px;float:left;">
+  		<tr style="height:25px;">
+  			<td style="font-weight:bold;background-color:#C0D5EF;padding-left:5px;">Topic Areas</td>
+  		</tr>
+  		<tr class="trhover1">
+  			<td style="padding-left:5px;">Wordiness</td>
+  		</tr>
+  		<tr class="trhover2">
+  			<td style="padding-left:5px;">Emphasis</td>
+  		</tr>
+  		<tr class="trhover1">
+  			<td style="padding-left:5px;">Sentence variety</td>
+  		</tr>
+  		<tr class="trhover2">
+  			<td style="padding-left:5px;">Figure of speech</td>
+  		</tr>
+  		<tr class="trhover1">
+  			<td style="padding-left:5px;">Stylistic fragments</td>
+  		</tr>
+  		<tr class="trhover2">
+  			<td style="padding-left:5px;">Cliched</td>
+  		</tr>
+  	</table>
+  	<img src="{% static 'tsweb/image/wordiness.png' %}" style="float:left;margin-left:35px;">
+  	<div style="float:right;width:320px;">
+	  	<b>WORDINESS</b><br/><br/>
+	  	<textarea style="width:320px;height:129px;">
+	  	Overuse of lots of words to describe something that could be done without using as many
+words as the previous attempt
+	  	</textarea>
+	  	<br/><br/>
+	  	<input type="button" value="Lesson" class="button" style="width:80px;height:35px;">&nbsp;
+	  	<input type="button" value="Example" class="button" style="width:80px;height:35px;">&nbsp;
+	  	<input type="button" value="Quiz" class="button" style="width:80px;height:35px;">
+  	</div>
+  </div>
+  <div id="tabs-5" style="height:308px;">
+  	<br/>
+  	Alumni, alumnus, alumna, alumnae<br/><br/>
+  	Colloquialisms<br/><br/>
+  	As far as<br/><br/>
+  	Avenge versus revenge<br/><br/>
+  	Gender versus sex<br/><br/>
+  	Résumé
+  </div>
+  <div id="tabs-6" style="height:308px;">
+  	<br/>
+  	Idioms<br/><br/>
+  	Ironic<br/><br/>
+  	Affect versus Effect<br/><br/>
+  	Admission versus admittance<br/><br/>
+  	Assure, ensure, insure
+  </div>
+  <div id="tabs-7" style="height:308px;">
+  	<br/>
+  	Parts of Speech<br/><br/>
+  	Subject Verb Agreement<br/><br/>
+  	Verb Tenses<br/><br/>
+  	Fragments<br/><br/>
+  	Parallel Structure
+  </div>
+</div>
+</div>
+<div style="width:270px;position:relative;float:right;top:40px;margin-right:10px;">
+<span style="text-decoration:underline;font-weight:bold;">Assigment List</span>
+<div style="margin-top:5px;">
+<div style="border:1px #0090CA solid;height:50px;">
+	<img src="{% static 'tsweb/image/assignmenttype.png' %}" style="margin:10px;width:25px;float:left;">
+	<div style="float:right;text-align:right;margin:10px 30px;font-size:13px;">
+		<a href="" style="color:black;">Assignment-0001</a><br/>
+		Due Date: 17-Sep-2013
+	</div>
+</div>
+<div style="border:1px #0090CA solid;height:50px;">
+	<img src="{% static 'tsweb/image/assignmenttype.png' %}" style="margin:10px;width:25px;float:left;">
+	<div style="float:right;text-align:right;margin:10px 30px;font-size:13px;">
+		<span style="text-decoration:underline;">Assignment-0002</span><br/>
+		Due Date: 20-Sep-2013
+	</div>
+</div>
+<div style="border:1px #0090CA solid;height:50px;">
+	<img src="{% static 'tsweb/image/assignmenttype.png' %}" style="margin:10px;width:25px;float:left;">
+	<div style="float:right;text-align:right;margin:10px 30px;font-size:13px;">
+		<span style="text-decoration:underline;">Assignment-0003</span><br/>
+		Due Date: 22-Sep-2013
+	</div>
+</div>
+<div style="border:1px #0090CA solid;height:50px;">
+	<img src="{% static 'tsweb/image/assignmenttype.png' %}" style="margin:10px;width:25px;float:left;">
+	<div style="float:right;text-align:right;margin:10px 30px;font-size:13px;">
+		<span style="text-decoration:underline;">Assignment-0004</span><br/>
+		Due Date: 28-Sep-2013
+	</div>
+</div>
+<div style="border:1px #0090CA solid;height:50px;">
+	<img src="{% static 'tsweb/image/assignmenttype.png' %}" style="margin:10px;width:25px;float:left;">
+	<div style="float:right;text-align:right;margin:10px 30px;font-size:13px;">
+		<span style="text-decoration:underline;">Assignment-0005</span><br/>
+		Due Date: 03-Oct-2013
+	</div>
+</div>
+</div>
+<div id="tabs2" class="clear" style="margin-top:10px;">
+  <ul>
+    <li><a href="#tabs-11">Grades</a></li>
+    <li><a href="#tabs-12">Comment(s)</a></li>
+  </ul>
+  <div id="tabs-11" style="height:190px;">
+    <img src="{% static 'tsweb/image/grade.png' %}" style="height:190px;width:240px;">
+  </div>
+  <div id="tabs-12" style="height:190px;">
+    <div style="width:215px;height:42px;line-height:42px;padding-left:10px;background-color:#FFFFC6;border:1px #CCCCCC solid;box-shadow:4px 4px #DCDCDC;">
+    	Comment 1
+    </div>
+    <div style="width:215px;height:42px;line-height:42px;padding-left:10px;margin-top:10px;background-color:#FFFFC6;border:1px #CCCCCC solid;box-shadow:4px 4px #DCDCDC;">
+    	Comment 2
+    </div>
+    <div style="width:215px;height:42px;line-height:42px;padding-left:10px;margin-top:10px;background-color:#FFFFC6;border:1px #CCCCCC solid;box-shadow:4px 4px #DCDCDC;">
+    	Comment 3
+    </div>
+  </div>
+</div>
+</div>
+<div class="clear" style="height:52px;position:relative;margin-top:716px;background-color:#555555;"></div>
+-->
+
+
+</body>
+
+</html>

@@ -93,6 +93,8 @@ function EDITTABLE(){
 			{	class: evalClass,
 				id: id  },
 			function(result){
+				thisClass.resetValidatForm();
+				
 				$.each(result, function(ini,val){
 					thisClass.seperateElement($("#ele_"+ini), val);
 					thisClass.seperateView(ini,val);
@@ -106,6 +108,12 @@ function EDITTABLE(){
     		alert('Error occur. Please contact the administrator.');
     	});
 		return false;
+	}
+	
+	this.resetValidatForm = function(){
+		var validator = $("#new_class_form").validate();
+		validator.resetForm();
+		$(".error").removeClass('error');	
 	}
 
 	this.iniEventEditor = function(){
@@ -257,6 +265,9 @@ function EDITTABLE(){
 	            emailaddress : {
 	                required: true,
 	                email: true,
+	            },
+	            dob :{
+	            	required: true,
 	            }
 		    },
 			 invalidHandler: function(event, validator) {
@@ -286,6 +297,10 @@ function EDITTABLE(){
 		
 		$('#txtSearch').keypress(function(event) {
 			thisClass.Search(this,event);
+		});
+		
+		$("#new_class_btn").click(function(){
+			thisClass.resetValidatForm();
 		});
 		
 		$("#class-submit").click(function(){

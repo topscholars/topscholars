@@ -5,7 +5,6 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.core.urlresolvers import reverse
 
 from tsweb.models import *
-from tsweb.ajaxs import *
 from ajax.classajax import *
 from ajax.assignmentajax import *
 from ajax.studentajax import *

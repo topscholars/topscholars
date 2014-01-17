@@ -163,9 +163,10 @@ function EDITTABLE(){
 	}
 	
 	this.getData = function(description) {
-		$("#list").html("<div style='width:100%;position=relative;text-align:center;'><img src='{% static 'tsweb/image/ajax-loader.gif' %}' alt='' style='margin:auto;width=100px;height=100px;position=relative;' /></div>");
-		$.get("{% url 'tsweb:tprocessajax' %}?class="+tableClassAjax,
-		{ description : description },
+		//$("#list").html("<div style='width:100%;position=relative;text-align:center;'><img src='{% static 'tsweb/image/ajax-loader.gif' %}' alt='' style='margin:auto;width=100px;height=100px;position=relative;' /></div>");
+		$.get("{% url 'tsweb:tprocessajax' %}",
+		{ class : tableClassAjax,
+			description : description },
 		function(result){
 		      $("#list").html(result);
 		}

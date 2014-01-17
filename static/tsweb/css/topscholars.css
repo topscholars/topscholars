@@ -1005,6 +1005,9 @@ form{
     right: 0px; 
 }
 
+.error{
+	color: red;
+}
 
 
 /*End*/

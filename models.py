@@ -433,9 +433,10 @@ class Studentlist(models.Model):
     salutation = models.IntegerField(db_column='Salutation') # Field name made lowercase.
     currentaccademicyear = models.IntegerField(db_column='CurrentAccademicYear') # Field name made lowercase.
     enrollmentdt = models.DateField(db_column='EnrollmentDT') # Field name made lowercase.
+    lastsubmissionversionid = models.IntegerField(db_column='LastSubmissionVersionId') # Field name made lowercase.
     leadid = models.IntegerField(db_column='LeadId') # Field name made lowercase.
     clientid = models.IntegerField(db_column='ClientId') # Field name made lowercase.
-    
+
     def getFullName(self):
         fullname = ''
         if self.middlename is not None:
@@ -457,21 +458,21 @@ class Studentlist(models.Model):
         cursor.execute('select grade from Studentclass where studentid = %s and createddt = (select max(createddt) from Studentclass where studentid = %s)',[stdid,stdid])
         row = cursor.fetchone()
         return row[0]
-    
+
     def getStudentPreviousClass(self):
         stdid=self.id
         cursor = connection.cursor()
         cursor.execute('select cs.code from studentlist as st join studentclass as sc on st.id = sc.studentid join classschedule as cs on sc.classscheduleid = cs.id where st.id = %s and cs.startdate = (select max(cs.startdate) from studentclass as sc join classschedule as cs on sc.classscheduleid = cs.id where sc.studentid = %s )',[stdid,stdid])
         row = cursor.fetchone()
         return row[0]
-    
+
     def getStudentCurrentClass(self):
         stdid=self.id
         cursor = connection.cursor()
         cursor.execute('select cs.code from studentlist as st join studentclass as sc on st.id = sc.studentid join classschedule as cs on sc.classscheduleid = cs.id where st.id = %s and cs.createddt = (select max(cs.createddt) from studentclass as sc join classschedule as cs on sc.classscheduleid = cs.id where sc.studentid = %s )',[stdid,stdid])
         row = cursor.fetchone()
         return row[0]
-    
+
     def getStudentAllClass(self):
         stdid=self.id
         cursor = connection.cursor()
@@ -479,7 +480,7 @@ class Studentlist(models.Model):
         #row = cursor.fetchone()
         row = [item[0] for item in cursor.fetchall()]
         return ', '.join(row)
-    
+
     class Meta:
         db_table = 'studentlist'
 

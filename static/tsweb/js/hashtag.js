@@ -12,6 +12,7 @@
 		}, options || {});
 						
 		wrapControl($(this));
+		doTag($(this));
 		textareaKeyDown($(this));
 		textareaKeyUp($(this));
 		
@@ -31,7 +32,7 @@
 		
 		function doTag(element){
 			var str = element.val();
-			element.parent().parent().find(".highlighter:visible").css("width",element.css("width"));
+			element.parent().parent().find(".highlighter").css("width",element.css("width"));
 			
 			str = str.replace(/\n/g, '<br>');
 			if(!str.match(/(http|ftp|https):\/\/[\w-]+(\.[\w-]+)+([\w.,@?^=%&amp;:\/~+#-]*[\w@?^=%&amp;\/~+#-])?#([a-zA-Z0-9]+)/g)) {
@@ -42,9 +43,9 @@
 				}
 			}
 	
-			element.parent().parent().find(".highlighter:visible").html(str);
-			console.log(str);
-			element.parent().parent().find(".highlighter:visible").find("span").each(function(){
+			element.parent().parent().find(".highlighter").html(str);
+			//console.log(str);
+			element.parent().parent().find(".highlighter").find("span").each(function(){
 				var value = $(this).html();
 				var match = false;
 				for (key in options.autocompleteURL) {
@@ -59,7 +60,7 @@
 			    }
 			});
 			str = str.replace(/#(\S*)/g,'<span class="hashtagPosition"></span>#$1');
-			element.parent().parent().find(".highlighter:visible").html(str);
+			element.parent().parent().find(".highlighter").html(str);
 		}
 		
 		function textareaKeyDown(element){

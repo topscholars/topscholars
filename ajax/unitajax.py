@@ -52,13 +52,11 @@ class UNITLIST():
             knowledge = request.POST.get('knowledge', False)
             skill = request.POST.get('skill', False)
             understanding = request.POST.get('understanding', False)
-            
         except KeyError:
             data_json = { 'status': 'error', }
             data = simplejson.dumps(data_json)
             return HttpResponse(data, mimetype='application/json')
         else:
-
             unit = Unit.objects.get(id=id)
             unit.name = name
             unit.description = description
@@ -89,9 +87,8 @@ class UNITLIST():
             knowledge = request.POST.get('knowledge', False)
             skill = request.POST.get('skill', False)
             understanding = request.POST.get('understanding', False)
-        except KeyError:
-            return HttpResponse('error', mimetype='application/json')
-        else:
+            unit = Unit.objects.get(name=name)
+        except Unit.DoesNotExist:
             unit = Unit()
             unit.name = name
             unit.description = description
@@ -109,6 +106,10 @@ class UNITLIST():
             unit.clientid = clientid
             unit.save()
             data_json = { 'status': 'success', }
+            data = simplejson.dumps(data_json)
+            return HttpResponse(data, mimetype='application/json')
+        else:
+            data_json = { 'status': 'error', }
             data = simplejson.dumps(data_json)
             return HttpResponse(data, mimetype='application/json')
         

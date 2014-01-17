@@ -247,6 +247,24 @@ class CLASSLIST():
             data_json = { 'status': 'success', }
             data = simplejson.dumps(data_json)
             return HttpResponse(data, mimetype='application/json')
+            
+    def changePassword(self,request):
+        try:
+            userid = request.session['userid']
+            password = request.POST.get('password', False)
+        except KeyError:
+            data_json = { 'status': 'error', }
+            data = simplejson.dumps(data_json)
+            return HttpResponse(data, mimetype='application/json')
+        else:
+            login = Login.objects.get(id=userid)
+            login.password = password
+            login.modifieddt = datetime.now()
+            login.modifiedby = userid
+            login.save()
+            data_json = { 'status': 'success', }
+            data = simplejson.dumps(data_json)
+            return HttpResponse(data, mimetype='application/json')
         
 class TCLASSLISTAJAX():
     def get(self,request):

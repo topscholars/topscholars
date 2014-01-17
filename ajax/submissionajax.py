@@ -9,7 +9,8 @@ from django.db.models import Q
 from itertools import chain
 
 from datetime import datetime
-import time
+from datetime import date
+from datetime import time
 
 class TSUBMISSIONLISTAJAX():
     def get(self,request):
@@ -24,5 +25,6 @@ class TSUBMISSIONLISTAJAX():
                 submissionlist = Submissionversion.objects.filter(Q(submissionid__teacherid=userid) & Q(studentstatus=1) & Q(teacherstatus=0) & Q(deleted=0) & Q(studentstatus=1) & (Q(submissionid__studentid__firstname__contains=studentname) | Q(submissionid__studentid__middlename__contains=studentname) | Q(submissionid__studentid__lastname__contains=studentname)))
             else:
                 submissionlist = Submissionversion.objects.filter(submissionid__teacherid=userid,studentstatus=1,teacherstatus=0,deleted=0)
-            context = {'submissionlist': submissionlist}
+            currentdate = date.today()
+            context = {'submissionlist': submissionlist, 'currentdate':currentdate}
             return render(request, 'tsweb/teacher/submissionlistajax.html', context)

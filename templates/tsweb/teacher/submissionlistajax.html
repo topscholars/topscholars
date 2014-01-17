@@ -1,4 +1,4 @@
-﻿<div class="responsive-table">
+﻿<div class="responsive-table">{{ currentdate }}
 <table class="table table-bordered">
 <tr class="rowheader">
 <td class="cellitem">Id</td>
@@ -11,7 +11,11 @@
 {% for row in submissionlist %}
 <tr id="{{ row.submissionid.id }}"  {% if row.submissionid.getLatestVersion == 0 %} >
 {% else %} 
-	class="rowitem">
+    {% if row.submissionid.duedate > currentdate %}
+	    class="rowitem" >
+    {% else %} 
+        class="rowitem" style="background-color:red;">
+    {% endif %} 
 {% endif %} 
 <td class="cellitem">{{ row.submissionid.id }}</td>
 <td class="cellitem">{{ row.submissionid.studentid.getFullName }}</td>

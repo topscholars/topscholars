@@ -7,6 +7,7 @@ from django.db import connection
 from tsweb.models import *
 from django.db.models import Q
 from itertools import chain
+from django.core.mail import send_mail
 
 from datetime import datetime
 import time
@@ -96,7 +97,7 @@ class USERLIST():
             officeext = request.POST.get('officeext', False)
             mobilephone = request.POST.get('mobilephone', False)
             securityprofile = request.POST.get('securityprofile', False)
-            password = request.POST.get('password', False)
+            #password = request.POST.get('password', False)
         except KeyError:
             data_json = { 'status': 'error', }
             data = simplejson.dumps(data_json)
@@ -106,7 +107,7 @@ class USERLIST():
             userlist.title = title
             userlist.department = department
             userlist.salutation = salutation
-            userlist.dob = dob
+            #userlist.dob = dob
             userlist.emailaddress = emailaddress
             userlist.firstname = firstname
             userlist.middlename = middlename
@@ -122,10 +123,10 @@ class USERLIST():
             userlist.modifiedby = userid
             userlist.save()
             
-            if password != False and password != '':
-                login = Login.objects.get(id=userid)
-                login.password = password
-                login.save()
+            #if password != False and password != '':
+            #    login = Login.objects.get(id=userid)
+            #    login.password = password
+            #    login.save()
                 
             data_json = { 'status': 'success', }
             data = simplejson.dumps(data_json)
@@ -160,7 +161,7 @@ class USERLIST():
                 userlist.title = title
                 userlist.department = department
                 userlist.salutation = salutation
-                userlist.dob = dob
+                #userlist.dob = dob
                 userlist.emailaddress = emailaddress
                 userlist.firstname = firstname
                 userlist.middlename = middlename
@@ -197,6 +198,10 @@ class USERLIST():
                 login.deleted = 0
                 login.clientid = clientid
                 login.save()
+
+                emailto = [emailaddress]
+                body = 'Your account is: ' + emailaddress + '  with password: ' + str(password)
+                send_mail('Topscholar Education: User Account', body , 'noreply@topscholars.org',emailto, fail_silently=False)
                 
                 data_json = { 'status': 'success',
                              'email': emailaddress,

@@ -316,28 +316,40 @@ $(function() {
 		
 		<div class="block-cell block-wide">
 			<div class="row">
+				
 				<form class="form" role="form" id="newTagForm" method="POST" action="#taglist">
+			    <div class="col-lg-2">
+				    <div class="form-group">
+				      <input id="tagName" type="text" class="form-control input-small" placeholder="Search"> 
+				    </div><!-- /input-group -->
+				   
+			    </div>
+			     <input type="button" class="btn btn-primary btn-small" type="button" value="Search"/>  
+					<!--
 			    <div class="col-lg-2">
 				    <div class="form-group">
 				      <input id="tagName" type="text" class="form-control input-small" placeholder="Tag Name"> 
 				    </div><!-- /input-group -->
+				    <!--
 			    </div>
 			    <div class="col-lg-2">
 			      <div class="form-group">
 			        <input id="tag_category" type="text" class="form-control input-small" placeholder="Category"> 
 			      </div><!-- /input-group -->
+			      <!--
 			    </div>
 			    <div class="col-lg-4">
 			    	<div class="form-group">
 			   			<input id="tagDescription" type="text" class="form-control input-small" placeholder="Descriptions">
 			   		</div>
 				  </div><!-- /.col-lg-6 -->
+				  <!--
 				  <div class="col-lg-2">
 				  	<div class="form-group">
 			  			<input id="sub_tag" type="text" class="form-control input-small" placeholder="Sub Tag">
 			  		</div>
 				  </div><!-- /.col-lg-6 -->  
-				  <input type="button" class="btn btn-success btn-small" type="button" id="addTagBtn" value="Add Tag"/>  
+				  <input type="button" class="btn btn-success btn-small pull-right" type="button" id="addTagBtn" data-toggle="modal" data-target="#tag_modal" value="Add Tag"/>  
 			  </form>
 			</div><!-- /.row -->
 			<hr />

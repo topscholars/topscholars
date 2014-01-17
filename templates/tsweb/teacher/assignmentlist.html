@@ -449,8 +449,8 @@ $(function() {
 		        	<div class="form-group">
 		        		<label for="ele_name" class="col-sm-4 control-label">Assignment Name</label>
 		        		<div class="col-sm-8">
-		        			<input type="text" name="ele_name" id="ele_name" class="form-control input-small"/>
-		        			<input type="hidden" id="ele_id" name="id" class="form-control input-small" />
+		        			<input type="text" name="ele_name" id="ele_name" class="form-control col-sm-4"/>
+		        			<input type="hidden" id="ele_id" name="id" class="form-control col-sm-4" />
 		        		</div>
 		        	</div>
 		        	
@@ -485,7 +485,9 @@ $(function() {
 		        	<div class="form-group">
 		        		<label for="ele_parameters" class="col-sm-4 control-label">Parameters(Word Length)</label>
 		        		<div class="col-sm-8">
-		        			<input type="text" id="ele_parameters" class="form-control input-small" name="parameters" />
+		        			<!--<input type="text" id="ele_parameters" class="form-control input-small" name="parameters" />-->
+		        			<input type="text" id="ele_maxwords" name="maxwords" class="form-control col-sm-4" />
+	        				<input type="text" id="ele_minwords" name="minwords" class="form-control col-sm-4" />
 		        		</div>
 		        	</div>
 		        	
@@ -528,17 +530,18 @@ $(function() {
 		        		<label for="ele_classid" class="col-sm-4 control-label">Assigned Class</label>
 		        		<div class="col-sm-8">
 		        			<select id="ele_classid" class="form-control input-small">
-		        				<option id="ele_class">{% ele_class %}</option>
+		        				<option id="ele_class">{# ele_class #}</option>
 		        			</select>
 		        		</div>
 		        	</div>
-		        	
+		        	<!--
 		        	<div class="form-group">
 		        		<label for="maxwords" class="col-sm-4 control-label">Maximum Word</label>
 		        		<div class="col-sm-8">
 		        			<input type="text" id="ele_maxwords" name="maxwords" class="form-control input-small" />
 		        		</div>
 		        	</div>
+		        	-->
 		    
 		        	<div class="form-group">
 		        		<label for="diabled" class="col-sm-4 control-label">Disable</label>

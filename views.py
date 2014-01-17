@@ -251,6 +251,7 @@ def stsubmissionreview(request, id):
     try:
         userid = request.session['userid']
         login = Login.objects.get(id=userid)
+        studentid = login.recid
         user_name = login.loginname
     except KeyError:
         return HttpResponseRedirect(reverse('tsweb:login'))
@@ -258,9 +259,11 @@ def stsubmissionreview(request, id):
         submissionversionlist = Submissionversion.objects.filter(submissionid=id)
         submission = Submission.objects.get(id=id)
         studentname = submission.studentid.getFullName()
+        submissionlist = Submission.objects.filter(studentid=studentid)
         context= {'id' : id,
                   'user_name' : user_name,
                   'studentname' : studentname,
+                  'submissionlist' : submissionlist,
                   'submissionversionlist' : submissionversionlist }
         return render(request, 'tsweb/student/revision_editor.html', context)
                 

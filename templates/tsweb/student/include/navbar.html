@@ -70,8 +70,9 @@
 			<h1 class="logo"><a href="#">Writability - My Desk</a></h1>
 			<!--<p class="navbar-text pull-right"><a href="#" class="navbar-link">Student Name <span class="fa fa-reorder fa-lg"></span></a></p>-->
 			<ul class="nav navbar-nav pull-right student-nav" >
+				<!--
 				<li><a href="{% url 'tsweb:sindex' %}"><i class="fa fa-dashboard fa-lg"></i></a></li>
-<!--				<li class="dropdown">
+				<li class="dropdown">
 					<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-book fa-lg"></i></a>
 					<ul class="dropdown-menu">
 						<li class="dropdown-title">Classes</li>
@@ -82,8 +83,9 @@
 					<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-file-o fa-lg"></i></a>
 					<ul class="dropdown-menu">
 						<li class="dropdown-title">Assignments</li>
-						<li><a href="#">{# assignment-name #}</a></li>
-						
+		       			{% for submission in submissionlist %}
+		       			<li><a href="{% url 'tsweb:stsubmissionreview' submission.id %}">{{ submission.getAssignment }}</a></li>
+		       			{% endfor %}
 					</ul>
 				</li>
 				<!--

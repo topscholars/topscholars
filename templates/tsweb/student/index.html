@@ -151,20 +151,23 @@
 		       			</tr>
 		       		</thead>
 		       		<tbody>
+		       			{% for submission in submissionlist %}
 		       			<tr>
 		       				<td>
-		       					<a href="#" id="assignment-details" rel="popover"
+		       					<a href="{% url 'tsweb:stsubmissionreview' submission.id %}" id="assignment-details" rel="popover"
 		       						data-placement="left"
 		       						data-container=".block-wide"
 		       						data-toggle="popover" title
 		       						data-trigger="hover"
 		       						data-content="{# assignment-details #} this is some more info about this assignment.  Of course it will be loaded dynamically.."
-		       						role="button">{# assignment-name #}
+		       						role="button">
+									{{ submission.getAssignment }}
 		       					</a>
 		       				</td>
-		       				<td>{# due-date #}</td>
-		       				<td><a href="#"><i class="fa fa-chevron-circle-right fa-lg"></i></a></td>
+		       				<td>{{ submission.duedate|date:"d-M-Y" }}</td>
+		       				<td><a href="{% url 'tsweb:stsubmissionreview' submission.id %}"><i class="fa fa-chevron-circle-right fa-lg"></i></a></td>
 		       			</tr>
+		       			{% endfor %}
 		       		</tbody>
 		       	</table>
 		      </div>

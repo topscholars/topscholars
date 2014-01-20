@@ -98,7 +98,8 @@ def tassignmentlist(request):
         userlist = Userlist.objects.get(id=recid)
         
         securityprofile = userlist.securityprofileid
-        classlist = Classlist.objects.filter(clientid=clientid)
+        classlist = Classschedule.objects.filter(clientid=clientid, disabled=0, deleted=0)
+        #selectlist = Selectionlist.objects.filter(selectiongroupid=6, disabled=0, deleted=0)
         urlActive = 'assignmentlist'
         context= {'classlist' : classlist,
                   'user_name' : user_name,

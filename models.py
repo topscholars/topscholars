@@ -171,7 +171,7 @@ class Classlist(models.Model):
 
 class Classschedule(models.Model):
     id = models.IntegerField(primary_key=True, db_column='ID') # Field name made lowercase.
-    classid = models.ForeignKey(Classlist,db_column='ClassId') # Field name made lowercase.
+    #classid = models.ForeignKey(Classlist,db_column='ClassId') # Field name made lowercase.
     code = models.CharField(max_length=50L, db_column='Code', blank=True) # Field name made lowercase.
     subcode = models.CharField(max_length=50L, db_column='SubCode', blank=True) # Field name made lowercase.
     teacherid = models.IntegerField(db_column='TeacherId') # Field name made lowercase.

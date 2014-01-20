@@ -625,6 +625,7 @@ class Categorylink(models.Model):
     entityid = models.ForeignKey(Entity,related_name="Categorylinktoentity", db_column='EntityId') # Field name made lowercase.
     recid = models.IntegerField(db_column='RecId') # Field name made lowercase.
     totalweight = models.IntegerField(db_column='TotalWeight') # Field name made lowercase.
+    categoryid = models.IntegerField(db_column='CategoryId') # Field name made lowercase.
     createddt = models.DateTimeField(db_column='CreatedDT') # Field name made lowercase.
     createdby = models.IntegerField(db_column='CreatedBy') # Field name made lowercase.
     modifieddt = models.DateTimeField(db_column='ModifiedDT') # Field name made lowercase.

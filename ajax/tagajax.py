@@ -22,46 +22,34 @@ class TAGLIST():
             return HttpResponse('error', mimetype='application/json')
         else:
             #classlist = Classschedule.objects.filter(id=id)
-            cursor.execute("SELECT id,firstname,middlename,lastname,salutation,title,department,dob,homephone,officephone,officeext,mobilephone,emailaddress,securityprofileid FROM userlist  WHERE id = %s", [id])
-            
+            cursor.execute("SELECT tag.id, tag.name, tag.description, tag.parentid, cl.categoryid FROM tag as tag join categorylink as cl on tag.id = cl.recid and cl.entityid = '12' WHERE tag.id = %s", [id])
             results = cursor.fetchall()
             for r in results:
-                if r[7] is None :
-                    dob = ''
-                else :
-                    dob = r[7].strftime(DATE_FORMAT)
                     
                 data_json = {
                         'id': r[0],
-                        'firstname': r[1],
-                        'middlename': r[2],
-                        'lastname': r[3],
-                        'salutation': r[4],
-                        'title': r[5],
-                        'department': r[6],
-                        'dob': dob,
-                        'homephone': r[8],
-                        'officephone': r[9],
-                        'officeext': r[10],
-                        'mobilephone': r[11],
-                        'emailaddress': r[12],
-                        'securityprofile': r[13],
+                        'name': r[1],
+                        'descriptions': r[2],
+                        'parentid': r[3],
+                        'categoryid': r[4],
                         }
             data = simplejson.dumps(data_json)
         return HttpResponse(data, mimetype='application/json')
     
-    def getClass(self,request):
+    def getParentTag(self,request):
         try:
             userid = request.session['userid']
+            id = request.GET.get('id', False)
         except KeyError:
             return HttpResponse('error', mimetype='application/json')
         else:
             login = Login.objects.get(id=userid)
             clientid = login.clientid
-            if login.usertypeid==1:
-                recid = Login.objects.filter(usertypeid=1).values_list('recid')
-                classlist = list(Classlist.objects.filter(rubricid__in=recid,disabled=0,deleted=0,clientid=clientid).values('id','classname'))
-                data = simplejson.dumps(classlist)
+            if id == False or id == '':
+                taglist = list(Tag.objects.filter(Q(disabled=0,deleted=0,clientid=clientid)).values('id','name'))
+            else:
+                taglist = list(Tag.objects.filter(~Q(id=id),Q(disabled=0,deleted=0,clientid=clientid)).values('id','name'))
+            data = simplejson.dumps(taglist)
         return HttpResponse(data, mimetype='application/json')
     
     def getTeacher(self,request):
@@ -82,50 +70,38 @@ class TAGLIST():
         DATE_FORMAT = "%d-%m-%Y" 
         try:
             userid = request.session['userid']
+            login = Login.objects.get(id=userid)
+            clientid = login.clientid
+            
             id = request.POST.get('id', False)
-            title= request.POST.get('title', False)
-            department= request.POST.get('department', False)
-            salutation= request.POST.get('salutation', False)
-            dob = request.POST.get('dob', False)
-            emailaddress = request.POST.get('emailaddress', False)
-            firstname = request.POST.get('firstname', False)
-            middlename = request.POST.get('middlename', False)
-            lastname = request.POST.get('lastname', False)
-            homephone = request.POST.get('homephone', False)
-            officephone = request.POST.get('officephone', False)
-            officeext = request.POST.get('officeext', False)
-            mobilephone = request.POST.get('mobilephone', False)
-            securityprofile = request.POST.get('securityprofile', False)
-            password = request.POST.get('password', False)
+            name = request.POST.get('name', False)
+            descriptions = request.POST.get('descriptions', False)
+            categoryid = request.POST.get('categoryid', False)
+            parentid = request.POST.get('parentid', False)
+            
         except KeyError:
             data_json = { 'status': 'error', }
             data = simplejson.dumps(data_json)
             return HttpResponse(data, mimetype='application/json')
         else:
-            userlist = Userlist.objects.get(id=id)
-            userlist.title = title
-            userlist.department = department
-            userlist.salutation = salutation
-            userlist.dob = dob
-            userlist.emailaddress = emailaddress
-            userlist.firstname = firstname
-            userlist.middlename = middlename
-            userlist.lastname = lastname
-            userlist.homephone = homephone
-            userlist.officephone = officephone
-            userlist.officeext = officeext
-            userlist.mobilephone = mobilephone
-            userlist.dob = datetime.strptime(dob,DATE_FORMAT)
-            if securityprofile != False:
-                userlist.securityprofileid = securityprofile
-            userlist.modifieddt = datetime.now()
-            userlist.modifiedby = userid
-            userlist.save()
-            
-            if password != False and password != '':
-                login = Login.objects.get(id=userid)
-                login.password = password
-                login.save()
+            taglist = Tag.objects.get(id=id)
+            taglist.name = name
+            if parentid == False:
+                taglist.parentid = 0
+            else:
+                taglist.parentid = parentid
+            taglist.description = descriptions
+            taglist.modifieddt = datetime.now()
+            taglist.modifiedby = userid
+            taglist.clientid = clientid
+            taglist.save()
+                
+            #category id save
+            categorylinklist = Categorylink.objects.get(entityid=12, recid=id)
+            categorylinklist.categoryid = categoryid
+            categorylinklist.modifieddt = datetime.now()
+            categorylinklist.modifiedby = userid
+            categorylinklist.save()
                 
             data_json = { 'status': 'success', }
             data = simplejson.dumps(data_json)
@@ -135,78 +111,59 @@ class TAGLIST():
         DATE_FORMAT = "%d-%m-%Y" 
         try:
             userid = request.session['userid']
-            title= request.POST.get('title', False)
-            department= request.POST.get('department', False)
-            salutation= request.POST.get('salutation', False)
-            dob = request.POST.get('dob', False)
-            emailaddress = request.POST.get('emailaddress', False)
-            firstname = request.POST.get('firstname', False)
-            middlename = request.POST.get('middlename', False)
-            lastname = request.POST.get('lastname', False)
-            homephone = request.POST.get('homephone', False)
-            officephone = request.POST.get('officephone', False)
-            officeext = request.POST.get('officeext', False)
-            mobilephone = request.POST.get('mobilephone', False)
-            securityprofile = request.POST.get('securityprofile', False)
-        except KeyError:
-            return HttpResponse('error', mimetype='application/json')
-        else:
             login = Login.objects.get(id=userid)
             clientid = login.clientid
-            try:
-                usercheck = Userlist.objects.get(emailaddress=emailaddress)
-            except Userlist.DoesNotExist:
-                userlist = Userlist()
-                userlist.title = title
-                userlist.department = department
-                userlist.salutation = salutation
-                userlist.dob = dob
-                userlist.emailaddress = emailaddress
-                userlist.firstname = firstname
-                userlist.middlename = middlename
-                userlist.lastname = lastname
-                userlist.homephone = homephone
-                userlist.officephone = officephone
-                userlist.officeext = officeext
-                userlist.mobilephone = mobilephone
-                userlist.dob = datetime.strptime(dob,DATE_FORMAT)
-                userlist.securityprofileid = securityprofile
-                userlist.clientid = clientid
-                userlist.createddt = datetime.now()
-                userlist.createdby = userid
-                userlist.modifieddt = datetime.now()
-                userlist.modifiedby = userid
-                userlist.save()
-                
-                #password = random 6 digit
-                password = random.randrange(0, 999999, 6)
-                
-                recid = Userlist.objects.latest('id').id
-                
-                login = Login()
-                login.loginname = emailaddress
-                login.password = password
-                #login.hint = hint
-                login.usertypeid = 1
-                login.recid = recid
-                login.modifieddt = datetime.now()
-                login.modifiedby = userid
-                login.createddt = datetime.now()
-                login.createdby = userid
-                login.disabled = 0
-                login.deleted = 0
-                login.clientid = clientid
-                login.save()
-                
-                data_json = { 'status': 'success',
-                             'email': emailaddress,
-                             'password': password, }
-                data = simplejson.dumps(data_json)
-                return HttpResponse(data, mimetype='application/json')
+            
+            id = request.POST.get('id', False)
+            name = request.POST.get('name', False)
+            descriptions = request.POST.get('descriptions', False)
+            categoryid = request.POST.get('categoryid', False)
+            parentid = request.POST.get('parentid', False)
+            
+        except KeyError:
+            data_json = { 'status': 'error', }
+            data = simplejson.dumps(data_json)
+            return HttpResponse(data, mimetype='application/json')
+        else:
+            taglist = Tag()
+            taglist.name = name
+            if parentid == False:
+                taglist.parentid = 0
             else:
-                data_json = { 'status': 'error', }
-                data = simplejson.dumps(data_json)
-                return HttpResponse(data, mimetype='application/json')
+                taglist.parentid = parentid
+            #must be selecttion
+            #taglist.abilitylevel = 0
+            #system cannot null
+            taglist.description = descriptions
+            taglist.createddt = datetime.now()
+            taglist.createdby = userid
+            taglist.modifieddt = datetime.now()
+            taglist.modifiedby = userid
+            taglist.disabled = 0
+            taglist.deleted = 0
+            taglist.clientid = clientid
+            taglist.save()
+            
+            recid = Tag.objects.latest('id').id
+            
+            entitylist = Entity.objects.get(id=12)
+            #category id save
+            categorylinklist = Categorylink()
+            categorylinklist.entityid = entitylist
+            categorylinklist.recid = recid
+            categorylinklist.categoryid = categoryid
+            categorylinklist.totalweight = 0
+            categorylinklist.createddt = datetime.now()
+            categorylinklist.createdby = userid
+            categorylinklist.modifieddt = datetime.now()
+            categorylinklist.modifiedby = userid
+            categorylinklist.deleted = 0
+            categorylinklist.clientid = clientid
+            categorylinklist.save()
+            
+            data_json = { 'status': 'success', }
+            data = simplejson.dumps(data_json)
+            return HttpResponse(data, mimetype='application/json')
         
     def getSalutation(self,request):
         try:

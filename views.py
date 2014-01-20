@@ -173,6 +173,7 @@ def tlessonlist(request):
         userlist = Userlist.objects.get(id=recid)
         securityprofile = userlist.securityprofileid
         urlActive = 'lessonlist'
+        
         context= {'user_name' : user_name,
                   'securityprofile' : securityprofile,
                   'urlActive': urlActive,}
@@ -190,8 +191,16 @@ def ttaglist(request):
         userlist = Userlist.objects.get(id=recid)
         securityprofile = userlist.securityprofileid
         urlActive = 'taglist'
+        
+        #category select
+        entity = Entity.objects.get(name='Tag')
+        entityid = entity.id
+        categoryentity = Categoryentity.objects.filter(entityid=entityid).values_list('categoryid')
+        categorylist = Category.objects.filter(id__in=categoryentity)
+        
         context= {'user_name' : user_name,
                   'securityprofile' : securityprofile,
+                  'categorylist': categorylist,
                   'urlActive': urlActive,}
         return render(request, 'tsweb/teacher/taglist.html', context)
     

@@ -31,39 +31,11 @@ function EDITTABLE(){
 	this.pagename = $(".pagename").text();
 	
 	this.showEditTable = function(){
-		$(".pagename").text(thisClass.pagename + " - Edit");
-		
-		$("#editField").show();
-		
-		$(".tablelist").hide();
-		//$(".listnewbutton").hide();
-		//$(".searchboximg").hide();
-		
-		var classid = $('#ele_id').val();
-		if(classid !== ""){
-			//thisClass.getStudentData(classid);
-			//thisClass.getStudentAddData(classid);
-			$("#list_student").show();
-			$("#list_add_student").show();
-		}
 	}
 	
 	this.hideEditTable =function(){
-		$(".pagename").text(thisClass.pagename);
-		
-		// $("#editField").hide();
-		
-		// $(".tablelist").show();
-		// $(".listnewbutton").show();
-		// $("#txtSearch").show();
-		// $(".searchboximg").show();
-		
 		$('#new_class_modal').modal('hide')
 		thisClass.getData('');
-		
-		//return and hide
-		$(".viewTD").show();
-		$(".editorTD").hide();
 	}
 	
 	this.editTable = function(id){
@@ -72,12 +44,17 @@ function EDITTABLE(){
 			{	class: evalClass,
 				id: id  },
 			function(result){
+				var parentid;
 				$.each(result, function(ini,val){
 					thisClass.seperateElement($("#ele_"+ini), val);
 					thisClass.seperateView(ini,val);
+					
+					if(ini == 'parentid')
+					{
+						parentid = val;
+					}
 				});
-				
-				$("#ele_dayofweek").multiselect('refresh'); 
+				thisClass.getParentTag(parentid);
 				
 				thisClass.showEditTable();
 		})
@@ -86,50 +63,26 @@ function EDITTABLE(){
     	});
 		return false;
 	}
-
-	this.iniEventEditor = function(){
-		thisClass.UIHover("#btnSave");
-		thisClass.UIHover("#btnBack");
-		thisClass.UIHover("#btnEdit");
-		
-		$("#btnBack").click(function(){
-			thisClass.hideEditTable();
-			thisClass.getData('');
-		});
-	}
 	
-	this.selectSalutation = function(){
+	this.getParentTag = function(parentid){
 		var html ='';
-		$.ajax({
-			url: url,
-			type: 'GET',
-			data: { class: evalClass,
-					method: 'getSalutation'
-			},
-			success: function(res){
-				$.each(res, function(ini,val){
-						html += "<option value='"+val.id+"'>"+val.selectionname+"</option>";
+		$.getJSON(
+			url,
+			{	class: evalClass,
+				method: 'getParentTag',
+				id: $("#ele_id").val() },
+			function(result){
+				$("#ele_parentid option").remove();
+				$.each(result, function(ini,val){
+					html += "<option value='"+val.id+"'>"+val.name+"</option>";
 				});
-				$("#ele_salutation").append(html);
-			}	
-		});
-	}
-	
-	this.selectSecurityProfile = function(){
-		var html ='';
-		$.ajax({
-			url: url,
-			type: 'GET',
-			data: { class: evalClass,
-					method: 'getSecurityProfile'
-			},
-			success: function(res){
-				$.each(res, function(ini,val){
-						html += "<option value='"+val.id+"'>"+val.name+"</option>";
-				});
-				$("#ele_securityprofile").append(html);
-			}	
-		});
+				$("#ele_parentid").append(html);
+				$("#ele_parentid").val(parentid);
+		})
+		.error(function(xhr, status, error) {
+    		alert('Error occur. Please contact the administrator.');
+    	});
+    	
 	}
 	
 	this.getData = function(description) {
@@ -143,53 +96,6 @@ function EDITTABLE(){
 		.error(function(xhr, status, error) {
 		    $("#list").html("<img src='{% static 'tsweb/image/notificationcross.gif' %}' alt='' style='width:30px;' />&nbsp;Error: "+xhr.status+": "+xhr.statusText);
 		});
-	}
-	
-	this.getStudentData = function(classid){
-		$("#list_student").html("<div style='width:100%;position=relative;text-align:center;'><img src='{% static 'tsweb/image/ajax-loader.gif' %}' alt='' style='margin:auto;width=100px;height=100px;position=relative;' /></div>");
-		$.get("{% url 'tsweb:tprocessajax' %}?class="+evalClass+"&method=getTStudentList",
-		{classid: classid},
-		function(result){
-		      $("#list_student").html(result);
-		}
-		)
-		.error(function(xhr, status, error) {
-		    $("#list_student").html("<img src='{% static 'tsweb/image/notificationcross.gif' %}' alt='' style='width:30px;' />&nbsp;Error: "+xhr.status+": "+xhr.statusText);
-		});
-	}
-	
-	this.getStudentAddData = function(classid){
-		var html ='';
-		$.get( url,
-			{	class: evalClass,
-				method: 'getTStudentAddList',
-				classid: classid   },
-			function(result){
-				$("#list_add_student").html(result);
-				$(".addStudent").click(function(){
-					var valAdd = $(this).attr("text");
-					thisClass.addStudentInClassschedule(valAdd);
-				});
-		})
-		.error(function(xhr, status, error) {
-    		alert('Error occur. Please contact the administrator.');
-    	});
-	}
-	
-	this.addStudentInClassschedule = function(studentid){
-		var classid = $('#ele_id').val();
-		$.post( url,
-			{	class: evalClass,
-				method: 'addStudentInClass',
-				classid: classid,
-				studentid: studentid },
-			function(result){
-				//thisClass.getStudentData(classid);
-				//thisClass.getStudentAddData(classid);
-		})
-		.error(function(xhr, status, error) {
-    		alert('Error occur. Please contact the administrator.');
-    	});
 	}
 	
 	this.Search = function(ele,event)
@@ -211,11 +117,6 @@ function EDITTABLE(){
 		odata = thisClass.oData(odata);
 		$.post(url,odata,
 			function(result){
-				if($("#ele_id").val() == ""){
-					if(result.status == "success"){
-						alert("User : "+ result.email + "\n Password : "+ result.password);
-					}
-				}
 				thisClass.hideEditTable();
 			})
 		.error(function(xhr, status, error) {
@@ -225,9 +126,9 @@ function EDITTABLE(){
 	}
 	
     this.initValidateForm = function(){
-		  $("#new_class_form").validate({              
+		  $("#tag_form").validate({              
 		    rules: {
-		      	firstname:{
+		      	name:{
 		      		required: true,
 		      	},
 	          	lastname : {
@@ -247,7 +148,7 @@ function EDITTABLE(){
 
 	this.initValidateFormEvent = function(){
 		thisClass.submitForm = true;
-	  	$("#new_class_form").validate().form();
+	  	$("#tag_form").validate().form();
 	}
 	
 	
@@ -262,38 +163,21 @@ function EDITTABLE(){
 			thisClass.Search(this,event);
 		});
 		
-		$("#class-submit").click(function(){
+		$("#btnSave").click(function(){
         	thisClass.initValidateFormEvent();
             if(thisClass.submitForm){
 				thisClass.save();
 			}
 		});
 		
-		$("#btnEdit").click(function(){
-			$(".editorTD").show();
-			$(".viewTD").hide();
-		});
-		
-		$("#new_class_btn").click(function(){
+		$("#addTagBtn").click(function(){
 			$("[id^='ele_']").each(function(){
 				$(this).val('');
 			});
-			$("[id^='textView_']").each(function(){
-				$(this).text('');
-			});
-			thisClass.showEditTable();
-			$(".editorTD").show();
-			$(".viewTD").hide();
-			
-			$("#list_student").hide();
-			$("#list_add_student").hide();
-			$("#ele_dayofweek").multiselect('refresh'); 
-		});
+			thisClass.getParentTag();
+		});		
 		
-		thisClass.iniEventEditor();
 		thisClass.initValidateForm();
-		thisClass.selectSalutation();
-		thisClass.selectSecurityProfile(); 
 		
 		var profile = new EDITPROFILE(url);
 		profile.iniControl();
@@ -316,41 +200,8 @@ $(function() {
 		
 		<div class="block-cell block-wide">
 			<div class="row">
-				
-				<form class="form" role="form" id="newTagForm" method="POST" action="#taglist">
-			    <div class="col-lg-2">
-				    <div class="form-group">
-				      <input id="tagName" type="text" class="form-control input-small" placeholder="Search"> 
-				    </div><!-- /input-group -->
-				   
-			    </div>
-			     <input type="button" class="btn btn-primary btn-small" type="button" value="Search"/>  
-					<!--
-			    <div class="col-lg-2">
-				    <div class="form-group">
-				      <input id="tagName" type="text" class="form-control input-small" placeholder="Tag Name"> 
-				    </div><!-- /input-group -->
-				    <!--
-			    </div>
-			    <div class="col-lg-2">
-			      <div class="form-group">
-			        <input id="tag_category" type="text" class="form-control input-small" placeholder="Category"> 
-			      </div><!-- /input-group -->
-			      <!--
-			    </div>
-			    <div class="col-lg-4">
-			    	<div class="form-group">
-			   			<input id="tagDescription" type="text" class="form-control input-small" placeholder="Descriptions">
-			   		</div>
-				  </div><!-- /.col-lg-6 -->
-				  <!--
-				  <div class="col-lg-2">
-				  	<div class="form-group">
-			  			<input id="sub_tag" type="text" class="form-control input-small" placeholder="Sub Tag">
-			  		</div>
-				  </div><!-- /.col-lg-6 -->  
-				  <input type="button" class="btn btn-success btn-small pull-right" type="button" id="addTagBtn" data-toggle="modal" data-target="#tag_modal" value="Add Tag"/>  
-			  </form>
+
+			  <input type="button" class="btn btn-success btn-small pull-right" type="button" id="addTagBtn" data-toggle="modal" data-target="#tag_modal" value="Add Tag"/>  
 			</div><!-- /.row -->
 			<hr />
 			<div id="list"></div>
@@ -385,28 +236,33 @@ $(function() {
         		<div class="form-group">
         			<label for="tag_name" class="col-sm-4 control-label">Tag Name</label>
         			<div class="col-sm-8">
-        				<input type="text" name="tag_name" id="tag_name" class="form-control input-small"/>
+        				<input type="hidden" name="id" id="ele_id" class="form-control input-small"/>
+        				<input type="text" name="name" id="ele_name" class="form-control input-small"/>
         			</div>
         		</div>
         		
         		<div class="form-group">
         			<label for="descriptions" class="col-sm-4 control-label">Descriptions</label>
         			<div class="col-sm-8">
-        				<input type="text" id="tag_descriptions" class="form-control input-small" name="descriptions" />
+        				<input type="text" id="ele_descriptions" class="form-control input-small" name="descriptions" />
         			</div>
         		</div>
         		
         		<div class="form-group">
         			<label for="tag_category" class="col-sm-4 control-label">Category</label>
         			<div class="col-sm-8">
-        				<input type="text" id="tag_category" class="form-control input-small" name="tag_category" />
+        				<select id="ele_categoryid" name="categoryid" class="form-control input-medium">
+						{% for category in categorylist %}
+						<option value="{{ category.id  }}">{{ category.name }}</option>
+						{% endfor %}
+    					</select>
         			</div>
         		</div>
         		
         		<div class="form-group">
-        			<label for="sub_tags" class="col-sm-4 control-label">Sub Tags</label>
+        			<label for="sub_tags" class="col-sm-4 control-label">Parent</label>
         			<div class="col-sm-8">
-        				<input type="text" id="sub_tags" class="form-control input-small" name="sub_tags" />
+        				<select id="ele_parentid" name="parentid" class="form-control input-medium"></select>
         			</div>
         		</div>
         		
@@ -414,7 +270,7 @@ $(function() {
         </div><!-- /.modal-body -->
         
         <div class="modal-footer">
-        	<input type="submit" name="save" value="Save Tag" class="btn btn-primary" />
+        	<input type="submit" name="save" id="btnSave" value="Save Tag" class="btn btn-primary" />
 	      </div><!-- /.modal-footer -->
 	    </div><!-- /.modal-content -->
 	  </div><!-- /.modal-dialog -->

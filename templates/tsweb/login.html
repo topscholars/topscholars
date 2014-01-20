@@ -23,12 +23,15 @@
 			$.post(url,
 				{	'class' :  'LOGINAJAX',
 					'method' : 'sendhint',
-					'username' : $('#txtUsername').val() },
+					'username' : $('#user-email-forgot').val() },
 				function(result){
-					$('#lblError').val(result.status);
+					//$('#lblError').val(result.status);
+					$("#forget-password-form").fadeOut('fast', function () {});
+	   				$("#login-form").slideDown('fast', function () {});
 				})
 			.error(function(xhr, status, error) {
-	    		alert('Error occur. Please contact the administrator.');
+				console.log(error);
+	    			alert('Error occur. Please contact the administrator.');
 	    	});
 		}
 		
@@ -38,7 +41,10 @@
 				$('#txtPassword').val('');
 			});
 			
-			$('#btnSendHint').attr('href', 'javascript:var gen = new EDITTABLE();gen.SendHint();');
+			$('#forget-pw-btn-submit').click(function() {
+				var gen = new EDITTABLE();
+				gen.SendHint();
+			});
 		}
 	}
 	
@@ -119,6 +125,9 @@
 			
 			<!--FORGOT PASSWORD FORM-->
 			<form method="post" action="" class="form-horizontal" role="form" id="forget-password-form" style="display: none;">
+				{% csrf_token %}
+				<input type="hidden" name="class" value="LOGINAJAX" />
+				<input type="hidden" name="method" value="sendhint" />
 				<h3>Forget your password?</h3>
 				<p>Don't worry about it.  We'll send you an email to retrieve it.</p>
 				<hr />
@@ -131,7 +140,7 @@
 				
 				<div class="form-group">
 					<div class="col-lg-6 col-offset-6">
-						<input type="submit" name="submit-email" value="Get My Password" class="btn btn-success form-control" id="forget-pw-btn-submit" />
+						<input type="button" name="submit-email" value="Get My Password" class="btn btn-success form-control" id="forget-pw-btn-submit" />
 					</div>
 				</div>
 				<div class="form-group">

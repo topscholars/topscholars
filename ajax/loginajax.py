@@ -21,15 +21,15 @@ class LOGINAJAX():
                 return HttpResponse(data, mimetype='application/json')
             else:
                 body = 'Your password is: ' + user.password
-                email = ''
-                if user.usertypeid == 2:
-                    userdetails = Studentlist.objects.get(id=user.recid)
-                    email = [userdetails.emailaddress1]
-                elif user.usertypeid == 3:
-                    email = [username]
-                else:
-                    userdetails = Userlist.objects.get(id=user.recid)
-                    email = [userdetails.emailaddress]
+                email = [username]
+##                if user.usertypeid == 2:
+##                    userdetails = Studentlist.objects.get(id=user.recid)
+##                    email = [userdetails.emailaddress1]
+##                elif user.usertypeid == 3:
+##                    email = [username]
+##                else:
+##                    userdetails = Userlist.objects.get(id=user.recid)
+##                    email = [userdetails.emailaddress]
                 send_mail('Topscholar Education: Password', body , 'noreply@topscholars.org',email, fail_silently=False)
                 data_json = {'status': 'Email Sent.',}
 ##                try:

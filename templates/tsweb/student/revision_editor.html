@@ -33,9 +33,37 @@
 	<script src="{% static 'tsweb/js/jquery.tagedit.js' %}"></script>
 	<script src="{% static 'tsweb/js/jquery.autoGrowInput.js' %}"></script>
 	
+	
+		<!--DELETE BEFORE DEPLOYMENT-->
+		<link rel="stylesheet" href="../../../static/tsweb/css/bootstrap.css" type="text/css" />
+		<link rel="stylesheet" href="../../../static/tsweb/css/topscholars.css" type="text/css" />
+		<link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+		<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
+		<link rel="stylesheet" href="../../../static/tsweb/css/redactor.css" />
+		<link rel="stylesheet" href="../../../static/tsweb/css/jquery.comment.css" />
+		<!--<link rel="stylesheet" href="../../../static/tsweb/css/redactor-iframe.css" />-->
+		<!--<script src="{% static 'tsweb/js/jQuery1.10.1.js' %}"></script>-->
+		<!--<script src="{% static 'tsweb/js/jquery-ui-1.10.3.custom.min.js' %}"></script>-->
+		
+		<script src="../../../static/tsweb/js/jQuery1-10-1.js" type="text/javascript"></script>
+		<script src="../../../static/tsweb/js/jquery-ui-1-10-3-custom-min.js" type="text/javascript"></script>
+		<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+		<script src="../../../static/tsweb/js/bootstrap.js" type="text/javascript"></script>
+		<script src="../../../static/tsweb/js/transition.js" type="text/javascript"></script>
+		<script src="../../../static/tsweb/js/popover.js" type="text/javascript"></script>
+		<script src="../../../static/tsweb/js/redactor.min.js" type="text/javascript"></script>
+		<script src="../../../static/tsweb/js/jquery.comment.js" type="text/javascript"></script>
+		<script src="../../../static/tsweb/js/jquery-touch-punch.min.js" type="text/javascript"></script>
+	<!--==============================================-->
+	
+	
 	<script>
 		$(document).ready(function () {
-
+			$('#commentSection').comments({
+				getCommentUrl: "/JqComment/GetComments",
+				postCommentUrl: "/JqComment/PostComment",
+				deleteCommentUrl: "/JqComment/DeleteComment",
+			});
 		})
 		$(function()
 		{
@@ -748,27 +776,20 @@ function openHighlightDialog(highlightid){
 			<ul class="nav navbar-nav pull-right student-nav" >
 				<li><a href="{% url 'tsweb:sindex' %}"><i class="fa fa-dashboard fa-lg"></i></a></li>
 				<li class="dropdown">
-					<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-book fa-lg"></i></a>
+					<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-road fa-lg"></i></a>
 					<ul class="dropdown-menu">
-						<li class="dropdown-title">Classes</li>
-						<li><a href="#">{# class-name #}</a></li>
+						<li class="dropdown-title">Activities</li>
+						<li><a href="#">{# activity-name #}</a></li>
 					</ul>
+					<span class="badge">2</span>
 				</li>
 				<li class="dropdown">
 					<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-file-o fa-lg"></i></a>
 					<ul class="dropdown-menu">
 						<li class="dropdown-title">Assignments</li>
 						<li><a href="#">{# assignment-name #}</a></li>
-						
 					</ul>
-				</li>
-				
-				<li class="dropdown">
-					<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-bullhorn fa-lg notification"></i></a>
-					<ul class="dropdown-menu">
-						<li class="dropdown-title">Notifications</li>
-						<li><a href="#">{# notification-name #}</a></li>
-					</ul>
+					<span class="badge">2</span>
 				</li>
 				
 				<li class="dropdown">
@@ -822,31 +843,30 @@ function openHighlightDialog(highlightid){
 					</tr>
 					<tr id="editSubmit">
 						<td colspan="2" style="text-align:center;">
-							<input id="btnsavesubmit" type="button" class="button" style="width:80px;height:26px;" value="Save">&nbsp;
-							<input id="btncancelsubmit" type="button" class="button" style="width:80px;height:26px;" value="Cancel">
+							<input id="btnsavesubmit" type="button" class="button btn-small" style="width:80px;height:26px;" value="Save">&nbsp;
+							<input id="btncancelsubmit" type="button" class="button btn-small" style="width:80px;height:26px;" value="Cancel">
 						</td>
 					</tr>
 				</table>
 				</div>
 				<!-- end submit block -->
 				<div class="searchlist form form-horizontal">
-		
-					<div class="form-group">
-						<label for="ele_submissionversionversion" class="col-sm-4 control-label">Revision:&nbsp;</label>
-						<div class="col-sm-8">
-							<select id="ele_submissionversionversion" class="form-control" style="position:relative;float:left;">
-							{% for row in submissionversionlist %}
-								<option value="{{ row.version }}">Revision {{ row.version }}</option>
-							{% endfor %}
-							</select>
+						<div class="col-sm-4">
+							<div class="form-group">
+							
+								<select id="ele_submissionversionversion" class="form-control input-small">
+								{% for row in submissionversionlist %}
+									<option value="{{ row.version }}">Revision {{ row.version }}</option>
+								{% endfor %}
+								</select>
+							</div>
 						</div>
+							
+						<input type="button" class="button btn btn-default btn-small editor-btn" value="Save" id="btnSave">
+						<input type="button" class="button btn btn-default btn-small editor-btn" value="Revise" id="btnRevise"/>
+						<input type="submit" class="btn btn-info btn-lg btn-small editor-btn" id="btnSubmit"  value="Send Teacher" />
+						<a href="{% url 'tsweb:sindex' %}" class="btn btn-warning btn-small editor-btn">Exit</a>	
 						
-								<input type="button" class="button btn btn-default" style="bottom: 100px; position: absolute; right: 240px;" value="Save" id="btnSave">
-						<input type="button" class="button btn btn-default" style="bottom: 100px; position: absolute; right: 110px;" value="Revise" id="btnRevise">
-						<input type="submit" id="btnSubmit" class="btn btn-info btn-lg new-btn" value="Send Teacher" />
-						<a href="{% url 'tsweb:sindex' %}" class="btn btn-warning new-btn" style="display: inline-block; right: 50px;">Exit</a>			
-						
-					</div>
 					
 				</div>
 				<div style="position: absolute; top: 50px; width: 100%;">
@@ -878,49 +898,39 @@ function openHighlightDialog(highlightid){
 
 		<div class="panel-group side-panel panel-revision" id="side-panel">
 		
-			<div class="panel panel-default block-cell block-thin block-expanded">
+			<div class="panel-default block-cell block-thin block-expanded">
 				<div class="panel-heading block-header">
 					<h3 class="panel-title">
-						<a data-toggle="collapse" data-parent="#side-panel" href="#collapseFour">
+						<a href="#">
 							Rubric
 						</a>
 					</h3>
 				</div>
-				<div id="collapseFour" class="panel-collapse collapse">
+				<div id="collapseFour" class="panel-collapse">
 					<div class="block-body">
 						<!--<div>{# rubric #}</div>-->
 						
 						<div class="rubric-categories-sm">
-							<div class="rubric-impact circle circle-blue"
-										data-toggle="modal"
-										data-target="#impact_modal">
+							<div class="rubric-impact circle circle-blue">
 								<p>Impact</p>
 								<div class="weight-percent circle-val" id="impact_percent">{#val#} %</div>
 							</div>
 							
-							<div class="rubric-quality circle circle-green"
-										data-toggle="modal"
-										data-target="#quality_modal">
+							<div class="rubric-quality circle circle-green">
 								<p>Quality</p>
 								<div class="weight-percent circle-val" id="quality_percent">{#val#} %</div>
 							</div>
 							
-							<div class="rubric-objective circle circle-grey"
-										data-toggle="modal"
-										data-target="#objective_modal">
+							<div class="rubric-objective circle circle-grey">
 								<div>Objective</div>
 							</div>
 							
-							<div class="rubric-content circle circle-purple"
-										data-toggle="modal"
-										data-target="#content_modal">
+							<div class="rubric-content circle circle-purple">
 								<p>Content</p>
 								<div class="weight-percent circle-val" id="content_percent">{#val#} %</div>
 							</div>
 							
-							<div class="rubric-process circle circle-red"
-										data-toggle="modal"
-										data-target="#process_modal">
+							<div class="rubric-process circle circle-red">
 								<p>Process</p>
 								<div class="weight-percent circle-val" id="process_percent">{#val#} %</div>
 							</div>
@@ -937,16 +947,16 @@ function openHighlightDialog(highlightid){
 			</div>
 			
 				  
-		  <div class="panel panel-default block-cell block-thin">
+		  <div class="panel-default block-cell block-thin">
 		  	
 		    <div class="panel-heading block-header">
 		      <h3 class="panel-title">
-		        <a data-toggle="collapse" data-parent="#side-panel" href="#collapseTwo">
+		        <a href="#">
 		          Tagging
 		        </a>
 		      </h3>
 		    </div>
-		    <div id="collapseTwo" class="panel-collapse collapse">
+		    <div id="collapseTwo" class="panel-collapse">
 		      <div class="block-body">
 		        <ul class="block-list" id="tagList">
 		        	<li class="tag">
@@ -965,15 +975,15 @@ function openHighlightDialog(highlightid){
 		    </div>
 		  </div>
 	
-		  <div class="panel panel-default block-cell block-thin">
+		  <div class="panel-default block-cell block-thin">
 		    <div class="panel-heading block-header">
 		      <h3 class="panel-title">
-		        <a data-toggle="collapse" data-parent="#side-panel" href="#collapseThree">
+		        <a href="#">
 		          Comments
 		        </a>
 		      </h3>
 		    </div>
-		    <div id="collapseThree" class="panel-collapse collapse">
+		    <div id="collapseThree" class="panel-collapse">
 		      <div class="block-body">
 		       	<div id="commentSection">
 		       	
@@ -1017,9 +1027,9 @@ function openHighlightDialog(highlightid){
 		</tr>
 		<tr id="edithighlight">
 			<td colspan="2" style="text-align:center;">
-				<input id="btnsavehighlight" type="button" class="button btn btn-default" style="width:80px;" value="Save">&nbsp;
-				<input id="btndeletehighlight" type="button" class="button btn btn-default" style="width:80px;" value="Delete">&nbsp;
-				<input id="btncancelhighlight" type="button" class="button btn btn-default" style="width:80px;" value="Cancel">
+				<input id="btnsavehighlight" type="button" class="button btn btn-default btn-small" style="width:80px;" value="Save">&nbsp;
+				<input id="btndeletehighlight" type="button" class="button btn btn-default btn-small" style="width:80px;" value="Delete">&nbsp;
+				<input id="btncancelhighlight" type="button" class="button btn btn-default btn-small" style="width:80px;" value="Cancel">
 			</td>
 		</tr>
 	</table>
@@ -1102,173 +1112,32 @@ function openHighlightDialog(highlightid){
 		
 	</div> <!-- /. lesson small -->
 	
-	<!--Modals for Rubric categories-->
-	
-	<!--Modal for Impact-->
-	<div class="modal fade modal-wide" id="impact_modal" tabindex="-1" role="dialog" aria-labelledby="impactRubric" aria-hidden="true" data-dismiss="false">
-	  <div class="modal-dialog">
-	    <div class="modal-content">
-	      <div class="modal-header teacher-header">
-	        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-	        <h4 class="modal-title">Impact</h4>
-	      </div>
-	      <div class="modal-body">
-	        <form role="form" class="form-inline" id="impact_form">
+<!--			<!--impact criteria--*>
+			  <label for="grade1">Grade:</label>
+		  	<input type="text" id="grade1" style="border:0; color:#f6931f; font-weight:normal;">
 
-	        	<div class="criteria-list">
-	        		<ul col-lg-12>
-	        			<li class="well well-small">Answer the prompt beyond a reasonable doubt
-	        				<p>
-	        				  <label for="grade1">Grade:</label>
-	        				  <input type="text" id="grade1" style="border:0; color:#f6931f; font-weight:normal;">
-	        				</p>
-	        				<div id="grade-slider1" class="grade-slider"></div>
-	        			</li>
-	        		</ul>
-	        	</div>
-	        	
-	        	<div class="modal-footer">
-	        	  <input type="reset" class="btn btn-default" data-dismiss="modal" value="Close"/>
-	        	  <input type="submit" class="btn btn-primary" value="Save" id="btnSave"/>
-	        	</div>
-	        	
-	        </form>
-	      </div><!-- /.modal-body -->
-	      
-	    </div><!-- /.modal-content -->
-	  </div><!-- /.modal-dialog -->
-	</div><!-- /.modal -->
-	
-	
-	<!--Modal for Quality-->
-	<div class="modal fade modal-wide" id="quality_modal" tabindex="-1" role="dialog" aria-labelledby="qualityRubric" aria-hidden="true" data-dismiss="false">
-		  <div class="modal-dialog">
-		    <div class="modal-content">
-		      <div class="modal-header teacher-header">
-		        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-		        <h4 class="modal-title">Quality</h4>
-		      </div>
-		      <div class="modal-body">
-		        <form role="form" class="form-inline" id="quality_form">
-						<div class="criteria-list">
-								<ul col-lg-12>
-									<li class="well well-small">Answer the prompt beyond a reasonable doubt
-										<p>
-										  <label for="grade2">Grade:</label>
-										  <input type="text" id="grade2" style="border:0; color:#f6931f; font-weight:normal;">
-										</p>
-										<div id="grade-slider2" class="grade-slider"></div>
-									</li>
-								</ul>
-							</div>
-							
-							<div class="modal-footer">
-							  <input type="reset" class="btn btn-default" data-dismiss="modal" value="Close"/>
-							  <input type="submit" class="btn btn-primary" value="Save" id="btnSave"/>
-							</div>
-							
-						</form>
-		      </div>
-		      
-		    </div><!-- /.modal-content -->
-		  </div><!-- /.modal-dialog -->
-		</div><!-- /.modal -->
-	
-	<!--Modal for Content-->
-	<div class="modal fade modal-wide" id="content_modal" tabindex="-1" role="dialog" aria-labelledby="contentRubric" aria-hidden="true" data-dismiss="false">
-		  <div class="modal-dialog">
-		    <div class="modal-content">
-		      <div class="modal-header teacher-header">
-		        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-		        <h4 class="modal-title">Content</h4>
-		      </div>
-		      <div class="modal-body">
-		        <form role="form" class="form-inline" id="content_form">
-							<div class="criteria-list">
-									<ul col-lg-12>
-										<li class="well well-small">Answer the prompt beyond a reasonable doubt
-											<p>
-											  <label for="grade3">Grade:</label>
-											  <input type="text" id="grade3" style="border:0; color:#f6931f; font-weight:normal;">
-											</p>
-											<div id="grade-slider3" class="grade-slider"></div>
-										</li>									
-									</ul>
-								</div>
-								
-								<div class="modal-footer">
-								  <input type="reset" class="btn btn-default" data-dismiss="modal" value="Close"/>
-								  <input type="submit" class="btn btn-primary" value="Save" id="btnSave"/>
-								</div>
-								
-							</form>
-		      </div>
-		      
-		    </div><!-- /.modal-content -->
-		  </div><!-- /.modal-dialog -->
-		</div><!-- /.modal -->
-	
-	<!--Modal for Process-->
-	<div class="modal fade modal-wide" id="process_modal" tabindex="-1" role="dialog" aria-labelledby="processRubric" aria-hidden="true" data-dismiss="false">
-		  <div class="modal-dialog">
-		    <div class="modal-content">
-		      <div class="modal-header teacher-header">
-		        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-		        <h4 class="modal-title">Process</h4>
-		      </div>
-		      <div class="modal-body">
-		        <form role="form" class="form-inline" id="process_form">
-							<div class="criteria-list">
-									<ul col-lg-12>
-										<li class="well well-small">Answer the prompt beyond a reasonable doubt
-											<p>
-											  <label for="grade4">Grade:</label>
-											  <input type="text" id="grade4" style="border:0; color:#f6931f; font-weight:normal;">
-											</p>
-											<div id="grade-slider4" class="grade-slider"></div>
-										</li>
-									</ul>
-								</div>
-								
-								<div class="modal-footer">
-								  <input type="reset" class="btn btn-default" data-dismiss="modal" value="Close"/>
-								  <input type="submit" class="btn btn-primary" value="Save" id="btnSave"/>
-								</div>
-								
-							</form>
-		      </div>
-		      
-		    </div><!-- /.modal-content -->
-		  </div><!-- /.modal-dialog -->
-		</div><!-- /.modal -->
-		
-		<!--Modal for Objective-->
-		<div class="modal fade modal-wide" id="objective_modal" tabindex="-1" role="dialog" aria-labelledby="objectiveRubric" aria-hidden="true" data-dismiss="false">
-			  <div class="modal-dialog">
-			    <div class="modal-content">
-			      <div class="modal-header teacher-header">
-			        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-			        <h4 class="modal-title">Objective</h4>
-			      </div>
-			      <div class="modal-body">
-							
-							<h5>{# assignment_name #}</h5>
-							<p class="text-scroll"><b>Description:</b> {# assignment_description #}</p>
-							<p><b>Max Points:</b> out of 100</p>
-							<p><b>Category:</b> {# assignment_category #}</p>
-							<p><b>Grading Criteria:</b> {# rubric_name #}</p>
-							<p><b>Due Date:</b> {# due_date #}</p>			
-									
-							<div class="modal-footer">
-							  <input type="reset" class="btn btn-default" data-dismiss="modal" value="Close"/>
-							  <!--<input type="submit" class="btn btn-primary" value="Save" id="btnSave"/>-->
-							</div>
-									
-			      </div>
-			      
-			    </div><!-- /.modal-content -->
-			  </div><!-- /.modal-dialog -->
-			</div><!-- /.modal -->
+
+			<!--content criteria--*>
+			  <label for="grade2">Grade:</label>
+			  <input type="text" id="grade2" style="border:0; color:#f6931f; font-weight:normal;">
+
+			<!--quality criteria--*>
+			  <label for="grade3">Grade:</label>
+			  <input type="text" id="grade3" style="border:0; color:#f6931f; font-weight:normal;">
+
+
+			<!--process criteria--*>
+			  <label for="grade4">Grade:</label>
+			  <input type="text" id="grade4" style="border:0; color:#f6931f; font-weight:normal;">
+											
+			<!--objective--*>
+				<h5>{# assignment_name #}</h5>
+				<p class="text-scroll"><b>Description:</b> {# assignment_description #}</p>
+				<p><b>Max Points:</b> out of 100</p>
+				<p><b>Category:</b> {# assignment_category #}</p>
+				<p><b>Grading Criteria:</b> {# rubric_name #}</p>
+				<p><b>Due Date:</b> {# due_date #}</p>			-->
+
 	
 	<script>
 		$(document).ready(function () {

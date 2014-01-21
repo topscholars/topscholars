@@ -19,6 +19,8 @@
 	<script src="{% static 'tsweb/js/jquery.datepick.js' %}"></script>
 	<script src="{% static 'tsweb/js/util.js' %}"></script>
 	<script src="{% static 'tsweb/js/jquery.validate.js' %}"></script>
+
+	
 <script>
 EDITTABLE.prototype = new GridBase();
 
@@ -334,7 +336,9 @@ $(function() {
 				  </div><!-- /.col-lg-6 -->
 				  <div class="col-lg-2">
 				  	<div class="form-group">
-			  			<input id="sub_tag" type="text" class="form-control input-small" placeholder="Sub Tag">
+			  			<select class="form-control input-small" placeholder="Sub Tag">
+			  				<option>{# sub_tag #}</option>
+			  			</select>
 			  		</div>
 				  </div><!-- /.col-lg-6 -->  
 				  <input type="button" class="btn btn-success btn-small" type="button" id="addTagBtn" value="Add Tag"/>  

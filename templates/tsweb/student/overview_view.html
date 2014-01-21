@@ -1,4 +1,4 @@
-{% load staticfiles %}
+<!--{% load staticfiles %}-->
 <!DOCTYPE html>
 <html>
 
@@ -60,6 +60,15 @@
 					</ul>
 				</li>-->
 				<li class="dropdown">
+					<span class="badge">2</span>
+					<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-road fa-lg"></i></a>
+					<ul class="dropdown-menu">
+						<li class="dropdown-title">Activities</li>
+					</ul>
+					
+				</li>
+				<li class="dropdown">
+					<span class="badge">5</span>
 					<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-file-o fa-lg"></i></a>
 					<ul class="dropdown-menu">
 						<li class="dropdown-title">Assignments</li>
@@ -68,13 +77,13 @@
 					</ul>
 				</li>
 				
-				<li class="dropdown">
+				<!--<li class="dropdown">
 					<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-bullhorn fa-lg notification"></i></a>
 					<ul class="dropdown-menu">
 						<li class="dropdown-title">Notifications</li>
 						<li><a href="#">{% notification-name %}</a></li>
 					</ul>
-				</li>
+				</li>-->
 				
 				<li class="dropdown">
 					<a href="#" class="dropdown-toggle student-name" data-toggle="dropdown">Student Name</a>
@@ -103,37 +112,64 @@
 		
 		<div class="assignment-edit-section">
 			 <div class="block-cell block-wide">
-			 		<h4>{%last_assignment %}</h4>
+				 <div class="section-title">
+				 		<h4 style="text-overflow: ellipsis;"
+				 			rel="popover"
+				 			data-placement="bottom"
+				 			data-container=".container"
+				 			data-toggle="popover" title 
+				 			data-trigger="hover"
+				 			data-content="{% goal_of_task %}"><i class="fa fa-file-o"></i> {% assignment_name %} - {% goal_of_task mmodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur%}</h4>
+				 	</div>
 			 		<div id="redactor_content" name="content" style="width: 100%; height: auto;">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum</div>
 			 		<!--ADD TAGGING BUTTON OR HIGHLIGHT STATE-->
+			 		
+			 		<div class="controls" style="margin-top: 40px;">
+			 			<!--<a href="{% url 'tsweb:tsubmissionlist' %}" class="btn btn-warning btn-small pull-right" id="exitBtn" style="margin-left: 10px;">Exit</a>-->
+			 			<a href="#save_assignment_modal" data-toggle="modal" data-target="#save_assignment_modal" type="button" id="saveAssignment" class="btn btn-info btn-small pull-right" style="margin-left: 10px; padding: 5px;">Go to full editor</a>
+			 			<div class="searchlist pull-right">
+			 				<div class="form-group">
+			 					<!--<label for="lstClassid" class="col-sm-4 control-label">Revision Filter:&nbsp;</label>-->
+			 					<!--<select id="ele_submissionversionversion" class="form-control input-small">
+			 						<option value="">Please Select</option>
+			 					{% for row in submissionversionlist %}
+			 						<option value="{{ row.version }}">Revision {{ row.version }}</option>
+			 					{% endfor %}
+			 					</select>-->
+			 				</div>
+			 			</div>
+			 		</div>
+			 		
 			 </div>
 			
 		</div>
 		
 		<div class="panel-group side-panel" id="side-panel" style="max-height: 100%; overflow: scroll;">
 		
-			<div class="panel panel-default block-cell block-thin">
+			<div class="panel-default block-cell block-thin">
 				<div class="panel-heading block-header">
 					<h3 class="panel-title">
-						<a data-toggle="collapse" data-parent="#side-panel" href="#activityUpdates">
-							Activity Updates<i class="fa fa-road fa-large pull-right"></i>
+						<a href="#">
+							Activities<i class="fa fa-road fa-large pull-right"></i>
 						</a>
 					</h3>
 				</div>
 				<div id="activityUpdates" class="panel-collapse  in">
 					<div class="block-body">
-						<p><b>Next:</b> {% next %}</p>
-						<p><b>Next:</b> {% next %}</p>
-						<p><b>Next:</b> {% next %}</p>
-						<p><b>Next:</b> {% next %}</p>
+						<legend>Suggested Activities</legend>
+						<p><a href="#">{% activity_name %}</a></p>
+						<p><a href="#">{% activity_name %}</a></p>
+						<p><a href="#">{% activity_name %}</a></p>
+						<p><a href="#">{% activity_name %}</a></p>
+						
 					</div>
 				</div>
 			</div>
 				  
-		  <div class="panel panel-default block-cell block-thin" style="overflow: scroll;">
+		  <div class="panel-default block-cell block-thin" style="overflow: scroll;">
 		    <div class="panel-heading block-header">
 		      <h3 class="panel-title">
-		        <a data-toggle="collapse" data-parent="#side-panel" href="#collapseTwo">
+		        <a>
 		          Courses<i class="fa fa-book fa-large pull-right"></i>
 		        </a>
 		      </h3>
@@ -144,7 +180,7 @@
 		        	<li>
 		        		<a href="#" id="class-details" rel="popover" 
 		        			data-placement="left" 
-		        			data-container=".block-wide" 
+		        			data-container=".container" 
 		        			data-toggle="popover" title
 		        			data-trigger="hover" 
 		        			data-content="{% class-details %} this is some more info about this course.  Of course it will be loaded dynamically..."
@@ -157,10 +193,10 @@
 		    </div>
 		  </div>
   
-		  <div class="panel panel-default block-cell block-thin" style="overflow: scroll;">
+		  <div class="panel-default block-cell block-thin" style="overflow: scroll;">
 		    <div class="panel-heading block-header">
 		      <h3 class="panel-title">
-		        <a data-toggle="collapse" data-parent="#side-panel" href="#collapseThree">
+		        <a href="#">
 		          Assignments<i class="fa fa-file fa-large pull-right"></i>
 		        </a>
 		      </h3>
@@ -180,7 +216,7 @@
 		       				<td>
 		       					<a href="#" id="assignment-details" rel="popover"
 		       						data-placement="left"
-		       						data-container=".block-wide"
+		       						data-container=".container"
 		       						data-toggle="popover" title
 		       						data-trigger="hover"
 		       						data-content="{% assignment-details %} this is some more info about this assignment.  Of course it will be loaded dynamically.."
@@ -188,7 +224,37 @@
 		       					</a>
 		       				</td>
 		       				<td>{% due-date %}</td>
-		       				<td><a href="#"><i class="fa fa-chevron-circle-right fa-lg"></i></a></td>
+		       				<td><a href="#"><i class="fa fa-user fa-lg"></i></a></td>
+		       			</tr>
+		       			
+		       			<tr>
+		       				<td>
+		       					<a href="#" id="assignment-details" rel="popover"
+		       						data-placement="left"
+		       						data-container=".container"
+		       						data-toggle="popover" title
+		       						data-trigger="hover"
+		       						data-content="{% assignment-details %} this is some more info about this assignment.  Of course it will be loaded dynamically.."
+		       						role="button">{% assignment-name %}
+		       					</a>
+		       				</td>
+		       				<td>{% due-date %}</td>
+		       				<td><a href="#"><i class="fa fa-users fa-lg"></i></a></td>
+		       			</tr>
+		       			
+		       			<tr>
+		       				<td>
+		       					<a href="#" id="assignment-details" rel="popover"
+		       						data-placement="left"
+		       						data-container=".container"
+		       						data-toggle="popover" title
+		       						data-trigger="hover"
+		       						data-content="{% assignment-details %} this is some more info about this assignment.  Of course it will be loaded dynamically.."
+		       						role="button">{% assignment-name %}
+		       					</a>
+		       				</td>
+		       				<td>{% due-date %}</td>
+		       				<td><a href="#"><i class="fa fa-file fa-lg"></i></a></td>
 		       			</tr>
 		       		</tbody>
 		       	</table>
@@ -224,13 +290,13 @@
 	        	<div class="form-group">
 	        		<label for="pword" class="col-sm-4 control-label">New Password</label>
 	        		<div class="col-sm-8">
-	        			<input type="password" name="pword" class="form-control"/>
+	        			<input type="password" name="pword" class="form-control input-small"/>
 	        		</div>
 	        	</div>		        		
 	        	<div class="form-group">
 	        		<label for="pwordConfirm" class="col-sm-4 control-label">Confirm Password</label>
 	        		<div class="col-sm-8">
-		        		<input type="password" name="pwordConfirm" class="form-control"/>
+		        		<input type="password" name="pwordConfirm" class="form-control input-small"/>
 		        	</div>
 	        	</div>
 	        </form>
@@ -269,7 +335,25 @@
 	  </div><!-- /.modal-dialog -->
 	</div><!-- /.modal -->
 	
-	
+	<!--Reset Password Modal Form--> 
+	<div class="modal fade" id="save_assignment_modal" tabindex="-1" role="dialog" aria-labelledby="saveAssignmentLabel" aria-hidden="true" data-dismiss="false">
+	  <div class="modal-dialog">
+	    <div class="modal-content">
+	      <div class="modal-header teacher-header">
+	        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+	        <h4 class="modal-title">Do you want to save your changes before continuing?</h4>
+	      </div>
+	      <div class="modal-body text-center">
+	        <input type="reset"  class="btn btn-default" data-dismiss="modal" name="disgard_changes" id="discard_changes" value="Discard Changes" />
+	        <input type="submit" class="btn btn-primary" name="save_changes" id="save_changes" value="Save Changes" />
+	      </div>
+<!--	      <div class="modal-footer">
+	        <input type="reset" class="btn btn-default" data-dismiss="modal" value="Close"/>
+	        <input type="submit" class="btn btn-primary" value="Update Password" id="btnSave"/>
+	      </div>-->
+	    </div><!-- /.modal-content -->
+	  </div><!-- /.modal-dialog -->
+	</div><!-- /.modal -->
 			
 	</div> <!--End Container-->
 <!--	

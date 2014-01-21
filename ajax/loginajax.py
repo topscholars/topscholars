@@ -40,3 +40,30 @@ class LOGINAJAX():
 ##                    data_json = {'status': 'Email Sent.',}
                 data = simplejson.dumps(data_json)
                 return HttpResponse(data, mimetype='application/json')
+
+    def checkUserPassword(self,request):
+        try:
+            username=request.POST.get('username',False)
+            password=request.POST.get('password',False)
+        except KeyError:
+            data_json = { 'status': 'error', }
+            data = simplejson.dumps(data_json)
+            return HttpResponse(data, mimetype='application/json')
+        else:
+            try:
+                login = Login.objects.get(loginname=username)
+            except Login.DoesNotExist:
+                data_json = { 'status': 'no_user', }
+                data = simplejson.dumps(data_json)
+                return HttpResponse(data, mimetype='application/json')
+            else:
+                try:
+                    login = Login.objects.get(loginname=username, password=password)
+                except Login.DoesNotExist:
+                    data_json = { 'status': 'password_wrong', }
+                    data = simplejson.dumps(data_json)
+                    return HttpResponse(data, mimetype='application/json')
+                else:
+                    data_json = { 'status': 'success', }
+                    data = simplejson.dumps(data_json)
+                    return HttpResponse(data, mimetype='application/json')

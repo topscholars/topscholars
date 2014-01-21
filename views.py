@@ -27,7 +27,10 @@ def login(request):
         try:
             user= Login.objects.get(loginname=username,deleted=0)
         except (KeyError, Login.DoesNotExist):
-            return render(request, 'tsweb/login.html', {'username':username, 'errmsg':'Invalid username.',})
+            if username != False or username != '':
+                return render(request, 'tsweb/login.html', {'username':username, 'errmsg':'no_user',})
+            else:
+                return render(request, 'tsweb/login.html', {'username':username, 'errmsg':'',})
         else:
             if user.password == password:
                 request.session['userid'] = user.id
@@ -39,7 +42,7 @@ def login(request):
                     del request.session['userid']
                     return HttpResponseRedirect(reverse('tsweb:login'))
             else:
-                return render(request, 'tsweb/login.html', {'username':username, 'errmsg':'Invalid password.',})
+                return render(request, 'tsweb/login.html', {'username':username, 'errmsg':'no_password',})
 
 def logout(request):
     try:

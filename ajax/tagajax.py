@@ -133,7 +133,10 @@ class TAGLIST():
                 taglist.parentid = parentid
             #must be selecttion
             #taglist.abilitylevel = 0
-            #system cannot null
+            if clientid == 0:
+                taglist.system = 1
+            else:
+                taglist.system = 0
             taglist.description = descriptions
             taglist.createddt = datetime.now()
             taglist.createdby = userid

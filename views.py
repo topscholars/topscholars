@@ -119,9 +119,9 @@ def tstudentlist(request):
         recid = login.recid
         userlist = Userlist.objects.get(id=recid)
         securityprofile = userlist.securityprofileid
-        classlist = Classlist.objects.filter(clientid=clientid)
+        Classschedulelist = Classschedule.objects.filter(disabled=0, deleted=0, clientid=clientid)
         urlActive = 'studentlist'
-        context= {'classlist' : classlist,
+        context= {'Classschedulelist' : Classschedulelist,
                   'user_name' : user_name,
                   'securityprofile' : securityprofile,
                   'urlActive': urlActive,}

@@ -7,14 +7,17 @@ from django.db import connection
 from tsweb.models import *
 from django.db.models import Q
 from itertools import chain
+from django.core.mail import send_mail
+
 
 from datetime import datetime
 import time
+import random
 
 class STUDENTLIST():
     def get(self,request):
         cursor = connection.cursor()
-        DATE_FORMAT = "%d-%m-%Y" 
+        DATE_FORMAT = "%d/%m/%Y" 
         try:
             id = request.GET.get('id', False)
         except KeyError:
@@ -82,8 +85,8 @@ class STUDENTLIST():
         return HttpResponse(data, mimetype='application/json')
     
     def save(self,request):
-        DATE_FORMAT = "%d-%m-%Y"
-        try:
+        DATE_FORMAT = "%d/%m/%Y"
+        try:     
             userid = request.session['userid']
             id = request.POST.get('id', False)
             firstname = request.POST.get('firstname', False)
@@ -136,13 +139,11 @@ class STUDENTLIST():
             return HttpResponse(data, mimetype='application/json')
         
     def add(self,request):
-        DATE_FORMAT = "%d-%m-%Y"
+        DATE_FORMAT = "%d/%m/%Y"
         try:
             userid = request.session['userid']
-            
-            user = request.POST.get('user', False)
-            password = request.POST.get('password', False)
-            hint = request.POST.get('hint', False)
+            login = Login.objects.get(id=userid)
+            clientid = login.clientid
             
             id = request.POST.get('id', False)
             firstname = request.POST.get('firstname', False)
@@ -169,53 +170,78 @@ class STUDENTLIST():
             data = simplejson.dumps(data_json)
             return HttpResponse(data, mimetype='application/json')
         else:
-            login = Login.objects.get(id=userid)
-            clientid = login.clientid
+
             
-            recid = Studentlist.objects.latest('id').id
+            #password = random 6 digit
+            password = random.randrange(0, 999999, 6)
             
-            login = Login()
-            login.loginname = user
-            login.password = password
-            login.hint = hint
-            login.usertypeid = 2
-            login.recid = recid+1
-            login.modifieddt = datetime.now()
-            login.modifiedby = userid
-            login.createddt = datetime.now()
-            login.createdby = userid
-            login.disabled = 0
-            login.deleted = 0
-            login.clientid = clientid
-            login.save()
+            emailaddress = []
+            emailaddress.append(emailaddress1)
+            if emailaddress2 != False or emailaddress2 != '':
+                emailaddress.append(emailaddress2)
+            try:
+                Login.objects.get(loginname__in=emailaddress)
+            except Login.DoesNotExist:
+                
+                studentlist = Studentlist()
+                studentlist.firstname = firstname
+                studentlist.lastname = lastname
+                studentlist.middlename = middlename
+                studentlist.address1 = address1
+                studentlist.address2 = address2
+                studentlist.address3 = address3
+                studentlist.city = city
+                studentlist.zipcode = zipcode
+                studentlist.state = state
+                studentlist.country = country
+                studentlist.mobilephone = mobilephone
+                studentlist.homephone = homephone
+                studentlist.otherphone = otherphone
+                studentlist.emailaddress1 = emailaddress1
+                studentlist.emailaddress2 = emailaddress2
+                studentlist.dob = datetime.strptime(dob,DATE_FORMAT)
+                studentlist.gender = gender
+                studentlist.salutation = salutation
+                if currentaccademicyear == False or currentaccademicyear == '':
+                    studentlist.currentaccademicyear = 0
+                else:
+                    studentlist.currentaccademicyear = currentaccademicyear
+                studentlist.lastsubmissionversionid = 0
+                studentlist.timezone = 0
+                studentlist.otherphonetype = 0
+                studentlist.enrollmentdt = datetime.now()
+                studentlist.leadid = 0
+                studentlist.clientid = clientid
+                studentlist.save()
+                 
+                recid = Studentlist.objects.latest('id').id
+                 
+                login = Login()
+                login.loginname = emailaddress1
+                login.password = password
+                #login.hint = hint
+                login.usertypeid = 2
+                login.recid = recid
+                login.modifieddt = datetime.now()
+                login.modifiedby = userid
+                login.createddt = datetime.now()
+                login.createdby = userid
+                login.disabled = 0
+                login.deleted = 0
+                login.clientid = clientid
+                login.save()
             
-            studentlist = Studentlist()
-            studentlist.firstname = firstname
-            studentlist.lastname = lastname
-            studentlist.middlename = middlename
-            studentlist.address1 = address1
-            studentlist.address2 = address2
-            studentlist.address3 = address3
-            studentlist.city = city
-            studentlist.zipcode = zipcode
-            studentlist.state = state
-            studentlist.country = country
-            studentlist.mobilephone = mobilephone
-            studentlist.homephone = homephone
-            studentlist.otherphone = otherphone
-            studentlist.emailaddress1 = emailaddress1
-            studentlist.emailaddress2 = emailaddress2
-            studentlist.dob = datetime.strptime(dob,DATE_FORMAT)
-            studentlist.gender = gender
-            studentlist.salutation = salutation
-            studentlist.currentaccademicyear = currentaccademicyear
-            studentlist.timezone = 0
-            studentlist.otherphonetype = 0
-            studentlist.enrollmentdt = datetime.now()
-            studentlist.leadid = 0
-            studentlist.clientid = clientid
-            studentlist.save()
-            data_json = { 'status': 'success', }
+                emailto = [emailaddress1]
+                body = 'Your account is: ' + emailaddress1 + '  with password: ' + str(password)
+                send_mail('Topscholar Education: User Account', body , 'noreply@topscholars.org',emailto, fail_silently=False)
+                
+                data_json = { 'status': 'success', }
+            except Login.MultipleObjectsReturned:
+                data_json = { 'status': 'error',
+                             'emailaddress': emailaddress }
+            else:
+                data_json = { 'status': 'error',
+                             'emailaddress': emailaddress }
             data = simplejson.dumps(data_json)
             return HttpResponse(data, mimetype='application/json')
     
@@ -237,7 +263,7 @@ class TSTUDENTLISTAJAX():
             elif studentname != False and studentname != '':
                 studentlist = Studentlist.objects.filter(Q(clientid=clientid) & Q(id__in=activeid) & (Q(firstname__contains=studentname) | Q(middlename__contains=studentname) | Q(lastname__contains=studentname)))
             elif classid != False and classid != '':
-                studentlist = Studentlist.objects.filter(clientid=clientid,id__in=activeid,Studentclasstostudents__classscheduleid__id=classid)
+                studentlist = Studentlist.objects.filter(Q(clientid=clientid) & Q(id__in=activeid) & Q(Studentclasstostudents__classscheduleid__id=classid))
             else:
                 studentlist = Studentlist.objects.filter(clientid=clientid,id__in=activeid)
             context = {'studentlist': studentlist}

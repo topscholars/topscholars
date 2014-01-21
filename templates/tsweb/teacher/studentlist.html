@@ -69,22 +69,10 @@
 			
 			$(".tablelist").hide();
 			$(".listnewbutton").hide();
-			//$("#txtSearch").hide();
-			//$(".searchboximg").hide();
 		}
 		
 		this.hideEditTable =function(){
 			$("#new_student_modal").modal('hide');
-			// $(".pagename").text(thisClass.pagename);
-// 			
-			// $("#editField").hide();
-// 			
-			// $(".filter").show();
-// 			
-			// $(".tablelist").show();
-			// $(".listnewbutton").show();
-			//$("#txtSearch").show();
-			//$(".searchboximg").show();
 		}
 		
 		this.editTable = function(id){
@@ -172,9 +160,9 @@
 		}
 		
 		this.getData = function(studentname ,classid) {
-			$("#list").html("<div style='width:100%;position=relative;text-align:center;'><img src='{% static 'tsweb/image/ajax-loader.gif' %}' alt='' style='margin:auto;width=100px;height=100px;position=relative;' /></div>");
-			$.get("{% url 'tsweb:tprocessajax' %}?class="+tableClassAjax,
-			{ studentname : studentname ,
+			$.get("{% url 'tsweb:tprocessajax' %}",
+			{ class : tableClassAjax,
+			  studentname : studentname ,
 			  classid : classid},
 			function(result){
 			      $("#list").html(result);
@@ -184,30 +172,13 @@
 			});
 		}
 		
-		this.Search = function(ele,event)
-		{
-			if (event.keyCode == 13) {
-				thisClass.getData($('#txtSearch').val(), '');
-			}
-			else{
-				ele.onKeyPress=event.keyCode;
-			}
-			$(".tablelist").show();
-			$(".listnewbutton").show();
-			$("#txtSearch").show();
-			$(".searchboximg").show();
-			thisClass.getData('');
-			//return and hide
-			$(".viewTD").show();
-			$(".editorTD").hide();
-		}
-
 		this.editTable = function(id){
 			$.getJSON(
 				url,
 				{	class: evalClass,
 					id: id  },
 				function(result){
+					thisClass.resetValidatForm();
 					$.each(result, function(ini,val){
 						thisClass.seperateElement($("#ele_"+ini), val);
 						thisClass.seperateView(ini,val);
@@ -222,7 +193,7 @@
 		}
 		
 		this.save = function(){
-			var odata;
+			var odata,email;
 			if($("#ele_id").val() == ""){
 			 	odata = { class: evalClass, method: 'add'};
 			}else{
@@ -232,46 +203,21 @@
 			$.post(url,odata,
 				function(result){
 					thisClass.hideEditTable();
+					if(result.status == 'error'){
+						if(result.emailaddress[1] == ''){
+							email = result.emailaddress[0];
+						}else{
+							email = result.emailaddress[0]+ "," +result.emailaddress[1];;
+						}
+						alert('This email ['+email+'] have exist!!!');
+					}
 				})
 			.error(function(xhr, status, error) {
 	    		alert('Error occur. Please contact the administrator.');
 	    	});
 		}
 		
-		this.iniControl = function(){
-			thisClass.getData('','');
-			Watermark('txtSearch', 'Search', 'noclass');
-			 
-			$('#lstClassid').change(function() {
-				thisClass.getData('', $('#lstClassid').val());
-			}); 
-			
-			$('#txtSearch').keypress(function(event) {
-				thisClass.Search(this,event);
-			});
-			
-			$("#btnSave").click(function(){
-				thisClass.save();
-			});
-			
-			$("#new_student_btn").click(function(){
-				thisClass.showEditTable();
-				$("[id^='ele_']").each(function(){
-					$(this).val('');
-				});
-			});
-
-			$( "#ele_dob").datepicker({ dateFormat: 'dd-mm-yy' });
-
-			thisClass.selectGender();
-			thisClass.selectSalutation();
-			thisClass.hideEditTable();
-			thisClass.iniEventEditor();
-
-			var profile = new EDITPROFILE(url);
-			profile.iniControl();
-		}
-
+	
 		this.selectGender = function(){
 			var html ='';
 			$.getJSON(
@@ -307,9 +253,9 @@
 		}
 	
 		this.getData = function(studentname ,classid) {
-			$("#list").html("<div style='width:100%;position=relative;text-align:center;'><img src='{% static 'tsweb/image/ajax-loader.gif' %}' alt='' style='margin:auto;width=100px;height=100px;position=relative;' /></div>");
-			$.get("{% url 'tsweb:tprocessajax' %}?class="+tableClassAjax,
-			{ studentname : studentname ,
+			$.get("{% url 'tsweb:tprocessajax' %}",
+			{ class : tableClassAjax,
+				studentname : studentname ,
 			  classid : classid},
 			function(result){
 			      $("#list").html(result);
@@ -323,8 +269,111 @@
 		{
 			if (event.keyCode == 13) {
 				thisClass.getData($('#txtSearch').val(), '');
+				return false;
 			}
 		}
+		
+	    this.initValidateForm = function(){
+			  $("#new_assigment_form").validate({              
+			    rules: {
+			      	firstname:{
+			      		required: true,
+			      	},
+		          	lastname : {
+						required: false,
+		            },
+		            emailaddress1 : {
+		                required: true,
+		                email: true,
+		            },
+		            emailaddress2 : {
+		                required: false,
+		                email: true,
+		            },
+		          	password_confirm : {
+							required: false,
+							equalTo : "#ele_password"
+			        },
+		            dob :{
+		            	required: true,
+		            },
+                      mobilephone:{
+				      	required: false,
+				      	number: true,
+				      	rangelength: [4, 20]
+				      },
+				      homephone:{
+				      	required: false,
+				      	number: true,
+				      	rangelength: [4, 20]
+				      },
+  				      otherphone:{
+				      	required: false,
+				      	number: true,
+				      	rangelength: [4, 20]
+				      },
+			    },
+				 invalidHandler: function(event, validator) {
+				// 'this' refers to the form
+					thisClass.submitForm = false;
+				}
+			  });
+	    }
+	
+		this.initValidateFormEvent = function(){
+			thisClass.submitForm = true;
+		  	$("#new_assigment_form").validate().form();
+		}
+		
+		this.resetValidatForm = function(){
+			var validator = $("#new_assigment_form").validate();
+			validator.resetForm();
+			$(".error").removeClass('error');	
+		}
+	
+		
+		this.iniControl = function(){
+			thisClass.getData('','');
+			Watermark('txtSearch', 'Search', 'noclass');
+			 
+			$('#lstClassid').change(function() {
+				thisClass.getData('', $('#lstClassid').val());
+			}); 
+			
+			$('#txtSearch').keypress(function(event) {
+				thisClass.Search(this,event);
+			});
+			
+			$( "#search-form" ).submit(function() {
+				return false;
+			});
+			
+			$("#btnSave").click(function(){
+	        	thisClass.initValidateFormEvent();
+	            if(thisClass.submitForm){
+					thisClass.save();
+				}
+			});
+			
+			$("#new_student_btn").click(function(){
+				thisClass.resetValidatForm();
+				$("[id^='ele_']").each(function(){
+					$(this).val('');
+				});
+			});
+
+			$( "#ele_dob").datepicker({ dateFormat: 'dd/mm/yy' });
+
+			thisClass.selectGender();
+			thisClass.selectSalutation();
+			thisClass.hideEditTable();
+			thisClass.iniEventEditor();
+			thisClass.initValidateForm();
+
+			var profile = new EDITPROFILE(url);
+			profile.iniControl();
+		}
+
 	}
 	
 	$(function() {
@@ -342,16 +391,13 @@
 		
 		{% include "tsweb/main/sidepanel.html" %}
 		
-
-		
-
 		<div class="block-cell block-wide">
 			<div class="searchlist">
 				<div class="col-lg-4">
 					<select class="form-control" id="lstClassid">
-						<option value="">Class Filter</option>
-						{% for class in classlist %}
-						<option value="{{ class.id  }}">{{ student.id }} - {{ class.classname }}</option>
+						<option value="">Class Schedule Filter</option>
+						{% for class in Classschedulelist %}
+						<option value="{{ class.id  }}">{{ class.code }} / {{ class.subcode }}</option>
 						{% endfor %}
 					</select>
 				</div>
@@ -419,10 +465,9 @@
 		        	</div>
 		        	
 		        	<div class="form-group">
-		        		<label for="ele_username" class="col-sm-4 control-label">User Name</label>
+		        		<label for="ele_emailaddress1" class="col-sm-4 control-label">Email Address</label>
 		        		<div class="col-sm-8">
-		        			<input type="text" name="username" id="ele_username" class="form-control input-small"/>
-		        			<input type="hidden" id="ele_username" name="id" class="form-control input-small" />
+		        			<input type="email" id="ele_emailaddress1" name="emailaddress1" class="form-control input-small" />
 		        		</div>
 		        	</div>
 		        	
@@ -430,7 +475,6 @@
 		        		<label for="ele_password" class="col-sm-4 control-label">Password</label>
 		        		<div class="col-sm-8">
 		        			<input type="text" name="password" id="ele_password" class="form-control input-small"/>
-		        			<input type="hidden" id="ele_password" name="id" class="form-control input-small" />
 		        		</div>
 		        	</div>
 		        	
@@ -438,7 +482,6 @@
 		        		<label for="ele_password_confirm" class="col-sm-4 control-label">Confirm Password</label>
 		        		<div class="col-sm-8">
 		        			<input type="text" name="password_confirm" id="ele_password_confirm" class="form-control input-small"/>
-		        			<input type="hidden" id="ele_password_confirm" name="id" class="form-control input-small" />
 		        		</div>
 		        	</div>
 		        	
@@ -494,13 +537,6 @@
 		        	</div>
 		        	
 		        	<div class="form-group">
-		        		<label for="ele_zipcode" class="col-sm-4 control-label">Zip Code</label>
-		        		<div class="col-sm-8">
-		        			<input type="text" id="ele_zipcode" name="zipcode" class="form-control input-small" />
-		        		</div>
-		        	</div>
-		        	
-		        	<div class="form-group">
 		        		<label for="ele_state" class="col-sm-4 control-label">State</label>
 		        		<div class="col-sm-8">
 		        			<input type="text" id="ele_state" name="state" class="form-control input-small" />
@@ -511,6 +547,13 @@
 		        		<label for="ele_country" class="col-sm-4 control-label">Country</label>
 		        		<div class="col-sm-8">
 		        			<input type="text" id="ele_country" name="country" class="form-control input-small" />
+		        		</div>
+		        	</div>
+		        	
+		        	<div class="form-group">
+		        		<label for="ele_zipcode" class="col-sm-4 control-label">Zip Code</label>
+		        		<div class="col-sm-8">
+		        			<input type="text" id="ele_zipcode" name="zipcode" class="form-control input-small" />
 		        		</div>
 		        	</div>
 		        	
@@ -532,13 +575,6 @@
 		        		<label for="ele_otherphone" class="col-sm-4 control-label">Other Phone</label>
 		        		<div class="col-sm-8">
 		        			<input type="tel" id="ele_otherphone" name="otherphone" class="form-control input-small" />
-		        		</div>
-		        	</div>
-		        	
-		        	<div class="form-group">
-		        		<label for="ele_emailaddress1" class="col-sm-4 control-label">Email Address 1</label>
-		        		<div class="col-sm-8">
-		        			<input type="email" id="ele_emailaddress1" name="emailaddress1" class="form-control input-small" />
 		        		</div>
 		        	</div>
 		        	

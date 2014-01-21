@@ -21,7 +21,7 @@ class CLASSLIST():
             return HttpResponse('error', mimetype='application/json')
         else:
             #classlist = Classschedule.objects.filter(id=id)
-            cursor.execute("SELECT id,code,subcode,abilitylevel,teacherid,startdate,enddate,starttime,endtime,disabled,dayofweek FROM classschedule  WHERE id = %s", [id])
+            cursor.execute("SELECT id,code,subcode,abilitylevel,teacherid,startdate,enddate,starttime,endtime,disabled,dayofweek,description FROM classschedule  WHERE id = %s", [id])
             
             results = cursor.fetchall()
             for r in results:
@@ -37,6 +37,7 @@ class CLASSLIST():
                         'endtime': r[8],
                         'disabled': r[9],
                         'dayofweek': r[10],
+                        'description': r[11],
                         }
             data = simplejson.dumps(data_json)
         return HttpResponse(data, mimetype='application/json')

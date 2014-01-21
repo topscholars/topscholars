@@ -100,10 +100,11 @@ function EDITTABLE(){
 					if(ini == 'dayofweek'){
 						$.each(val.split(","), function(i,e){
 							$(".day-week[value='"+e+"']").prop("checked", true);
-						    //$("#"+attrid+" option[value='" + e + "']").prop("selected", true);
 						});
 					}
 				});
+				thisClass.getStudentSelect();
+				
 				$('#editClassBtn').show();
 				$('.modal .form-control, .modal input[type="checkbox"]').attr('disabled', 'disabled');
 				
@@ -126,6 +127,22 @@ function EDITTABLE(){
 		});
 	}
 	
+	this.selectAbility = function(){
+		var html ='';
+		$.getJSON( url,
+			{	class: evalClass,
+				method: 'selectAbility'  },
+			function(result){
+				$.each(result, function(ini,val){
+					html += "<option value='"+val.id+"'>"+val.selectionname+"</option>";
+				});
+				$("#ele_abilitylevel").append(html);
+		})
+		.error(function(xhr, status, error) {
+    		alert('Error occur. Please contact the administrator.');
+    	});
+	}
+	
 	this.selectTeacher = function(){
 		var html ='';
 		$.getJSON( url,
@@ -146,16 +163,27 @@ function EDITTABLE(){
     	});
 	}
 	
-	this.selectClass = function(){
+	this.getStudentSelect = function(){
+		var classscheduleid = $("#ele_id").val();
 		var html ='';
-		$.getJSON( url,
+		var middlename;
+		$.getJSON(
+			url,
 			{	class: evalClass,
-				method: 'getClass'  },
+				method: 'getStudentSelect',
+				classscheduleid: classscheduleid
+				},
 			function(result){
+				$("#ele_studentid option").remove();
 				$.each(result, function(ini,val){
-						html += "<option value='"+val.id+"'>"+val.classname+"</option>";
+					if(val.middlename == null){
+						middlename = '';
+					}else{
+						middlename = val.middlename;
+					}
+						html += "<option value='"+val.id+"' "+val.selected+">"+val.firstname+" "+middlename+" "+val.lastname+"</option>";
 				});
-				$("#ele_classid").append(html);
+				$("#ele_studentid").append(html);
 		})
 		.error(function(xhr, status, error) {
     		alert('Error occur. Please contact the administrator.');
@@ -187,24 +215,6 @@ function EDITTABLE(){
 		.error(function(xhr, status, error) {
 		    $("#list_student").html("<img src='{% static 'tsweb/image/notificationcross.gif' %}' alt='' style='width:30px;' />&nbsp;Error: "+xhr.status+": "+xhr.statusText);
 		});
-	}
-	
-	this.getStudentAddData = function(classid){
-		var html ='';
-		$.get( url,
-			{	class: evalClass,
-				method: 'getTStudentAddList',
-				classid: classid   },
-			function(result){
-				$("#list_add_student").html(result);
-				$(".addStudent").click(function(){
-					var valAdd = $(this).attr("text");
-					thisClass.addStudentInClassschedule(valAdd);
-				});
-		})
-		.error(function(xhr, status, error) {
-    		alert('Error occur. Please contact the administrator.');
-    	});
 	}
 	
 	this.addStudentInClassschedule = function(studentid){
@@ -314,8 +324,7 @@ function EDITTABLE(){
 		
 		thisClass.iniEventEditor();
 		thisClass.selectTeacher();
-		thisClass.selectClass();
-		
+		thisClass.selectAbility();
 		var profile = new EDITPROFILE(url);
 		profile.iniControl();
 	}
@@ -356,8 +365,8 @@ $(function() {
 		        	<div class="form-group">
 		        		<label for="classid" class="col-sm-3 control-label">Ability Level</label>
 		        		<div class="col-sm-9">
-		        			<select id="ele_classid" class="form-control" name="classid"></select>
 		        			<input type="hidden" id="ele_id" name="id" value="" />
+		        			<select id="ele_abilitylevel" class="form-control" name="abilitylevel"></select>
 		        		</div>
 		        	</div>
 		        	
@@ -375,6 +384,13 @@ $(function() {
 		        		</div>
 		        	</div>
 		        	
+	        		<div class="form-group">
+		        		<label for="subcode" class="col-sm-3 control-label">Description</label>
+		        		<div class="col-sm-9">
+		        			<input type="text" id="ele_description" class="form-control" name="description" />
+		        		</div>
+		        	</div>
+		        	
 		        	<div class="form-group">
 		        		<label for="teacherid" class="col-sm-3 control-label">Teacher Name</label>
 		        		<div class="col-sm-9">
@@ -385,7 +401,7 @@ $(function() {
 		        	<div class="form-group">
 		        		<label for="studentid" class="col-sm-3 control-label">Student Name <div class="text-muted" style="font-size: .8em;">Hold Command or Ctrl to select multiple students</div></label>
 		        		<div class="col-sm-9">
-		        			<select id="ele_studentid" name="studentid" class="form-control"></select>
+		        			<select id="ele_studentid" name="studentid" class="form-control" multiple="multiple"></select>
 		        		</div>
 		        	</div>
 		        	

@@ -171,7 +171,6 @@ class STUDENTLIST():
             return HttpResponse(data, mimetype='application/json')
         else:
 
-            
             #password = random 6 digit
             password = random.randrange(0, 999999, 6)
             

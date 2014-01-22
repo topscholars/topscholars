@@ -83,6 +83,7 @@ class Assignment(models.Model):
     id = models.IntegerField(primary_key=True, db_column='ID') # Field name made lowercase.
     name = models.CharField(max_length=100L, db_column='Name') # Field name made lowercase.
     description = models.TextField(db_column='Description', blank=True) # Field name made lowercase.
+    goaloftask = models.TextField(db_column='GoalofTask', blank=True) # Field name made lowercase.
     minwords = models.IntegerField(db_column='MinWords') # Field name made lowercase.
     maxwords = models.IntegerField(db_column='MaxWords') # Field name made lowercase.
     rubricid = models.ForeignKey(Rubric,related_name="Assignmenttorubric",db_column='RubricId') # Field name made lowercase.

@@ -5,7 +5,6 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.core.urlresolvers import reverse
 
 from tsweb.models import *
-from tsweb.ajaxs import *
 from ajax.classajax import *
 from ajax.assignmentajax import *
 from ajax.studentajax import *
@@ -28,7 +27,10 @@ def login(request):
         try:
             user= Login.objects.get(loginname=username,deleted=0)
         except (KeyError, Login.DoesNotExist):
-            return render(request, 'tsweb/login.html', {'username':username, 'errmsg':'Invalid username.',})
+            if username != False or username != '':
+                return render(request, 'tsweb/login.html', {'username':username, 'errmsg':'no_user',})
+            else:
+                return render(request, 'tsweb/login.html', {'username':username, 'errmsg':'',})
         else:
             if user.password == password:
                 request.session['userid'] = user.id
@@ -40,7 +42,7 @@ def login(request):
                     del request.session['userid']
                     return HttpResponseRedirect(reverse('tsweb:login'))
             else:
-                return render(request, 'tsweb/login.html', {'username':username, 'errmsg':'Invalid password.',})
+                return render(request, 'tsweb/login.html', {'username':username, 'errmsg':'no_password',})
 
 def logout(request):
     try:
@@ -99,7 +101,8 @@ def tassignmentlist(request):
         userlist = Userlist.objects.get(id=recid)
         
         securityprofile = userlist.securityprofileid
-        classlist = Classlist.objects.filter(clientid=clientid)
+        classlist = Classschedule.objects.filter(clientid=clientid, disabled=0, deleted=0)
+        #selectlist = Selectionlist.objects.filter(selectiongroupid=6, disabled=0, deleted=0)
         urlActive = 'assignmentlist'
         context= {'classlist' : classlist,
                   'user_name' : user_name,
@@ -119,9 +122,9 @@ def tstudentlist(request):
         recid = login.recid
         userlist = Userlist.objects.get(id=recid)
         securityprofile = userlist.securityprofileid
-        classlist = Classlist.objects.filter(clientid=clientid)
+        Classschedulelist = Classschedule.objects.filter(disabled=0, deleted=0, clientid=clientid)
         urlActive = 'studentlist'
-        context= {'classlist' : classlist,
+        context= {'Classschedulelist' : Classschedulelist,
                   'user_name' : user_name,
                   'securityprofile' : securityprofile,
                   'urlActive': urlActive,}
@@ -173,6 +176,7 @@ def tlessonlist(request):
         userlist = Userlist.objects.get(id=recid)
         securityprofile = userlist.securityprofileid
         urlActive = 'lessonlist'
+        
         context= {'user_name' : user_name,
                   'securityprofile' : securityprofile,
                   'urlActive': urlActive,}
@@ -190,8 +194,16 @@ def ttaglist(request):
         userlist = Userlist.objects.get(id=recid)
         securityprofile = userlist.securityprofileid
         urlActive = 'taglist'
+        
+        #category select
+        entity = Entity.objects.get(name='Tag')
+        entityid = entity.id
+        categoryentity = Categoryentity.objects.filter(entityid=entityid).values_list('categoryid')
+        categorylist = Category.objects.filter(id__in=categoryentity)
+        
         context= {'user_name' : user_name,
                   'securityprofile' : securityprofile,
+                  'categorylist': categorylist,
                   'urlActive': urlActive,}
         return render(request, 'tsweb/teacher/taglist.html', context)
     
@@ -252,6 +264,7 @@ def stsubmissionreview(request, id):
     try:
         userid = request.session['userid']
         login = Login.objects.get(id=userid)
+        studentid = login.recid
         user_name = login.loginname
     except KeyError:
         return HttpResponseRedirect(reverse('tsweb:login'))
@@ -259,9 +272,11 @@ def stsubmissionreview(request, id):
         submissionversionlist = Submissionversion.objects.filter(submissionid=id)
         submission = Submission.objects.get(id=id)
         studentname = submission.studentid.getFullName()
+        submissionlist = Submission.objects.filter(studentid=studentid)
         context= {'id' : id,
                   'user_name' : user_name,
                   'studentname' : studentname,
+                  'submissionlist' : submissionlist,
                   'submissionversionlist' : submissionversionlist }
         return render(request, 'tsweb/student/revision_editor.html', context)
                 

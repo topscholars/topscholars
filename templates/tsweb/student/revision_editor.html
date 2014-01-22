@@ -32,6 +32,7 @@
 	<script src="{% static 'tsweb/js/jquery-touch-punch.min.js' %}" type="text/javascript"></script>
 	<script src="{% static 'tsweb/js/jquery.tagedit.js' %}"></script>
 	<script src="{% static 'tsweb/js/jquery.autoGrowInput.js' %}"></script>
+	<script src="{% static 'tsweb/js/jquery.validate.js' %}"></script>
 	
 	
 		<!--DELETE BEFORE DEPLOYMENT-->
@@ -812,6 +813,7 @@ function openHighlightDialog(highlightid){
 		</div>
 		
 	</nav> <!-- End Nav -->
+{% include "tsweb/student/include/navbar.html" %}
 	
 	<div class="nav-border" style="display: none;"></div>
 	<button id="hide-nav" type="button" class="btn btn-small pull-right"><i class="fa fa-arrow-up"></i></button>

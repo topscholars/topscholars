@@ -23,12 +23,39 @@
 			$.post(url,
 				{	'class' :  'LOGINAJAX',
 					'method' : 'sendhint',
-					'username' : $('#txtUsername').val() },
+					'username' : $('#user-email-forgot').val() },
 				function(result){
-					$('#lblError').val(result.status);
+					//$('#lblError').val(result.status);
+					$("#forget-password-form").fadeOut('fast', function () {});
+	   				$("#login-form").slideDown('fast', function () {});
 				})
 			.error(function(xhr, status, error) {
-	    		alert('Error occur. Please contact the administrator.');
+				console.log(error);
+	    			alert('Error occur. Please contact the administrator.');
+	    	});
+		}
+		
+		this.checkUserPassword = function(){
+			$.post(url,
+				{	'class' :  'LOGINAJAX',
+					'method' : 'checkUserPassword',
+					'username' : $('#txtUsername').val(),
+					'password' : $('#txtPassword').val() },
+				function(result){
+					$(".alert").hide();
+					if(result.status == 'no_user'){
+						$("#no_user").show();
+					}else if(result.status == 'password_wrong'){
+						$("#password_wrong").show();
+					}else if(result.status == 'success'){
+						$("#login-form").submit();
+						return true;
+					}
+					
+				})
+			.error(function(xhr, status, error) {
+				console.log(error);
+	    			alert('Error occur. Please contact the administrator.');
 	    	});
 		}
 		
@@ -38,7 +65,24 @@
 				$('#txtPassword').val('');
 			});
 			
-			$('#btnSendHint').attr('href', 'javascript:var gen = new EDITTABLE();gen.SendHint();');
+			$('#forget-pw-btn-submit').click(function() {
+				var gen = new EDITTABLE();
+				gen.SendHint();
+			});
+			
+			/*
+			$("#login-btn").click(function(){
+				var user = $('#txtUsername').val();
+				var pass = $('#txtPassword').val();
+				
+				if(user !== '' && pass !== ''){
+					thisClass.checkUserPassword();
+				}
+				return false;
+				
+			});
+			*/
+
 		}
 	}
 	
@@ -55,10 +99,12 @@
 		<div class="container">
 			<h1 class="logo"><a href="#">Writability - My Desk</a></h1>
 			<!--<p class="navbar-text pull-right"><a href="#" class="navbar-link">Student Name <span class="fa fa-reorder fa-2x"></span></a></p>-->
+			<!--
 			<ul class="nav navbar-nav pull-right student-nav nav-text" >
 				<li><a href="#">Register</a></li>
 				<li><a href="#">Login</a></li>
 			</ul>
+			-->
 		</div>
 	</nav>
 	
@@ -67,30 +113,32 @@
 			<form method="post" action="{% url 'tsweb:login' %}" class="form-horizontal" role="form" id="login-form">
 			{% csrf_token %}
 			<legend>Login</legend>
+				{% if errmsg == "no_user" %}
+					<div id="no_user" class="alert alert-danger col-lg-10 col-offset-2" style="display: block;">We don't recognize this email address.  Try again.</div>
+				{% elif errmsg == "no_password" %}
+					<div id="password_wrong" class="alert alert-danger col-lg-10 col-offset-2" style="display: block;">Incorrect password.  Try again.</div>
+				{% endif %}
+				
 				<div class="form-group">
 					<label for="user-email" class="col-lg-2 control-label"><i class="fa fa-envelope fa-2x"></i></label>
 					<div class="col-lg-10">
-						<input type="text" id="txtUsername" name="txtUsername" class="form-control" placeholder="Email Address"/>
+						<input type="text" id="txtUsername" name="txtUsername" class="form-control" placeholder="Email Address" required/>
 					</div>
 				</div>
-				
-				<div class="alert alert-danger col-lg-10 col-offset-2" style="display: none;">We don't recognize this email address.  Try again.</div>
-				
+
 				<div class="form-group">
 					<label for="user-password" class="col-lg-2 control-label"><i class="fa fa-circle"></i><i class="fa fa-circle"></i><i class="fa fa-circle"></i></label>
 					<div class="col-lg-10">
-						<input type="password" id="txtPassword" name="txtPassword" class="form-control" placeholder="Password" />
+						<input type="password" id="txtPassword" name="txtPassword" class="form-control" placeholder="Password" required/>
 					</div>
 				</div>
-				
-				<div class="alert alert-danger col-lg-10 col-offset-2" style="display: none;">Incorrect password.  Try again.</div>
 				
 				<div class="form-group">
 					<div class="col-lg-6 col-offset-6">
 						<input type="submit" name="submit" value="Login" class="btn btn-success form-control" id="login-btn" />
 					</div>
 				</div>
-				
+				<!--
 				<div class="form-group">
 					<div class="col-lg-6 col-offset-6">
 						<span id="signinButton">
@@ -108,6 +156,7 @@
 						</span>
 					</div>
 				</div>
+			-->
 				
 				<a href="#forget-passord-form" class="pull-right" id="forget-pw-btn">Forget your password?</a>
 			</form>
@@ -116,6 +165,9 @@
 			
 			<!--FORGOT PASSWORD FORM-->
 			<form method="post" action="" class="form-horizontal" role="form" id="forget-password-form" style="display: none;">
+				{% csrf_token %}
+				<input type="hidden" name="class" value="LOGINAJAX" />
+				<input type="hidden" name="method" value="sendhint" />
 				<h3>Forget your password?</h3>
 				<p>Don't worry about it.  We'll send you an email to retrieve it.</p>
 				<hr />
@@ -128,7 +180,7 @@
 				
 				<div class="form-group">
 					<div class="col-lg-6 col-offset-6">
-						<input type="submit" name="submit-email" value="Get My Password" class="btn btn-success form-control" id="forget-pw-btn-submit" />
+						<input type="button" name="submit-email" value="Get My Password" class="btn btn-success form-control" id="forget-pw-btn-submit" />
 					</div>
 				</div>
 				<div class="form-group">

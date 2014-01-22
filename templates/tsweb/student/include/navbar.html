@@ -1,0 +1,188 @@
+	<script>
+		function RESETPASSWORD(){
+			var thisClass = this;
+			var url = "{% url 'tsweb:tprocessajax' %}";
+			var evalClass = 'CLASSLIST';
+			
+			this.save = function(){
+				var odata;
+				odata = {'class' :  evalClass,
+			 			'method' : "changePassword",
+			 			'password' : $("#chg_pword").val()
+				 };
+				$.post(url,odata,
+					function(result){
+						if(result.status == 'success'){
+							$("#passwordResetModal").modal('hide');
+						}
+					})
+				.error(function(xhr, status, error) {
+		    		alert('Error occur. Please contact the administrator.');
+		    	});
+		
+			}
+			
+		    this.initValidateForm = function(){
+				  $("#password_reset").validate({              
+				    rules: {
+				      	pword:{
+				      		required: true,
+				      	},
+			          	pwordConfirm : {
+							required: true,
+							equalTo : "#chg_pword"
+			            }
+				    },
+					 invalidHandler: function(event, validator) {
+					// 'this' refers to the form
+						thisClass.submitForm = false;
+					}
+				  });
+		    }
+		
+			this.initValidateFormEvent = function(){
+				thisClass.submitForm = true;
+			  	$("#password_reset").validate().form();
+			}
+			
+			this.initialControl = function(){
+				
+				$("#btnSave").click(function(){
+		        	thisClass.initValidateFormEvent();
+		            if(thisClass.submitForm){
+						thisClass.save();
+						return false;
+					}
+				});
+				//thisClass.iniEventEditor();
+				thisClass.initValidateForm();
+			}
+		}
+		
+		$(function() {
+			var rsp = new RESETPASSWORD();
+			rsp.initialControl();
+		});
+	</script>
+	
+	<nav class="navbar" role="navigation">
+		<div class="container">
+			<h1 class="logo"><a href="#">Writability - My Desk</a></h1>
+			<!--<p class="navbar-text pull-right"><a href="#" class="navbar-link">Student Name <span class="fa fa-reorder fa-lg"></span></a></p>-->
+			<ul class="nav navbar-nav pull-right student-nav" >
+				<!--
+				<li><a href="{% url 'tsweb:sindex' %}"><i class="fa fa-dashboard fa-lg"></i></a></li>
+				<li class="dropdown">
+					<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-book fa-lg"></i></a>
+					<ul class="dropdown-menu">
+						<li class="dropdown-title">Classes</li>
+						<li><a href="#">{# class-name #}</a></li>
+					</ul>
+				</li>-->
+				<li class="dropdown">
+					<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-file-o fa-lg"></i></a>
+					<ul class="dropdown-menu">
+						<li class="dropdown-title">Assignments</li>
+		       			{% for submission in submissionlist %}
+		       			<li><a href="{% url 'tsweb:stsubmissionreview' submission.id %}">{{ submission.getAssignment }}</a></li>
+		       			{% endfor %}
+					</ul>
+				</li>
+				<!--
+				<li class="dropdown">
+					<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-bullhorn fa-lg notification"></i></a>
+					<ul class="dropdown-menu">
+						<li class="dropdown-title">Notifications</li>
+						<li><a href="#">{# notification-name #}</a></li>
+					</ul>
+				</li>
+				-->
+				
+				<li class="dropdown">
+					<a href="#" class="dropdown-toggle student-name" data-toggle="dropdown">{{ user_name }}</a>
+					<ul class="dropdown-menu">
+						<li><a href="#studentInfoModal" data-toggle="modal" data-target="#studentInfoModal"><i class="fa fa-user"></i> My Information</a></li>
+						<li><a href="#passwordResetModal" data-toggle="modal" data-target="#passwordResetModal"><i class="fa fa-ellipsis-h"></i> Reset Password</a></li>
+						<li><a href="{% url 'tsweb:logout' %}"><i class="fa fa-power-off"></i> Log Out</a></li>
+					</ul>
+				</li>
+			</ul>
+
+			<form class="navbar-form navbar-left" role="search" id="search-form" method="" action="null">
+				<div class="input-group col-lg-3 col-offset-6">
+					<input type="text" class="form-control">
+		      <span class="input-group-btn">
+		        <input class="btn btn-default" type="submit" value="Search">
+		      </span>
+		    </div><!-- /input-group -->
+	    </form>
+	    
+		</div>
+	</nav> <!-- End Nav -->
+	
+
+	<!--Reset Password Modal Form--> 
+	<div class="modal fade" id="passwordResetModal" tabindex="-1" role="dialog" aria-labelledby="passwordResetLabel" aria-hidden="true" data-dismiss="false">
+	  <div class="modal-dialog">
+	    <div class="modal-content">
+	      <div class="modal-header teacher-header">
+	        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+	        <h4 class="modal-title">Password Reset</h4>
+	      </div>
+	      <form role="form" class="form-horizontal" id="password_reset">
+	      <div class="modal-body">
+	        
+	        
+	        	<div class="form-group">
+	        		<label for="pword" class="col-sm-4 control-label">New Password</label>
+	        		<div class="col-sm-8">
+	        			<input type="password" id="chg_pword" name="pword" class="form-control"/>
+	        		</div>
+	        	</div>		        		
+	        	<div class="form-group">
+	        		<label for="pwordConfirm" class="col-sm-4 control-label">Confirm Password</label>
+	        		<div class="col-sm-8">
+		        		<input type="password" id="chg_pwordConfirm" name="pwordConfirm" class="form-control"/>
+		        	</div>
+	        	</div>
+	        
+	      </div>
+	      <div class="modal-footer">
+	        <input type="reset" class="btn btn-default" data-dismiss="modal" value="Close"/>
+	        <input type="submit" class="btn btn-primary" value="Update Password" id="btnSave"/>
+	      </div>
+	      </form>
+	    </div><!-- /.modal-content -->
+	  </div><!-- /.modal-dialog -->
+	</div><!-- /.modal -->
+	
+
+	<!--Student info Modal Form--> 
+	<div class="modal fade" id="studentInfoModal" tabindex="-1" role="dialog" aria-labelledby="studentInfoLabel" aria-hidden="true" data-dismiss="false">
+	  <div class="modal-dialog">
+	    <div class="modal-content">
+	      <div class="modal-header teacher-header">
+	        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+	        <h4 class="modal-title">My Information</h4>
+	      </div>
+	      <div class="modal-body">
+	        <div id="profileCollapse" class="panel-collapse  in">
+	        	<div class="block-body">
+	        		<h4>{{ user_name }}</h4>
+	        		{% for row in studentlist %}
+	        		<p><b>Email:</b> {{ row.emailaddress1 }}</p>
+	        		<p><b>Current Grade:</b> {{ row.getStudentGrade }}</p>
+	        		<p><b>Class Enrolled:</b> {{ row.getStudentAllClass }}</p>
+	        		<p><b>Teachers:</b> {{ row.getTeacherAllClass }}</p>
+	        		{% endfor %}
+	        	</div>
+	        </div>
+	      </div>
+	      <div class="modal-footer">
+	        <input type="reset" class="btn btn-default" data-dismiss="modal" value="Close"/>
+	      </div>
+	    </div><!-- /.modal-content -->
+	  </div><!-- /.modal-dialog -->
+	</div><!-- /.modal -->
+	
+	

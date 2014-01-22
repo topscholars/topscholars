@@ -93,6 +93,8 @@ function EDITTABLE(){
 			{	class: evalClass,
 				id: id  },
 			function(result){
+				thisClass.resetValidatForm();
+				
 				$.each(result, function(ini,val){
 					thisClass.seperateElement($("#ele_"+ini), val);
 					thisClass.seperateView(ini,val);
@@ -106,6 +108,12 @@ function EDITTABLE(){
     		alert('Error occur. Please contact the administrator.');
     	});
 		return false;
+	}
+	
+	this.resetValidatForm = function(){
+		var validator = $("#new_class_form").validate();
+		validator.resetForm();
+		$(".error").removeClass('error');	
 	}
 
 	this.iniEventEditor = function(){
@@ -257,6 +265,9 @@ function EDITTABLE(){
 	            emailaddress : {
 	                required: true,
 	                email: true,
+	            },
+	            dob :{
+	            	required: true,
 	            }
 		    },
 			 invalidHandler: function(event, validator) {
@@ -286,6 +297,10 @@ function EDITTABLE(){
 		
 		$('#txtSearch').keypress(function(event) {
 			thisClass.Search(this,event);
+		});
+		
+		$("#new_class_btn").click(function(){
+			thisClass.resetValidatForm();
 		});
 		
 		$("#class-submit").click(function(){
@@ -341,7 +356,7 @@ $(function() {
 		<div class="block-cell block-wide">
 			<div id="list"></div>
 		<button id="new_class_btn" class="btn btn-info btn-lg new-btn" data-toggle="modal" data-target="#new_class_modal">
-		  New Teacher <i class="fa fa-plus"></i>
+		  New User <i class="fa fa-plus"></i>
 		</button>
 			<!--Class table insert here-->
 			
@@ -355,7 +370,7 @@ $(function() {
 		    <div class="modal-content">
 		      <div class="modal-header teacher-header">
 		        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-		        <h4 class="modal-title">New Teacher</h4>
+		        <h4 class="modal-title">New User</h4>
 		      </div>
 		      <div class="modal-body">
 		        <form role="form" class="form-horizontal" id="new_class_form">
@@ -388,6 +403,13 @@ $(function() {
 		        			<input type="text" id="ele_lastname" class="form-control" name="lastname" />
 		        		</div>
 		        	</div>
+		        	
+		        	<div class="form-group">
+		        		<label for="endtime" class="col-sm-3 control-label">E-mail Address</label>
+		        		<div class="col-sm-9">
+		        			<input type="text" id="ele_emailaddress" class="form-control" name="emailaddress" />
+		        		</div>
+		        	</div>		        	
 		        	
 		        	<div class="form-group">
 		        		<label for="teacherid" class="col-sm-3 control-label">Date of Birth</label>
@@ -439,13 +461,6 @@ $(function() {
 		        	</div>
 		        	
 		        	<div class="form-group">
-		        		<label for="endtime" class="col-sm-3 control-label">E-mail Address</label>
-		        		<div class="col-sm-9">
-		        			<input type="text" id="ele_emailaddress" class="form-control" name="emailaddress" />
-		        		</div>
-		        	</div>
-		        	
-		        	<div class="form-group">
 		        		<label for="ele_salutation" class="col-sm-3 control-label">Security Profile</label>
 		        		<div class="col-sm-9">
 		        			<select id="ele_securityprofile" name="securityprofile" class="form-control"></select>
@@ -455,7 +470,7 @@ $(function() {
 		      </div>
 		      <div class="modal-footer">
 		        <input type="reset" class="btn btn-default" data-dismiss="modal" value="Close"/>
-		        <input type="submit" class="btn btn-primary" value="Save Class" id="class-submit"/>
+		        <input type="submit" class="btn btn-primary" value="Save User" id="class-submit"/>
 		      </div>
 		    </div><!-- /.modal-content -->
 		  </div><!-- /.modal-dialog -->

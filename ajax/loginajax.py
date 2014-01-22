@@ -20,17 +20,17 @@ class LOGINAJAX():
                 data = simplejson.dumps(data_json)
                 return HttpResponse(data, mimetype='application/json')
             else:
-                body = 'Your hint is: ' + user.hint
-                email = ''
-                if user.usertypeid == 2:
-                    userdetails = Studentlist.objects.get(id=user.recid)
-                    email = userdetails.emailaddress1
-                elif user.usertypeid == 3:
-                    email = username
-                else:
-                    userdetails = Userlist.objects.get(id=user.recid)
-                    email = [userdetails.emailaddress]
-                send_mail('Topscholar Education: Password Hint', body , 'noreply@topscholars.org',email, fail_silently=False)
+                body = 'Your password is: ' + user.password
+                email = [username]
+##                if user.usertypeid == 2:
+##                    userdetails = Studentlist.objects.get(id=user.recid)
+##                    email = [userdetails.emailaddress1]
+##                elif user.usertypeid == 3:
+##                    email = [username]
+##                else:
+##                    userdetails = Userlist.objects.get(id=user.recid)
+##                    email = [userdetails.emailaddress]
+                send_mail('Topscholar Education: Password', body , 'noreply@topscholars.org',email, fail_silently=False)
                 data_json = {'status': 'Email Sent.',}
 ##                try:
 ##                    send_mail('Topscholar Education: Password Hint', body , settings.EMAIL_HOST_USER,[email], fail_silently=False)
@@ -40,3 +40,30 @@ class LOGINAJAX():
 ##                    data_json = {'status': 'Email Sent.',}
                 data = simplejson.dumps(data_json)
                 return HttpResponse(data, mimetype='application/json')
+
+    def checkUserPassword(self,request):
+        try:
+            username=request.POST.get('username',False)
+            password=request.POST.get('password',False)
+        except KeyError:
+            data_json = { 'status': 'error', }
+            data = simplejson.dumps(data_json)
+            return HttpResponse(data, mimetype='application/json')
+        else:
+            try:
+                login = Login.objects.get(loginname=username)
+            except Login.DoesNotExist:
+                data_json = { 'status': 'no_user', }
+                data = simplejson.dumps(data_json)
+                return HttpResponse(data, mimetype='application/json')
+            else:
+                try:
+                    login = Login.objects.get(loginname=username, password=password)
+                except Login.DoesNotExist:
+                    data_json = { 'status': 'password_wrong', }
+                    data = simplejson.dumps(data_json)
+                    return HttpResponse(data, mimetype='application/json')
+                else:
+                    data_json = { 'status': 'success', }
+                    data = simplejson.dumps(data_json)
+                    return HttpResponse(data, mimetype='application/json')

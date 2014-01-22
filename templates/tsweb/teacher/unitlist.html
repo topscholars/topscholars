@@ -76,6 +76,19 @@ function EDITTABLE(){
 					thisClass.seperateElement($("#ele_"+ini), val);
 					thisClass.seperateView(ini,val);
 				});
+			
+			thisClass.loadAvailableTags();
+			$(".highlighter").remove();
+			//console.log(thisClass.availableTags); 	 
+	        $("#ele_establishedgoal").hashtags({ autocompleteURL:thisClass.availableTags });
+	        
+			$("#ele_essentialquestion").hashtags({ autocompleteURL:thisClass.availableTags });
+			
+			$("#ele_understanding").hashtags({ autocompleteURL:thisClass.availableTags });
+			
+			$("#ele_knowledge").hashtags({ autocompleteURL:thisClass.availableTags });
+			
+			$("#ele_skill").hashtags({ autocompleteURL:thisClass.availableTags });
 		})
 		.error(function(xhr, status, error) {
     		alert('Error occur. Please contact the administrator.');
@@ -111,7 +124,11 @@ function EDITTABLE(){
 		
 		$.post(url,odata,
 			function(result){
-				thisClass.hideEditTable();
+				if(result.status == "error"){
+					$(".alert").show();
+				}else{
+					thisClass.hideEditTable();
+				}
 			})
 		.error(function(xhr, status, error) {
     		alert('Error occur. Please contact the administrator.');
@@ -149,35 +166,13 @@ function EDITTABLE(){
 						alert('Error occur. Please contact the administrator.');
 	                }
                 });
-       /*
-		$.getJSON(
-			url,
-			{	class: evalClass,
-				method: 'loadAvailableTags' },
-			function(result){
-				//console.log(result);
-				$.each(result, function(ini,val){
-					obj = { id : 1 , value: '#'+val.name};
-					thisClass.availableTags.push(obj);
-				});
-				//console.log(thisClass.availableTags);
-		})
-		.error(function(xhr, status, error) {
-    		alert('Error occur. Please contact the administrator.');
-    	});
-    	*/
 	}
 
 	this.iniControl = function(){
 		thisClass.getData('','');
 		Watermark('txtSearch', 'Search', 'noclass');
 		
-		thisClass.loadAvailableTags();
-  		var availableTags = [ {	id:'1',	value:'#Asp'   },
-      	 {	id:'1',	value:'#Php'   },
-      	 { id:'1', value:'#Test' },
-      	 {id:'1', value:'#Pha'}];
-      	 
+		thisClass.loadAvailableTags();	 
         $("#ele_establishedgoal").hashtags({ autocompleteURL:thisClass.availableTags });
         
 		$("#ele_essentialquestion").hashtags({ autocompleteURL:thisClass.availableTags });
@@ -188,11 +183,21 @@ function EDITTABLE(){
 		
 		$("#ele_skill").hashtags({ autocompleteURL:thisClass.availableTags });
 		
-		
 		$("#new_unit_btn").click(function(){
 			$("[id^='ele_']").each(function(){
 				$(this).val('');
+				$(this).parent().parent().find(".highlighter").remove();
 			});
+
+	        $("#ele_establishedgoal").hashtags({ autocompleteURL:thisClass.availableTags });
+	        
+			$("#ele_essentialquestion").hashtags({ autocompleteURL:thisClass.availableTags });
+			
+			$("#ele_understanding").hashtags({ autocompleteURL:thisClass.availableTags });
+			
+			$("#ele_knowledge").hashtags({ autocompleteURL:thisClass.availableTags });
+			
+			$("#ele_skill").hashtags({ autocompleteURL:thisClass.availableTags });
 		});
 		
 		$("#btnSave").click(function(){
@@ -238,6 +243,12 @@ $(function() {
 	      </div>
 	      <div class="modal-body">
 	        <form role="form" class="form form-horizontal" id="new_unit_form">
+	        	
+			<div class="alert" style="display: none"> 
+			    <a class="close" onclick="$('.alert').hide()">×</a>  
+			    <strong>Warning!</strong> This Unit have exist data !!!
+			</div>
+			    
 	        	<div class="row">
 		        	<div class="col-lg-12" id="stage_one">
 			        	<div class="panel-group" id="accordion">
@@ -276,7 +287,7 @@ $(function() {
 			        	  <div class="panel panel-default">
 			        	    <div class="panel-heading">
 			        	      <h4 class="panel-title">
-			        	        <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
+			        	        <a data-toggle="collapse" class="genTag" data-parent="#accordion" href="#collapseOne">
 			        	          Established Goal(s):
 			        	        </a>
 			        	      </h4>

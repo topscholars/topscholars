@@ -37,23 +37,11 @@ function EDITTABLE(){
 	this.pagename = $(".pagename").text();
 	
 	this.showEditTable = function(){
-		$(".pagename").text(thisClass.pagename + " - Edit");
 
-		$("#selectAssignmentHeader").show();
-		$("#list_by_select").show();
 	}
 	
 	this.hideEditTable =function(){
 		$("#new_assignment_modal").modal('hide');
-		// $(".pagename").text(thisClass.pagename);
-// 		
-		// $("#editField").hide();
-// 		
-		// $(".filter").show();
-		// $(".tablelist").show();
-		// $(".listnewbutton").show();
-		//$("#txtSearch").show();
-		//$(".searchboximg").show();
 		thisClass.getData('');
 		
 		//return and hide
@@ -67,8 +55,6 @@ function EDITTABLE(){
 			{	class: evalClass,
 				id: id  },
 			function(result){
-				$("#ele_classname").multiselect('disable');
-				$("#ele_studentid").multiselect('disable');
 				
 				$("[id^=ele_]").val('');
 				$.each(result, function(ini,val){
@@ -79,13 +65,14 @@ function EDITTABLE(){
 				$('#editAssignmentBtn').show();
 				$('.modal .form-control, .modal input[type="checkbox"]').attr('disabled', 'disabled');
 				
+				thisClass.resetValidatForm();
 				thisClass.getClassSelect();
 				thisClass.getStudentSelect();
-				thisClass.getAssignclass();
-				thisClass.showEditTable();
-				thisClass.showAssignmentClass(id);
-				thisClass.showAssignmentStudent();
-				thisClass.showSelectAssignment();
+				//thisClass.showEditTable();
+				//thisClass.showAssignmentClass(id);
+				//thisClass.showAssignmentStudent();
+				//thisClass.showSelectAssignment();
+				
 		})
 		.error(function(xhr, status, error) {
     		alert('Error occur. Please contact the administrator.');
@@ -93,21 +80,6 @@ function EDITTABLE(){
 		return false;
 	}
 
-	this.iniEventEditor = function(){
-		thisClass.UIHover("#btnSave");
-		thisClass.UIHover("#btnBack");
-		thisClass.UIHover("#btnEdit");
-		
-		$("#btnBack").click(function(){
-			thisClass.hideEditTable();
-			thisClass.getData('','');
-		});
-		
-		$("#select_assignment").change(function(){
-			thisClass.showSelectAssignment();
-		});
-	}
-	
 	this.selectRubric = function(){
 		var html ='';
 		$.getJSON(
@@ -124,28 +96,7 @@ function EDITTABLE(){
     		alert('Error occur. Please contact the administrator.');
     	});
 	}
-	
-	this.getAssignclass = function(){
-		var assignmentid = $("#ele_id").val();
-		var html ='';
-		$.getJSON(
-			url,
-			{	class: evalClass,
-				method: 'getAssignclass',
-				id: assignmentid },
-			function(result){
-				$("#ele_classid option").remove();
-				html += "<option value='0'>All Student</option>";
-				$.each(result, function(ini,val){
-						html += "<option value='"+val.id+"'>"+val.code+"</option>";
-				});
-				$("#ele_classid").append(html);
-		})
-		.error(function(xhr, status, error) {
-    		alert('Error occur. Please contact the administrator.');
-    	});
-	}
-	
+
 	this.getClassSelect = function(){
 		var assignmentid = $("#ele_id").val();
 		var html ='';
@@ -155,13 +106,11 @@ function EDITTABLE(){
 				method: 'getClassSelect',
 				id: assignmentid },
 			function(result){
-				$("#ele_classname option").remove();
+				$("#ele_classid option").remove();
 				$.each(result, function(ini,val){
-						html += "<option value='"+val.id+"'>"+val.code+"</option>";
+						html += "<option value='"+val.id+"' "+val.selected+">"+val.code+"</option>";
 				});
-				$("#ele_classname").append(html);
-				$("#ele_classname").multiselect("refresh");
-				$("#ele_classname").multiselect("uncheckAll");
+				$("#ele_classid").append(html);
 		})
 		.error(function(xhr, status, error) {
     		alert('Error occur. Please contact the administrator.');
@@ -175,16 +124,14 @@ function EDITTABLE(){
 			url,
 			{	class: evalClass,
 				method: 'getStudentSelect',
-				assignmentid: assignmentid,
-				assignclass: $("#ele_classid").val() },
+				assignmentid: assignmentid
+				},
 			function(result){
 				$("#ele_studentid option").remove();
 				$.each(result, function(ini,val){
 						html += "<option value='"+val.id+"' "+val.selected+">"+val.firstname+" "+val.lastname+"</option>";
 				});
 				$("#ele_studentid").append(html);
-				$("#ele_studentid").multiselect("refresh");
-				//$("#ele_studentid").multiselect("uncheckAll");
 		})
 		.error(function(xhr, status, error) {
     		alert('Error occur. Please contact the administrator.');
@@ -193,10 +140,10 @@ function EDITTABLE(){
 	
 	
 	this.getData = function(assignmentname ,classid) {
-		$("#list").html("<div style='width:100%;position=relative;text-align:center;'><img src='{% static 'tsweb/image/ajax-loader.gif' %}' alt='' style='margin:auto;width=100px;height=100px;position=relative;' /></div>");
-		$.get("{% url 'tsweb:tprocessajax' %}?class="+tableClassAjax,
-		{ assignmentname : assignmentname ,
-  		classid : classid},
+		$.get("{% url 'tsweb:tprocessajax' %}",
+		{ 	class : tableClassAjax ,
+			assignmentname : assignmentname ,
+  			classid : classid},
 		function(result){
 		      $("#list").html(result);
 		}
@@ -224,8 +171,6 @@ function EDITTABLE(){
 		}
 		odata = thisClass.oData(odata);
 		
-		classname = {'classname' : checkboxChecked("input[name='multiselect_ele_classname']:checked") };
-		
 		$.extend(odata, classname);
 		$.post(url,odata,
 			function(result){
@@ -236,116 +181,40 @@ function EDITTABLE(){
     	});
 	}
 	
-	this.showAssignmentClass = function(id){
-		$.get( url,
-			{	class: evalClass,
-				method: 'tAssignmentClass',
-				id: id  },
-			function(result){
-				var editFieldWidth = $("#editField").width();
-				$("#listAssignmentClass").width(editFieldWidth/2 - 10);
-				$("#listAssignmentClass").html(result);
-				
-				$(".classitem").click(function(){
-					var id = $(this).attr('id');
-					thisClass.showAssignmentStudent(id);
-				});
-		})
-		.error(function(xhr, status, error) {
-    		alert('Error occur. Please contact the administrator.');
-    	});
-	}
-	
-	this.showAssignmentStudent = function(id){
-		var assignmentid = $("#ele_id").val();
-		$.get( url,
-			{	class: evalClass,
-				method: 'tAssignmentStudent',
-				assignmentid : assignmentid,
-				id: id  },
-			function(result){
-				var editFieldWidth = $("#editField").width();
-				$("#listAssignmentStudent").width(editFieldWidth/2 - 10);
-				$("#listAssignmentStudent").html(result);
-		})
-		.error(function(xhr, status, error) {
-    		alert('Error occur. Please contact the administrator.');
-    	});
-	}
-	
-	this.showSelectAssignment = function(){
-		var id = $("#ele_id").val();
-		var select = $("#select_assignment").val();
-		$.get( url,
-			{	class: evalClass,
-				method: select,
-				id: id  },
-			function(result){
-				$("#list_by_select").html(result);
-				$(".datepicker").datepicker({ dateFormat: 'dd-mm-yy'});
-				$(".datepicker").datepicker("setDate", new Date());
-				if(select == 'tClassAssignlist'){
-					$(".addClassassignment").click(function(){
-						var id = $(this).attr('text');
-						var date = $(".datepicker").attr('text', id).val();
-						thisClass.addClassToAssignment(id, date);
-					});
-				}else if(select == 'tStudentAssignlist'){
-					$(".addStudentassignment").click(function(){
-						var id = $(this).attr('text');
-						var date = $(".datepicker").attr('text', id).val();
-						thisClass.addStudentToAssignment(id, date);
-					});
+	    this.initValidateForm = function(){
+			  $("#new_assigment_form").validate({              
+			    rules: {
+			      	name:{
+			      		required: true,
+			      	},
+			      	duedate:{
+			      		required: true,
+			      	},
+			      	revisions:{
+			      		number: true,
+			      	}
+			    },
+				 invalidHandler: function(event, validator) {
+				// 'this' refers to the form
+					thisClass.submitForm = false;
 				}
-		})
-		.error(function(xhr, status, error) {
-    		alert('Error occur. Please contact the administrator.');
-    	});
-	}
+			  });
+	    }
 	
-	this.addClassToAssignment = function(id, date){
-		var assignmentid = $("#ele_id").val();
-		$.post(url,
-			{ class: evalClass,
-				method: 'addClassToAssignment',
-				assignmentid: assignmentid,
-				id: id,
-				date: date
-			},
-			function(result){
-				thisClass.showAssignmentClass(assignmentid);
-				thisClass.showSelectAssignment();
-			})
-		.error(function(xhr, status, error) {
-    		alert('Error occur. Please contact the administrator.');
-    	});
-	}
-	
-	this.addStudentToAssignment = function(id, date){
-		var assignmentid = $("#ele_id").val();
-		$.post(url,
-			{ class: evalClass,
-				method: 'addStudentToAssignment',
-				assignmentid: assignmentid,
-				id: id,
-				date: date
-			},
-			function(result){
-				thisClass.showAssignmentClass(assignmentid);
-				thisClass.showSelectAssignment();
-			})
-		.error(function(xhr, status, error) {
-    		alert('Error occur. Please contact the administrator.');
-    	});
-	}
+		this.initValidateFormEvent = function(){
+			thisClass.submitForm = true;
+		  	$("#new_assigment_form").validate().form();
+		}
+		
+		this.resetValidatForm = function(){
+			var validator = $("#new_assigment_form").validate();
+			validator.resetForm();
+			$(".error").removeClass('error');	
+		}
 	
 	this.iniControl = function(){
 		thisClass.getData('','');
 		Watermark('txtSearch', 'Search', 'noclass');
-		
-		$("#ele_classname").multiselect();
-		$("#ele_studentid").multiselect();
-		
 		
 		$('#lstClassid').change(function() {
 			thisClass.getData('', $('#lstClassid').val());
@@ -360,7 +229,10 @@ function EDITTABLE(){
 		});
 		
 		$("#btnSave").click(function(){
-			thisClass.save();
+        	thisClass.initValidateFormEvent();
+            if(thisClass.submitForm){
+				thisClass.save();
+			}
 		});
 		
 		$("#btnEdit").click(function(){
@@ -368,30 +240,21 @@ function EDITTABLE(){
 			$(".viewTD").hide();
 		});
 		
-		$("#ele_classid").change(function(){
-			thisClass.getStudentSelect();
-		});
-		
 		$("#ele_duedate").datetimepicker({ dateFormat: "dd-mm-yy",timeFormat: "HH:mm" });
 		
 		$("#new_assignment_btn").click(function(){
+			thisClass.resetValidatForm();
 			$("[id^='ele_']").each(function(){
 				$(this).val('');
 			});
-			$("[id^='textView_']").each(function(){
-				$(this).text('');
-			});
-			thisClass.showEditTable();
-			$(".editorTD").show();
-			$(".viewTD").hide();
-			$("#listAssignmentClass").hide();
-			$("#listAssignmentStudent").hide();
-			$("#selectAssignmentHeader").hide();
-			$("#list_by_select").hide();
 		});		
 		
+		$("#new_assigment_form").submit(function(){
+			return false;
+		});
+		
 		thisClass.hideEditTable();
-		thisClass.iniEventEditor();
+		thisClass.initValidateForm();
 		thisClass.selectRubric();
 		var profile = new EDITPROFILE(url);
 		profile.iniControl();
@@ -420,9 +283,9 @@ $(function() {
 			<div class="searchlist">
 				<div class="col-lg-4">
 					<select class="form-control" id="lstClassid">
-						<option value="">Class Filter</option>
+						<option value="">Class Schedule Filter</option>
 						{% for class in classlist %}
-						<option value="{{ class.id  }}">{{ class.id }} - {{ class.classname }}</option>
+						<option value="{{ class.id  }}">{{ class.code }}</option>
 						{% endfor %}
 					</select>
 				</div>
@@ -449,8 +312,8 @@ $(function() {
 		        	<div class="form-group">
 		        		<label for="ele_name" class="col-sm-4 control-label">Assignment Name</label>
 		        		<div class="col-sm-8">
-		        			<input type="text" name="ele_name" id="ele_name" class="form-control input-small"/>
-		        			<input type="hidden" id="ele_id" name="id" class="form-control input-small" />
+		        			<input type="text" name="name" id="ele_name" class="form-control col-sm-4"/>
+		        			<input type="hidden" id="ele_id" name="id" class="form-control col-sm-4" />
 		        		</div>
 		        	</div>
 		        	
@@ -484,16 +347,18 @@ $(function() {
 		        	
 		        	<div class="form-group">
 		        		<label for="ele_parameters" class="col-sm-4 control-label">Parameters(Word Length)</label>
-		        		<div class="col-sm-8">
-		        			<input type="text" id="ele_parameters" class="form-control input-small" name="parameters" />
+		        		<div class="col-sm-4">
+		        			<input type="text" id="ele_minwords" name="minwords" class="form-control" />
 		        		</div>
+		        		<div class="col-sm-4">
+		        			<input type="text" id="ele_maxwords" name="maxwords" class="form-control" />
+	        			</div>
 		        	</div>
 		        	
 		        	<div class="form-group">
 		        		<label for="classid" class="col-sm-4 control-label">Class Name <div class="text-muted" style="font-size: .8em;">Hold Command or Ctrl to select multiple classes</div></label>
 		        		<div class="col-sm-8">
 		        			<select id="ele_classid" name="classid" class="form-control input-medium" multiple="multiple">
-		        				<option>{{ ele_class_name }}</option>
 		        			</select>
 		        		</div>
 		        	</div>
@@ -502,10 +367,6 @@ $(function() {
 		        		<label for="studentid" class="col-sm-4 control-label">Student Name <div class="text-muted" style="font-size: .8em;">Hold Command or Ctrl to select multiple students</div></label>
 		        		<div class="col-sm-8">
 		        			<select id="ele_studentid" name="studentid" class="form-control input-medium" multiple="multiple">
-		        				<option>{{ student_name }}</option>
-		        				<option>{{ student_name }}</option>
-		        				<option>{{ student_name }}</option>
-		        				<option>{{ student_name }}</option>
 		        			</select>
 		        		</div>
 		        	</div>
@@ -513,7 +374,7 @@ $(function() {
 		        	<div class="form-group">
 		        		<label for="ele_duedate" class="col-sm-4 control-label">Due Date/Time</label>
 		        		<div class="col-sm-8">
-		        			<input type="datetime-local" id="ele_duedate" class="form-control input-small" name="duedate" />
+		        			<input type="text" id="ele_duedate" class="form-control input-small" name="duedate" />
 		        		</div>
 		        	</div>
 		        	
@@ -525,18 +386,9 @@ $(function() {
 		        	</div>
 		        	
 		        	<div class="form-group">
-		        		<label for="ele_classid" class="col-sm-4 control-label">Assigned Class</label>
+		        		<label for="rubricid" class="col-sm-4 control-label">Rubric ID</label>
 		        		<div class="col-sm-8">
-		        			<select id="ele_classid" class="form-control input-small">
-		        				<option id="ele_class">{% ele_class %}</option>
-		        			</select>
-		        		</div>
-		        	</div>
-		        	
-		        	<div class="form-group">
-		        		<label for="maxwords" class="col-sm-4 control-label">Maximum Word</label>
-		        		<div class="col-sm-8">
-		        			<input type="text" id="ele_maxwords" name="maxwords" class="form-control input-small" />
+		        			<select id="ele_rubricid" name="rubricid" class="form-control"></select>
 		        		</div>
 		        	</div>
 		    
@@ -584,8 +436,6 @@ $(function() {
 	  
 	  $('#editAssignmentBtn').click(function(){
 	  	$('.modal .form-control, .modal input[type="checkbox"]').removeAttr('disabled', 'disabled');
-		$("#ele_classname").multiselect('enable');
-		$("#ele_studentid").multiselect('enable');
   	  });
 	</script>
 </body>

@@ -21,7 +21,7 @@ class CLASSLIST():
             return HttpResponse('error', mimetype='application/json')
         else:
             #classlist = Classschedule.objects.filter(id=id)
-            cursor.execute("SELECT id,code,subcode,classid,teacherid,startdate,enddate,starttime,endtime,disabled,dayofweek FROM classschedule  WHERE id = %s", [id])
+            cursor.execute("SELECT id,code,subcode,abilitylevel,teacherid,startdate,enddate,starttime,endtime,disabled,dayofweek,description FROM classschedule  WHERE id = %s", [id])
             
             results = cursor.fetchall()
             for r in results:
@@ -29,7 +29,7 @@ class CLASSLIST():
                         'id': r[0],
                         'code': r[1],
                         'subcode': r[2],
-                        'classid': r[3],
+                        'abilitylevel': r[3],
                         'teacherid': r[4],
                         'startdate': r[5].strftime(DATE_FORMAT),
                         'enddate': r[6].strftime(DATE_FORMAT),
@@ -37,22 +37,21 @@ class CLASSLIST():
                         'endtime': r[8],
                         'disabled': r[9],
                         'dayofweek': r[10],
+                        'description': r[11],
                         }
             data = simplejson.dumps(data_json)
         return HttpResponse(data, mimetype='application/json')
     
-    def getClass(self,request):
+    def selectAbility(self,request):
         try:
             userid = request.session['userid']
         except KeyError:
             return HttpResponse('error', mimetype='application/json')
         else:
-            login = Login.objects.get(id=userid)
-            clientid = login.clientid
-            if login.usertypeid==1:
-                recid = Login.objects.filter(usertypeid=1).values_list('recid')
-                classlist = list(Classlist.objects.filter(rubricid__in=recid,disabled=0,deleted=0,clientid=clientid).values('id','classname'))
-                data = simplejson.dumps(classlist)
+            selectiongrouplist = Selectiongroup.objects.get(groupname='LevelOfAbility')
+            selectionlist = list(Selectionlist.objects.filter(selectiongroupid=selectiongrouplist.id, disabled=0,deleted=0).values('selectionname', 'id'))
+            data = simplejson.dumps(selectionlist)
+
         return HttpResponse(data, mimetype='application/json')
     
     def getTeacher(self,request):
@@ -69,12 +68,42 @@ class CLASSLIST():
                 data = simplejson.dumps(user)
         return HttpResponse(data, mimetype='application/json')
     
+    def getStudentSelect(self,request):
+        try:
+            userid = request.session['userid']
+            login = Login.objects.get(id=userid)
+            clientid = login.clientid
+            classscheduleid = request.GET.get('classscheduleid', False)
+            studentlist = list(Studentlist.objects.filter(Q(clientid=clientid)).values('id','firstname', 'middlename', 'lastname'))
+            studentlistselect = list(Studentclass.objects.filter(classscheduleid=classscheduleid,disabled=0,deleted=0).values('studentid'))
+        except Studentclass.DoesNotExist:
+            data = simplejson.dumps(studentlist)
+            return HttpResponse(data, mimetype='application/json')
+        else:
+            studentselectarray = []
+            for studentdict in studentlistselect:
+                studentselectarray.append(studentdict['studentid'])
+            
+            studentstorelist = []
+            for studentstore in studentlist:
+                if studentstore['id'] in studentselectarray:
+                    studentstorelist.append({'id': studentstore['id'], 'firstname': studentstore['firstname'], 'middlename': studentstore['middlename'], 'lastname': studentstore['lastname'], 'selected': 'selected'})
+                else:
+                    studentstorelist.append({'id': studentstore['id'], 'firstname': studentstore['firstname'], 'middlename': studentstore['middlename'], 'lastname': studentstore['lastname'], 'selected': ''})
+            data = simplejson.dumps(studentstorelist)
+            return HttpResponse(data, mimetype='application/json')
+
+    
     def save(self,request):
         DATE_FORMAT = "%d-%m-%Y" 
         try:
             userid = request.session['userid']
+            login = Login.objects.get(id=userid)
+            clientid = login.clientid
             id = request.POST.get('id', False)
-            classid= request.POST.get('classid', False)
+            abilitylevel = request.POST.get('abilitylevel', False)
+            description = request.POST.get('description', False)
+            studentid = request.POST.get('studentid', False)
             code = request.POST.get('code', False)
             subcode = request.POST.get('subcode', False)
             dayofweek = request.POST.get('dayofweek', False)
@@ -89,11 +118,13 @@ class CLASSLIST():
             data = simplejson.dumps(data_json)
             return HttpResponse(data, mimetype='application/json')
         else:
-            classlist = Classlist.objects.get(id=classid)
+            selectiongrouplist = Selectiongroup.objects.get(groupname='LevelOfAbility')
+            selectionlist = Selectionlist.objects.get(selectiongroupid=selectiongrouplist.id,id=abilitylevel, disabled=0,deleted=0)
             classschedule = Classschedule.objects.get(id=id)
-            classschedule.classid = classlist
+            classschedule.abilitylevel = selectionlist
             classschedule.code = code
             classschedule.subcode = subcode
+            classschedule.description = description
             classschedule.disabled = disabled
             classschedule.endtime = endtime
             classschedule.starttime = starttime
@@ -104,16 +135,54 @@ class CLASSLIST():
             classschedule.modifieddt = datetime.now()
             classschedule.modifiedby = userid
             classschedule.save()
+            
+            studentcheck = studentid.find(',')
+            if studentcheck > -1:
+                studentid = studentid.split(',')
+                for studentids in studentid:
+                    studentlist = Studentlist.objects.get(id=studentids)
+
+                    Studentclass.objects.get_or_create(studentid = studentlist, 
+                                                       classscheduleid = classschedule,
+                                                       defaults={'grade': 0,
+                                                       'status' : 0,
+                                                       'createddt' : datetime.now(),
+                                                       'createdby' : userid,
+                                                       'modifieddt' : datetime.now(),
+                                                       'modifiedby' : userid,
+                                                       'disabled' : 0,
+                                                       'deleted' : 0,
+                                                       'clientid' : clientid} 
+                                                       )
+            else:
+                studentlist = Studentlist.objects.get(id=studentid)
+                Studentclass.objects.get_or_create(studentid = studentlist, 
+                                                   classscheduleid = classschedule,
+                                                   defaults={'grade': 0,
+                                                   'status' : 0,
+                                                   'createddt' : datetime.now(),
+                                                   'createdby' : userid,
+                                                   'modifieddt' : datetime.now(),
+                                                   'modifiedby' : userid,
+                                                   'disabled' : 0,
+                                                   'deleted' : 0,
+                                                   'clientid' : clientid} 
+                                                   )
+
+                
             data_json = { 'status': 'success', }
             data = simplejson.dumps(data_json)
             return HttpResponse(data, mimetype='application/json')
-    
+        
     def add(self,request):
         DATE_FORMAT = "%d-%m-%Y" 
         try:
             userid = request.session['userid']
-            id = request.POST.get('id', False)
-            classid= request.POST.get('classid', False)
+            login = Login.objects.get(id=userid)
+            clientid = login.clientid
+            abilitylevel = request.POST.get('abilitylevel', False)
+            description = request.POST.get('description', False)
+            studentid = request.POST.get('studentid', False)
             code = request.POST.get('code', False)
             subcode = request.POST.get('subcode', False)
             dayofweek = request.POST.get('dayofweek', False)
@@ -124,17 +193,17 @@ class CLASSLIST():
             starttime = request.POST.get('starttime', False)
             teacherid = request.POST.get('teacherid', False)
         except KeyError:
-            return HttpResponse('error', mimetype='application/json')
+            data_json = { 'status': 'error', }
+            data = simplejson.dumps(data_json)
+            return HttpResponse(data, mimetype='application/json')
         else:
-            login = Login.objects.get(id=userid)
-            clientid = login.clientid
-            
-            classlist = Classlist.objects.get(id=classid)
-            
+            selectiongrouplist = Selectiongroup.objects.get(groupname='LevelOfAbility')
+            selectionlist = Selectionlist.objects.get(selectiongroupid=selectiongrouplist.id,id=abilitylevel, disabled=0,deleted=0)
             classschedule = Classschedule()
-            classschedule.classid = classlist
+            classschedule.abilitylevel = selectionlist
             classschedule.code = code
             classschedule.subcode = subcode
+            classschedule.description = description
             classschedule.disabled = disabled
             classschedule.endtime = endtime
             classschedule.starttime = starttime
@@ -142,16 +211,45 @@ class CLASSLIST():
             classschedule.dayofweek = dayofweek
             classschedule.enddate = datetime.strptime(enddate,DATE_FORMAT)
             classschedule.startdate = datetime.strptime(startdate,DATE_FORMAT)
-            classschedule.createddt = datetime.now()
-            classschedule.createdby = userid
             classschedule.modifieddt = datetime.now()
             classschedule.modifiedby = userid
-            classschedule.deleted = 0
-            classschedule.clientid = clientid
             classschedule.save()
-            data_json = { 'status': 'success', }
-            data = simplejson.dumps(data_json)
-            return HttpResponse(data, mimetype='application/json')
+            
+            id = Classschedule.objects.latest('id').id
+            classschedulelist = Classschedule.objects.get(id=id)
+            
+            studentcheck = studentid.find(',')
+            if studentcheck > -1:
+                studentid = studentid.split(',')
+                for studentids in studentid:
+                    studentlist = Studentlist.objects.get(id=studentids)
+
+                    Studentclass.objects.get_or_create(studentid = studentlist, 
+                                                       classscheduleid = classschedulelist,
+                                                       defaults={'grade': 0,
+                                                       'status' : 0,
+                                                       'createddt' : datetime.now(),
+                                                       'createdby' : userid,
+                                                       'modifieddt' : datetime.now(),
+                                                       'modifiedby' : userid,
+                                                       'disabled' : 0,
+                                                       'deleted' : 0,
+                                                       'clientid' : clientid} 
+                                                       )
+            else:
+                studentlist = Studentlist.objects.get(id=studentid)
+                Studentclass.objects.get_or_create(studentid = studentlist, 
+                                                   classscheduleid = classschedulelist,
+                                                   defaults={'grade': 0,
+                                                   'status' : 0,
+                                                   'createddt' : datetime.now(),
+                                                   'createdby' : userid,
+                                                   'modifieddt' : datetime.now(),
+                                                   'modifiedby' : userid,
+                                                   'disabled' : 0,
+                                                   'deleted' : 0,
+                                                   'clientid' : clientid} 
+                                                   )
     
     def getTStudentList(self,request):
         try:
@@ -244,6 +342,24 @@ class CLASSLIST():
             studentclass.deleted = 0
             studentclass.clientid = clientid
             studentclass.save()
+            data_json = { 'status': 'success', }
+            data = simplejson.dumps(data_json)
+            return HttpResponse(data, mimetype='application/json')
+            
+    def changePassword(self,request):
+        try:
+            userid = request.session['userid']
+            password = request.POST.get('password', False)
+        except KeyError:
+            data_json = { 'status': 'error', }
+            data = simplejson.dumps(data_json)
+            return HttpResponse(data, mimetype='application/json')
+        else:
+            login = Login.objects.get(id=userid)
+            login.password = password
+            login.modifieddt = datetime.now()
+            login.modifiedby = userid
+            login.save()
             data_json = { 'status': 'success', }
             data = simplejson.dumps(data_json)
             return HttpResponse(data, mimetype='application/json')

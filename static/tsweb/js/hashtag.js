@@ -12,6 +12,7 @@
 		}, options || {});
 						
 		wrapControl($(this));
+		doTag($(this));
 		textareaKeyDown($(this));
 		textareaKeyUp($(this));
 		
@@ -31,7 +32,7 @@
 		
 		function doTag(element){
 			var str = element.val();
-			element.parent().parent().find(".highlighter:visible").css("width",element.css("width"));
+			element.parent().parent().find(".highlighter").css("width",element.css("width"));
 			
 			str = str.replace(/\n/g, '<br>');
 			if(!str.match(/(http|ftp|https):\/\/[\w-]+(\.[\w-]+)+([\w.,@?^=%&amp;:\/~+#-]*[\w@?^=%&amp;\/~+#-])?#([a-zA-Z0-9]+)/g)) {
@@ -42,9 +43,8 @@
 				}
 			}
 	
-			element.parent().parent().find(".highlighter:visible").html(str);
-			console.log(str);
-			element.parent().parent().find(".highlighter:visible").find("span").each(function(){
+			element.parent().parent().find(".highlighter").html(str);
+			element.parent().parent().find(".highlighter").find("span").each(function(){
 				var value = $(this).html();
 				var match = false;
 				for (key in options.autocompleteURL) {
@@ -59,7 +59,53 @@
 			    }
 			});
 			str = str.replace(/#(\S*)/g,'<span class="hashtagPosition"></span>#$1');
-			element.parent().parent().find(".highlighter:visible").html(str);
+			element.parent().parent().find(".highlighter").html(str);
+			//add space condition
+			for (key in options.autocompleteURL) {
+				if(options.autocompleteURL[key].value.search(" ") >-1){
+	    			findAndReplace(options.autocompleteURL[key].value, function(text){
+						return '<span class="hashtag">' + text + '</span>';
+					});
+				}
+		    }
+		    
+		}
+		
+		
+		function findAndReplace(searchText, replacement, searchNode) {
+		    if (!searchText || typeof replacement === 'undefined') {
+		        // Throw error here if you want...
+		        return;
+		    }
+		    var regex = typeof searchText === 'string' ?
+		                new RegExp(searchText, 'g') : searchText,
+		        childNodes = (searchNode || document.body).childNodes,
+		        cnLength = childNodes.length,
+		        excludes = 'html,head,style,title,link,meta,script,object,iframe';
+
+		    while (cnLength--) {
+		        var currentNode = childNodes[cnLength];
+		        if (currentNode.nodeType === 1 &&
+		            (excludes + ',').indexOf(currentNode.nodeName.toLowerCase() + ',') === -1) {
+		            arguments.callee(searchText, replacement, currentNode);
+		        }
+		        if (currentNode.nodeType !== 3 || !regex.test(currentNode.data) ) {
+		            continue;
+		        }
+		        var parent = currentNode.parentNode,
+		            frag = (function(){
+		                var html = currentNode.data.replace(regex, replacement),
+		                    wrap = document.createElement('div'),
+		                    frag = document.createDocumentFragment();
+		                wrap.innerHTML = html;
+		                while (wrap.firstChild) {
+		                    frag.appendChild(wrap.firstChild);
+		                }
+		                return frag;
+		            })();
+		        parent.insertBefore(frag, currentNode);
+		        parent.removeChild(currentNode);
+		    }
 		}
 		
 		function textareaKeyDown(element){

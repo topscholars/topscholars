@@ -5,7 +5,7 @@
 		<td class="cellitem  col-lg-8">Tag Description</td>
 	</tr>
 	{% for tag in taglist %}
-	<tr id="{{ tag.id }}" class="rowitem">
+	<tr id="{{ tag.id }}" class="rowitem" data-toggle="modal" data-target="#tag_modal">
 		<td class="cellitem col-lg-4">{{ tag.name }}</td>
 		<td class="cellitem col-lg-8">&nbsp;{{ tag.desciption }}</td>
 	</tr>

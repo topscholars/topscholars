@@ -73,6 +73,7 @@
 		
 		this.hideEditTable =function(){
 			$("#new_student_modal").modal('hide');
+			thisClass.getData('');
 		}
 		
 		this.editTable = function(id){
@@ -184,6 +185,8 @@
 						thisClass.seperateView(ini,val);
 					});
 					
+					$('#editStudentBtn').show();
+					$('.modal .form-control, .modal input[type="checkbox"]').attr('disabled', 'disabled');
 					thisClass.showEditTable();
 			})
 			.error(function(xhr, status, error) {
@@ -202,14 +205,16 @@
 			odata = thisClass.oData(odata);
 			$.post(url,odata,
 				function(result){
-					thisClass.hideEditTable();
+					
 					if(result.status == 'error'){
 						if(result.emailaddress[1] == ''){
 							email = result.emailaddress[0];
 						}else{
 							email = result.emailaddress[0]+ "," +result.emailaddress[1];;
 						}
-						alert('This email ['+email+'] have exist!!!');
+						$('<label class="error" for="ele_emailaddress1">This email have exist data!!.</label>').insertAfter("#ele_emailaddress1");
+					}else{
+						thisClass.hideEditTable();
 					}
 				})
 			.error(function(xhr, status, error) {
@@ -438,6 +443,7 @@
 		    <div class="modal-content">
 		      <div class="modal-header teacher-header">
 		        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+		        <button type="button" class="btn btn-default btn-small btn-edit pull-right" id="editStudentBtn">Edit</button>
 		        <h4 class="modal-title">New Student</h4>
 		      </div>
 		      <div class="modal-body">
@@ -489,7 +495,7 @@
 
 		        		<label for="dob" class="col-sm-4 control-label">Date of Birth</label>
 		        		<div class="col-sm-8">
-		        			<input type="date" id="ele_dob" name="dob" class="form-control input-small" />
+		        			<input type="text" id="ele_dob" name="dob" class="form-control input-small" />
 		        		</div>
 		        	</div>
 		        	
@@ -614,11 +620,24 @@
 	    $(".form-error").remove();
 	 	 	$('#btnSave').val("PROCESSING...").attr("disabled","disabled");
 	  });
+	  
+	   $('.modal .form-control, .modal input[type="checkbox"]').attr('disabled', 'disabled');
 	
 		$('#new_assignment_modal').on("hidden.bs.modal",function(){
 	    $('#new_assignment_form')[0].reset();
 	    $('#new_assignment_form .form-error').remove();
-	  });
+	    });
+	    
+	    $("#new_student_btn").click(function(){
+	    	$('#editStudentBtn').hide();
+	    	$('.modal .form-control, .modal input[type="checkbox"]').removeAttr('disabled', 'disabled');
+	    });
+	    
+		  $('#editStudentBtn').click(function(){
+		  	$('.modal .form-control, .modal input[type="checkbox"]').removeAttr('disabled', 'disabled');
+		  	$("#ele_emailaddress1").attr('disabled', 'disabled');
+	  	  });
+	  
 	</script>
 
 </body>

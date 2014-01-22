@@ -37,10 +37,7 @@ function EDITTABLE(){
 	this.pagename = $(".pagename").text();
 	
 	this.showEditTable = function(){
-		$(".pagename").text(thisClass.pagename + " - Edit");
 
-		$("#selectAssignmentHeader").show();
-		$("#list_by_select").show();
 	}
 	
 	this.hideEditTable =function(){
@@ -68,13 +65,13 @@ function EDITTABLE(){
 				$('#editAssignmentBtn').show();
 				$('.modal .form-control, .modal input[type="checkbox"]').attr('disabled', 'disabled');
 				
-				
+				thisClass.resetValidatForm();
 				thisClass.getClassSelect();
 				thisClass.getStudentSelect();
-				thisClass.showEditTable();
-				thisClass.showAssignmentClass(id);
-				thisClass.showAssignmentStudent();
-				thisClass.showSelectAssignment();
+				//thisClass.showEditTable();
+				//thisClass.showAssignmentClass(id);
+				//thisClass.showAssignmentStudent();
+				//thisClass.showSelectAssignment();
 				
 		})
 		.error(function(xhr, status, error) {
@@ -83,21 +80,6 @@ function EDITTABLE(){
 		return false;
 	}
 
-	this.iniEventEditor = function(){
-		thisClass.UIHover("#btnSave");
-		thisClass.UIHover("#btnBack");
-		thisClass.UIHover("#btnEdit");
-		
-		$("#btnBack").click(function(){
-			thisClass.hideEditTable();
-			thisClass.getData('','');
-		});
-		
-		$("#select_assignment").change(function(){
-			thisClass.showSelectAssignment();
-		});
-	}
-	
 	this.selectRubric = function(){
 		var html ='';
 		$.getJSON(
@@ -199,108 +181,36 @@ function EDITTABLE(){
     	});
 	}
 	
-	this.showAssignmentClass = function(id){
-		$.get( url,
-			{	class: evalClass,
-				method: 'tAssignmentClass',
-				id: id  },
-			function(result){
-				var editFieldWidth = $("#editField").width();
-				$("#listAssignmentClass").width(editFieldWidth/2 - 10);
-				$("#listAssignmentClass").html(result);
-				
-				$(".classitem").click(function(){
-					var id = $(this).attr('id');
-					thisClass.showAssignmentStudent(id);
-				});
-		})
-		.error(function(xhr, status, error) {
-    		alert('Error occur. Please contact the administrator.');
-    	});
-	}
-	
-	this.showAssignmentStudent = function(id){
-		var assignmentid = $("#ele_id").val();
-		$.get( url,
-			{	class: evalClass,
-				method: 'tAssignmentStudent',
-				assignmentid : assignmentid,
-				id: id  },
-			function(result){
-				var editFieldWidth = $("#editField").width();
-				$("#listAssignmentStudent").width(editFieldWidth/2 - 10);
-				$("#listAssignmentStudent").html(result);
-		})
-		.error(function(xhr, status, error) {
-    		alert('Error occur. Please contact the administrator.');
-    	});
-	}
-	
-	this.showSelectAssignment = function(){
-		var id = $("#ele_id").val();
-		var select = $("#select_assignment").val();
-		$.get( url,
-			{	class: evalClass,
-				method: select,
-				id: id  },
-			function(result){
-				$("#list_by_select").html(result);
-				$(".datepicker").datepicker({ dateFormat: 'dd-mm-yy'});
-				$(".datepicker").datepicker("setDate", new Date());
-				if(select == 'tClassAssignlist'){
-					$(".addClassassignment").click(function(){
-						var id = $(this).attr('text');
-						var date = $(".datepicker").attr('text', id).val();
-						thisClass.addClassToAssignment(id, date);
-					});
-				}else if(select == 'tStudentAssignlist'){
-					$(".addStudentassignment").click(function(){
-						var id = $(this).attr('text');
-						var date = $(".datepicker").attr('text', id).val();
-						thisClass.addStudentToAssignment(id, date);
-					});
+	    this.initValidateForm = function(){
+			  $("#new_assigment_form").validate({              
+			    rules: {
+			      	name:{
+			      		required: true,
+			      	},
+			      	duedate:{
+			      		required: true,
+			      	},
+			      	revisions:{
+			      		number: true,
+			      	}
+			    },
+				 invalidHandler: function(event, validator) {
+				// 'this' refers to the form
+					thisClass.submitForm = false;
 				}
-		})
-		.error(function(xhr, status, error) {
-    		alert('Error occur. Please contact the administrator.');
-    	});
-	}
+			  });
+	    }
 	
-	this.addClassToAssignment = function(id, date){
-		var assignmentid = $("#ele_id").val();
-		$.post(url,
-			{ class: evalClass,
-				method: 'addClassToAssignment',
-				assignmentid: assignmentid,
-				id: id,
-				date: date
-			},
-			function(result){
-				thisClass.showAssignmentClass(assignmentid);
-				thisClass.showSelectAssignment();
-			})
-		.error(function(xhr, status, error) {
-    		alert('Error occur. Please contact the administrator.');
-    	});
-	}
-	
-	this.addStudentToAssignment = function(id, date){
-		var assignmentid = $("#ele_id").val();
-		$.post(url,
-			{ class: evalClass,
-				method: 'addStudentToAssignment',
-				assignmentid: assignmentid,
-				id: id,
-				date: date
-			},
-			function(result){
-				thisClass.showAssignmentClass(assignmentid);
-				thisClass.showSelectAssignment();
-			})
-		.error(function(xhr, status, error) {
-    		alert('Error occur. Please contact the administrator.');
-    	});
-	}
+		this.initValidateFormEvent = function(){
+			thisClass.submitForm = true;
+		  	$("#new_assigment_form").validate().form();
+		}
+		
+		this.resetValidatForm = function(){
+			var validator = $("#new_assigment_form").validate();
+			validator.resetForm();
+			$(".error").removeClass('error');	
+		}
 	
 	this.iniControl = function(){
 		thisClass.getData('','');
@@ -319,8 +229,10 @@ function EDITTABLE(){
 		});
 		
 		$("#btnSave").click(function(){
-			thisClass.save();
-			return false;
+        	thisClass.initValidateFormEvent();
+            if(thisClass.submitForm){
+				thisClass.save();
+			}
 		});
 		
 		$("#btnEdit").click(function(){
@@ -331,23 +243,18 @@ function EDITTABLE(){
 		$("#ele_duedate").datetimepicker({ dateFormat: "dd-mm-yy",timeFormat: "HH:mm" });
 		
 		$("#new_assignment_btn").click(function(){
+			thisClass.resetValidatForm();
 			$("[id^='ele_']").each(function(){
 				$(this).val('');
 			});
-			$("[id^='textView_']").each(function(){
-				$(this).text('');
-			});
-			thisClass.showEditTable();
-			$(".editorTD").show();
-			$(".viewTD").hide();
-			$("#listAssignmentClass").hide();
-			$("#listAssignmentStudent").hide();
-			$("#selectAssignmentHeader").hide();
-			$("#list_by_select").hide();
 		});		
 		
+		$("#new_assigment_form").submit(function(){
+			return false;
+		});
+		
 		thisClass.hideEditTable();
-		thisClass.iniEventEditor();
+		thisClass.initValidateForm();
 		thisClass.selectRubric();
 		var profile = new EDITPROFILE(url);
 		profile.iniControl();
@@ -467,7 +374,7 @@ $(function() {
 		        	<div class="form-group">
 		        		<label for="ele_duedate" class="col-sm-4 control-label">Due Date/Time</label>
 		        		<div class="col-sm-8">
-		        			<input type="datetime-local" id="ele_duedate" class="form-control input-small" name="duedate" />
+		        			<input type="text" id="ele_duedate" class="form-control input-small" name="duedate" />
 		        		</div>
 		        	</div>
 		        	

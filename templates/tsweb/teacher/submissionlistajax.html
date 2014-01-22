@@ -27,7 +27,7 @@
 </div>
 <script>
 urlMap = {
-	{% for row in submissionlist %}
+	{% for row in submissionreviewerlist %}
 		'{{ row.id }}' : '{% url "tsweb:tsubmissionreview" row.id %}',
 	{% endfor %}
 };

@@ -514,14 +514,6 @@ class Submission(models.Model):
     class Meta:
         unique_together = (('studentid', 'teacherid', 'assignmentid'),)
         db_table = 'submission'
-        
-class Submissionreviewer(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='ID') # Field name made lowercase.
-    submissionid = models.ForeignKey(Submission,related_name="Submissionreviewertosubmission",db_column='SubMissionId') # Field name made lowercase.
-    entityid = models.ForeignKey(Entity,related_name="Submissionreviewertoentity", db_column='EntityId') # Field name made lowercase.
-    recid = models.IntegerField(db_column='RecId') # Field name made lowercase.
-    class Meta:
-        db_table = 'submissionreviewer'
 
 class Submissionversion(models.Model):
     id = models.IntegerField(primary_key=True, db_column='ID') # Field name made lowercase.
@@ -540,6 +532,23 @@ class Submissionversion(models.Model):
     deleted = models.IntegerField(db_column='Deleted') # Field name made lowercase.
     class Meta:
         db_table = 'submissionversion'
+
+class Submissionreviewer(models.Model):
+    id = models.IntegerField(primary_key=True, db_column='ID') # Field name made lowercase.
+    submissionversionid = models.ForeignKey(Submissionversion,related_name="Submissionreviewertosubmissionversion",db_column='SubmissionVersionId') # Field name made lowercase.
+    entityid = models.ForeignKey(Entity,related_name="Submissionreviewertoentity", db_column='EntityId') # Field name made lowercase.
+    recid = models.IntegerField(db_column='RecId') # Field name made lowercase.
+    essay = models.TextField(db_column='Essay', blank=True) # Field name made lowercase.
+    status = models.IntegerField(db_column='Status') # Field name made lowercase.
+    comment = models.TextField(db_column='Comment', blank=True) # Field name made lowercase.
+    createddt = models.DateTimeField(db_column='CreatedDT') # Field name made lowercase.
+    createdby = models.IntegerField(db_column='CreatedBy') # Field name made lowercase.
+    modifieddt = models.DateTimeField(db_column='ModifiedDT') # Field name made lowercase.
+    modifiedby = models.IntegerField(db_column='ModifiedBy') # Field name made lowercase.
+    disabled = models.IntegerField(db_column='Disabled') # Field name made lowercase.
+    deleted = models.IntegerField(db_column='Deleted') # Field name made lowercase.
+    class Meta:
+        db_table = 'submissionreviewer'
 
 class Tag(models.Model):
     id = models.IntegerField(primary_key=True, db_column='ID') # Field name made lowercase.
@@ -610,7 +619,7 @@ class TagEntity(models.Model):
 
 class Categoryentity(models.Model):
     id = models.IntegerField(primary_key=True, db_column='ID') # Field name made lowercase.
-    categoryid = models.ForeignKey(Tag,related_name="Categoryentitytocategory", db_column='CategoryId') # Field name made lowercase.
+    categoryid = models.ForeignKey(Category,related_name="Categoryentitytocategory", db_column='CategoryId') # Field name made lowercase.
     entityid = models.ForeignKey(Entity,related_name="Categoryentitytoentity", db_column='EntityId') # Field name made lowercase.
     createddt = models.DateTimeField(db_column='CreatedDT') # Field name made lowercase.
     createdby = models.IntegerField(db_column='CreatedBy') # Field name made lowercase.
@@ -627,7 +636,7 @@ class Categorylink(models.Model):
     entityid = models.ForeignKey(Entity,related_name="Categorylinktoentity", db_column='EntityId') # Field name made lowercase.
     recid = models.IntegerField(db_column='RecId') # Field name made lowercase.
     totalweight = models.IntegerField(db_column='TotalWeight') # Field name made lowercase.
-    categoryid = models.IntegerField(db_column='CategoryId') # Field name made lowercase.
+    categoryid = models.ForeignKey(Category,related_name="Categorylinktocategory", db_column='CategoryId') # Field name made lowercase.
     createddt = models.DateTimeField(db_column='CreatedDT') # Field name made lowercase.
     createdby = models.IntegerField(db_column='CreatedBy') # Field name made lowercase.
     modifieddt = models.DateTimeField(db_column='ModifiedDT') # Field name made lowercase.
@@ -856,9 +865,10 @@ class Textcomment(models.Model):
     entityid = models.ForeignKey(Entity,related_name="Textcommenttoentity", db_column='EntityId') # Field name made lowercase.
     recid = models.IntegerField(db_column='RecId') # Field name made lowercase.
     startposition = models.IntegerField(db_column='StartPosition') # Field name made lowercase.
-    endposition = models.IntegerField(db_column='EndPosition') # Field name made lowercase.
+    length = models.IntegerField(db_column='length') # Field name made lowercase.
     hightlighttext = models.TextField(db_column='HightlightText', blank=True) # Field name made lowercase.
     comment = models.TextField(db_column='Comment', blank=True) # Field name made lowercase.
+    weight = models.IntegerField(db_column='Weight') # Field name made lowercase.
     createddt = models.DateTimeField(db_column='CreatedDT') # Field name made lowercase.
     createdby = models.IntegerField(db_column='CreatedBy') # Field name made lowercase.
     modifieddt = models.DateTimeField(db_column='ModifiedDT') # Field name made lowercase.

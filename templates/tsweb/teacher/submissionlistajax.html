@@ -2,6 +2,7 @@
 <table class="table table-bordered">
 <tr class="rowheader">
 <td class="cellitem">Id</td>
+<td class="cellitem">Type</td>
 <td class="cellitem">Student</td>
 <td class="cellitem">Assignment</td>
 <td class="cellitem">Version</td>
@@ -18,6 +19,7 @@
     {% endif %} 
 {% endif %} 
 <td class="cellitem">{{ row.submissionid.id }}</td>
+<td class="cellitem"><i class="fa fa-file"></i></td>
 <td class="cellitem">{{ row.submissionid.studentid.getFullName }}</td>
 <td class="cellitem">{{ row.submissionid.assignmentid.name }}</td>
 <td class="cellitem">{{ row.submissionid.getLatestVersion }}</td>

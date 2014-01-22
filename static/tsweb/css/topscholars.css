@@ -71,6 +71,9 @@ input:focus, input:active{
 
 body{
 	background-color: #cccccc;
+	height: 100%;
+	width: 100%;
+	position: fixed;
 	/*background: #ffffff url('../../../static/tsweb/image/squairy_light.png') repeat left top;*/
 }
 ::-webkit-scrollbar { 
@@ -190,6 +193,10 @@ button:focus{
 .popover .arrow{
 	display: none!important;
 }
+table{
+	font-size: 1em;
+}
+
 table tr td:hover{
 	cursor: pointer;
 }
@@ -620,7 +627,7 @@ form{
 }
 .controls{
 	position: absolute;
-	top: 5px;
+	top: 45px;
 	right: 10px;
 	z-index: 4;
 }
@@ -631,10 +638,14 @@ form{
 	margin: 10px auto;
 	left: 0;
 	right: 0;
-	left: 10%;
+	/*left: 10%;*/
 }
 .btn-edit{
 	margin-right: 50px;
+}
+.rubric-criteria-panel{
+	height: 200px;
+	overflow: scroll;	
 }
 .rubric-categories{
 	display: inline-block;

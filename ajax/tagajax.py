@@ -97,8 +97,9 @@ class TAGLIST():
             taglist.save()
                 
             #category id save
+            category = Category.objects.get(id=categoryid)
             categorylinklist = Categorylink.objects.get(entityid=12, recid=id)
-            categorylinklist.categoryid = categoryid
+            categorylinklist.categoryid = category
             categorylinklist.modifieddt = datetime.now()
             categorylinklist.modifiedby = userid
             categorylinklist.save()
@@ -150,11 +151,12 @@ class TAGLIST():
             recid = Tag.objects.latest('id').id
             
             entitylist = Entity.objects.get(id=12)
+            category = Category.objects.get(id=categoryid)
             #category id save
             categorylinklist = Categorylink()
             categorylinklist.entityid = entitylist
             categorylinklist.recid = recid
-            categorylinklist.categoryid = categoryid
+            categorylinklist.categoryid = category
             categorylinklist.totalweight = 0
             categorylinklist.createddt = datetime.now()
             categorylinklist.createdby = userid

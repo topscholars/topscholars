@@ -148,12 +148,12 @@ class ASSSIGNMENTLIST():
             assignment.rubricid = rubriclist
             assignment.audience = audience
             assignment.contextsituation = context
-            assignment.duedate = datetime.strptime(duedate,DATE_FORMAT)
+            if duedate != '':
+                assignment.duedate = datetime.strptime(duedate,DATE_FORMAT)
             if revisions == False or revisions == '':
                 assignment.revisions = 0
             else:
                 assignment.revisions = revisions
-            assignment.revisions = revisions
             assignment.modifieddt = datetime.now()
             assignment.modifiedby = userid
             assignment.disabled = disabled

@@ -71,7 +71,7 @@
 			</div>
 			
 			<div class="panel block-cell block-thin">
-				<div class="panel-heading block-header">
+				<div class="panel-heading block-header {% if urlActive == 'taglist' %}active{% endif %}">
 					<h3 class="panel-title">
 						<a href="{% url 'tsweb:ttaglist' %}">
 							Tag List <i class="fa fa-tags pull-right"></i>

@@ -8,21 +8,19 @@
 <td class="cellitem">Progress</td>
 <td class="cellitem">Due Date</td>
 </tr>
-{% for row in submissionlist %}
-<tr id="{{ row.submissionid.id }}"  {% if row.submissionid.getLatestVersion == 0 %} >
+{% for row in submissionreviewerlist %}
+<tr id="{{ row.id }}" 
+{% if row.submissionversionid.submissionid.duedate > currentdate %}
+	class="rowitem" >
 {% else %} 
-    {% if row.submissionid.duedate > currentdate %}
-	    class="rowitem" >
-    {% else %} 
-        class="rowitem" style="background-color:red;">
-    {% endif %} 
+    class="rowitem" style="background-color:red;">
 {% endif %} 
-<td class="cellitem">{{ row.submissionid.id }}</td>
-<td class="cellitem">{{ row.submissionid.studentid.getFullName }}</td>
-<td class="cellitem">{{ row.submissionid.assignmentid.name }}</td>
-<td class="cellitem">{{ row.submissionid.getLatestVersion }}</td>
-<td class="cellitem">{{ row.submissionid.progress }}</td>
-<td class="cellitem">{{ row.submissionid.duedate }}</td>
+<td class="cellitem">{{ row.submissionversionid.submissionid.id }}</td>
+<td class="cellitem">{{ row.submissionversionid.submissionid.studentid.getFullName }}</td>
+<td class="cellitem">{{ row.submissionversionid.submissionid.assignmentid.name }}</td>
+<td class="cellitem">{{ row.submissionversionid.submissionid.getLatestVersion }}</td>
+<td class="cellitem">{{ row.submissionversionid.submissionid.progress }}</td>
+<td class="cellitem">{{ row.submissionversionid.submissionid.duedate }}</td>
 </tr>
 {% endfor %}
 </table>
@@ -30,7 +28,7 @@
 <script>
 urlMap = {
 	{% for row in submissionlist %}
-		'{{ row.submissionid.id }}' : '{% url "tsweb:tsubmissionreview" row.submissionid.id %}',
+		'{{ row.id }}' : '{% url "tsweb:tsubmissionreview" row.id %}',
 	{% endfor %}
 };
 

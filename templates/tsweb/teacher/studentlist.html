@@ -212,7 +212,7 @@
 						}else{
 							email = result.emailaddress[0]+ "," +result.emailaddress[1];;
 						}
-						alert('This email ['+email+'] have exist!!!');
+						$('<label class="error" for="ele_emailaddress1">This email have exist data!!.</label>').insertAfter("#ele_emailaddress1");
 					}else{
 						thisClass.hideEditTable();
 					}

@@ -39,8 +39,7 @@ function EDITTABLE(){
 	var url = "{% url 'tsweb:tprocessajax' %}";
 	var evalClass = 'CLASSLIST';
 	var tableClassAjax = 'TCLASSLISTAJAX'
-	
-	this.pagename = $(".pagename").text();
+	var formValidate = $("#new_class_form");
 	
 	this.showEditTable = function(){
 
@@ -73,6 +72,7 @@ function EDITTABLE(){
 				$('.modal .form-control, .modal input[type="checkbox"]').attr('disabled', 'disabled');
 				$('#class-submit').attr('disabled', 'disabled');
 				
+				thisClass.resetValidatForm();
 				thisClass.getStudentSelect();
 				thisClass.getUnitSelect();
 				
@@ -218,7 +218,11 @@ function EDITTABLE(){
 		
 		$.post(url,odata,
 			function(result){
-				thisClass.hideEditTable();
+				if(result.status == 'error'){
+					$('<label class="error" for="ele_name">This Code have exist data!!.</label>').insertAfter("#ele_code");
+				}else{
+					thisClass.hideEditTable();
+				}
 			})
 		.error(function(xhr, status, error) {
     		alert('Error occur. Please contact the administrator.');
@@ -226,11 +230,41 @@ function EDITTABLE(){
 
 	}
 	
+    this.initValidateForm = function(){
+		  formValidate.validate({              
+		    rules: {
+		      	code:{
+		      		required: true,
+		      	},
+		      	abilitylevel:{
+		      		required: true,
+		      	},
+		      	teacherid:{
+		      		required: true,
+		      	}
+		    },
+			 invalidHandler: function(event, validator) {
+			// 'this' refers to the form
+				thisClass.submitForm = false;
+			}
+		  });
+    }
+
+	this.initValidateFormEvent = function(){
+		thisClass.submitForm = true;
+	  	formValidate.validate().form();
+	}
+	
+	this.resetValidatForm = function(){
+		var validator = formValidate.validate();
+		validator.resetForm();
+		$(".error").removeClass('error');	
+	}
+	
 	this.iniControl = function(){
 		thisClass.getData('');
 		Watermark('txtSearch', 'Search', 'noclass');
 		 
-		$("#editField").hide();
 		$( "#ele_startdate").datepicker({ dateFormat: 'dd-mm-yy' });
 		$( "#ele_enddate").datepicker({ dateFormat: 'dd-mm-yy' });
 		$("#ele_starttime").timepicker();
@@ -242,18 +276,19 @@ function EDITTABLE(){
 		});
 		
 		$("#class-submit").click(function(){
-			thisClass.save();
-		});
-		
-		$("#btnEdit").click(function(){
-			$(".editorTD").show();
-			$(".viewTD").hide();
+        	thisClass.initValidateFormEvent();
+            if(thisClass.submitForm){
+				thisClass.save();
+			}
 		});
 		
 		$("#new_class_btn").click(function(){
 			$("[id^='ele_']").each(function(){
 				$(this).val('');
 			});
+			thisClass.resetValidatForm();
+			thisClass.getStudentSelect();
+			thisClass.getUnitSelect();
 			thisClass.showEditTable();
 		});
 		
@@ -261,6 +296,7 @@ function EDITTABLE(){
 			$(".day-week").prop('checked',$(this).prop('checked'));
 		});
 		
+		thisClass.initValidateForm();
 		thisClass.selectTeacher();
 		thisClass.selectAbility();
 		var profile = new EDITPROFILE(url);

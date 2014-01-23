@@ -166,9 +166,6 @@ function EDITTABLE(){
 	this.iniControl = function(){
 		thisClass.getData('');
 		Watermark('txtSearch', 'Search', 'noclass');
-		$(".editorTD").hide();
-		 
-		$("#editField").hide();
 		
 		$('#txtSearch').keypress(function(event) {
 			thisClass.Search(this,event);

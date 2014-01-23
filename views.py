@@ -256,11 +256,19 @@ def tsubmissionreview(request, id):
         submissionreviewer = Submissionreviewer.objects.get(id = id)
         submissionreviewerlist = Submissionreviewer.objects.filter(submissionversionid__submissionid = submissionreviewer.submissionversionid.submissionid)
         selectionlist = Selectionlist.objects.filter(selectiongroupid=4, disabled=0, deleted=0)
+        submission = submissionreviewer.submissionversionid.submissionid
+        student_name = submissionreviewer.submissionversionid.submissionid.studentid.getFullName()
+        assignment = submissionreviewer.submissionversionid.submissionid.assignmentid
+        rubric = submissionreviewer.submissionversionid.submissionid.assignmentid.rubricid
         context= {'id' : id,
                   'user_name' : user_name,
                   'submissionreviewerlist' : submissionreviewerlist,
                   'categoryentity' : categoryentity,
-                  'selectionlist': selectionlist }
+                  'selectionlist': selectionlist,
+                  'student_name': student_name,
+                  'assignment_name': assignment.name,
+                  'due_date': submission.duedate,
+                  'rubric_name': rubric.name }
         
         return render(request, 'tsweb/teacher/submissionreview.html', context)
         

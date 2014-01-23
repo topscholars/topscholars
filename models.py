@@ -879,9 +879,6 @@ class Textcomment(models.Model):
     id = models.IntegerField(primary_key=True, db_column='ID') # Field name made lowercase.
     entityid = models.ForeignKey(Entity,related_name="Textcommenttoentity", db_column='EntityId') # Field name made lowercase.
     recid = models.IntegerField(db_column='RecId') # Field name made lowercase.
-    startposition = models.IntegerField(db_column='StartPosition') # Field name made lowercase.
-    length = models.IntegerField(db_column='length') # Field name made lowercase.
-    hightlighttext = models.TextField(db_column='HightlightText', blank=True) # Field name made lowercase.
     comment = models.TextField(db_column='Comment', blank=True) # Field name made lowercase.
     weight = models.IntegerField(db_column='Weight') # Field name made lowercase.
     createddt = models.DateTimeField(db_column='CreatedDT') # Field name made lowercase.

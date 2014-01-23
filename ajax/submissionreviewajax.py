@@ -189,9 +189,6 @@ class SUBMISSIONREVIEW():
             submissionvshg = Textcomment()
             submissionvshg.entityid = entitylist
             submissionvshg.recid = submissionreviewerid
-            submissionvshg.startposition = 0
-            submissionvshg.length = 0
-            submissionvshg.hightlighttext = ''
             submissionvshg.comment = comment
             submissionvshg.weight = 0
             submissionvshg.createddt = datetime.now()

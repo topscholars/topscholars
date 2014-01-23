@@ -35,7 +35,7 @@ def login(request):
             if user.password == password:
                 request.session['userid'] = user.id
                 if user.usertypeid == 1:
-                    return HttpResponseRedirect(reverse('tsweb:tclasslist'))
+                    return HttpResponseRedirect(reverse('tsweb:tunitlist'))
                 elif user.usertypeid == 2:
                     return HttpResponseRedirect(reverse('tsweb:sindex'))
                 else:

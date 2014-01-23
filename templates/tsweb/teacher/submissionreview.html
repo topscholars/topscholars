@@ -132,6 +132,46 @@
             //});
         }
 
+        this.categoryHighlightList = function (name) {
+            var categoryid = 0;
+            switch (name) {
+                case "impact":
+                    categoryid = 1;
+                    break;
+                case "quality":
+                    categoryid = 2;
+                    break;
+                case "content":
+                    categoryid = 3;
+                    break;
+                case "process":
+                    categoryid = 4;
+                    break;
+            }
+
+            var textComment = '';
+            $.getJSON(
+                    url,
+                    {
+                        'class': evalClass,
+                        'method': 'tagCategoryHighlightList',
+                        'categoryid': categoryid,
+                        'submissionreviewerid': submissionreviewerid
+                    },
+                    function (result) {
+                        $(".essayhighlight").css({ 'background': 'red' });
+                        $.each(result, function (i, val) {
+                            var spanid = val[0];
+                            $('inline[name="' + spanid + '"].essayhighlight').css({ 'background': '#ffff00' });
+                            textComment += "- " + val[1] + "<br/>";
+                        });
+                        $("#commentSection").html(textComment);
+                    }).error(function (xhr, status, error) {
+                        alert('Error occur. Please contact the administrator.');
+                    });
+
+        }
+
         this.tagClickHighlightList = function (id) {
             var textComment = '';
             $.getJSON(
@@ -646,6 +686,21 @@
                 });
                 thisClass.tagEditCloseEvent();
                 thisClass.getSelectSuggest(tagNewIds);
+            });
+            $('.rubric-impact').click(function () {
+                thisClass.categoryHighlightList("impact");
+            });
+
+            $('.rubric-quality').click(function () {
+                thisClass.categoryHighlightList("quality");
+            });
+
+            $('.rubric-content').click(function () {
+                thisClass.categoryHighlightList("content");
+            });
+
+            $('.rubric-process').click(function () {
+                thisClass.categoryHighlightList("process");
             });
 
             thisClass.essayEvent();

@@ -435,7 +435,7 @@
                     redactor_object.inlineSetAttr('name', result.recid);
                     redactor_object.inlineSetStyle("background-color", "red");
                     redactor_object.inlineSetClass('essayhighlight');
-                    redactor_object.inlineSetAttr('onClick', 'openHighlightDialog(' + result.recid + ')');
+                    redactor_object.inlineSetAttr('ondblclick', 'openHighlightDialog(' + result.recid + ')');
                     redactor_object.sync();
 
                     odata = {
@@ -485,10 +485,10 @@
             $('inline[name="' + highlightid + '"]').each(function () {
                 redactor_object.selectionElement(this);
                 redactor_object.inlineRemoveAttr('name');
-                redactor_object.inlineRemoveAttr('onClick');
+                redactor_object.inlineRemoveAttr('ondblclick');
                 redactor_object.inlineRemoveClass('essayhighlight');
                 redactor_object.inlineRemoveStyle('background-color');
-                redactor_object.inlineRemoveAttr('onClick');
+                redactor_object.inlineRemoveAttr('ondblclick');
                 redactor_object.sync();
             });
 

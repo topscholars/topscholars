@@ -71,7 +71,16 @@ input:focus, input:active{
 
 body{
 	background-color: #cccccc;
+	height: 100%;
+	width: 100%;
+	position: fixed;
 	/*background: #ffffff url('../../../static/tsweb/image/squairy_light.png') repeat left top;*/
+}
+::-webkit-scrollbar { 
+    display: none !important; 
+}
+::-moz-scrollbar{
+	display: none !important;
 }
 .container{
 	height: auto!important;
@@ -158,8 +167,16 @@ button:focus{
 	color: #666666;
 }
 .student-name{
-	font-size: 1.4em;
+	font-size: 1.1em;
 	margin-top: 5px;
+}
+.section-title{
+	width: 950px;
+	white-space: nowrap;
+	text-overflow: ellipsis;	
+}
+.section-title h4{
+	overflow: hidden;
 }
 .notification{
 	-webkit-animation: flash 2s ease-in-out 0s 3 alternate;
@@ -176,6 +193,10 @@ button:focus{
 .popover .arrow{
 	display: none!important;
 }
+table{
+	font-size: 1em;
+}
+
 table tr td:hover{
 	cursor: pointer;
 }
@@ -240,7 +261,7 @@ form{
 }
 .side-panel a:hover{
 	text-decoration: none;
-	text-shadow: 0px 0px 10px #333333;
+	text-shadow: 1px 1px 1px rgba(123,123,123,.3);
 	transition-duration: .2s;
 	-webkit-transition-duration: .2s;
 	-moz-transition: .2s;
@@ -293,6 +314,7 @@ form{
 	box-shadow: 0px 5px 0px rgba(102,102,102, .5);
 	z-index: -1;
 }
+
 .block-cell{
 	top: 0!important;
 	position: relative;
@@ -359,10 +381,8 @@ form{
 .block-body{
 	height: auto;
 	overflow: scroll;
-	max-height: 200px;
-	height: auto;
-	padding: 8px;
-	margin-bottom: 10px;
+	height: 135px;
+	padding: 5px;
 }
 .block-body .text-scroll{
 	height: 40px;
@@ -581,6 +601,13 @@ form{
 	top: 5px;
 	right: 5px;
 }
+.editor-btn{
+	z-index: 5;
+	position: relative;
+	float: right;
+	margin-left: 10px;	
+	margin-top: 45px;
+}
 #saveAssignment, #exitBtn{
 	bottom: 20px!important;
 }
@@ -600,28 +627,32 @@ form{
 }
 .controls{
 	position: absolute;
-	top: 5px;
+	top: 45px;
 	right: 10px;
 	z-index: 4;
 }
 .modal-wide .modal-dialog{
-	width: 60%;
+	width: 70%;
 	position: relative;
 	margin-top: 5px!important;
 	margin: 10px auto;
 	left: 0;
 	right: 0;
-	/*left: 40%;*/
+	/*left: 10%;*/
 }
 .btn-edit{
 	margin-right: 50px;
+}
+.rubric-criteria-panel{
+	height: 200px;
+	overflow: scroll;	
 }
 .rubric-categories{
 	display: inline-block;
 	/*margin-left: 30px;*/
 }
 .rubric-categories-sm{
-	display: inline-block!important;
+	display: inline-block;
 	-webkit-transform: scale(.75);
 	-moz-transform: scale(.75);
 	-o-transform: scale(.75);
@@ -947,7 +978,6 @@ form{
 	margin-left: -20px!important;
 }
 #sortableActivities a{
-	margin-top: -45px;
 }
 .onoffswitch {
     position: relative; width: 102px;
@@ -1020,5 +1050,14 @@ and (min-device-width : 768px)
 and (max-device-width : 1024px)  {
 	#search-form{
 		display: none!important;
+	}
+	.modal-wide .modal-dialog{
+		width: 80% !important;
+		position: relative;
+		margin-top: 5px!important;
+		margin: 10px auto;
+		left: 0;
+		right: 0;
+		left: 5%;
 	}
 }

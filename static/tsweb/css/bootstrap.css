@@ -3622,12 +3622,20 @@ button.close {
   right: 0;
   left: 0;
   z-index: 1050;
-  width: auto;
+  width: inherit;
   padding: 10px;
+  overflow-y: scroll;
+  max-height: 100%;
+  height: auto;
 }
 
 .modal-content {
   position: relative;
+  top: 0;
+  bottom: 0;
+  width: auto;
+  height: auto;
+  overflow-y: scroll;
   background-color: #ffffff;
   border: 1px solid #999999;
   border: 1px solid rgba(0, 0, 0, 0.2);
@@ -3676,6 +3684,9 @@ button.close {
 .modal-body {
   position: relative;
   padding: 20px;
+}
+.modal-body .block-body{
+	height: auto!important;
 }
 
 .modal-footer {
@@ -4214,8 +4225,11 @@ a.thumbnail:focus {
   text-align: center;
   white-space: nowrap;
   vertical-align: middle;
-  background-color: #999999;
+  background-color: red;
   border-radius: 10px;
+  position: absolute;
+  top: 10px;
+  margin-left: 22px;
 }
 
 .badge:empty {

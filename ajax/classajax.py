@@ -75,7 +75,11 @@ class CLASSLIST():
             clientid = login.clientid
             classscheduleid = request.GET.get('classscheduleid', False)
             studentlist = list(Studentlist.objects.filter(Q(clientid=clientid)).values('id','firstname', 'middlename', 'lastname'))
-            studentlistselect = list(Studentclass.objects.filter(classscheduleid=classscheduleid,disabled=0,deleted=0).values('studentid'))
+            if classscheduleid == '':
+                data = simplejson.dumps(studentlist)
+                return HttpResponse(data, mimetype='application/json')
+            else:
+                studentlistselect = list(Studentclass.objects.filter(classscheduleid=classscheduleid,disabled=0,deleted=0).values('studentid'))
         except Studentclass.DoesNotExist:
             data = simplejson.dumps(studentlist)
             return HttpResponse(data, mimetype='application/json')
@@ -92,6 +96,35 @@ class CLASSLIST():
                     studentstorelist.append({'id': studentstore['id'], 'firstname': studentstore['firstname'], 'middlename': studentstore['middlename'], 'lastname': studentstore['lastname'], 'selected': ''})
             data = simplejson.dumps(studentstorelist)
             return HttpResponse(data, mimetype='application/json')
+        
+    def getUnitSelect(self,request):
+        try:
+            userid = request.session['userid']
+            login = Login.objects.get(id=userid)
+            clientid = login.clientid
+            classscheduleid = request.GET.get('classscheduleid', False)
+            unitlist = list(Unit.objects.filter(Q(clientid=clientid),Q(disabled=0),Q(deleted=0)).values('id','name'))
+            if classscheduleid == '':
+                data = simplejson.dumps(unitlist)
+                return HttpResponse(data, mimetype='application/json')
+            else:
+                unitlistselect = list(Unitclass.objects.filter(classscheduleid=classscheduleid,deleted=0).values('unitid'))
+        except Unitclass.DoesNotExist:
+            data = simplejson.dumps(unitlist)
+            return HttpResponse(data, mimetype='application/json')
+        else:
+            unitselectarray = []
+            for unitdict in unitlistselect:
+                unitselectarray.append(unitdict['unitid'])
+            
+            unitstorelist = []
+            for unitstore in unitlist:
+                if unitstore['id'] in unitselectarray:
+                    unitstorelist.append({'id': unitstore['id'], 'name': unitstore['name'], 'selected': 'selected'})
+                else:
+                    unitstorelist.append({'id': unitstore['id'], 'name': unitstore['name'], 'selected': ''})
+            data = simplejson.dumps(unitstorelist)
+            return HttpResponse(data, mimetype='application/json')
 
     
     def save(self,request):
@@ -101,6 +134,7 @@ class CLASSLIST():
             login = Login.objects.get(id=userid)
             clientid = login.clientid
             id = request.POST.get('id', False)
+            unit = request.POST.get('unit', False)
             abilitylevel = request.POST.get('abilitylevel', False)
             description = request.POST.get('description', False)
             studentid = request.POST.get('studentid', False)
@@ -118,59 +152,94 @@ class CLASSLIST():
             data = simplejson.dumps(data_json)
             return HttpResponse(data, mimetype='application/json')
         else:
-            selectiongrouplist = Selectiongroup.objects.get(groupname='LevelOfAbility')
-            selectionlist = Selectionlist.objects.get(selectiongroupid=selectiongrouplist.id,id=abilitylevel, disabled=0,deleted=0)
-            classschedule = Classschedule.objects.get(id=id)
-            classschedule.abilitylevel = selectionlist
-            classschedule.code = code
-            classschedule.subcode = subcode
-            classschedule.description = description
-            classschedule.disabled = disabled
-            classschedule.endtime = endtime
-            classschedule.starttime = starttime
-            classschedule.teacherid = teacherid
-            classschedule.dayofweek = dayofweek
-            classschedule.enddate = datetime.strptime(enddate,DATE_FORMAT)
-            classschedule.startdate = datetime.strptime(startdate,DATE_FORMAT)
-            classschedule.modifieddt = datetime.now()
-            classschedule.modifiedby = userid
-            classschedule.save()
-            
-            studentcheck = studentid.find(',')
-            if studentcheck > -1:
-                studentid = studentid.split(',')
-                for studentids in studentid:
-                    studentlist = Studentlist.objects.get(id=studentids)
-
-                    Studentclass.objects.get_or_create(studentid = studentlist, 
-                                                       classscheduleid = classschedule,
-                                                       defaults={'grade': 0,
-                                                       'status' : 0,
-                                                       'createddt' : datetime.now(),
-                                                       'createdby' : userid,
-                                                       'modifieddt' : datetime.now(),
-                                                       'modifiedby' : userid,
-                                                       'disabled' : 0,
-                                                       'deleted' : 0,
-                                                       'clientid' : clientid} 
-                                                       )
-            else:
-                studentlist = Studentlist.objects.get(id=studentid)
-                Studentclass.objects.get_or_create(studentid = studentlist, 
-                                                   classscheduleid = classschedule,
-                                                   defaults={'grade': 0,
-                                                   'status' : 0,
-                                                   'createddt' : datetime.now(),
-                                                   'createdby' : userid,
-                                                   'modifieddt' : datetime.now(),
-                                                   'modifiedby' : userid,
-                                                   'disabled' : 0,
-                                                   'deleted' : 0,
-                                                   'clientid' : clientid} 
-                                                   )
-
+            try:
+                Classschedule.objects.get(~Q(id=id),Q(code=code))
+            except Classschedule.DoesNotExist:
+                selectiongrouplist = Selectiongroup.objects.get(groupname='LevelOfAbility')
+                selectionlist = Selectionlist.objects.get(selectiongroupid=selectiongrouplist.id,id=abilitylevel, disabled=0,deleted=0)
+                classschedule = Classschedule.objects.get(id=id)
+                classschedule.abilitylevel = selectionlist
+                classschedule.code = code
+                classschedule.subcode = subcode
+                classschedule.description = description
+                classschedule.disabled = disabled
+                classschedule.endtime = endtime
+                classschedule.starttime = starttime
+                classschedule.teacherid = teacherid
+                classschedule.dayofweek = dayofweek
+                classschedule.enddate = datetime.strptime(enddate,DATE_FORMAT)
+                classschedule.startdate = datetime.strptime(startdate,DATE_FORMAT)
+                classschedule.modifieddt = datetime.now()
+                classschedule.modifiedby = userid
+                classschedule.save()
                 
-            data_json = { 'status': 'success', }
+                if unit != False:
+                    unitcheck = unit.find(',')
+                    if unitcheck > -1:
+                        unitids= unit.split(',')
+                        for unitid in unitids:
+                            unitlist = Unit.objects.get(id=unitid)
+        
+                            Unitclass.objects.get_or_create(unitid = unitlist, 
+                                                               classscheduleid = classschedule,
+                                                               defaults={
+                                                               'createddt' : datetime.now(),
+                                                               'createdby' : userid,
+                                                               'modifieddt' : datetime.now(),
+                                                               'modifiedby' : userid,                                                          
+                                                               'deleted' : 0,
+                                                               'clientid' : clientid} 
+                                                               )
+                    else:
+                        unitlist = Unit.objects.get(id=unit)
+                        Unitclass.objects.get_or_create(unitid = unitlist, 
+                                                           classscheduleid = classschedule,
+                                                           defaults={
+                                                           'createddt' : datetime.now(),
+                                                           'createdby' : userid,
+                                                           'modifieddt' : datetime.now(),
+                                                           'modifiedby' : userid,
+                                                           'deleted' : 0,
+                                                           'clientid' : clientid} 
+                                                           )
+                
+                if studentid != False:
+                    studentcheck = studentid.find(',')
+                    if studentcheck > -1:
+                        studentid = studentid.split(',')
+                        for studentids in studentid:
+                            studentlist = Studentlist.objects.get(id=studentids)
+        
+                            Studentclass.objects.get_or_create(studentid = studentlist, 
+                                                               classscheduleid = classschedule,
+                                                               defaults={'grade': 0,
+                                                               'status' : 0,
+                                                               'createddt' : datetime.now(),
+                                                               'createdby' : userid,
+                                                               'modifieddt' : datetime.now(),
+                                                               'modifiedby' : userid,
+                                                               'disabled' : 0,
+                                                               'deleted' : 0,
+                                                               'clientid' : clientid} 
+                                                               )
+                    else:
+                        studentlist = Studentlist.objects.get(id=studentid)
+                        Studentclass.objects.get_or_create(studentid = studentlist, 
+                                                           classscheduleid = classschedule,
+                                                           defaults={'grade': 0,
+                                                           'status' : 0,
+                                                           'createddt' : datetime.now(),
+                                                           'createdby' : userid,
+                                                           'modifieddt' : datetime.now(),
+                                                           'modifiedby' : userid,
+                                                           'disabled' : 0,
+                                                           'deleted' : 0,
+                                                           'clientid' : clientid} 
+                                                           )
+                data_json = { 'status': 'success', }
+            else:
+                data_json = { 'status': 'error', }
+                
             data = simplejson.dumps(data_json)
             return HttpResponse(data, mimetype='application/json')
         
@@ -180,6 +249,7 @@ class CLASSLIST():
             userid = request.session['userid']
             login = Login.objects.get(id=userid)
             clientid = login.clientid
+            unit = request.POST.get('unit', False)
             abilitylevel = request.POST.get('abilitylevel', False)
             description = request.POST.get('description', False)
             studentid = request.POST.get('studentid', False)
@@ -197,60 +267,104 @@ class CLASSLIST():
             data = simplejson.dumps(data_json)
             return HttpResponse(data, mimetype='application/json')
         else:
-            selectiongrouplist = Selectiongroup.objects.get(groupname='LevelOfAbility')
-            selectionlist = Selectionlist.objects.get(selectiongroupid=selectiongrouplist.id,id=abilitylevel, disabled=0,deleted=0)
-            classschedule = Classschedule()
-            classschedule.abilitylevel = selectionlist
-            classschedule.code = code
-            classschedule.subcode = subcode
-            classschedule.description = description
-            classschedule.disabled = disabled
-            classschedule.endtime = endtime
-            classschedule.starttime = starttime
-            classschedule.teacherid = teacherid
-            classschedule.dayofweek = dayofweek
-            classschedule.enddate = datetime.strptime(enddate,DATE_FORMAT)
-            classschedule.startdate = datetime.strptime(startdate,DATE_FORMAT)
-            classschedule.modifieddt = datetime.now()
-            classschedule.modifiedby = userid
-            classschedule.save()
-            
-            id = Classschedule.objects.latest('id').id
-            classschedulelist = Classschedule.objects.get(id=id)
-            
-            studentcheck = studentid.find(',')
-            if studentcheck > -1:
-                studentid = studentid.split(',')
-                for studentids in studentid:
-                    studentlist = Studentlist.objects.get(id=studentids)
-
-                    Studentclass.objects.get_or_create(studentid = studentlist, 
-                                                       classscheduleid = classschedulelist,
-                                                       defaults={'grade': 0,
-                                                       'status' : 0,
-                                                       'createddt' : datetime.now(),
-                                                       'createdby' : userid,
-                                                       'modifieddt' : datetime.now(),
-                                                       'modifiedby' : userid,
-                                                       'disabled' : 0,
-                                                       'deleted' : 0,
-                                                       'clientid' : clientid} 
-                                                       )
+            try:
+                Classschedule.objects.get(Q(code=code))
+            except Classschedule.DoesNotExist:
+                selectiongrouplist = Selectiongroup.objects.get(groupname='LevelOfAbility')
+                selectionlist = Selectionlist.objects.get(selectiongroupid=selectiongrouplist.id,id=abilitylevel, disabled=0,deleted=0)
+                classschedule = Classschedule()
+                classschedule.abilitylevel = selectionlist
+                classschedule.code = code
+                classschedule.subcode = subcode
+                classschedule.description = description
+                classschedule.endtime = endtime
+                classschedule.starttime = starttime
+                classschedule.teacherid = teacherid
+                classschedule.dayofweek = dayofweek
+                classschedule.enddate = datetime.strptime(enddate,DATE_FORMAT)
+                classschedule.startdate = datetime.strptime(startdate,DATE_FORMAT)
+                classschedule.deleted = 0
+                classschedule.disabled = disabled
+                classschedule.createddt = datetime.now()
+                classschedule.createdby = userid
+                classschedule.modifieddt = datetime.now()
+                classschedule.modifiedby = userid
+                classschedule.clientid = clientid
+                classschedule.save()
+                
+                id = Classschedule.objects.latest('id').id
+                classschedulelist = Classschedule.objects.get(id=id)
+                
+                if unit != False:
+                    unitcheck = unit.find(',')
+                    if unitcheck > -1:
+                        unitids= unit.split(',')
+                        for unitid in unitids:
+                            unitlist = Unit.objects.get(id=unitid)
+        
+                            Unitclass.objects.get_or_create(unitid = unitlist, 
+                                                               classscheduleid = classschedulelist,
+                                                               defaults={
+                                                               'createddt' : datetime.now(),
+                                                               'createdby' : userid,
+                                                               'modifieddt' : datetime.now(),
+                                                               'modifiedby' : userid,                                                          
+                                                               'deleted' : 0,
+                                                               'clientid' : clientid} 
+                                                               )
+                    else:
+                        unitlist = Unit.objects.get(id=unit)
+                        Unitclass.objects.get_or_create(unitid = unitlist, 
+                                                           classscheduleid = classschedulelist,
+                                                           defaults={
+                                                           'createddt' : datetime.now(),
+                                                           'createdby' : userid,
+                                                           'modifieddt' : datetime.now(),
+                                                           'modifiedby' : userid,
+                                                           'deleted' : 0,
+                                                           'clientid' : clientid} 
+                                                           )
+                
+                if studentid != False:
+                    studentcheck = studentid.find(',')
+                    if studentcheck > -1:
+                        studentid = studentid.split(',')
+                        for studentids in studentid:
+                            studentlist = Studentlist.objects.get(id=studentids)
+        
+                            Studentclass.objects.get_or_create(studentid = studentlist, 
+                                                               classscheduleid = classschedulelist,
+                                                               defaults={'grade': 0,
+                                                               'status' : 0,
+                                                               'createddt' : datetime.now(),
+                                                               'createdby' : userid,
+                                                               'modifieddt' : datetime.now(),
+                                                               'modifiedby' : userid,
+                                                               'disabled' : 0,
+                                                               'deleted' : 0,
+                                                               'clientid' : clientid} 
+                                                               )
+                    else:
+                        studentlist = Studentlist.objects.get(id=studentid)
+                        Studentclass.objects.get_or_create(studentid = studentlist, 
+                                                           classscheduleid = classschedulelist,
+                                                           defaults={'grade': 0,
+                                                           'status' : 0,
+                                                           'createddt' : datetime.now(),
+                                                           'createdby' : userid,
+                                                           'modifieddt' : datetime.now(),
+                                                           'modifiedby' : userid,
+                                                           'disabled' : 0,
+                                                           'deleted' : 0,
+                                                           'clientid' : clientid} 
+                                                           )
+                    data_json = { 'status': 'success', }
             else:
-                studentlist = Studentlist.objects.get(id=studentid)
-                Studentclass.objects.get_or_create(studentid = studentlist, 
-                                                   classscheduleid = classschedulelist,
-                                                   defaults={'grade': 0,
-                                                   'status' : 0,
-                                                   'createddt' : datetime.now(),
-                                                   'createdby' : userid,
-                                                   'modifieddt' : datetime.now(),
-                                                   'modifiedby' : userid,
-                                                   'disabled' : 0,
-                                                   'deleted' : 0,
-                                                   'clientid' : clientid} 
-                                                   )
-    
+                data_json = { 'status': 'error', }
+                
+            data = simplejson.dumps(data_json)
+            return HttpResponse(data, mimetype='application/json')
+        
     def getTStudentList(self,request):
         try:
             userid = request.session['userid']

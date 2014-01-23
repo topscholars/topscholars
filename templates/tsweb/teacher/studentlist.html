@@ -75,25 +75,6 @@
 			$("#new_student_modal").modal('hide');
 			thisClass.getData('');
 		}
-		
-		this.editTable = function(id){
-			$.ajax({
-				url: url,
-				type: 'GET',
-				data: { class: evalClass,
-						id: id 
-					},
-				datatype : 'json',
-				success: function(res){
-					$.each(res, function(ini,val){
-						thisClass.seperateElement($("#ele_"+ini), val);
-					});
-					
-					thisClass.showEditTable();
-				}
-			});
-			return false;
-		}
 	
 		this.iniEventEditor = function(){
 			thisClass.UIHover("#btnSave");

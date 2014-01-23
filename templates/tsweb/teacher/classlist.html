@@ -27,39 +27,6 @@
 	<script src="{% static 'tsweb/js/util.js' %}"></script>
 	<script src="{% static 'tsweb/js/jquery.validate.js' %}"></script>
 	
-	<!--
-	<script src="{% static 'tsweb/js/jQuery1.10.1.js' %}"></script>
-	<script src="{% static 'tsweb/js/WaterMark.js' %}"></script>
-	<script src="{% static 'tsweb/js/jquery-ui-1.10.3.custom.min.js' %}"></script>
-	<script src="{% static 'tsweb/js/jquery.cookie.js' %}"></script>
-	<script src="{% static 'tsweb/js/util.js' %}"></script>
-	<script src="{% static 'tsweb/js/jquery.datepick.js' %}"></script>
-	<script src="{% static 'tsweb/js/jquery.ui.timepicker.js' %}"></script>
-	<script src="{% static 'tsweb/js/jquery.multiselect.js' %}"></script>
-	-->
-	
-		<!--DELETE BEFORE DEPLOYMENT-->
-		<link rel="stylesheet" href="../../../static/tsweb/css/bootstrap.css" type="text/css" />
-		<link rel="stylesheet" href="../../../static/tsweb/css/topscholars.css" type="text/css" />
-		<link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
-		<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
-		<link rel="stylesheet" href="../../../static/tsweb/css/redactor.css" />
-		<link rel="stylesheet" href="../../../static/tsweb/css/jquery.comment.css" />
-		<!--<link rel="stylesheet" href="../../../static/tsweb/css/redactor-iframe.css" />-->
-		<!--<script src="{% static 'tsweb/js/jQuery1.10.1.js' %}"></script>-->
-		<!--<script src="{% static 'tsweb/js/jquery-ui-1.10.3.custom.min.js' %}"></script>-->
-		
-		<script src="../../../static/tsweb/js/jQuery1-10-1.js" type="text/javascript"></script>
-		<script src="../../../static/tsweb/js/jquery-ui-1-10-3-custom-min.js" type="text/javascript"></script>
-		<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
-		<script src="../../../static/tsweb/js/bootstrap.js" type="text/javascript"></script>
-		<script src="../../../static/tsweb/js/transition.js" type="text/javascript"></script>
-		<script src="../../../static/tsweb/js/popover.js" type="text/javascript"></script>
-		<script src="../../../static/tsweb/js/redactor.min.js" type="text/javascript"></script>
-		<script src="../../../static/tsweb/js/jquery.comment.js" type="text/javascript"></script>
-		<script src="../../../static/tsweb/js/jquery-touch-punch.min.js" type="text/javascript"></script>
-	<!--==============================================-->
-	
 </head>
 
 <body>
@@ -72,42 +39,16 @@ function EDITTABLE(){
 	var url = "{% url 'tsweb:tprocessajax' %}";
 	var evalClass = 'CLASSLIST';
 	var tableClassAjax = 'TCLASSLISTAJAX'
-	
-	this.pagename = $(".pagename").text();
+	var formValidate = $("#new_class_form");
 	
 	this.showEditTable = function(){
-		$(".pagename").text(thisClass.pagename + " - Edit");
-		
-		$("#editField").show();
-		
-		$(".tablelist").hide();
-		//$(".listnewbutton").hide();
-		//$(".searchboximg").hide();
-		
-		var classid = $('#ele_id').val();
-		if(classid !== ""){
-			//thisClass.getStudentData(classid);
-			//thisClass.getStudentAddData(classid);
-			$("#list_student").show();
-			$("#list_add_student").show();
-		}
+
 	}
 	
 	this.hideEditTable =function(){
 		$("#new_class_modal").modal('hide');
-		// $(".pagename").text(thisClass.pagename);
-// 		
-		// $("#editField").hide();
-// 		
-		// $(".tablelist").show();
-		// $(".listnewbutton").show();
-		// $("#txtSearch").show();
-		// $(".searchboximg").show();
+
 		thisClass.getData('');
-		
-		//return and hide
-		$(".viewTD").show();
-		$(".editorTD").hide();
 	}
 	
 	this.editTable = function(id){
@@ -126,10 +67,14 @@ function EDITTABLE(){
 						});
 					}
 				});
-				thisClass.getStudentSelect();
 				
 				$('#editClassBtn').show();
-				$('.modal .form-control input-small, .modal input[type="checkbox"]').attr('disabled', 'disabled');
+				$('.modal .form-control, .modal input[type="checkbox"]').attr('disabled', 'disabled');
+				$('#class-submit').attr('disabled', 'disabled');
+				
+				thisClass.resetValidatForm();
+				thisClass.getStudentSelect();
+				thisClass.getUnitSelect();
 				
 				thisClass.showEditTable();
 		})
@@ -139,17 +84,6 @@ function EDITTABLE(){
 		return false;
 	}
 
-	this.iniEventEditor = function(){
-		thisClass.UIHover("#btnSave");
-		thisClass.UIHover("#btnBack");
-		thisClass.UIHover("#btnEdit");
-		
-		$("#btnBack").click(function(){
-			thisClass.hideEditTable();
-			thisClass.getData('');
-		});
-	}
-	
 	this.selectAbility = function(){
 		var html ='';
 		$.getJSON( url,
@@ -213,8 +147,29 @@ function EDITTABLE(){
     	});
 	}
 	
+	this.getUnitSelect = function(){
+		var classscheduleid = $("#ele_id").val();
+		var html ='';
+		var middlename;
+		$.getJSON(
+			url,
+			{	class: evalClass,
+				method: 'getUnitSelect',
+				classscheduleid: classscheduleid
+				},
+			function(result){
+				$("#ele_unit option").remove();
+				$.each(result, function(ini,val){
+					html += "<option value='"+val.id+"' "+val.selected+">"+val.name+"</option>";
+				});
+				$("#ele_unit").append(html);
+		})
+		.error(function(xhr, status, error) {
+    		alert('Error occur. Please contact the administrator.');
+    	});
+	}
+	
 	this.getData = function(description) {
-		//$("#list").html("<div style='width:100%;position=relative;text-align:center;'><img src='{% static 'tsweb/image/ajax-loader.gif' %}' alt='' style='margin:auto;width=100px;height=100px;position=relative;' /></div>");
 		$.get("{% url 'tsweb:tprocessajax' %}",
 		{ class : tableClassAjax,
 			description : description },
@@ -225,35 +180,6 @@ function EDITTABLE(){
 		.error(function(xhr, status, error) {
 		    $("#list").html("<img src='{% static 'tsweb/image/notificationcross.gif' %}' alt='' style='width:30px;' />&nbsp;Error: "+xhr.status+": "+xhr.statusText);
 		});
-	}
-	
-	this.getStudentData = function(classid){
-		$("#list_student").html("<div style='width:100%;position=relative;text-align:center;'><img src='{% static 'tsweb/image/ajax-loader.gif' %}' alt='' style='margin:auto;width=100px;height=100px;position=relative;' /></div>");
-		$.get("{% url 'tsweb:tprocessajax' %}?class="+evalClass+"&method=getTStudentList",
-		{classid: classid},
-		function(result){
-		      $("#list_student").html(result);
-		}
-		)
-		.error(function(xhr, status, error) {
-		    $("#list_student").html("<img src='{% static 'tsweb/image/notificationcross.gif' %}' alt='' style='width:30px;' />&nbsp;Error: "+xhr.status+": "+xhr.statusText);
-		});
-	}
-	
-	this.addStudentInClassschedule = function(studentid){
-		var classid = $('#ele_id').val();
-		$.post( url,
-			{	class: evalClass,
-				method: 'addStudentInClass',
-				classid: classid,
-				studentid: studentid },
-			function(result){
-				//thisClass.getStudentData(classid);
-				//thisClass.getStudentAddData(classid);
-		})
-		.error(function(xhr, status, error) {
-    		alert('Error occur. Please contact the administrator.');
-    	});
 	}
 	
 	this.Search = function(ele,event)
@@ -292,7 +218,11 @@ function EDITTABLE(){
 		
 		$.post(url,odata,
 			function(result){
-				thisClass.hideEditTable();
+				if(result.status == 'error'){
+					$('<label class="error" for="ele_name">This Code have exist data!!.</label>').insertAfter("#ele_code");
+				}else{
+					thisClass.hideEditTable();
+				}
 			})
 		.error(function(xhr, status, error) {
     		alert('Error occur. Please contact the administrator.');
@@ -300,12 +230,41 @@ function EDITTABLE(){
 
 	}
 	
+    this.initValidateForm = function(){
+		  formValidate.validate({              
+		    rules: {
+		      	code:{
+		      		required: true,
+		      	},
+		      	abilitylevel:{
+		      		required: true,
+		      	},
+		      	teacherid:{
+		      		required: true,
+		      	}
+		    },
+			 invalidHandler: function(event, validator) {
+			// 'this' refers to the form
+				thisClass.submitForm = false;
+			}
+		  });
+    }
+
+	this.initValidateFormEvent = function(){
+		thisClass.submitForm = true;
+	  	formValidate.validate().form();
+	}
+	
+	this.resetValidatForm = function(){
+		var validator = formValidate.validate();
+		validator.resetForm();
+		$(".error").removeClass('error');	
+	}
+	
 	this.iniControl = function(){
 		thisClass.getData('');
 		Watermark('txtSearch', 'Search', 'noclass');
-		$(".editorTD").hide();
 		 
-		$("#editField").hide();
 		$( "#ele_startdate").datepicker({ dateFormat: 'dd-mm-yy' });
 		$( "#ele_enddate").datepicker({ dateFormat: 'dd-mm-yy' });
 		$("#ele_starttime").timepicker();
@@ -317,35 +276,27 @@ function EDITTABLE(){
 		});
 		
 		$("#class-submit").click(function(){
-			thisClass.save();
-		});
-		
-		$("#btnEdit").click(function(){
-			$(".editorTD").show();
-			$(".viewTD").hide();
+        	thisClass.initValidateFormEvent();
+            if(thisClass.submitForm){
+				thisClass.save();
+			}
 		});
 		
 		$("#new_class_btn").click(function(){
 			$("[id^='ele_']").each(function(){
 				$(this).val('');
 			});
-			$("[id^='textView_']").each(function(){
-				$(this).text('');
-			});
+			thisClass.resetValidatForm();
+			thisClass.getStudentSelect();
+			thisClass.getUnitSelect();
 			thisClass.showEditTable();
-			$(".editorTD").show();
-			$(".viewTD").hide();
-			
-			$("#list_student").hide();
-			$("#list_add_student").hide();
-			$("#ele_dayofweek").multiselect('refresh'); 
 		});
 		
 		$(".day-all").click(function(){
 			$(".day-week").prop('checked',$(this).prop('checked'));
 		});
 		
-		thisClass.iniEventEditor();
+		thisClass.initValidateForm();
 		thisClass.selectTeacher();
 		thisClass.selectAbility();
 		var profile = new EDITPROFILE(url);
@@ -370,46 +321,6 @@ $(function() {
 			</button>			
 			<div id="list"></div>
 			
-			<div class="responsive-table">
-			<table class="table table-bordered table-condensed table-hover" style="margin-top: 45px;">
-			<tr class="rowheader">
-			<td class="cellitem">Id</td>
-			<td class="cellitem">Unit</td>
-			<td class="cellitem">Code</td>
-			<td class="cellitem">Description</td>
-			<td class="cellitem">Next Due Date</td>
-			<td class="cellitem"># of Students</td>
-			<td class="cellitem">Rublic</td>
-			</tr>
-			{% for class in classlist %}
-			    <tr id="{{ class.id }}" class="rowitem" data-toggle="modal" data-target="#new_class_modal">
-				<td class="cellitem">{{ class.id }}</td>
-				<td class="cellitem" rel="popover"
-					data-placement="right"
-					data-container="body"
-					data-toggle="popover" title
-					data-trigger="hover"
-					data-content="There may be multiple units associated with this class.  Click to see full details."
-					role="button">{{ class.unit }}</td>
-				<td class="cellitem">{{ class.code }}</td>
-				<td class="cellitem">{{ class.classid.description }}</td>
-				<td class="cellitem">{{ class.startdate }}</td>
-				<td class="cellitem">{{ class.getNumberOfStudents }}</td>
-				<td class="cellitem">{{ class.classid.rubricid.name }}</td>
-				</tr>
-			{% endfor %}
-			</table>
-			</div>
-			<script>
-			$(function() {
-				//var gen = new EDITTABLE();
-				$('.rowitem').click(function() {
-					var id = $(this).attr('id');
-					//alert($(this).attr('id'));
-					new EDITTABLE().editTable(id);
-				});
-			});
-			</script>
 		</div> <!--End Block Cell-->
 		
 		
@@ -424,17 +335,20 @@ $(function() {
 		      </div>
 		      <div class="modal-body">
 		        <form role="form" class="form-horizontal" id="new_class_form">
+		        	<!--
 		        	<div class="form-group">
 		        		<label for="ele_classid" class="col-sm-3 control-label">Class Name</label>
 		        		<div class="col-sm-9">
 		        			<select id="ele_classid" class="form-control input-small" name="classid"></select>
-		        			<input type="hidden" id="ele_id" name="id" value="" />
+		        			
 		        		</div>
 		        	</div>
+		        	-->
 		        	
 		        	<div class="form-group">
 		        		<label for="classid" class="col-sm-3 control-label">Ability Level</label>
 		        		<div class="col-sm-9">
+		        			<input type="hidden" id="ele_id" name="id" value="" />
 			        		<select id="ele_abilitylevel" class="form-control input-small" name="abilitylevel"></select>
 			        	</div>
 		        	</div>
@@ -442,7 +356,7 @@ $(function() {
 		        	<div class="form-group">
 		        		<label for="ele_unit" class="col-sm-3 control-label">Unit <div class="text-muted" style="font-size: .8em;">Hold Command or Ctrl to select multiple units</div></label>
 		        		<div class="col-sm-9">
-		        			<select id="ele_unit" class="form-control" name="ele_unit" multiple="multiple"></select>
+		        			<select id="ele_unit" class="form-control" name="unit" multiple="multiple"></select>
 		        		</div>
 		        	</div>
 		        	

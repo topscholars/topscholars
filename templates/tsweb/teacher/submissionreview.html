@@ -435,7 +435,7 @@
                     redactor_object.inlineSetAttr('name', result.recid);
                     redactor_object.inlineSetStyle("background-color", "red");
                     redactor_object.inlineSetClass('essayhighlight');
-                    redactor_object.inlineSetAttr('onClick', 'openHighlightDialog(' + result.recid + ')');
+                    redactor_object.inlineSetAttr('ondblclick', 'openHighlightDialog(' + result.recid + ')');
                     redactor_object.sync();
 
                     odata = {
@@ -485,10 +485,10 @@
             $('inline[name="' + highlightid + '"]').each(function () {
                 redactor_object.selectionElement(this);
                 redactor_object.inlineRemoveAttr('name');
-                redactor_object.inlineRemoveAttr('onClick');
+                redactor_object.inlineRemoveAttr('ondblclick');
                 redactor_object.inlineRemoveClass('essayhighlight');
                 redactor_object.inlineRemoveStyle('background-color');
-                redactor_object.inlineRemoveAttr('onClick');
+                redactor_object.inlineRemoveAttr('ondblclick');
                 redactor_object.sync();
             });
 
@@ -592,37 +592,33 @@
         }
 
         this.submit = function () {
-            //var criteriaid =[]; 
-            //var criteriaval = [];
-            //var value,odata;
-            //var submissionversionid = $('#ele_submissionversionid').val();
-            //thisClass.showSubmitDialog(true);
+            thisClass.showSubmitDialog(true);
 
-            //$(".submit_criteria").each(function(){
-            //        id = $(this).attr('id');
-            //        value = $(this).val();
+            $(".submit_criteria").each(function(){
+                    id = $(this).attr('id');
+                    value = $(this).val();
 
-            //        criteriaid.push(id);
-            //        criteriaval.push(value);
-            //});
-            //odata = {'class' :  'SUBMISSIONREVIEW',
-            //         'method' : 'submit',
-            //         'submissionversionid' : submissionversionid,
-            //         'stage' : $("#submit_stage").val(),
-            //         'comment' : $("#submit_comment").val(),
-            //         'progress' : $("#submit_progress").val(),
-            //         'criteriaid': criteriaid,
-            //         'criteriaval': criteriaval
-            //         };
+                    criteriaid.push(id);
+                    criteriaval.push(value);
+            });
+            odata = {'class' :  'SUBMISSIONREVIEW',
+                     'method' : 'submit',
+                     'submissionreviewerid': submissionreviewerid,
+                     'stage' : $("#submit_stage").val(),
+                     'comment' : $("#submit_comment").val(),
+                     'progress' : $("#submit_progress").val()
+                     //'criteriaid': criteriaid,
+                     //'criteriaval': criteriaval
+                     };
 
-            //$.post(url,odata,
-            //        function(result){
-            //                thisClass.showSubmitDialog();
-            //                window.location = "{% url 'tsweb:tsubmissionlist' %}";
-            //        })
-            //.error(function(xhr, status, error) {
-            //        alert('Error occur. Please contact the administrator.');
-            //});
+            $.post(url,odata,
+                    function(result){
+                            //thisClass.showSubmitDialog();
+                            window.location = "{% url 'tsweb:tsubmissionlist' %}";
+                    })
+            .error(function(xhr, status, error) {
+                    alert('Error occur. Please contact the administrator.');
+            });
         }
 
         this.initContent = function () {

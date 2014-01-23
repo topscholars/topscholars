@@ -120,38 +120,112 @@ class SUBMISSIONREVIEW():
             data = simplejson.dumps(data_json)
             return HttpResponse(data, mimetype='application/json')
 
-##    def submit(self,request):
-##        try:
-##            userid = request.session['userid']
-##            submissionversionid = request.POST.get('submissionversionid', False)
-##            stage = request.POST.get('stage', False)
-##            progress = request.POST.get('progress', False)
-##            comment = request.POST.get('comment', False)
+    def submit(self,request):
+        try:
+            userid = request.session['userid']
+            submissionreviewerid = request.POST.get('submissionreviewerid', False)
+            stage = request.POST.get('stage', False)
+            progress = request.POST.get('progress', False)
+            comment = request.POST.get('comment', False)
 ##            criteriaid = request.POST.getlist('criteriaid[]', False)
 ##            criteriaval = request.POST.getlist('criteriaval[]', False)
 ##            criteriaval[0]
-##        except KeyError:
-##            data_json = {
-##                        'status': 'user not logged in',
-##                        }
-##            data = simplejson.dumps(data_json)
-##            return HttpResponse(data, mimetype='application/json')
-##        else:
-##            submissionvs = Submissionversion.objects.get(id=submissionversionid)
-##            
-##            submissionid = submissionvs.submissionid.id
-##            submission = Submission.objects.get(id=submissionid)
-##            submission.progress = progress
-##            submission.save()
-##            
-##            submissionvs.teacherstatus = 1
-##            submissionvs.stage = stage
-##            submissionvs.comment = comment
-##            submissionvs.modifiedby = userid
-##            submissionvs.modifieddt = datetime.now()
-##            submissionvs.save()
-##
-##
+        except KeyError:
+            data_json = {
+                        'status': 'user not logged in',
+                        }
+            data = simplejson.dumps(data_json)
+            return HttpResponse(data, mimetype='application/json')
+        else:
+            submissionrv = Submissionreviewer.objects.get(id=submissionreviewerid)
+            submissionrv.status = 1
+            submissionrv.comment = comment
+            submissionrv.modifiedby = userid
+            submissionrv.modifieddt = datetime.now()
+            submissionrv.save()
+            
+            submissionvs = Submissionversion.objects.get(id=submissionrv.submissionversionid.id)
+            submissionvs.teacherstatus = 1
+            submissionvs.stage = stage
+            submissionvs.comment = comment
+            submissionvs.modifiedby = userid
+            submissionvs.modifieddt = datetime.now()
+            submissionvs.save()
+            
+            submission = Submission.objects.get(id=submissionvs.submissionid.id)
+            submission.progress = progress
+            submission.save()
+
+            submission = Submission.objects.get(id=submissionvs.submissionid.id)
+
+            if submission.progress < 100:
+                newversion = Submissionversion()
+                newversion.submissionid = submission
+                newversion.version = submissionvs.version + 1
+                newversion.essay = submissionrv.essay
+                newversion.studentstatus = 0
+                newversion.teacherstatus = 0
+                newversion.stage = stage
+                newversion.createddt = datetime.now()
+                newversion.createdby = userid
+                newversion.modifieddt = datetime.now()
+                newversion.modifiedby = userid
+                newversion.disabled = 0
+                newversion.deleted = 0
+                newversion.save()
+
+                newid = Submissionversion.objects.latest("id")
+
+                textcommentlist = Textcomment.objects.filter(entityid=15,recid=submissionreviewerid,deleted=0,disabled=0)
+                entity = Entity.objects.get(id=5)
+                for row in textcommentlist:
+                    newtextcomment = Textcomment()
+                    newtextcomment.entityid = entity
+                    newtextcomment.recid = newid.id
+                    newtextcomment.comment = row.comment
+                    newtextcomment.weight = row.weight
+                    newtextcomment.createddt = row.createddt
+                    newtextcomment.createdby = row.createdby
+                    newtextcomment.modifieddt = row.modifieddt
+                    newtextcomment.modifiedby = row.modifiedby
+                    newtextcomment.disabled = 0
+                    newtextcomment.deleted = 0
+                    newtextcomment.save()
+
+                    newtcid = Textcomment.objects.latest("id")
+
+                    tllist = Taglink.objects.filter(recid=row.id,entityid=14,deleted=0)
+                    for tl in tllist:
+                        newtl = Taglink()
+                        newtl.entityid = tl.entityid
+                        newtl.recid = newtcid.id
+                        newtl.createddt = tl.createddt
+                        newtl.createdby = tl.createdby
+                        newtl.modifieddt = tl.modifieddt
+                        newtl.modifiedby = tl.modifiedby
+                        newtl.deleted = tl.deleted
+                        newtl.clientid = tl.clientid
+                        newtl.tagid = tl.tagid
+                        newtl.save()
+
+                    try:
+                        cl = Categorylink.objects.get(recid=row.id,entityid=14,deleted=0)
+                    except Categorylink.DoesNotExist:
+                        cl = ''
+                    else:
+                        newcl = Categorylink()
+                        newcl.entityid = cl.entityid
+                        newcl.recid = newtcid.id
+                        newcl.totalweight = cl.totalweight
+                        newcl.categoryid = cl.categoryid
+                        newcl.createddt = cl.createddt
+                        newcl.createdby = cl.createdby
+                        newcl.modifieddt = cl.modifieddt
+                        newcl.modifiedby = cl.modifiedby
+                        newcl.deleted = cl.deleted
+                        newcl.clientid = cl.clientid
+                        newcl.save()
+    
 ##            i=0
 ##            for criteria in criteriaid:
 ##                entity = Entity.objects.get(id=5)
@@ -164,12 +238,15 @@ class SUBMISSIONREVIEW():
 ##                rubricklink.rubricscaleid = scaleid
 ##                rubricklink.save()
 ##                i += 1
-##
+
 ##            data_json = {
 ##                        'status': criteriaval[0],
 ##                        }
-##            data = simplejson.dumps(data_json)
-##            return HttpResponse(data, mimetype='application/json')
+            data_json = {
+                        'status': '1',
+                        }
+            data = simplejson.dumps(data_json)
+            return HttpResponse(data, mimetype='application/json')
 
     def addSubmissionversionHighlight(self,request):
         try:

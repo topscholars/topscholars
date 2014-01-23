@@ -63,40 +63,6 @@ $(function() {
 		
 		<div class="block-cell block-wide">
 			<div id="list"></div>
-			
-			
-			<div class="responsive-table">
-			<table class="table table-bordered table-condensed table-hover">
-			<tr class="rowheader">
-			<td class="cellitem">Id</td>
-			<td class="cellitem">Class Name</td>
-			<td class="cellitem">Description</td>
-			<td class="cellitem">Next Due Date</td>
-			<td class="cellitem"># of Students</td>
-			<td class="cellitem">Rublic</td>
-			</tr>
-			{% for class in classlist %}
-			    <tr id="{{ class.id }}" class="rowitem">
-				<td class="cellitem">{{ class.id }}</td>
-				<td class="cellitem">{{ class.code }}</td>
-				<td class="cellitem">{{ class.classid.description }}</td>
-				<td class="cellitem">{{ class.startdate }}</td>
-				<td class="cellitem">{{ class.getNumberOfStudents }}</td>
-				<td class="cellitem">{{ class.classid.rubricid.name }}</td>
-				</tr>
-			{% endfor %}
-			</table>
-			</div>
-			<script>
-			$(function() {
-				//var gen = new EDITTABLE();
-				$('.rowitem').click(function() {
-					var id = $(this).attr('id');
-					alert($(this).attr('id'));
-					new EDITTABLE().editTable(id);
-				});
-			});
-			</script>
 			<!--Class table insert here-->
 			
 			<button id="new_lesson_btn" class="btn btn-info btn-lg new-btn" data-toggle="modal" data-target="#new_lesson_modal">

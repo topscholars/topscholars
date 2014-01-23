@@ -58,6 +58,10 @@ function EDITTABLE(){
 						parentid = val;
 					}
 				});
+				
+				$('#editTagBtn').show();
+				$('.modal .form-control, .modal input[type="checkbox"]').attr('disabled', 'disabled');
+				$('#btnSave').attr('disabled', 'disabled');
 				thisClass.getParentTag(parentid);
 				
 				thisClass.showEditTable();
@@ -177,11 +181,21 @@ function EDITTABLE(){
 				thisClass.save();
 			}
 		});
+		  
+		  $('.modal .form-control, .modal input[type="checkbox"]').attr('disabled', 'disabled');
+		  
+		  $('#editTagBtn').click(function(){
+		  	$('.modal .form-control, .modal input[type="checkbox"]').removeAttr('disabled', 'disabled');
+		  	$('#btnSave').removeAttr('disabled', 'disabled');
+	  	  });
 		
 		$("#addTagBtn").click(function(){
 			$("[id^='ele_']").each(function(){
 				$(this).val('');
 			});
+			$('#editTagBtn').hide();
+		  	$('.modal .form-control, .modal input[type="checkbox"]').removeAttr('disabled', 'disabled');
+		  	$('#btnSave').removeAttr('disabled', 'disabled');
 			thisClass.resetValidatForm();
 			thisClass.getParentTag();
 		});		
@@ -269,7 +283,7 @@ $(function() {
 	    <div class="modal-content">
 	      <div class="modal-header teacher-header">
 	        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-	        <button type="button" class="btn btn-default btn-small btn-edit pull-right hide" id="editClassBtn">Edit</button>
+	        <button type="button" class="btn btn-default btn-small btn-edit pull-right" id="editTagBtn">Edit</button>
 	        <h4 class="modal-title">Tag</h4>
 	      </div>
 	      <div class="modal-body">
@@ -311,6 +325,7 @@ $(function() {
         </div><!-- /.modal-body -->
         
         <div class="modal-footer">
+        	<input type="reset" class="btn btn-default" data-dismiss="modal" value="Close"/>
         	<input type="submit" name="save" id="btnSave" value="Save Tag" class="btn btn-primary" />
 	      </div><!-- /.modal-footer -->
 	    </div><!-- /.modal-content -->

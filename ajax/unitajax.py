@@ -57,19 +57,24 @@ class UNITLIST():
             data = simplejson.dumps(data_json)
             return HttpResponse(data, mimetype='application/json')
         else:
-            unit = Unit.objects.get(id=id)
-            unit.name = name
-            unit.description = description
-            unit.essentialquestion = essentialquestion
-            unit.establishedgoal = establishedgoal
-            unit.knowledge = knowledge
-            unit.skill = skill
-            unit.understanding = understanding
-            unit.modifieddt = datetime.now()
-            unit.modifiedby = userid
-            unit.clientid = clientid
-            unit.save()
-            data_json = { 'status': 'success', }
+            try:
+                Unit.objects.get(~Q(id=id),Q(name=name))
+            except Unit.DoesNotExist:
+                unit = Unit.objects.get(id=id)
+                unit.name = name
+                unit.description = description
+                unit.essentialquestion = essentialquestion
+                unit.establishedgoal = establishedgoal
+                unit.knowledge = knowledge
+                unit.skill = skill
+                unit.understanding = understanding
+                unit.modifieddt = datetime.now()
+                unit.modifiedby = userid
+                unit.clientid = clientid
+                unit.save()
+                data_json = { 'status': 'success', }
+            else:
+                data_json = { 'status': 'error', }
             data = simplejson.dumps(data_json)
             return HttpResponse(data, mimetype='application/json')
     
@@ -87,29 +92,33 @@ class UNITLIST():
             knowledge = request.POST.get('knowledge', False)
             skill = request.POST.get('skill', False)
             understanding = request.POST.get('understanding', False)
-            unit = Unit.objects.get(name=name)
-        except Unit.DoesNotExist:
-            unit = Unit()
-            unit.name = name
-            unit.description = description
-            unit.essentialquestion = essentialquestion
-            unit.establishedgoal = establishedgoal
-            unit.knowledge = knowledge
-            unit.skill = skill
-            unit.understanding = understanding
-            unit.disabled = 0
-            unit.deleted = 0
-            unit.modifieddt = datetime.now()
-            unit.modifiedby = userid
-            unit.createddt = datetime.now()
-            unit.createdby = userid
-            unit.clientid = clientid
-            unit.save()
-            data_json = { 'status': 'success', }
+        except KeyError:
+            data_json = { 'status': 'error', }
             data = simplejson.dumps(data_json)
             return HttpResponse(data, mimetype='application/json')
         else:
-            data_json = { 'status': 'error', }
+            try:
+                Unit.objects.get(Q(name=name))
+            except Unit.DoesNotExist:
+                unit = Unit()
+                unit.name = name
+                unit.description = description
+                unit.essentialquestion = essentialquestion
+                unit.establishedgoal = establishedgoal
+                unit.knowledge = knowledge
+                unit.skill = skill
+                unit.understanding = understanding
+                unit.disabled = 0
+                unit.deleted = 0
+                unit.modifieddt = datetime.now()
+                unit.modifiedby = userid
+                unit.createddt = datetime.now()
+                unit.createdby = userid
+                unit.clientid = clientid
+                unit.save()
+                data_json = { 'status': 'success', }
+            else:
+                data_json = { 'status': 'error', }
             data = simplejson.dumps(data_json)
             return HttpResponse(data, mimetype='application/json')
         

@@ -157,12 +157,11 @@ function EDITTABLE(){
 		odata = thisClass.oData(odata);
 		$.post(url,odata,
 			function(result){
-				if($("#ele_id").val() == ""){
-					if(result.status == "success"){
-						alert("User : "+ result.email + "\n Password : "+ result.password);
-					}
+				if(result.status == 'error'){
+					$('<label class="error" for="ele_emailaddress">This email have exist data!!.</label>').insertAfter("#ele_emailaddress");
+				}else{
+					thisClass.hideEditTable();
 				}
-				thisClass.hideEditTable();
 			})
 		.error(function(xhr, status, error) {
     		alert('Error occur. Please contact the administrator.');

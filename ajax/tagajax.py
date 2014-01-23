@@ -70,27 +70,32 @@ class TAGLIST():
             data = simplejson.dumps(data_json)
             return HttpResponse(data, mimetype='application/json')
         else:
-            taglist = Tag.objects.get(id=id)
-            taglist.name = name
-            if parentid == False:
-                taglist.parentid = 0
+            try:
+                Tag.objects.get(~Q(id=id), Q(name=name))
+            except Tag.DoesNotExist:
+                taglist = Tag.objects.get(id=id)
+                taglist.name = name
+                if parentid == False:
+                    taglist.parentid = 0
+                else:
+                    taglist.parentid = parentid
+                taglist.description = descriptions
+                taglist.modifieddt = datetime.now()
+                taglist.modifiedby = userid
+                taglist.clientid = clientid
+                taglist.save()
+                
+                #category id save
+                category = Category.objects.get(id=categoryid)
+                categorylinklist = Categorylink.objects.get(entityid=12, recid=id)
+                categorylinklist.categoryid = category
+                categorylinklist.modifieddt = datetime.now()
+                categorylinklist.modifiedby = userid
+                categorylinklist.save()
+                    
+                data_json = { 'status': 'success', }
             else:
-                taglist.parentid = parentid
-            taglist.description = descriptions
-            taglist.modifieddt = datetime.now()
-            taglist.modifiedby = userid
-            taglist.clientid = clientid
-            taglist.save()
-                
-            #category id save
-            category = Category.objects.get(id=categoryid)
-            categorylinklist = Categorylink.objects.get(entityid=12, recid=id)
-            categorylinklist.categoryid = category
-            categorylinklist.modifieddt = datetime.now()
-            categorylinklist.modifiedby = userid
-            categorylinklist.save()
-                
-            data_json = { 'status': 'success', }
+                data_json = { 'status': 'error', }
             data = simplejson.dumps(data_json)
             return HttpResponse(data, mimetype='application/json')
     
@@ -112,47 +117,52 @@ class TAGLIST():
             data = simplejson.dumps(data_json)
             return HttpResponse(data, mimetype='application/json')
         else:
-            taglist = Tag()
-            taglist.name = name
-            if parentid == False:
-                taglist.parentid = 0
+            try:
+                Tag.objects.get(Q(name=name))
+            except Tag.DoesNotExist:
+                taglist = Tag()
+                taglist.name = name
+                if parentid == False:
+                    taglist.parentid = 0
+                else:
+                    taglist.parentid = parentid
+                #must be selecttion
+                #taglist.abilitylevel = 0
+                if clientid == 0:
+                    taglist.system = 1
+                else:
+                    taglist.system = 0
+                taglist.description = descriptions
+                taglist.createddt = datetime.now()
+                taglist.createdby = userid
+                taglist.modifieddt = datetime.now()
+                taglist.modifiedby = userid
+                taglist.disabled = 0
+                taglist.deleted = 0
+                taglist.clientid = clientid
+                taglist.save()
+                
+                recid = Tag.objects.latest('id').id
+                
+                entitylist = Entity.objects.get(id=12)
+                category = Category.objects.get(id=categoryid)
+                #category id save
+                categorylinklist = Categorylink()
+                categorylinklist.entityid = entitylist
+                categorylinklist.recid = recid
+                categorylinklist.categoryid = category
+                categorylinklist.totalweight = 0
+                categorylinklist.createddt = datetime.now()
+                categorylinklist.createdby = userid
+                categorylinklist.modifieddt = datetime.now()
+                categorylinklist.modifiedby = userid
+                categorylinklist.deleted = 0
+                categorylinklist.clientid = clientid
+                categorylinklist.save()
+                
+                data_json = { 'status': 'success', }
             else:
-                taglist.parentid = parentid
-            #must be selecttion
-            #taglist.abilitylevel = 0
-            if clientid == 0:
-                taglist.system = 1
-            else:
-                taglist.system = 0
-            taglist.description = descriptions
-            taglist.createddt = datetime.now()
-            taglist.createdby = userid
-            taglist.modifieddt = datetime.now()
-            taglist.modifiedby = userid
-            taglist.disabled = 0
-            taglist.deleted = 0
-            taglist.clientid = clientid
-            taglist.save()
-            
-            recid = Tag.objects.latest('id').id
-            
-            entitylist = Entity.objects.get(id=12)
-            category = Category.objects.get(id=categoryid)
-            #category id save
-            categorylinklist = Categorylink()
-            categorylinklist.entityid = entitylist
-            categorylinklist.recid = recid
-            categorylinklist.categoryid = category
-            categorylinklist.totalweight = 0
-            categorylinklist.createddt = datetime.now()
-            categorylinklist.createdby = userid
-            categorylinklist.modifieddt = datetime.now()
-            categorylinklist.modifiedby = userid
-            categorylinklist.deleted = 0
-            categorylinklist.clientid = clientid
-            categorylinklist.save()
-            
-            data_json = { 'status': 'success', }
+                data_json = { 'status': 'error', }
             data = simplejson.dumps(data_json)
             return HttpResponse(data, mimetype='application/json')
         

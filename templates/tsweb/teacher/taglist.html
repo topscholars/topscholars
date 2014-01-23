@@ -122,7 +122,11 @@ function EDITTABLE(){
 		odata = thisClass.oData(odata);
 		$.post(url,odata,
 			function(result){
-				thisClass.hideEditTable();
+				if(result.status == 'error'){
+					$('<label class="error" for="ele_name">This tag have exist data!!.</label>').insertAfter("#ele_name");
+				}else{
+					thisClass.hideEditTable();
+				}
 			})
 		.error(function(xhr, status, error) {
     		alert('Error occur. Please contact the administrator.');

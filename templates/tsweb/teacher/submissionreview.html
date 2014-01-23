@@ -110,9 +110,9 @@
         		$.each(result, function(i, val) {
         			var spanid = val[0];
         			$('inline[name="' + spanid + '"].essayhighlight').css({ 'background': val[2] });
-        			textComment += "- " + val[1] + "\n";
+        			textComment += "- " + val[1] + "<br/>";
         		});
-        		$("#commentSection").text(textComment);
+        		$("#commentSection").html(textComment);
         	}).error(function(xhr, status, error) {
         		alert('Error occur. Please contact the administrator.');
         	});

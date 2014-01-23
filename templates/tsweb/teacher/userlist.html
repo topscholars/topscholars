@@ -53,38 +53,11 @@ function EDITTABLE(){
 	
 	this.showEditTable = function(){
 		$(".pagename").text(thisClass.pagename + " - Edit");
-		
-		$("#editField").show();
-		
-		$(".tablelist").hide();
-		//$(".listnewbutton").hide();
-		//$(".searchboximg").hide();
-		
-		var classid = $('#ele_id').val();
-		if(classid !== ""){
-			//thisClass.getStudentData(classid);
-			//thisClass.getStudentAddData(classid);
-			$("#list_student").show();
-			$("#list_add_student").show();
-		}
 	}
 	
 	this.hideEditTable =function(){
-		$(".pagename").text(thisClass.pagename);
-		
-		// $("#editField").hide();
-		
-		// $(".tablelist").show();
-		// $(".listnewbutton").show();
-		// $("#txtSearch").show();
-		// $(".searchboximg").show();
-		
 		$('#new_class_modal').modal('hide')
 		thisClass.getData('');
-		
-		//return and hide
-		$(".viewTD").show();
-		$(".editorTD").hide();
 	}
 	
 	this.editTable = function(id){
@@ -100,7 +73,9 @@ function EDITTABLE(){
 					thisClass.seperateView(ini,val);
 				});
 				
-				$("#ele_dayofweek").multiselect('refresh'); 
+				$('#editUserBtn').show();
+				$('.modal .form-control, .modal input[type="checkbox"]').attr('disabled', 'disabled');
+				$('#class-submit').attr('disabled', 'disabled');
 				
 				thisClass.showEditTable();
 		})
@@ -114,17 +89,6 @@ function EDITTABLE(){
 		var validator = $("#new_class_form").validate();
 		validator.resetForm();
 		$(".error").removeClass('error');	
-	}
-
-	this.iniEventEditor = function(){
-		thisClass.UIHover("#btnSave");
-		thisClass.UIHover("#btnBack");
-		thisClass.UIHover("#btnEdit");
-		
-		$("#btnBack").click(function(){
-			thisClass.hideEditTable();
-			thisClass.getData('');
-		});
 	}
 	
 	this.selectSalutation = function(){
@@ -172,53 +136,6 @@ function EDITTABLE(){
 		.error(function(xhr, status, error) {
 		    $("#list").html("<img src='{% static 'tsweb/image/notificationcross.gif' %}' alt='' style='width:30px;' />&nbsp;Error: "+xhr.status+": "+xhr.statusText);
 		});
-	}
-	
-	this.getStudentData = function(classid){
-		$("#list_student").html("<div style='width:100%;position=relative;text-align:center;'><img src='{% static 'tsweb/image/ajax-loader.gif' %}' alt='' style='margin:auto;width=100px;height=100px;position=relative;' /></div>");
-		$.get("{% url 'tsweb:tprocessajax' %}?class="+evalClass+"&method=getTStudentList",
-		{classid: classid},
-		function(result){
-		      $("#list_student").html(result);
-		}
-		)
-		.error(function(xhr, status, error) {
-		    $("#list_student").html("<img src='{% static 'tsweb/image/notificationcross.gif' %}' alt='' style='width:30px;' />&nbsp;Error: "+xhr.status+": "+xhr.statusText);
-		});
-	}
-	
-	this.getStudentAddData = function(classid){
-		var html ='';
-		$.get( url,
-			{	class: evalClass,
-				method: 'getTStudentAddList',
-				classid: classid   },
-			function(result){
-				$("#list_add_student").html(result);
-				$(".addStudent").click(function(){
-					var valAdd = $(this).attr("text");
-					thisClass.addStudentInClassschedule(valAdd);
-				});
-		})
-		.error(function(xhr, status, error) {
-    		alert('Error occur. Please contact the administrator.');
-    	});
-	}
-	
-	this.addStudentInClassschedule = function(studentid){
-		var classid = $('#ele_id').val();
-		$.post( url,
-			{	class: evalClass,
-				method: 'addStudentInClass',
-				classid: classid,
-				studentid: studentid },
-			function(result){
-				//thisClass.getStudentData(classid);
-				//thisClass.getStudentAddData(classid);
-		})
-		.error(function(xhr, status, error) {
-    		alert('Error occur. Please contact the administrator.');
-    	});
 	}
 	
 	this.Search = function(ele,event)
@@ -299,10 +216,6 @@ function EDITTABLE(){
 			thisClass.Search(this,event);
 		});
 		
-		$("#new_class_btn").click(function(){
-			thisClass.resetValidatForm();
-		});
-		
 		$("#class-submit").click(function(){
         	thisClass.initValidateFormEvent();
             if(thisClass.submitForm){
@@ -310,28 +223,27 @@ function EDITTABLE(){
 			}
 		});
 		
-		$("#btnEdit").click(function(){
-			$(".editorTD").show();
-			$(".viewTD").hide();
-		});
+		  $('.modal .form-control, .modal input[type="checkbox"]').attr('disabled', 'disabled');
+		  
+		  $('#editUserBtn').click(function(){
+		  	$('.modal .form-control, .modal input[type="checkbox"]').removeAttr('disabled', 'disabled');
+		  	$('#class-submit').removeAttr('disabled', 'disabled');
+		  	$('#ele_emailaddress').attr('disabled', 'disabled')
+	  	  });
 		
 		$("#new_class_btn").click(function(){
 			$("[id^='ele_']").each(function(){
 				$(this).val('');
 			});
-			$("[id^='textView_']").each(function(){
-				$(this).text('');
-			});
-			thisClass.showEditTable();
-			$(".editorTD").show();
-			$(".viewTD").hide();
 			
-			$("#list_student").hide();
-			$("#list_add_student").hide();
-			$("#ele_dayofweek").multiselect('refresh'); 
+			$('#editUserBtn').hide();
+		  	$('.modal .form-control, .modal input[type="checkbox"]').removeAttr('disabled', 'disabled');
+		  	$('#class-submit').removeAttr('disabled', 'disabled');
+
+			thisClass.resetValidatForm();
+			thisClass.showEditTable();
 		});
 		
-		thisClass.iniEventEditor();
 		thisClass.initValidateForm();
 		thisClass.selectSalutation();
 		thisClass.selectSecurityProfile(); 
@@ -370,6 +282,7 @@ $(function() {
 		    <div class="modal-content">
 		      <div class="modal-header teacher-header">
 		        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+		        <button type="button" class="btn btn-default btn-small btn-edit pull-right" id="editUserBtn">Edit</button>
 		        <h4 class="modal-title">New User</h4>
 		      </div>
 		      <div class="modal-body">

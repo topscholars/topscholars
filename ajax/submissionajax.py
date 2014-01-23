@@ -20,11 +20,11 @@ class TSUBMISSIONLISTAJAX():
             return HttpResponseRedirect(reverse('tsweb:login'))
         else:
             studentname=request.GET.get('studentname',False)
-            submissionlist=''
+            submissionreviewerlist=''
             if studentname != False and studentname != '':
-                submissionlist = Submissionversion.objects.filter(Q(submissionid__teacherid=userid) & Q(studentstatus=1) & Q(teacherstatus=0) & Q(deleted=0) & Q(studentstatus=1) & (Q(submissionid__studentid__firstname__contains=studentname) | Q(submissionid__studentid__middlename__contains=studentname) | Q(submissionid__studentid__lastname__contains=studentname)))
+                submissionreviewerlist = Submissionreviewer.objects.filter(Q(entityid = 13) & Q(recid = userid) & Q(status = 0) & Q(deleted=0) & Q(disabled = 0) & (Q(submissionversionid__submissionid__studentid__firstname__contains=studentname) | Q(submissionversionid__submissionid__studentid__middlename__contains=studentname) | Q(submissionversionid__submissionid__studentid__lastname__contains=studentname)))
             else:
-                submissionlist = Submissionversion.objects.filter(submissionid__teacherid=userid,studentstatus=1,teacherstatus=0,deleted=0)
+                submissionreviewerlist = Submissionreviewer.objects.filter(Q(entityid = 13) & Q(recid = userid) & Q(status = 0) & Q(deleted=0) & Q(disabled = 0))
             currentdate = date.today()
-            context = {'submissionlist': submissionlist, 'currentdate':currentdate}
+            context = {'submissionreviewerlist': submissionreviewerlist, 'currentdate':currentdate}
             return render(request, 'tsweb/teacher/submissionlistajax.html', context)

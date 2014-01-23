@@ -246,18 +246,22 @@ def tsubmissionreview(request, id):
     try:
         userid = request.session['userid']
         login = Login.objects.get(id=userid)
+        clientid = login.clientid
         usertypeid = login.usertypeid
         user_name = login.loginname
     except KeyError:
         return HttpResponseRedirect(reverse('tsweb:login'))
     else:
-        submissionversionlist = Submissionversion.objects.filter(submissionid=id)
-        submission = Submission.objects.get(id=id)
-        studentname = submission.studentid.getFullName()
+        categoryentity = Categoryentity.objects.filter(Q(entityid = 14,categoryid__deleted = 0,categoryid__disabled = 0, disabled = 0, deleted = 0) & (Q(clientid = clientid) | Q(clientid = 0)))
+        submissionreviewer = Submissionreviewer.objects.get(id = id)
+        submissionreviewerlist = Submissionreviewer.objects.filter(submissionversionid__submissionid = submissionreviewer.submissionversionid.submissionid)
+        selectionlist = Selectionlist.objects.filter(selectiongroupid=4, disabled=0, deleted=0)
         context= {'id' : id,
-                  'studentname' : studentname,
                   'user_name' : user_name,
-                  'submissionversionlist' : submissionversionlist }
+                  'submissionreviewerlist' : submissionreviewerlist,
+                  'categoryentity' : categoryentity,
+                  'selectionlist': selectionlist }
+        
         return render(request, 'tsweb/teacher/submissionreview.html', context)
         
 def stsubmissionreview(request, id):
@@ -297,12 +301,12 @@ def gettags(request, entityid):
         
         if len(term) == 1:
             data_json = []
-            tagentity = TagEntity.objects.filter(entityid=entityid,tagid__name__startswith=term, tagid__parentid=0)
+            tagentity = TagEntity.objects.filter(entityid=entityid,tagid__name__istartswith=term, tagid__parentid=0)
             for row in tagentity:
                 data_json.append({ "id": str(row.tagid.id), "label": row.tagid.name, "value": row.tagid.name })
         else:
             data_json = []
-            tagentity = TagEntity.objects.filter(entityid=entityid,tagid__name__startswith=term)
+            tagentity = TagEntity.objects.filter(entityid=entityid,tagid__name__istartswith=term)
             for row in tagentity:
                 if { "id": str(row.tagid.id), "label": row.tagid.name, "value": row.tagid.name } not in data_json:
                     data_json.append({ "id": str(row.tagid.id), "label": row.tagid.name, "value": row.tagid.name })

@@ -87,30 +87,38 @@ class SUBMISSIONREVIEW():
                 data = simplejson.dumps(data_json)
                 return HttpResponse(data, mimetype='application/json')
 
-##     def delete(self,request):
-##        try:
-##            userid = request.session['userid']
-##            highlightid = request.POST.get('highlightid', False)
-##        except KeyError:
-##            data_json = {
-##                        'status': 'user not logged in',
-##                        }
-##            data = simplejson.dumps(data_json)
-##            return HttpResponse(data, mimetype='application/json')
-##        else:
-##            submissionhl = Textcomment.objects.get(id=highlightid)
-##            submissionhl.deleted = 1
-##            submissionhl.modifiedby = userid
-##            submissionhl.modifieddt = datetime.now()
-##            submissionhl.save()
-##
-##            Taglink.objects.filter(recid=highlightid,entityid=14,deleted=0).update(deleted=1,modifiedby=userid,modifieddt = datetime.now())
-##            
-##            data_json = {
-##                        'status': 'success',
-##                        }
-##            data = simplejson.dumps(data_json)
-##            return HttpResponse(data, mimetype='application/json')
+    def delete(self,request):
+        try:
+            userid = request.session['userid']
+            highlightid = request.POST.get('highlightid', False)
+            submissionreviewerid = request.POST.get('submissionreviewerid', False)
+            essay = request.POST.get('essay', False)
+        except KeyError:
+            data_json = {
+                        'status': 'user not logged in',
+                        }
+            data = simplejson.dumps(data_json)
+            return HttpResponse(data, mimetype='application/json')
+        else:
+            submissionhl = Textcomment.objects.get(id=highlightid)
+            submissionhl.deleted = 1
+            submissionhl.modifiedby = userid
+            submissionhl.modifieddt = datetime.now()
+            submissionhl.save()
+
+            Taglink.objects.filter(recid=highlightid,entityid=14,deleted=0).update(deleted=1,modifiedby=userid,modifieddt = datetime.now())
+
+            submissionreviewer = Submissionreviewer.objects.get(id=submissionreviewerid)
+            submissionreviewer.essay = essay;
+            submissionreviewer.modifieddt = datetime.now()
+            submissionreviewer.modifiedby = userid
+            submissionreviewer.save()
+            
+            data_json = {
+                        'status': 'success',
+                        }
+            data = simplejson.dumps(data_json)
+            return HttpResponse(data, mimetype='application/json')
 
 ##    def submit(self,request):
 ##        try:

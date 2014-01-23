@@ -109,7 +109,7 @@
         		$(".essayhighlight").css({'background':'red'});
         		$.each(result, function(i, val) {
         			var spanid = val[0];
-        			$("#" + spanid + ".essayhighlight").css({ 'background': val[2] });
+        			$('inline[name="' + spanid + '"].essayhighlight').css({ 'background': val[2] });
         			textComment += "- " + val[1] + "\n";
         		});
         		$("#commentSection").text(textComment);
@@ -403,21 +403,33 @@
             }
         }
 
-        this.del = function(){
-        	//var highlightid = highlightid;
+        this.del = function () {
+            var redactor_object = $('#ele_submissionversionessay').redactor('getObject');
+            $('inline[name="' + highlightid + '"]').each(function () {
+                redactor_object.selectionElement(this);
+                redactor_object.inlineRemoveAttr('name');
+                redactor_object.inlineRemoveAttr('onClick');
+                redactor_object.inlineRemoveClass('essayhighlight');
+                redactor_object.inlineRemoveStyle('background-color');
+                redactor_object.inlineRemoveAttr('onClick');
+                redactor_object.sync();
+            });
 
-        	//$.post(url,
-        	//	{	'class' :  'SUBMISSIONREVIEW',
-        	//		'method' : 'delete',
-        	//		'highlightid' : highlightid },
-        	//	function(result){
-        	//		thisClass.showHighlightDialog(false);
-        	//		thisClass.getData();
-        	//	})
-        	//.error(function(xhr, status, error) {
-        	//	alert('Error occur. Please contact the administrator.');
-            //});
-            $('#ele_submissionversionessay').redactor('selectionRemove');
+        	$.post(url,
+        		{	'class' :  'SUBMISSIONREVIEW',
+        			'method' : 'delete',
+        			'submissionreviewerid': submissionreviewerid,
+        			'highlightid': highlightid,
+        			'essay': $('#ele_submissionversionessay').redactor('getEditor').html()
+        		},
+        		function(result){
+        			thisClass.showHighlightDialog(false);
+        			thisClass.tagHighlightList();
+        			thisClass.getSubmitRubric();
+        		})
+        	.error(function(xhr, status, error) {
+        		alert('Error occur. Please contact the administrator.');
+            });
         }
 
         this.tagEditCloseEvent = function () {
@@ -537,7 +549,8 @@
 
         this.initContent = function () {
             submissionreviewerid = '{{ id }}';
-            $('#ele_submissionversionessay').redactor({ toolbar: false });
+            //$('#ele_submissionversionessay').redactor({ toolbar: false });
+            $('#ele_submissionversionessay').redactor();
             $('#tdtag input.tag').tagedit({
                 autocompleteURL: "{% url 'tsweb:gettags' 5 %}",
                 autocompleteOptions: { minLength: 1 },

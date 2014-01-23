@@ -2403,7 +2403,7 @@ a.list-group-item.active .list-group-item-text {
 }
 
 .panel-heading {
-  padding: 10px 15px;
+  padding: 4px 15px;
   border-bottom: 1px solid transparent;
 }
 
@@ -2414,7 +2414,7 @@ a.list-group-item.active .list-group-item-text {
 .panel-title {
   margin-top: 0;
   margin-bottom: 0;
-  font-size: 16px;
+  font-size: 14px;
 }
 
 .panel-title > a {

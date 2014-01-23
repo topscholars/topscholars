@@ -65,6 +65,41 @@ $(function() {
 			<div id="list"></div>
 			<!--Class table insert here-->
 			
+			<div class="responsive-table">
+			<table class="table table-bordered table-condensed table-hover">
+			<tr class="rowheader">
+			<td class="cellitem">Id</td>
+			<td class="cellitem">Name</td>
+			<td class="cellitem">Description</td>
+			<td class="cellitem">Type</td>
+			<td class="cellitem">Next Due Date</td>
+			<td class="cellitem"># of Students</td>
+			<td class="cellitem">Rublic</td>
+			</tr>
+			{% for class in classlist %}
+			    <tr id="{{ class.id }}" class="rowitem" data-toggle="modal" data-target="#new_lesson_modal">
+				<td class="cellitem">{{ class.id }}</td>
+				<td class="cellitem">{{ class.code }}</td>
+				<td class="cellitem">{{ class.classid.description }}</td>
+				<td class="cellitem">{{ class.type }}</td>
+				<td class="cellitem">{{ class.dueDate }}</td>
+				<td class="cellitem">{{ class.getNumberOfStudents }}</td>
+				<td class="cellitem">{{ class.classid.rubricid.name }}</td>
+				</tr>
+			{% endfor %}
+			</table>
+			</div>
+			<script>
+			$(function() {
+				//var gen = new EDITTABLE();
+				$('.rowitem').click(function() {
+					var id = $(this).attr('id');
+					alert($(this).attr('id'));
+					new EDITTABLE().editTable(id);
+				});
+			});
+			</script>
+			
 			<button id="new_lesson_btn" class="btn btn-info btn-lg new-btn" data-toggle="modal" data-target="#new_lesson_modal">
 			  New Lesson <i class="fa fa-plus"></i>
 			</button>
@@ -126,7 +161,7 @@ $(function() {
 		      </div>
 		      <div class="modal-footer">
 		        <input type="reset" class="btn btn-default" data-dismiss="modal" value="Close"/>
-		        <input type="submit" class="btn btn-primary" value="Save Lesson" id="lesson-submit"/>
+		        <input type="submit" class="btn btn-primary" value="Save Lesson" disabled="disabled" id="lesson-submit"/>
 		      </div>
 		    </div><!-- /.modal-content -->
 		  </div><!-- /.modal-dialog -->
@@ -151,12 +186,15 @@ $(function() {
 		document.getElementById("uploadBtn").onchange = function () {
 		  document.getElementById("uploadFile").value = this.value;
 		};
-	
-//		if ($('#isMulitple input[type=checkbox]').is(':checked')) {
-//			$('#mcAnswers').show();
-//		} else {
-//			$('#mcAnswers').hide();
-//		}
+		
+		$('#new_lesson_btn').click(function () {
+			$('#lesson-submit').removeAttr('disabled');
+		});
+		
+		$('#editLessonBtn').click(function () {
+			$('#lesson-submit').removeAttr('disabled');
+		});
+
 				
 		$('#btnAddQuestion').click(function(event){
 			$('.new-question').append('<div class="ngText form-group"><label class="col-sm-4 control-label">Question</label><div class="col-sm-8"><input type="text" name="ele_question" class="form-control input-small" id="nQuestion" placeholder="Type Question Here" /><i class="fa fa-minus-square-o minus fa-lg pull-right"></i></div></div><div class="form-group"><label class="col-sm-4 control-label">Answer</label><div class="col-sm-8"><input type="text" name="mcAnswer" id="nAnswer" placeholder="Answer Goes Here" class="form-control input-small" /></div>');

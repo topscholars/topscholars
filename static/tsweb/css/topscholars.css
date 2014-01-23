@@ -258,6 +258,8 @@ form{
 	right: 0;
 	position: absolute;
 	width: 25%;
+	height: 100%;
+	overflow: scroll;
 }
 .side-panel a:hover{
 	text-decoration: none;
@@ -269,7 +271,7 @@ form{
 .hide-panel{
 	position: absolute;
 	right: 10px;
-	top: 123px;
+	top: 10px;
 	background-color: rgba(0, 0, 0, .2);
 	z-index: 4;
 	
@@ -343,7 +345,7 @@ form{
 	display: inline-block!important;
 	position: absolute;
 	left: 0;
-	height: 85%;
+	height: 100%;
 	margin-top: 70px;
 	padding: 5px;
 	overflow: scroll;
@@ -381,7 +383,8 @@ form{
 .block-body{
 	height: auto;
 	overflow: scroll;
-	height: 135px;
+	height: auto;
+	max-height: 130px;
 	padding: 5px;
 }
 .block-body .text-scroll{
@@ -606,7 +609,7 @@ form{
 	position: relative;
 	float: right;
 	margin-left: 10px;	
-	margin-top: 45px;
+	/*margin-top: 45px;*/
 }
 #saveAssignment, #exitBtn{
 	bottom: 20px!important;
@@ -644,7 +647,7 @@ form{
 	margin-right: 50px;
 }
 .rubric-criteria-panel{
-	height: 200px;
+	/*height: 200px;*/
 	overflow: scroll;	
 }
 .rubric-categories{
@@ -656,7 +659,6 @@ form{
 	-webkit-transform: scale(.75);
 	-moz-transform: scale(.75);
 	-o-transform: scale(.75);
-	
 	margin-top: -55px;
 }
 .circle-lg{

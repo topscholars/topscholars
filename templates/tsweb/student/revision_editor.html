@@ -822,6 +822,11 @@ function openHighlightDialog(highlightid){
 		
 		<div class="assignment-edit-section">
 			 <div class="block-cell block-wide">
+			 
+				 <div class="section-title" style="display: inline-block;">
+				 	<h4><i class="fa fa-file-o"></i> {{ assignment_name }} - {{ goal_of_task }}</h4>
+				 </div>
+			 
  					<input type="hidden" id="ele_submissionid" value="{{ id }}">
 					<input type="hidden" id="ele_submissionversionid">
 					
@@ -853,23 +858,23 @@ function openHighlightDialog(highlightid){
 				</div>
 				<!-- end submit block -->
 				<div class="searchlist form form-horizontal">
-						<div class="col-sm-4">
-							<div class="form-group">
-							
-								<select id="ele_submissionversionversion" class="form-control input-small">
-								{% for row in submissionversionlist %}
-									<option value="{{ row.version }}">Revision {{ row.version }}</option>
-								{% endfor %}
-								</select>
-							</div>
-						</div>
-							
+						
+						<button type="button" class="btn btn-small hide-panel" id="hide-panel"><i class="fa fa-arrow-right"></i></button>
 						<input type="button" class="button btn btn-default btn-small editor-btn" value="Save" id="btnSave">
 						<input type="button" class="button btn btn-default btn-small editor-btn" value="Revise" id="btnRevise"/>
 						<input type="submit" class="btn btn-info btn-lg btn-small editor-btn" id="btnSubmit"  value="Send Teacher" />
 						<a href="{% url 'tsweb:sindex' %}" class="btn btn-warning btn-small editor-btn">Exit</a>	
 						
-					
+					<div class="col-sm-2 pull-right" style="z-index: 3;">
+						<div class="form-group">
+						
+							<select id="ele_submissionversionversion" class="form-control input-small">
+							{% for row in submissionversionlist %}
+								<option value="{{ row.version }}">Revision {{ row.version }}</option>
+							{% endfor %}
+							</select>
+						</div>
+					</div>
 				</div>
 				<div style="position: absolute; top: 50px; width: 100%;">
 			 		<div id="redactor_content" name="content" style="width: 100%; height: auto;">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum</div>
@@ -895,21 +900,19 @@ function openHighlightDialog(highlightid){
 				<!--<input type="submit" name="add-tab" value="Add Tag" class="btn btn-primary btn-small pull-right" />-->
 			</form>
 		</div>
-		
-		<button type="button" class="btn btn-small hide-panel" id="hide-panel"><i class="fa fa-arrow-right"></i></button>
 
 		<div class="panel-group side-panel panel-revision" id="side-panel">
 		
 			<div class="panel-default block-cell block-thin block-expanded">
 				<div class="panel-heading block-header">
 					<h3 class="panel-title">
-						<a href="#">
+						<a href="#collapseFour" data-toggle="collapse">
 							Rubric
 						</a>
 					</h3>
 				</div>
-				<div id="collapseFour" class="panel-collapse">
-					<div class="block-body">
+				<div id="collapseFour" class="panel-collapse collapse in">
+					<div class="block-body" style="height: 280px;">
 						<!--<div>{# rubric #}</div>-->
 						
 						<div class="rubric-categories-sm">
@@ -938,10 +941,71 @@ function openHighlightDialog(highlightid){
 							</div>
 						</div>
 						
-						<div class="progress progress-striped active lesson-progress">
+						<!--<div class="progress progress-striped active lesson-progress">
 						  <div class="progress-bar"  role="progressbar" aria-valuenow="50" aria-valuemin="10" aria-valuemax="100" style="width: 100%">
 						    <span class="sr-only">100% Complete</span>
 						  </div>
+						</div>-->
+						<button id="show_rubric_btn" class="btn btn-small btn-default pull-right hide" style="margin-bottom: -30px; font-size: .8em;">Show Rubric</button>
+						<div class="impact-list hide">
+							<legend>Impact Criteria</legend>
+							<ul class="list-unstyled impact-list-item">
+								<li>{{ criteria.name }}</li>
+								<li>{{ criteria.tag }}</li>
+								<li><input type="text" class="form-control input-small" value="{{ criteria.weight }}"/></li>
+							</ul>
+							<hr/>
+						</div>
+						<div class="quality-list hide">
+							<legend>Quality Criteria</legend>
+							<ul class="list-unstyled quality-list-item">
+								<li>{{ criteria.name }}</li>
+								<li>{{ criteria.tag }}</li>
+								<li><input type="text" class="form-control input-small" value="{{ criteria.weight }}"/></li>
+							</ul>
+							<hr/>
+						</div>
+						<div class="content-list hide">
+							<legend>Content Criteria</legend>
+							<ul class="list-unstyled content-list-item">
+								<li>{{ criteria.name }}</li>
+								<li>{{ criteria.tag }}</li>
+								<li><input type="text" class="form-control input-small" value="{{ criteria.weight }}"/></li>
+							</ul>
+							<hr/>
+						</div>
+						<div class="process-list hide">
+							<legend>Process Criteria</legend>
+							<ul class="list-unstyled process-list-item">
+								<li>{{ criteria.name }}</li>
+								<li>{{ criteria.tag }}</li>
+								<li><input type="text" class="form-control input-small" value="{{ criteria.weight }}"/></li>
+							</ul>
+							<hr/>
+						</div>
+						<div class="objective-list hide">
+							<legend>Objective</legend>
+							<ul class="list-unstyled objective-list-item">
+								<li>
+								<h5>{{ assignment_name }}</h5>
+								<p class="text-scroll">
+									<b>Description:</b> {# assignment_description #}
+								</p>
+								<p>
+									<b>Max Points:</b>out of 100
+								</p>
+								<p>
+									<b>Category:</b> {# assignment_category #}
+								</p>
+								<p>
+									<b>Grading Criteria:</b> {{ rubric_name }}
+								</p>
+								<p>
+									<b>Due Date:</b> {{ due_date }}
+								</p>
+								</li>
+							</ul>
+							<hr/>
 						</div>
 						
 					</div>
@@ -953,12 +1017,12 @@ function openHighlightDialog(highlightid){
 		  	
 		    <div class="panel-heading block-header">
 		      <h3 class="panel-title">
-		        <a href="#">
+		        <a href="#collapseTwo" data-toggle="collapse">
 		          Tagging
 		        </a>
 		      </h3>
 		    </div>
-		    <div id="collapseTwo" class="panel-collapse">
+		    <div id="collapseTwo" class="panel-collapse collapse in">
 		      <div class="block-body">
 		        <ul class="block-list" id="tagList">
 		        	<li class="tag">
@@ -979,12 +1043,12 @@ function openHighlightDialog(highlightid){
 		  <div class="panel-default block-cell block-thin">
 		    <div class="panel-heading block-header">
 		      <h3 class="panel-title">
-		        <a href="#">
+		        <a href="#collapseThree" data-toggle="collapse" >
 		          Comments
 		        </a>
 		      </h3>
 		    </div>
-		    <div id="collapseThree" class="panel-collapse">
+		    <div id="collapseThree" class="panel-collapse collapse in">
 		      <div class="block-body">
 		       	<div id="commentSection">
 		       	
@@ -1141,133 +1205,168 @@ function openHighlightDialog(highlightid){
 
 	
 	<script>
-		$(document).ready(function () {
+		$('.rubric-impact').click(function () {
+		    $('.rubric-categories-sm').addClass('hide');
+		    $('.impact-list').removeClass('hide');
+		    $('#show_rubric_btn').removeClass('hide');
+		});
+		$('.rubric-quality').click(function () {
+		    $('.rubric-categories-sm').addClass('hide');
+		    $('.quality-list').removeClass('hide');
+		    $('#show_rubric_btn').removeClass('hide');
+		});
+		$('.rubric-content').click(function () {
+		    $('.rubric-categories-sm').addClass('hide');
+		    $('.content-list').removeClass('hide');
+		    $('#show_rubric_btn').removeClass('hide');
+		});
+		$('.rubric-process').click(function () {
+		    $('.rubric-categories-sm').addClass('hide');
+		    $('.process-list').removeClass('hide');
+		    $('#show_rubric_btn').removeClass('hide');
+		});
+		$('.rubric-objective').click(function () {
+		    $('.rubric-categories-sm').addClass('hide');
+		    $('.objective-list').removeClass('hide');
+		    $('#show_rubric_btn').removeClass('hide');
+		});
+		$('#show_rubric_btn').click(function () {
+		    $(this).addClass('hide');
+		    $('.rubric-categories-sm').removeClass('hide');
+		    $('.impact-list').addClass('hide');
+		    $('.quality-list').addClass('hide');
+		    $('.content-list').addClass('hide');
+		    $('.process-list').addClass('hide');
+		    $('.objective-list').addClass('hide');
+		});
+
 		
-			$('#hide-panel').click(function () {
-				$('.side-panel').toggle('slideRight','easeOutExpo',300);	
-			});
-			
+		$('#hide-panel').click(function () {
+			$('.side-panel').toggle('slideRight','easeOutExpo',300);	
+		});
+		
+		$('.nav-border').css('display', 'block');
+		$('#hide-nav').click(function () {
+			$('.navbar').toggle();
 			$('.nav-border').css('display', 'block');
-			$('#hide-nav').click(function () {
-				$('.navbar').toggle();
-				$('.nav-border').css('display', 'block');
-			});
-			
-			$('#hide-nav').click(function (e) {
-				if ($('#hide-nav i').hasClass('fa-arrow-up')) {
-					$('#hide-nav i').removeClass('fa-arrow-up').addClass('fa-arrow-down');
-					$('.block-wide').css('margin-top', '10px').css('height', '100%');
-					$('.side-panel').css('margin-top', '-60px');
-					$('.hide-panel').css('margin-top', '-60px');
-				} else {
-					$('#hide-nav i').removeClass('fa-arrow-down').addClass('fa-arrow-up');
-					$('.block-wide').css('margin-top', '70px').css('height', '550px');
-					$('.side-panel').css('margin-top', '0px');
-					$('.hide-panel').css('margin-top', '0px');
-				}
-			});
-			
-			$('.hide-panel').click(function (e) {
-				if ($('.hide-panel i').hasClass('fa-arrow-right')) {
-					$('.hide-panel i').removeClass('fa-arrow-right').addClass('fa-arrow-left');
-					$('.block-wide').css('width', '100%');
-				} else {
-					$('.hide-panel i').removeClass('fa-arrow-left').addClass('fa-arrow-right');
-					$('.block-wide').css('width', '75%');
-				}
-			});
-			
-			
-			$('.lesson-btn').click(function arrowToggle() {
-				openStaticLesson();
-
-				if ($('.lesson-btn i').hasClass('fa-arrow-up')) {
-					$('.lesson-btn i').removeClass('fa-arrow-up').addClass('fa-arrow-down');
-				} else {
-					$('.lesson-btn i').removeClass('fa-arrow-down').addClass('fa-arrow-up');
-				}
-			});
-			$('#lessonLarge .close').click(function () {
-				openStaticLesson();
-				if ($('.lesson-btn i').hasClass('fa-arrow-up')) {
-					$('.lesson-btn i').removeClass('fa-arrow-up').addClass('fa-arrow-down');
-				} else {
-					$('.lesson-btn i').removeClass('fa-arrow-down').addClass('fa-arrow-up');
-				}
-			});
-			
-			$('#tag-details').click(function () {
-				openDynamicLesson();
-			});
-			$('#lessonSmall .close').click(function () {
-				openDynamicLesson();
-			});
-			
-			//Open lessons
-			function openStaticLesson() {
-				$('#lessonLarge').toggle(1000, 'easeOutElastic');
-				$('#lessonLarge').css('display', 'block');
+		});
+		
+		$('#hide-nav').click(function (e) {
+			if ($('#hide-nav i').hasClass('fa-arrow-up')) {
+				$('#hide-nav i').removeClass('fa-arrow-up').addClass('fa-arrow-down');
+				$('.block-wide').css('margin-top', '10px').css('height', '100%');
+				$('.side-panel').css('margin-top', '-60px');
+				$('.hide-panel').css('margin-top', '-60px');
+			} else {
+				$('#hide-nav i').removeClass('fa-arrow-down').addClass('fa-arrow-up');
+				$('.block-wide').css('margin-top', '70px').css('height', '550px');
+				$('.side-panel').css('margin-top', '0px');
+				$('.hide-panel').css('margin-top', '0px');
 			}
-			function openDynamicLesson() {
-				$('#lessonSmall').toggle(1000, 'easeOutElastic');
-				$('#lessonSmall').css('display', 'block');
+		});
+		
+		$('.hide-panel').click(function (e) {
+			if ($('.hide-panel i').hasClass('fa-arrow-right')) {
+				$('.hide-panel i').removeClass('fa-arrow-right').addClass('fa-arrow-left');
+				$('.block-wide').css('width', '100%');
+			} else {
+				$('.hide-panel i').removeClass('fa-arrow-left').addClass('fa-arrow-right');
+				$('.block-wide').css('width', '75%');
 			}
-			
-			$(function() {
-			    $( "#grade-slider1" ).slider({
-			      range: "max",
-			      min: 0,
-			      max: 100,
-			      value: 0,
-			      slide: function( event, ui ) {
-			        $( "#grade1" ).val( ui.value );
-			      }
-			    });
-			    $( "#grade1" ).val( $( "#grade-slider1" ).slider( "value" ) );
-			  });
-			  
-			$(function() {
-			    $( "#grade-slider2" ).slider({
-			      range: "max",
-			      min: 0,
-			      max: 100,
-			      value: 0,
-			      slide: function( event, ui ) {
-			        $( "#grade2" ).val( ui.value );
-			      }
-			    });
-			    $( "#grade2" ).val( $( "#grade-slider2" ).slider( "value" ) );
-			  });
-			
-			$(function() {
-			    $( "#grade-slider3" ).slider({
-			      range: "max",
-			      min: 0,
-			      max: 100,
-			      value: 0,
-			      slide: function( event, ui ) {
-			        $( "#grade3" ).val( ui.value );
-			      }
-			    });
-			    $( "#grade3" ).val( $( "#grade-slider3" ).slider( "value" ) );
-			  });
-			  
-			$(function() {
-			    $( "#grade-slider4" ).slider({
-			      range: "max",
-			      min: 0,
-			      max: 100,
-			      value: 0,
-			      slide: function( event, ui ) {
-			        $( "#grade4" ).val( ui.value );
-			      }
-			    });
-			    $( "#grade4" ).val( $( "#grade-slider4" ).slider( "value" ) );
-			  });
-			
-			$("[rel=popover]").popover();
+		});
+		
+		
+		
+		
+		$('.lesson-btn').click(function arrowToggle() {
+			openStaticLesson();
 
-		});		
+			if ($('.lesson-btn i').hasClass('fa-arrow-up')) {
+				$('.lesson-btn i').removeClass('fa-arrow-up').addClass('fa-arrow-down');
+			} else {
+				$('.lesson-btn i').removeClass('fa-arrow-down').addClass('fa-arrow-up');
+			}
+		});
+		$('#lessonLarge .close').click(function () {
+			openStaticLesson();
+			if ($('.lesson-btn i').hasClass('fa-arrow-up')) {
+				$('.lesson-btn i').removeClass('fa-arrow-up').addClass('fa-arrow-down');
+			} else {
+				$('.lesson-btn i').removeClass('fa-arrow-down').addClass('fa-arrow-up');
+			}
+		});
+		
+		$('#tag-details').click(function () {
+			openDynamicLesson();
+		});
+		$('#lessonSmall .close').click(function () {
+			openDynamicLesson();
+		});
+		
+		//Open lessons
+		function openStaticLesson() {
+			$('#lessonLarge').toggle(1000, 'easeOutElastic');
+			$('#lessonLarge').css('display', 'block');
+		}
+		function openDynamicLesson() {
+			$('#lessonSmall').toggle(1000, 'easeOutElastic');
+			$('#lessonSmall').css('display', 'block');
+		}
+		
+		$(function() {
+		    $( "#grade-slider1" ).slider({
+		      range: "max",
+		      min: 0,
+		      max: 100,
+		      value: 0,
+		      slide: function( event, ui ) {
+		        $( "#grade1" ).val( ui.value );
+		      }
+		    });
+		    $( "#grade1" ).val( $( "#grade-slider1" ).slider( "value" ) );
+		  });
+		  
+		$(function() {
+		    $( "#grade-slider2" ).slider({
+		      range: "max",
+		      min: 0,
+		      max: 100,
+		      value: 0,
+		      slide: function( event, ui ) {
+		        $( "#grade2" ).val( ui.value );
+		      }
+		    });
+		    $( "#grade2" ).val( $( "#grade-slider2" ).slider( "value" ) );
+		  });
+		
+		$(function() {
+		    $( "#grade-slider3" ).slider({
+		      range: "max",
+		      min: 0,
+		      max: 100,
+		      value: 0,
+		      slide: function( event, ui ) {
+		        $( "#grade3" ).val( ui.value );
+		      }
+		    });
+		    $( "#grade3" ).val( $( "#grade-slider3" ).slider( "value" ) );
+		  });
+		  
+		$(function() {
+		    $( "#grade-slider4" ).slider({
+		      range: "max",
+		      min: 0,
+		      max: 100,
+		      value: 0,
+		      slide: function( event, ui ) {
+		        $( "#grade4" ).val( ui.value );
+		      }
+		    });
+		    $( "#grade4" ).val( $( "#grade-slider4" ).slider( "value" ) );
+		  });
+		
+		$("[rel=popover]").popover();
+	
 	</script>
 </body>
 </html>

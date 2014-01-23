@@ -1,13 +1,17 @@
 <div class="table-responsive">
-<table class="table table-bordered table-condensed">
+<table class="table table-bordered table-condensed table-hover">
 	<tr class="rowheader">
-		<td class="cellitem col-lg-4">Tag Name</td>
-		<td class="cellitem  col-lg-8">Tag Description</td>
+		<td class="cellitem">Name</td>
+		<td class="cellitem">Description</td>
+		<td class="cellitem">Category</td>
+		<td class="cellitem">Parent</td>
 	</tr>
 	{% for tag in taglist %}
 	<tr id="{{ tag.id }}" class="rowitem" data-toggle="modal" data-target="#tag_modal">
-		<td class="cellitem col-lg-4">{{ tag.name }}</td>
-		<td class="cellitem col-lg-8">&nbsp;{{ tag.desciption }}</td>
+		<td class="cellitem">{{ tag.name }}</td>
+		<td class="cellitem">{{ tag.description }}</td>
+		<td class="cellitem">{{ tag.getCategory }}</td>
+		<td class="cellitem">{{ tag.getParent }}</td>
 	</tr>
 	{% endfor %}
 </table>

@@ -568,6 +568,20 @@ class Tag(models.Model):
     description = models.TextField(db_column='Description', blank=True) # Field name made lowercase.
     class Meta:
         db_table = 'tag'
+        
+    def getCategory(self):
+        tagid=self.id
+        cursor = connection.cursor()
+        cursor.execute('SELECT c.name FROM tag as tag join categorylink as cl on tag.id = cl.recid and cl.entityid = 12 join category as c on c.id = cl.categoryid WHERE tag.id = %s',[tagid])
+        row = cursor.fetchone()
+        return row[0]
+    
+    def getParent(self):
+        tagparentid=self.parentid
+        cursor = connection.cursor()
+        cursor.execute('SELECT name FROM tag WHERE tag.id = %s',[tagparentid])
+        row = cursor.fetchone()
+        return row[0]
 
 class Taglink(models.Model):
     id = models.IntegerField(primary_key=True, db_column='ID') # Field name made lowercase.

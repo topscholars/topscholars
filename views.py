@@ -64,9 +64,10 @@ def sindex(request):
         user_name = login.loginname
         studentlist = Studentlist.objects.filter(id=studentid)
         submissionlist = Submission.objects.filter(studentid=studentid)
-        context= {'studentlist' : studentlist, 'submissionlist' : submissionlist, 'submissioncount':submissionlist.count(), 'user_name' : user_name}
-        #data = simplejson.dumps(submissionlist)
-        #return HttpResponse(data, mimetype='application/json')
+        context= {'studentlist' : studentlist,
+                  'submissionlist' : submissionlist,
+                  'submissioncount':submissionlist.count(),
+                  'user_name' : user_name}
         return render(request, 'tsweb/student/index.html', context)
 
 #Teacher Views
@@ -284,13 +285,19 @@ def stsubmissionreview(request, id):
         submission = Submission.objects.get(id=id)
         submissionversion = Submissionversion.objects.get(submissionid=submission.id,version=submission.getLatestVersion)
         submissionversionlist = Submissionversion.objects.filter(submissionid=id)
+        
+        studentlist = Studentlist.objects.filter(id=studentid)
+        submissionlist = Submission.objects.filter(studentid=studentid)
         context = {
             'submissionversion' : submissionversion,
             'user_name' : user_name,
             'assignment' : submission.assignmentid,
-            'submissionversionlist' : submissionversionlist }
+            'submissionversionlist' : submissionversionlist,
+            'studentlist' : studentlist, 'submissionlist' : submissionlist,
+            'submissioncount':submissionlist.count(),
+            'user_name' : user_name, }
         return render(request, 'tsweb/student/revision_editor.html', context)
-                
+    
 
 def gettags(request, entityid):
     try:

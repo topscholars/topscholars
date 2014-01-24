@@ -40,7 +40,7 @@
         }
 
         .commentsBlock .heading .loadingIndicator {
-            background: transparent url(../img/ajax-loader.gif) no-repeat;
+            background: transparent url(../image/ajax-loader.gif) no-repeat;
             height: 15px;
             width: 15px;
             float: left;
@@ -54,7 +54,7 @@
 
         .commentsBlock .sendComment span {
             padding: 0 5px 0px 20px;
-            background: transparent url('../img/add_comment_ico.png') no-repeat 0px 4px;
+            background: transparent url('../image/add_comment_ico.png') no-repeat 0px 4px;
             display: block
         }
 

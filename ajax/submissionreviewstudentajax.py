@@ -81,7 +81,7 @@ class SUBMISSIONCREATE():
         else:
             data_json = []
             if highlightid != False and highlightid != '':
-                taglinklist = Taglink.objects.filter(recid=highlightid,entityid=15,deleted=0)
+                taglinklist = Taglink.objects.filter(recid=highlightid,entityid=14,deleted=0)
                 for row in taglinklist:
                     data_json.append({ "id": str(row.tagid.id), "name": row.tagid.name })
                 

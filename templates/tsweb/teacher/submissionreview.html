@@ -149,10 +149,10 @@
                         $(".essayhighlight").css({ 'background': 'red' });
                         $.each(result, function (i, val) {
                             var spanid = val[0];
-                            $('inline[name="' + spanid + '"].essayhighlight').css({ 'background': '#ffff00' });
+                            $('inline[name="' + spanid + '"]').css({ 'background': '#ffff00' });
                             textComment += "- " + val[1] + "<br/>";
                         });
-                        $("#commentSection").html(textComment);
+                        //$("#commentSection").html(textComment);
                     }).error(function (xhr, status, error) {
                         alert('Error occur. Please contact the administrator.');
                     });
@@ -170,11 +170,13 @@
                     function (result) {
                         $(".essayhighlight").css({ 'background': 'red' });
                         $.each(result, function (i, val) {
+                        	
                             var spanid = val[0];
-                            $('inline[name="' + spanid + '"].essayhighlight').css({ 'background': val[2] });
+                            console.log($('inline[name="' + spanid + '"]'));
+                            $('inline[name="' + spanid + '"]').css({ 'background': val[2] });
                             textComment += "- " + val[1] + "<br/>";
                         });
-                        $("#commentSection").html(textComment);
+                        //$("#commentSection").html(textComment);
                     }).error(function (xhr, status, error) {
                         alert('Error occur. Please contact the administrator.');
                     });

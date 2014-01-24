@@ -192,6 +192,22 @@ class ASSSIGNMENTLIST():
                                     submission.deleted=0
                                     submission.disabled=0
                                     submission.save()
+                                    
+                                    newid = Submission.objects.latest("id")
+                                    
+                                    newversion = Submissionversion()
+                                    newversion.submissionid = newid
+                                    newversion.version = 1
+                                    newversion.studentstatus = 0
+                                    newversion.teacherstatus = 0
+                                    newversion.stage = 0
+                                    newversion.createddt = datetime.now()
+                                    newversion.createdby = userid
+                                    newversion.modifieddt = datetime.now()
+                                    newversion.modifiedby = userid
+                                    newversion.disabled = 0
+                                    newversion.deleted = 0
+                                    newversion.save()
                         
                     else:
                         classlist = Classschedule.objects.get(id=classids)
@@ -217,6 +233,22 @@ class ASSSIGNMENTLIST():
                                 submission.deleted=0
                                 submission.disabled=0
                                 submission.save()
+                                
+                                newid = Submission.objects.latest("id")
+                                
+                                newversion = Submissionversion()
+                                newversion.submissionid = newid
+                                newversion.version = 1
+                                newversion.studentstatus = 0
+                                newversion.teacherstatus = 0
+                                newversion.stage = 0
+                                newversion.createddt = datetime.now()
+                                newversion.createdby = userid
+                                newversion.modifieddt = datetime.now()
+                                newversion.modifiedby = userid
+                                newversion.disabled = 0
+                                newversion.deleted = 0
+                                newversion.save()
                                 
                 
                 if studentids != False:
@@ -259,6 +291,22 @@ class ASSSIGNMENTLIST():
                             submission.deleted=0
                             submission.disabled=0
                             submission.save()
+                            
+                            newid = Submission.objects.latest("id")
+                            
+                            newversion = Submissionversion()
+                            newversion.submissionid = newid
+                            newversion.version = 1
+                            newversion.studentstatus = 0
+                            newversion.teacherstatus = 0
+                            newversion.stage = 0
+                            newversion.createddt = datetime.now()
+                            newversion.createdby = userid
+                            newversion.modifieddt = datetime.now()
+                            newversion.modifiedby = userid
+                            newversion.disabled = 0
+                            newversion.deleted = 0
+                            newversion.save()
                 
                 data_json = { 'status': 'success', }
             else:
@@ -361,6 +409,22 @@ class ASSSIGNMENTLIST():
                                     submission.deleted=0
                                     submission.disabled=0
                                     submission.save()
+                                    
+                                    newid = Submission.objects.latest("id")
+                            
+                                    newversion = Submissionversion()
+                                    newversion.submissionid = newid
+                                    newversion.version = 1
+                                    newversion.studentstatus = 0
+                                    newversion.teacherstatus = 0
+                                    newversion.stage = 0
+                                    newversion.createddt = datetime.now()
+                                    newversion.createdby = userid
+                                    newversion.modifieddt = datetime.now()
+                                    newversion.modifiedby = userid
+                                    newversion.disabled = 0
+                                    newversion.deleted = 0
+                                    newversion.save()
                         
                     else:
                         classlist = Classschedule.objects.get(id=classids)
@@ -386,6 +450,22 @@ class ASSSIGNMENTLIST():
                                 submission.deleted=0
                                 submission.disabled=0
                                 submission.save()
+                                
+                                newid = Submission.objects.latest("id")
+                            
+                                newversion = Submissionversion()
+                                newversion.submissionid = newid
+                                newversion.version = 1
+                                newversion.studentstatus = 0
+                                newversion.teacherstatus = 0
+                                newversion.stage = 0
+                                newversion.createddt = datetime.now()
+                                newversion.createdby = userid
+                                newversion.modifieddt = datetime.now()
+                                newversion.modifiedby = userid
+                                newversion.disabled = 0
+                                newversion.deleted = 0
+                                newversion.save()
                 
                 if studentids != False:
                     studentcheck = studentids.find(',')
@@ -427,6 +507,23 @@ class ASSSIGNMENTLIST():
                             submission.deleted=0
                             submission.disabled=0
                             submission.save()
+                            
+                            newid = Submission.objects.latest("id")
+                            
+                            newversion = Submissionversion()
+                            newversion.submissionid = newid
+                            newversion.version = 1
+                            newversion.studentstatus = 0
+                            newversion.teacherstatus = 0
+                            newversion.stage = 0
+                            newversion.createddt = datetime.now()
+                            newversion.createdby = userid
+                            newversion.modifieddt = datetime.now()
+                            newversion.modifiedby = userid
+                            newversion.disabled = 0
+                            newversion.deleted = 0
+                            newversion.save()
+                            
                 data_json = { 'status': 'success', }
             else:
                 data_json = { 'status': 'error', }

@@ -64,7 +64,7 @@ def sindex(request):
         user_name = login.loginname
         studentlist = Studentlist.objects.filter(id=studentid)
         submissionlist = Submission.objects.filter(studentid=studentid)
-        context= {'studentlist' : studentlist, 'submissionlist' : submissionlist, 'user_name' : user_name}
+        context= {'studentlist' : studentlist, 'submissionlist' : submissionlist, 'submissioncount':submissionlist.count(), 'user_name' : user_name}
         #data = simplejson.dumps(submissionlist)
         #return HttpResponse(data, mimetype='application/json')
         return render(request, 'tsweb/student/index.html', context)

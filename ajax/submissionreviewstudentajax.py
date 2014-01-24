@@ -137,6 +137,21 @@ class SUBMISSIONCREATE():
             submissionvs.modifiedby = userid
             submissionvs.save()
 
+            submissionvs = Submissionversion.objects.get(id=submissionversionid)
+            entitylist = Entity.objects.get(id=13)
+            submissionreviewer = Submissionreviewer()
+            submissionreviewer.submissionversionid = submissionvs
+            submissionreviewer.entityid = entitylist
+            submissionreviewer.recid = submissionvs.submissionid.teacherid
+            submissionreviewer.essay = essay
+            submissionreviewer.status = 0
+            submissionreviewer.createddt = datetime.now()
+            submissionreviewer.createdby = userid
+            submissionreviewer.modifieddt = datetime.now()
+            submissionreviewer.modifiedby = userid
+            submissionreviewer.disabled = 0
+            submissionreviewer.deleted = 0
+
             data_json = {'status': 'success'}
             data = simplejson.dumps(data_json)
             return HttpResponse(data, mimetype='application/json')

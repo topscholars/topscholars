@@ -465,7 +465,7 @@ class SUBMISSIONREVIEW():
             data = simplejson.dumps(data_json)
             return HttpResponse(data, mimetype='application/json')
         else:
-            cursor.execute("select smh.id, smh.comment, t.tagcolor from taglink as tl  join textcomment as smh on smh.id = tl.recid and smh.disabled=0 and smh.deleted=0 join tag as t on tl.tagid = t.id where tl.entityid=14 and tl.deleted=0 and tl.clientid=%s and smh.recid = %s and smh.id in (select recid from categorylink where categoryid = %s and entityid = 14)", [clientid,submissionreviewerid,categoryid])
+            cursor.execute("select smh.id, smh.comment, t.tagcolor from taglink as tl  join textcomment as smh on smh.id = tl.recid and smh.disabled=0 and smh.deleted=0 join tag as t on tl.tagid = t.id where tl.entityid=14 and tl.deleted=0 and tl.clientid=%s and smh.recid = %s and smh.entityid = 15 and smh.id in (select recid from categorylink where categoryid = %s and entityid = 14)", [clientid,submissionreviewerid,categoryid])
             submissionvshglist = cursor.fetchall()
             data = simplejson.dumps(submissionvshglist)
             return HttpResponse(data, mimetype='application/json')

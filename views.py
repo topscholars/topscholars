@@ -281,15 +281,21 @@ def stsubmissionreview(request, id):
     except KeyError:
         return HttpResponseRedirect(reverse('tsweb:login'))
     else:
-        submissionversionlist = Submissionversion.objects.filter(submissionid=id)
         submission = Submission.objects.get(id=id)
-        studentname = submission.studentid.getFullName()
-        submissionlist = Submission.objects.filter(studentid=studentid)
-        context= {'id' : id,
-                  'user_name' : user_name,
-                  'studentname' : studentname,
-                  'submissionlist' : submissionlist,
-                  'submissionversionlist' : submissionversionlist }
+        submissionversion = Submissionversion.objects.get(submissionid=submission.id,version=submission.getLatestVersion)
+        submissionversionlist = Submissionversion.objects.filter(submissionid=id)
+##        submission = Submission.objects.get(id=id)
+##        studentname = submission.studentid.getFullName()
+##        submissionlist = Submission.objects.filter(studentid=studentid)
+##        context= {'id' : id,
+##                  'studentname' : studentname,
+##                  'submissionlist' : submissionlist,
+##                   }
+        context = {
+            'submissionversion' : submissionversion,
+            'user_name' : user_name,
+            'assignment' : submission.assignmentid,
+            'submissionversionlist' : submissionversionlist }
         return render(request, 'tsweb/student/revision_editor.html', context)
                 
 

@@ -42,6 +42,9 @@
 	<script src="{% static 'tsweb/js/jquery.tagedit.js' %}"></script>
 	<script src="{% static 'tsweb/js/jquery.autoGrowInput.js' %}"></script>
 	<script src="{% static 'tsweb/js/jquery.validate.js' %}"></script>
+    <script src="{% static 'tsweb/js/fontcolor.js' %}"></script>
+    <script src="{% static 'tsweb/js/fontfamily.js' %}"></script>
+    <script src="{% static 'tsweb/js/fontsize.js' %}"></script>
 	
 	 <!--
 	 <script src="../../../static/tsweb/js/jQuery1-10-1.js" type="text/javascript"></script>
@@ -60,7 +63,7 @@
 		$(function()
 		{
 		    $('#redactor_content').redactor({
-		        
+		        plugins: ['fontcolor', 'fontfamily', 'fontsize']
 		    });
 		});
 		

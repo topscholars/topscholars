@@ -248,7 +248,7 @@
             $.getJSON(
                 url,
                 {
-                    'class': 'SUBMISSIONREVIEW',
+                    'class': evalClass,
                     'method': 'getSubmissionVersionHighlightTags',
                     'highlightid': highlightid
                 },
@@ -270,7 +270,7 @@
             $.getJSON(
                 url,
                 {
-                    'class': 'SUBMISSIONREVIEW',
+                    'class': evalClass,
                     'method': 'getSubmissionVersionHighlight',
                     'highlightid': highlightid
                 },
@@ -278,6 +278,9 @@
                     $.each(result, function (ini, val) {
                         if ($('#ele_' + ini).is("span") || $('#ele_' + ini).is("div"))
                             $('#ele_' + ini).html(val);
+                        else if ($('#ele_' + ini).is("label")) {
+                            $('#ele_' + ini).text(val);
+                        }
                         else
                             $('#ele_' + ini).val(val);
                     });
@@ -307,7 +310,7 @@
                         'method': 'delete',
                         'submissionversionid': submissionversionid,
                         'highlightid': highlightid,
-                        'essay': $('#ele_submissionversionessay').redactor('getEditor').html()
+                        'essay': $('#redactor_content').redactor('getEditor').html()
                     },
                     function (result) {
                         thisClass.showHighlightDialog(false);
@@ -829,7 +832,6 @@
 				<p><b>Category:</b> {# assignment_category #}</p>
 				<p><b>Grading Criteria:</b> {# rubric_name #}</p>
 				<p><b>Due Date:</b> {# due_date #}</p>			-->
-    {{ test }}
 	
 	<script>
 		$('.rubric-impact').click(function () {

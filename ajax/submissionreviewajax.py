@@ -174,6 +174,7 @@ class SUBMISSIONREVIEW():
                 newversion.deleted = 0
                 newversion.save()
 
+                essay = submissionrv.essay
                 newid = Submissionversion.objects.latest("id")
 
                 textcommentlist = Textcomment.objects.filter(entityid=15,recid=submissionreviewerid,deleted=0,disabled=0)
@@ -193,6 +194,7 @@ class SUBMISSIONREVIEW():
                     newtextcomment.save()
 
                     newtcid = Textcomment.objects.latest("id")
+                    essay = essay.replace ('name="' + row.id + '"', 'name="' + newtcid.id + '"').replace('openHighlightDialog(' + row.id + ')','openHighlightDialog(' + newtcid.id + ')')
 
                     tllist = Taglink.objects.filter(recid=row.id,entityid=14,deleted=0)
                     for tl in tllist:
@@ -225,6 +227,10 @@ class SUBMISSIONREVIEW():
                         newcl.deleted = cl.deleted
                         newcl.clientid = cl.clientid
                         newcl.save()
+
+                newversion = Submissionversion.objects.get(id=newid)
+                newversion.essay = essay
+                newversion.save()
     
 ##            i=0
 ##            for criteria in criteriaid:

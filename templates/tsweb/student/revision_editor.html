@@ -353,21 +353,22 @@
                 });
             });
             $('#btnSave').click(function () {
-                var essay = $('#redactor_content').redactor('getEditor').html();
-                odata = {
-                    'class': evalClass,
-                    'method': 'save',
-                    'submissionversionid': submissionversionid,
-                    'essay': essay
-                };
+                //var essay = $('#redactor_content').redactor('getEditor').html();
+                //odata = {
+                //    'class': evalClass,
+                //    'method': 'save',
+                //    'submissionversionid': submissionversionid,
+                //    'essay': essay
+                //};
 
-                $.post(url, odata,
-                    function (result) {
-                        //window.location = "{% url 'tsweb:sindex' %}";
-                    })
-                .error(function (xhr, status, error) {
-                    alert('Error occur. Please contact the administrator.');
-                });
+                //$.post(url, odata,
+                //    function (result) {
+                //        //window.location = "{% url 'tsweb:sindex' %}";
+                //    })
+                //.error(function (xhr, status, error) {
+                //    alert('Error occur. Please contact the administrator.');
+                //});
+                alert();
             });
             $('#ele_submissionversionversion').change(function () {
                 if ($('#ele_submissionversionversion').val() != '') {
@@ -828,7 +829,7 @@
 				<p><b>Category:</b> {# assignment_category #}</p>
 				<p><b>Grading Criteria:</b> {# rubric_name #}</p>
 				<p><b>Due Date:</b> {# due_date #}</p>			-->
-
+    {{ test }}
 	
 	<script>
 		$('.rubric-impact').click(function () {

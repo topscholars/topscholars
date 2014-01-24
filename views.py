@@ -268,7 +268,8 @@ def tsubmissionreview(request, id):
                   'student_name': student_name,
                   'assignment_name': assignment.name,
                   'due_date': submission.duedate,
-                  'rubric_name': rubric.name }
+                  'rubric_name': rubric.name,
+                  'test': test}
         
         return render(request, 'tsweb/teacher/submissionreview.html', context)
         
@@ -284,13 +285,6 @@ def stsubmissionreview(request, id):
         submission = Submission.objects.get(id=id)
         submissionversion = Submissionversion.objects.get(submissionid=submission.id,version=submission.getLatestVersion)
         submissionversionlist = Submissionversion.objects.filter(submissionid=id)
-##        submission = Submission.objects.get(id=id)
-##        studentname = submission.studentid.getFullName()
-##        submissionlist = Submission.objects.filter(studentid=studentid)
-##        context= {'id' : id,
-##                  'studentname' : studentname,
-##                  'submissionlist' : submissionlist,
-##                   }
         context = {
             'submissionversion' : submissionversion,
             'user_name' : user_name,

@@ -78,37 +78,63 @@
 		
 		<div class="assignment-edit-section">
 			 <div class="block-cell block-wide">
-			 		<h4>{#last_assignment #}</h4>
+				 <div class="section-title">
+				 		<h4 style="text-overflow: ellipsis;"
+				 			rel="popover"
+				 			data-placement="bottom"
+				 			data-container=".container"
+				 			data-toggle="popover" title 
+				 			data-trigger="hover"
+				 			data-content="{ goal_of_task }"><i class="fa fa-file-o"></i> { assignment_name } - { goal_of_task mmodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur }</h4>
+				 	</div>
 			 		<div id="redactor_content" name="content" style="width: 100%; height: auto;">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum</div>
 			 		<!--ADD TAGGING BUTTON OR HIGHLIGHT STATE-->
+			 		
+			 		<div class="controls">
+			 			<!--<a href="{% url 'tsweb:tsubmissionlist' %}" class="btn btn-warning btn-small pull-right" id="exitBtn" style="margin-left: 10px;">Exit</a>-->
+			 			<a href="#save_assignment_modal" data-toggle="modal" data-target="#save_assignment_modal" type="button" id="saveAssignment" class="btn btn-info btn-small pull-right" style="margin-left: 10px; padding: 5px;">Go to full editor</a>
+			 			<div class="searchlist pull-right">
+			 				<div class="form-group">
+			 					<!--<label for="lstClassid" class="col-sm-4 control-label">Revision Filter:&nbsp;</label>-->
+			 					<!--<select id="ele_submissionversionversion" class="form-control input-small">
+			 						<option value="">Please Select</option>
+			 					{% for row in submissionversionlist %}
+			 						<option value="{{ row.version }}">Revision {{ row.version }}</option>
+			 					{% endfor %}
+			 					</select>-->
+			 				</div>
+			 			</div>
+			 		</div>
+			 		
 			 </div>
 			
 		</div>
 		
 		<div class="panel-group side-panel" id="side-panel" style="max-height: 100%; overflow: scroll;">
 		
-			<div class="panel panel-default block-cell block-thin">
+			<div class="panel-default block-cell block-thin">
 				<div class="panel-heading block-header">
 					<h3 class="panel-title">
-						<a data-toggle="collapse" data-parent="#side-panel" href="#activityUpdates">
-							Activity Updates<i class="fa fa-road fa-large pull-right"></i>
+						<a href="#">
+							Activities<i class="fa fa-road fa-large pull-right"></i>
 						</a>
 					</h3>
 				</div>
 				<div id="activityUpdates" class="panel-collapse  in">
 					<div class="block-body">
-						<p><b>Next:</b> {# next #}</p>
-						<p><b>Next:</b> {# next #}</p>
-						<p><b>Next:</b> {# next #}</p>
-						<p><b>Next:</b> {# next #}</p>
+						<p><a href="#">{ activity_name }</a></p>
+						<p><a href="#">{ activity_name }</a></p>
+						<p><a href="#">{ activity_name }</a></p>
+						<p><a href="#">{ activity_name }</a></p>
+						
 					</div>
 				</div>
 			</div>
 				  
-		  <div class="panel panel-default block-cell block-thin" style="overflow: scroll;">
+		  <div class="panel-default block-cell block-thin" style="overflow: scroll;">
 		    <div class="panel-heading block-header">
 		      <h3 class="panel-title">
-		        <a data-toggle="collapse" data-parent="#side-panel" href="#collapseTwo">
+		        <a>
 		          Courses<i class="fa fa-book fa-large pull-right"></i>
 		        </a>
 		      </h3>
@@ -119,11 +145,11 @@
 		        	<li>
 		        		<a href="#" id="class-details" rel="popover" 
 		        			data-placement="left" 
-		        			data-container=".block-wide" 
+		        			data-container=".container" 
 		        			data-toggle="popover" title
 		        			data-trigger="hover" 
-		        			data-content="{# class-details #} this is some more info about this course.  Of course it will be loaded dynamically..."
-		        			role="button">{#class-name#}
+		        			data-content="{ class-details } this is some more info about this course.  Of course it will be loaded dynamically..."
+		        			role="button">{class-name }
 		        		</a>	        	 
 		        	</li>
 	
@@ -159,7 +185,7 @@
 		       						data-container=".block-wide"
 		       						data-toggle="popover" title
 		       						data-trigger="hover"
-		       						data-content="{# assignment-details #} this is some more info about this assignment.  Of course it will be loaded dynamically.."
+		       						data-content="{{ submission.assignmentid.description }}"
 		       						role="button">
 									{{ submission.getAssignment }}
 		       					</a>

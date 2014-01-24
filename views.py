@@ -268,8 +268,7 @@ def tsubmissionreview(request, id):
                   'student_name': student_name,
                   'assignment_name': assignment.name,
                   'due_date': submission.duedate,
-                  'rubric_name': rubric.name,
-                  'test': test}
+                  'rubric_name': rubric.name }
         
         return render(request, 'tsweb/teacher/submissionreview.html', context)
         

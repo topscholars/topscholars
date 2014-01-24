@@ -46,10 +46,17 @@ class SUBMISSIONREVIEW():
             data_json = ''
             if highlightid != False and highlightid != '':
                 submissionversionhighlight = Textcomment.objects.get(id=highlightid,deleted=0)
-                categorylink = Categorylink.objects.get(entityid=14,recid=highlightid)
+                categoryid = ''
+                try:
+                    categorylink = Categorylink.objects.get(entityid=14,recid=highlightid)
+                except Categorylink.DoesNotExist:
+                    categoryid = ''
+                else:
+                    categoryid = categorylink.categoryid.id
+                    
                 data_json = {
                         'highlightComment': submissionversionhighlight.comment,
-                        'highlightCategory': categorylink.categoryid.id
+                        'highlightCategory': categoryid
                         }
             else:
                 data_json = {

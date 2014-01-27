@@ -68,13 +68,20 @@ input:focus, input:active{
 	outline-offset: inherit;
 	outline: none!important;
 }
-
+html{
+	overflow: hidden;
+}
 body{
 	background-color: #cccccc;
 	height: 100%;
 	width: 100%;
 	position: fixed;
 	/*background: #ffffff url('../../../static/tsweb/image/squairy_light.png') repeat left top;*/
+}
+#content browser {
+ margin-right: -14px !important;
+ overflow-y: scroll;
+ overflow-x: hidden;
 }
 ::-webkit-scrollbar { 
     display: none !important; 
@@ -535,7 +542,6 @@ form{
 .lesson-section-body{
 	overflow: scroll;
 	background: #fff;
-	padding: 5px;
 	overflow: scroll;
 }
 .lesson-media, .lesson-text, .lesson-quiz{
@@ -568,7 +574,7 @@ form{
 	margin-bottom: 10px!important;
 }
 .section-one, .section-two, .section-three{
-	width: 33%;
+	width: 33.33333%;
 	display: inline;
 	float: left;
 	padding: 5px;
@@ -577,16 +583,20 @@ form{
 	width: 100%;
 	padding: 5px;
 }
+.section-one{
+	background-color: #bed1e2;
+}
+.section-three
 .section-one select{
 	margin-bottom: 5px;
 	margin-top: 5px;
 }
 .section-two{
-	border: 2px dashed #999;
-	border-radius: 3px;
+	background-color: #eeeeee;
 }
 .section-three{
 	padding-left: 20px;
+	background-color: #ffffff;
 }
 
 /*.lesson-section .lesson-body .lesson-section*/
@@ -951,6 +961,13 @@ form{
 #new_unit_form input[type='text']{
 	margin-bottom: 10px;
 	margin-top: 5px;
+}
+#impact_list,
+#quality_list,
+#content_list,
+#process_list{
+	max-height: 150px;
+	overflow: scroll;
 }
 #impact_list:hover, 
 #quality_list:hover, 

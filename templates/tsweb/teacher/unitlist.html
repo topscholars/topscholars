@@ -11,7 +11,7 @@
 	<link rel="stylesheet" type="text/css" href="{% static 'tsweb/css/bootstrap.css' %}" />
 	<link rel="stylesheet" type="text/css" href="{% static 'tsweb/css/topscholars.css' %}" />-->
 	
-	<link rel="stylesheet" href="{% static 'tsweb/css/bootstrap.css' %}" type="text/css" />
+	<!--<link rel="stylesheet" href="{% static 'tsweb/css/bootstrap.css' %}" type="text/css" />
 	<link rel="stylesheet" href="{% static 'tsweb/css/bootstrap-glyphicons.css' %}" type="text/css" />
 	<link rel="stylesheet" href="{% static 'tsweb/css/topscholars.css' %}" type="text/css" />
 	<link rel="stylesheet" type="text/css" href="{% static 'tsweb/css/smoothness/jquery-ui-1.10.3.custom.css' %}" />
@@ -29,7 +29,26 @@
 	<script src="{% static 'tsweb/js/jquery.validate.js' %}"></script>
 	<script src="{% static 'tsweb/js/jquery.autosize.js' %}"></script>
 	<script src="{% static 'tsweb/js/rangyinputs-jquery-1.1.2.min.js' %}"></script>
-	<script src="{% static 'tsweb/js/hashtag.js' %}"></script>	
+	<script src="{% static 'tsweb/js/hashtag.js' %}"></script>	-->
+	
+	<link rel="stylesheet" href="../../../static/tsweb/css/bootstrap.css" type="text/css"/>
+	<link rel="stylesheet" href="../../../static/tsweb/css/topscholars.css" type="text/css"/>
+	<link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+	<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css"/>
+	<!--<link rel="stylesheet" href="../../../static/tsweb/css/redactor.css"/>-->
+	<link rel="stylesheet" href="../../../static/tsweb/css/jquery.comment.css"/>
+	
+	<!--<link rel="stylesheet" href="../../../static/tsweb/css/redactor-iframe.css" />-->
+
+	<script src="../../../static/tsweb/js/jQuery1-10-1.js" type="text/javascript"></script>
+	<script src="../../../static/tsweb/js/jquery-ui-1-10-3-custom-min.js" type="text/javascript"></script>
+	<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+	<script src="../../../static/tsweb/js/bootstrap.js" type="text/javascript"></script>
+	<script src="../../../static/tsweb/js/transition.js" type="text/javascript"></script>
+	<script src="../../../static/tsweb/js/popover.js" type="text/javascript"></script>
+	<script src="../../../static/tsweb/js/redactor.min.js" type="text/javascript"></script>
+	<script src="../../../static/tsweb/js/jquery.comment.js" type="text/javascript"></script>
+	<script src="../../../static/tsweb/js/jquery-touch-punch.min.js" type="text/javascript"></script>
 
 <script>
 EDITTABLE.prototype = new GridBase();
@@ -404,13 +423,13 @@ $(function() {
 			        	      <div class="panel-body">
 			        		      <input type="text" name="ele_performance" class="form-control input-small" id="ele_performance" />
 			        		      
-			        	        <button class="btn btn-small btn-default" data-toggle="modal" data-target="#new_assignment_modal">Add Assignment</button>
-			        	        <button class="btn btn-small btn-default" data-toggle="modal" data-target="#new_rubric_modal">Add Rubric</button>
-			        	        <button class="btn btn-small btn-default" data-toggle="modal" data-target="#assignment_list_modal">Choose Assignment</button>
+
+			        	        <button class="btn btn-small btn-default" data-toggle="modal" data-target="#new_pt_details_modal">Details</button>
+
 			        	        
 			        	        <div class="new-performance"></div>
 			        	        
-			        	        <button class="btn btn-info btn-small pull-right" role="button" id="btnAddPerformance"><i class="fa fa-plus" ></i></button>
+			        	        <button class="btn btn-info btn-small pull-right" role="button" id="btnAddPerformance" style="margin-top: -25px;"><i class="fa fa-plus" ></i></button>
 			        	        
 			        	        
 			        	      </div>
@@ -428,12 +447,12 @@ $(function() {
 			        	    <div id="collapseSeven" class="panel-collapse collapse">
 			        	      <div class="panel-body">
 		        	          <input type="text" name="ele_evidence" class="form-control input-small" id="ele_evidence"/>
-			        	        <button class="btn btn-small btn-default" data-toggle="modal" data-target="#lesson_modal">Create Lesson</button>
-			        	        <button class="btn btn-small btn-default" data-toggle="modal" data-target="#criteria_modal">Add Criteria</button>
+			        	        <button class="btn btn-small btn-default" data-toggle="modal" data-target="#new_evidence_details_modal">Details</button>
+			        	        <!--<button class="btn btn-small btn-default" data-toggle="modal" data-target="#criteria_modal">Add Criteria</button>-->
 			        	        
 			        	        <div class="new-evidence"></div>
 			        	        
-			        	        <button class="btn btn-info btn-small pull-right" role="button" id="btnAddEvidence"><i class="fa fa-plus"></i></button>
+			        	        <button class="btn btn-info btn-small pull-right" role="button" id="btnAddEvidence" style="margin-top: -25px;"><i class="fa fa-plus"></i></button>
 			        	      </div>
 			        	    </div>
 			        	  </div>
@@ -481,7 +500,10 @@ $(function() {
 		        	  				
 			        	  		</div>
 			        	  	</div>
+			        	  	<button role="button" class="btn btn-small pull-right">Add Activity <i class="fa fa-plus"></i></button>
 			        	 	</li>
+			        	 	
+			        	 	
 			        	 	
 			        	</ul> <!-- #sortable -->
 			        </div> <!-- /.col-lg-12 STAGE THREE -->
@@ -504,6 +526,45 @@ $(function() {
 	
 	<script>
 	$(document).ready(function () {
+	
+		$('#show_rubric_btn').click(function () {
+			$(this).addClass('hide');
+			$('.rubric-categories').removeClass('hide');
+			$('#impactCollapse').addClass('hide');
+			$('#qualityCollapse').addClass('hide');
+			$('#contentCollapse').addClass('hide');
+			$('#processCollapse').addClass('hide');
+			
+		});
+		
+		$('.rubric-impact').click(function () {
+			$('.rubric-categories').addClass('hide');
+			$('#impactCollapse').removeClass('hide');
+			$('#show_rubric_btn').removeClass('hide');
+			
+		});
+		
+		$('.rubric-quality').click(function () {
+			$('.rubric-categories').addClass('hide');
+			$('#qualityCollapse').removeClass('hide');
+			$('#show_rubric_btn').removeClass('hide');
+			
+		});
+		
+		$('.rubric-content').click(function () {
+			$('.rubric-categories').addClass('hide');
+			$('#contentCollapse').removeClass('hide');
+			$('#show_rubric_btn').removeClass('hide');
+			
+		});
+		
+		$('.rubric-process').click(function () {
+			$('.rubric-categories').addClass('hide');
+			$('#processCollapse').removeClass('hide');
+			$('#show_rubric_btn').removeClass('hide');
+			
+		});	
+	
 		
 		$('#stage2Btn').click(function () {
 			$('#new_unit_modal .modal-title').text('New Unit - Stage 2 - Assessment Evidence');
@@ -569,17 +630,17 @@ $(function() {
 		});
 		
 		function openDynamicLesson() {
-			$('#lessonSmall').toggle(1000, 'easeOutExpo');
-			$('#lessonSmall').css('display', 'block').css('z-index', '99999');	
+			$('#autoLesson').toggle(1000, 'easeOutExpo');
+			$('#autoLesson').css('display', 'block').css('z-index', '99999');	
 		}
-		$('#lessonSmall .close').click(function () {
+		$('#autoLesson .close').click(function () {
 			openDynamicLesson();
 		});
 	});
 	</script>		
 			
 	<!--New Assignment Modal Form--> 
-	<div class="modal fade" id="new_assignment_modal" tabindex="-1" role="dialog" aria-labelledby="newAssignmentLabel" aria-hidden="true" data-dismiss="false">
+	<!--<div class="modal fade" id="new_assignment_modal" tabindex="-1" role="dialog" aria-labelledby="newAssignmentLabel" aria-hidden="true" data-dismiss="false">
 	  <div class="modal-dialog">
 	    <div class="modal-content">
 	      <div class="modal-header teacher-header">
@@ -592,7 +653,7 @@ $(function() {
 	        		<label for="ele_name" class="col-sm-4 control-label">Assignment Name</label>
 	        		<div class="col-sm-8">
 	        			<input type="text" name="ele_name" id="ele_name" class="form-control input-small"/>
-	        			<!--<input type="hidden" id="ele_id" name="id" class="form-control input-small" />-->
+	        			<!--<input type="hidden" id="ele_id" name="id" class="form-control input-small" />--*>
 	        		</div>
 	        	</div>
 	        	
@@ -688,11 +749,11 @@ $(function() {
 	        	</div>
 	        </form>
 	      </div>
-	    </div><!-- /.modal-content -->
-	  </div><!-- /.modal-dialog -->
-	</div><!-- /.modal -->
+	    </div><!-- /.modal-content --*>
+	  </div><!-- /.modal-dialog --*>
+	</div><!-- /.modal --*>
 	
-	<!--Assignment List Modal Form--> 
+	<!--Assignment List Modal Form--*> 
 	<div class="modal fade" id="assignment_list_modal" tabindex="-1" role="dialog" aria-labelledby="assignmentListLabel" aria-hidden="true" data-dismiss="false">
 	  <div class="modal-dialog">
 	    <div class="modal-content">
@@ -725,11 +786,11 @@ $(function() {
         	  <input type="reset" class="btn btn-default" data-dismiss="modal" value="Close"/>
         	</div>
 	      </div>
-	    </div><!-- /.modal-content -->
-	  </div><!-- /.modal-dialog -->
-	</div><!-- /.modal -->
+	    </div><!-- /.modal-content --*>
+	  </div><!-- /.modal-dialog --*>
+	</div><!-- /.modal --*>
 	
-	<!--Criteria List Modal Form--> 
+	<!--Criteria List Modal Form--*> 
 	<div class="modal fade" id="criteria_modal" tabindex="-1" role="dialog" aria-labelledby="criteriaLabel" aria-hidden="true" data-dismiss="false">
 	  <div class="modal-dialog">
 	    <div class="modal-content">
@@ -740,7 +801,7 @@ $(function() {
 	      <div class="modal-body">
 	        <label>Select criteria from the lists below.</label>
 	        
-	        <!--Criteria Section-->
+	        <!--Criteria Section--*>
 	        	
 	        	<h4>Impact Criteria</h4>
 	        	<div class="">
@@ -778,9 +839,9 @@ $(function() {
 	        	  <input type="button" class="btn btn-primary" name="choose_criteria" value="Choose Criteria" />
 	        	</div>
 	      </div>
-	    </div><!-- /.modal-content -->
-	  </div><!-- /.modal-dialog -->
-	</div><!-- /.modal -->
+	    </div><!-- /.modal-content --*>
+	  </div><!-- /.modal-dialog --*>
+	</div><!-- /.modal --*>
 	
 	<div class="modal fade modal-wide" id="lesson_modal" tabindex="-1" role="dialog" aria-labelledby="newLessonLabel" aria-hidden="true" data-dismiss="false">
 	  <div class="modal-dialog">
@@ -839,12 +900,306 @@ $(function() {
 	        <input type="reset" class="btn btn-default" data-dismiss="modal" value="Close"/>
 	        <input type="submit" class="btn btn-primary" value="Save Lesson" id="lesson-submit"/>
 	      </div>
-	    </div><!-- /.modal-content -->
-	  </div><!-- /.modal-dialog -->
-	</div><!-- /.modal -->
+	    </div><!-- /.modal-content --*>
+	  </div><!-- /.modal-dialog --*>
+	</div><!-- /.modal --*>-->
+	
+	<!--New Performance Task Details Modal Form--> 
+		<div class="modal fade modal-wide" id="new_pt_details_modal" tabindex="-1" role="dialog" aria-labelledby="newPTLabel" aria-hidden="true" data-dismiss="false">
+		  <div class="modal-dialog">
+		    <div class="modal-content">
+		      <div class="modal-header teacher-header">
+		        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+		        <h4 class="modal-title">Performance Task Details</h4>
+		      </div>
+		      <div class="modal-body">
+		        <form role="form" class="form-horizontal" id="new_rubric_form">
+		        	<!--Create rubric here-->
+		        	<div class="row">
+		        		<div class="col-lg-5">
+			        		<div class="form-group">
+			        			<label for="rubric_name" class="col-sm-4 control-label">Name</label>
+			        			<div class="col-sm-8">
+				        			<input type="text" name="rubric_name" id="rubric_name" class="form-control input-small" required="required"/>
+				        		</div>
+			        		</div>
+			        		<div class="form-group">
+			        			<label for="rubric_assignment" class="control-label col-sm-4">Assignment</label>
+				        		<div class="col-sm-8">
+				        			<select class="form-control input-small">
+				        				<option>{# assignment_name #}</option>
+				        			</select>
+				        		</div>
+			        		</div>
+				        	<div class="form-group">
+				        		<label for="rubric_goal" class="control-label col-sm-4">Goal Of Task</label>
+				        		<div class="col-sm-8">
+					        		<input type="text" name="rubric_goal" id="rubric_goal" class="form-control input-small" required="required"/>
+					        	</div>
+				        	</div>
+				        	<div class="form-group">
+				        		<label for="rubric_audience" class="control-label col-sm-4">Audience</label>
+				        		<div class="col-sm-8">
+					        		<input type="text" name="rubric_audience" id="rubric_audience" class="form-control input-small" />
+					        	</div>
+				        	</div>
+				        	<div class="form-group">
+				        		<label for="rubric_context" class="control-label col-sm-4">Context/Situation</label>
+				        		<div class="col-sm-8">
+					        		<input type="text" name="rubric_context" id="rubric_context" class="form-control input-small" />
+					        	</div>
+				        	</div>
+				        	<div class="form-group">
+				        		<label for="rubric_parameters" class="control-label col-sm-4">Parameters</label>
+				        		<div class="col-sm-8">
+					        		<input type="text" name="rubric_parameters" id="rubric_parameters" class="form-control input-small" />
+					        	</div>
+				        	</div>
+				        	<div class="form-group">
+				        		<label for="rubric_scale" class="control-label col-sm-4">Scale</label>
+				        		<div class="col-sm-8">
+					        		<input type="text" name="rubric_scale" id="rubric_scale" class="form-control input-small" placeholder="1 - 100"/>
+					        	</div>
+				        	</div>
+				        	
+				        	<div class="form-group">
+				        		<label for="rubric_rubric" class="control-label col-sm-4">Rubric</label>
+				        		<div class="col-sm-8">
+				        			<select class="form-control input-small">
+				        				<option>{# rubric_name #}</option>
+				        			</select>
+				        		</div>
+				        	</div>
+				        </div><!-- col-lg-5 -->
+			       		
+		        		<div class="col-lg-7" style="padding-left: 70px;">
+			        		<div class="rubric-categories">
+			        		<div class="rubric-impact circle circle-blue center-block">
+			        			<p>Impact</p>
+			        			<div class="weight-percent"><input id="impact_percent" maxlength="3" max="100" autofocus="true" step="1" type="number" name="impact-percent" class="circle-input" value="0" />%</div>
+			        		</div>
+			        		
+			        		
+			        		<div class="rubric-quality circle circle-green">
+			        			<p>Quality</p>
+			        			<div class="weight-percent"><input id="quality_percent" maxlength="3" max="100" step="1" type="number" name="quality-percent" class="circle-input" value="0"/>%</div>
+			        		</div>
+			        		
+			        		
+			        		<div class="rubric-objective circle circle-grey">
+			        			<div>Objective</div>
+			        		</div>
+			        		
+			        		<div class="rubric-content circle circle-purple">
+			        			<p>Content</p>
+			        			<div class="weight-percent"><input id="content_percent" max="100" step="1" type="number" name="content-percent" class="circle-input" value="0" />%</div>
+			        		</div>
+			        		
+			        		
+			        		<div class="rubric-process circle circle-red">
+			        			<p>Process</p>
+			        			<div class="weight-percent"><input id="process_percent" max="100" step="1" type="number" name="process-percent" class="circle-input" value="0" />%</div>
+			        		</div>
+			        		
+			        	</div>
+			        </div><!-- col-lg-7 -->
+			        
+	        		<div class="col-lg-7">
+			        		
+		        		<button id="show_rubric_btn" type="button" class="btn btn-small btn-default pull-right hide">Show Rubric</button>
+	        					        				    
+	  				    <div id="impactCollapse" class="hide">
+	  				    	<legend>Impact Criteria</legend>
+	  				      <div class="panel-body rubric-criteria-panel">
+	  				      	<div class="alert alert-danger alertCriteria" style="display: none;">Please enter text.</div>
+	    				      <input type="text" name="add_impact_criteria" id="add_impact_criteria" class="form-control input-small" placeholder="Add Impact Criteria"/>
+	    				      <input type="text" name="add-impact-tag" placeholder="Add Tag" id="add_impact_tag" class="form-control input-small add-tag" />
+	    				      <input type="text" name="add-impact-weight" value="" id="add_impact_weight" class="form-control input-small add-tag" placeholder="Weight 1 - 100" />
+	    				      <input type="button" class="btn btn-blue" value="+" id="add_impact_criteria_btn"/>
+	  				      	
+	  				      	<div class="impact-list-item hide">
+	    				      	<ul class="list-unstyled">
+	      				      	<li><a href="#" class="btn btn-danger btn-small pull-right">Remove</a></li>
+	    				      		<li><a href="#" class="btn btn-small btn-default pull-right">Edit</a></li>
+	    				      		<li>{{ criteria.name }}</li>
+	    				      		<li>{{ criteria.tag }}</li>
+	    				      		<li>{{ criteria.weight }}</li>
+	    				      	</ul>
+	    				      	<hr />
+	  				      	</div>
+	  				      </div>
+	  				     </div>
+	
+	  				    <div id="qualityCollapse" class="hide">
+	      				    	<legend>Quality Criteria</legend>
+	      				      <div class="panel-body rubric-criteria-panel">
+		      				      <div class="alert alert-danger alertCriteria" style="display: none;">Please enter text.</div>
+	      				      	<input type="text" name="add_quality_criteria" id="add_quality_criteria" class="form-control input-small" placeholder="Add Quality Criteria" />
+	      				      	<input type="text" name="add-quality-tag" placeholder="Add Tag" id="add_quality_tag" class="form-control input-small add-tag" />
+	      				      	<input type="text" name="add-quality-weight" value="" id="add_quality_weight" class="form-control input-small add-tag" placeholder="Weight 1 - 100" />
+	      				      	<input type="button" class="btn btn-green" value="+" id="add_quality_criteria_btn"/>
+	      				      	
+	      				        <div class="quality-list-item hide">
+	      				        	<ul class="list-unstyled">
+	      				          	<li><a href="#" class="btn btn-danger btn-small pull-right">Remove</a></li>
+	      				        		<li><a href="#" class="btn btn-small btn-default pull-right">Edit</a></li>
+	      				        		<li>{{ criteria.name }}</li>
+	      				        		<li>{{ criteria.tag }}</li>
+	      				        		<li>{{ criteria.weight }}</li>
+	      				        	</ul>
+	      				        	<hr />
+	      				        </div>
+	      				      </div>
+	      				    </div>
+	
+	  				    	<div id="contentCollapse" class="hide">
+	    				    	<legend>Content Criteria</legend>
+	    				      <div class="panel-body rubric-criteria-panel">
+	    				      	<div class="alert alert-danger alertCriteria" style="display: none;">Please enter text.</div>
+	    				      	<input type="text" name="add_content_criteria" id="add_content_criteria" class="form-control input-small" placeholder="Add Content Criteria"/>
+	    				      	<input type="text" name="add-content-tag" placeholder="Add Tag" id="add_content_tag" class="form-control input-small add-tag" />
+	    				      	<input type="text" name="add-content-weight" value="" id="add_content_weight" class="form-control input-small add-tag" placeholder="Weight 1 - 100" />
+	    				      	<input type="button" class="btn btn-purple" value="+" id="add_content_criteria_btn"/>
+	    				      	
+	    				        <div class="content-list-item hide">
+	    				        	<ul class="list-unstyled">
+	    				          	<li><a href="#" class="btn btn-danger btn-small pull-right">Remove</a></li>
+	    				        		<li><a href="#" class="btn btn-small btn-default pull-right">Edit</a></li>
+	    				        		<li>{{ criteria.name }}</li>
+	    				        		<li>{{ criteria.tag }}</li>
+	    				        		<li>{{ criteria.weight }}</li>
+	    				        	</ul>
+	    				        	<hr />
+	    				        </div>
+	    				      </div>
+	    				    </div>
+	  				  
+	  				    <div id="processCollapse" class="hide" >
+	  				    	<legend>Process Criteria</legend>
+	  				      <div class="panel-body rubric-criteria-panel">
+	  				      	<div class="alert alert-danger alertCriteria" style="display: none;">Please enter text.</div>
+	  				      	<input type="text" name="add_process_criteria" id="add_process_criteria" class="form-control input-small" placeholder="Add Process Criteria"/>
+	  				      	<input type="text" name="add-process-tag" placeholder="Add Tag" id="add_process_tag" class="form-control input-small add-tag" />
+	  				      	<input type="text" name="add-process-weight" value="" id="add_process_weight" class="form-control input-small add-tag" placeholder="Weight 1 - 100" />
+	  				      	<input type="button" class="btn btn-red" value="+" id="add_process_criteria_btn"/>
+	  				      	
+	  				        <div class="process-list-item hide">
+	  				        	<ul class="list-unstyled">
+	  				          	<li><a href="#" class="btn btn-danger btn-small pull-right">Remove</a></li>
+	  				        		<li><a href="#" class="btn btn-small btn-default pull-right">Edit</a></li>
+	  				        		<li>{{ criteria.name }}</li>
+	  				        		<li>{{ criteria.tag }}</li>
+	  				        		<li>{{ criteria.weight }}</li>
+	  				        	</ul>
+	  				        	<hr />
+	  				        </div>
+	  				      </div>
+	  				    </div>
+					 		</div>
+					 		
+					 		</div>
+					 		
+			        <hr />
+			        
+		        	<div class="modal-footer" >
+		        	  <input type="reset" class="btn btn-default" data-dismiss="modal" value="Close"/>
+		        	  <input type="submit" class="btn btn-primary" value="Save Details" id="btnSave"/>
+		        	</div>
+		        </form>
+		      </div>
+		      
+		    </div><!-- /.modal-content -->
+		  </div><!-- /.modal-dialog -->
+		</div><!-- /.modal -->
+		
+		
+		<!--New Evidence Details Modal Form--> 
+			<div class="modal fade modal-wide" id="new_evidence_details_modal" tabindex="-1" role="dialog" aria-labelledby="newPTLabel" aria-hidden="true" data-dismiss="false">
+			  <div class="modal-dialog">
+			    <div class="modal-content">
+			      <div class="modal-header teacher-header">
+			        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+			        <h4 class="modal-title">Other Evidence Details</h4>
+			      </div>
+			      <div class="modal-body">
+			        <form role="form" class="form-horizontal" id="new_evidence_form">
+			        	<!--Create rubric here-->
+			        	<div class="row">
+			        		<div class="col-lg-5">
+				        		<div class="form-group">
+				        			<label for="evidence_name" class="col-sm-4 control-label">Name</label>
+				        			<div class="col-sm-8">
+					        			<input type="text" name="evidence_name" id="evidence_name" class="form-control input-small" required="required"/>
+					        		</div>
+				        		</div>
+				        		<div class="form-group">
+				        			<label for="evidence_goal" class="control-label col-sm-4">Goal of task</label>
+					        		<div class="col-sm-8">
+					        			<input type="text" name="evidence_goal" id="evidence_goal" class="form-control input-small" />
+					        		</div>
+				        		</div>
+					        	<div class="form-group">
+					        		<label for="evidence_deliverables" class="control-label col-sm-4">Deliverables</label>
+					        		<div class="col-sm-8">
+						        		<input type="text" name="evidence_deliverables" id="evidence_deliverables" class="form-control input-small" />
+						        	</div>
+					        	</div>
+					        </div><!-- col-lg-5 -->
+
+				       
+				        
+			        		<div class="col-lg-7">
+			        		
+			        			<h4>Impact Criteria</h4>
+			        			<div class="">
+			        				<ul id="impact_list">
+			        					<li><label for="impact_criteria"><input type="checkbox" name="impact_criteria" value="{# add_impact_criteria #}" /> {# choose_impact_criteria #}</label></li>
+			        				</ul>
+			        				<hr />
+			        			</div>
+			        			
+			        			<h4>Quality Criteria</h4>
+			        			<div class="">
+			        				<ul id="quality_list">
+			        					<li><label for="quality_criteria"><input type="checkbox" name="quality_criteria" value="{# add_quality_criteria #}" /> {# choose_quality_criteria #}</label></li>
+			        				</ul>
+			        				<hr />
+			        			</div>
+			        			
+			        			<h4>Content Criteria</h4>
+			        			<div class="">
+			        				<ul id="content_list">
+			        					<li><label for="content_criteria"><input type="checkbox" name="content_criteria" value="{# add_content_criteria #}" /> {# choose_content_criteria #}</label></li>
+			        				</ul>
+			        				<hr />
+			        			</div>
+			        			
+			        			<h4>Process Criteria</h4>
+			        			<div class="">
+			        				<ul id="process_list" style="max-height: 100px; overflow: scroll;">
+			        					<li><label for="process_criteria"><input type="checkbox" name="process_criteria" value="{# add_process_criteria #}" /> {# choose_process_criteria #}</label></li>
+			        				</ul>
+			        			</div>
+					        		
+			        		</div>
+			        	 </div><!-- row -->
+				        
+			        	<div class="modal-footer" >
+			        	  <input type="reset" class="btn btn-default" data-dismiss="modal" value="Close"/>
+			        	  <input type="submit" class="btn btn-primary" value="Save Details" id="btnSave"/>
+			        	</div>
+			        </form>
+			      </div>
+			      
+			    </div><!-- /.modal-content -->
+			  </div><!-- /.modal-dialog -->
+			</div><!-- /.modal -->
+	
+	
+	
 	
 	<!--New Rubric Modal Form--> 
-	<div class="modal fade modal-wide" id="new_rubric_modal" tabindex="-1" role="dialog" aria-labelledby="newRubricLabel" aria-hidden="true" data-dismiss="false">
+	<!--<div class="modal fade modal-wide" id="new_rubric_modal" tabindex="-1" role="dialog" aria-labelledby="newRubricLabel" aria-hidden="true" data-dismiss="false">
 	  <div class="modal-dialog">
 	    <div class="modal-content">
 	      <div class="modal-header teacher-header">
@@ -853,7 +1208,7 @@ $(function() {
 	      </div>
 	      <div class="modal-body">
 	        <form role="form" class="form-inline" id="new_rubric_form">
-	        	<!--Create rubric here-->
+	        	<!--Create rubric here--*>
 	        	<div class="col-lg-5 clearfix">
 		        	<div class="form-group">
 		        		<label for="rubric_goal">Goal Of Task</label>
@@ -872,7 +1227,7 @@ $(function() {
 		        		<input type="text" name="rubric_parameters" id="rubric_parameters" class="form-control input-small" />
 		        	</div>
 		        	
-		        	<!--Criteria Section-->
+		        	<!--Criteria Section--*>
 		        	<div class="well" id="add_impact_criteria_text" style="display: none;">
 			        	<input type="text" name="add_impact_criteria" id="add_impact_criteria" class="form-control input-small" placeholder="Add Impact Criteria"/>
 			        	<input type="text" name="add-impact-tag" placeholder="Add Tag" id="add_impact_tag" class="form-control input-small add-tag" />
@@ -956,13 +1311,15 @@ $(function() {
 	    			<li>Content Criteria: <input class="content-count no-style" type="text" value="0"/></li>
 	    			<li>Process Criteria: <input class="process-count no-style" type="text" value="0"/></li>
 	    		</ul>
-	      </div>-->
+	      </div>--*>
 	      
-	    </div><!-- /.modal-content -->
-	  </div><!-- /.modal-dialog -->
-	</div><!-- /.modal -->
+	    </div><!-- /.modal-content --*>
+	  </div><!-- /.modal-dialog --*>
+	</div><!-- /.modal --*>-->
+	
+	
 	{% include "tsweb/main/editprofile.html" %}	
-	<div class="lesson" id="lessonSmall" style="display: none;">
+	<div class="lesson" id="autoLesson" style="display: none;">
 	
 		<div class="lesson-body">
 			<div class="lesson-section">
@@ -981,10 +1338,69 @@ $(function() {
 							<select class="form-control input-small">
 								<option>Activity</option>
 							</select>
+							<hr />
+							<div class="form-group">
+								<button class="btn btn-danger" role="button" id="pfbBtn">Play From Beginning <i class="fa fa-undo"></i></button>
+							</div>
+							<div class="form-group">
+								<button class="btn btn-info" role="button">Chronology: {# #}</button>
+							</div>
+							<div class="form-group">
+								<button class="btn btn-warning" role="button">Type: {# auto_manual #}</button>
+							</div>
 						</div><!-- /.section-one -->
 						
-						<div class="section-two ">
+						<div class="section-two">
+							<div class="form-group">
+								<label for="lesson_name">Name</label>
+								<input type="text" name="a_lesson_name" class="form-control" value="" />
+							</div>
+						
+						</div>
+						
+						<div class="section-three text-center">
 							
+							<div class="row form-group">
+								<button class="btn btn-default" role="button"><i class="fa fa-angle-left"></i> Back</button>
+								<button class="btn btn-default" role="button">Next <i class="fa fa-angle-right"></i></button>
+								<button class="btn btn-primary" type="submit" role="button">Submit</button>
+							</div>
+							<!--<button class="btn btn-info" role="button">Record Answer</button>-->
+						</div>
+						
+					</form>
+				</div>
+			</div>
+		</div>
+		
+	</div> <!-- /. auto lesson -->
+	
+	<div class="lesson" id="manualLesson" style="display: none;">
+	
+		<div class="lesson-body">
+			<div class="lesson-section">
+				<div class="lesson-section-header lesson-header-small">{# lesson_name #}
+					<button type="button" class="close" aria-hidden="true">&times;</button>
+				</div>
+				<div class="lesson-section-body">
+					<form class="form form-inline" role="form" id="manual_lesson">
+						<div class="section-one">
+							<select class="form-control input-small">
+								<option>Choose Unit</option>
+							</select>
+							<select class="form-control input-small">
+								<option>Lesson</option>
+							</select>
+							<select class="form-control input-small">
+								<option>Activity</option>
+							</select>
+						</div><!-- /.section-one -->
+						
+						<div class="section-two">
+							<div class="form-group">
+								<label for="lesson_name">Name</label>
+								<input type="text" name="m_lesson_name" class="form-control" value="" />
+							</div>
 						
 						</div>
 						
@@ -993,11 +1409,11 @@ $(function() {
 								<button class="btn btn-danger" role="button" id="pfbBtn">Play From Beginning <i class="fa fa-undo"></i></button>
 							</div>
 							<div class="row form-group">
-								<button class="btn btn-success" role="button" id="answerBtn">Answer</button>
+								<!--<button class="btn btn-success" role="button" id="answerBtn">Answer</button>-->
 								<button class="btn btn-info" role="button">Chronology: {# #}</button>
 							</div>
 							<div class="row form-group">
-								<button class="btn btn-warning" role="button">Type: Dynamic</button>
+								<button class="btn btn-warning" role="button">Type: {# auto_manual #}</button>
 							</div>
 							<div class="row form-group">
 								<button class="btn btn-default" role="button"><i class="fa fa-angle-left"></i> Back</button>
@@ -1012,13 +1428,14 @@ $(function() {
 			</div>
 		</div>
 		
-	</div> <!-- /. lesson small -->
+	</div> <!-- /. auto lesson -->
 	
 	<script>
 	
 		document.getElementById("uploadBtn").onchange = function () {
 		  document.getElementById("uploadFile").value = this.value;
-		};
+		};	
+		
 		
 		$('#btnAddGoal').click(function(event){
 			$('.new-goal').append('<div class="ngText"><input type="text" name="ele_goal" class="form-control input-small" id="nGoal" /><i class="fa fa-minus-square-o minus fa-lg"></i></div>');

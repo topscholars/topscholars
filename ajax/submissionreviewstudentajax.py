@@ -149,7 +149,7 @@ class SUBMISSIONCREATE():
             submissionreviewer = Submissionreviewer()
             submissionreviewer.submissionversionid = submissionvs
             submissionreviewer.entityid = entitylist
-            submissionreviewer.recid = submissionvs.submissionid.teacherid
+            submissionreviewer.recid = submissionvs.submissionid.teacherid.id
             submissionreviewer.essay = essay
             submissionreviewer.status = 0
             submissionreviewer.createddt = datetime.now()
@@ -158,6 +158,7 @@ class SUBMISSIONCREATE():
             submissionreviewer.modifiedby = userid
             submissionreviewer.disabled = 0
             submissionreviewer.deleted = 0
+            submissionreviewer.save()
 
             data_json = {'status': 'success'}
             data = simplejson.dumps(data_json)

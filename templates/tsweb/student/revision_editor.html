@@ -342,20 +342,49 @@
             });
             $('#btnSubmit').click(function () {
                 var essay = $('#redactor_content').redactor('getEditor').html();
-                odata = {
-                    'class': evalClass,
-                    'method': 'submit',
-                    'submissionversionid': submissionversionid,
-                    'essay': essay
-                };
+                //console.log(essay);
+                var i = 0;
+            	$(".essayhighlight").each(function(ini, val){
 
-                $.post(url, odata,
-                    function (result) {
-                        window.location = "{% url 'tsweb:sindex' %}";
-                    })
-                .error(function (xhr, status, error) {
-                    alert('Error occur. Please contact the administrator.');
+     				if($(this).attr('name') == undefined){
+						if($(this)[0].getNamedItem == undefined){
+							
+							if($(this)[0].children !== undefined){
+								if($(this)[0].children[0] !== undefined){
+ 									if($(this)[0].children[0].children !== undefined){
+ 										if($(this)[0].children[0].children[0].getAttribute("name") !== undefined){
+ 											i++;
+ 										}
+ 									}
+								}
+							}
+						}else{
+							i++;
+						}
+     				}else{
+     					i++;
+     				}
                 });
+                if(i == 0){
+	                odata = {
+	                    'class': evalClass,
+	                    'method': 'submit',
+	                    'submissionversionid': submissionversionid,
+	                    'essay': essay
+	                };
+	
+	                $.post(url, odata,
+	                    function (result) {
+	                        window.location = "{% url 'tsweb:sindex' %}";
+	                    })
+	                .error(function (xhr, status, error) {
+	                    alert('Error occur. Please contact the administrator.');
+	                });
+                }else{
+                	alert('Tag not all remove');
+                }
+                
+                
             });
             $('#btnSave').click(function () {
                 var essay = $('#redactor_content').redactor('getEditor').html();
@@ -368,7 +397,7 @@
 
                 $.post(url, odata,
                     function (result) {
-                        //window.location = "{% url 'tsweb:sindex' %}";
+                        window.location = "{% url 'tsweb:sindex' %}";
                     })
                 .error(function (xhr, status, error) {
                     alert('Error occur. Please contact the administrator.');

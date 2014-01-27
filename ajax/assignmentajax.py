@@ -40,7 +40,7 @@ class ASSSIGNMENTLIST():
                         'minwords': r[5],
                         'disabled': r[6],
                         'audience': r[7],
-                        'contextsituation': r[8],
+                        'context': r[8],
                         'duedate': duedate,
                         'revisions': r[10],
                         'goal': r[11],
@@ -68,22 +68,24 @@ class ASSSIGNMENTLIST():
             clientid = login.clientid
             id = request.GET.get('id', False)
             classlist = list(Classschedule.objects.filter(Q(disabled=0,deleted=0,clientid=clientid)).values('id','code'))
-            classlistselect = list(Classassignment.objects.filter(assignmentid=id).values('classid'))
-        except Classassignment.DoesNotExist:
-            data = simplejson.dumps(classlist)
-            return HttpResponse(data, mimetype='application/json')
+        except KeyError:
+            return HttpResponse('error', mimetype='application/json')
         else:
-            classselectarray = []
-            for classdict in classlistselect:
-                classselectarray.append(classdict['classid'])
-            
-            classstorelist = []
-            for classstore in classlist:
-                if classstore['id'] in classselectarray:
-                    classstorelist.append({'id': classstore['id'], 'code': classstore['code'], 'selected': 'selected'})
-                else:
-                    classstorelist.append({'id': classstore['id'], 'code': classstore['code'], 'selected': ''})
-            data = simplejson.dumps(classstorelist)
+            if id != '':
+                classlistselect = list(Classassignment.objects.filter(assignmentid=id).values('classid'))
+                classselectarray = []
+                for classdict in classlistselect:
+                    classselectarray.append(classdict['classid'])
+                
+                classstorelist = []
+                for classstore in classlist:
+                    if classstore['id'] in classselectarray:
+                        classstorelist.append({'id': classstore['id'], 'code': classstore['code'], 'selected': 'selected'})
+                    else:
+                        classstorelist.append({'id': classstore['id'], 'code': classstore['code'], 'selected': ''})
+                data = simplejson.dumps(classstorelist)
+            else:
+                data = simplejson.dumps(classlist)
             return HttpResponse(data, mimetype='application/json')
 
         
@@ -97,19 +99,22 @@ class ASSSIGNMENTLIST():
             return HttpResponse('error', mimetype='application/json')
         else:
             studentlist = list(Studentlist.objects.filter(clientid=clientid).values('id','firstname','lastname'))
-            studentsubmissionlist = list(Submission.objects.filter(assignmentid=assignmentid,disabled=0,deleted=0).values('studentid'))
-            
-            studentselectarray = []
-            for studentdict in studentsubmissionlist:
-                studentselectarray.append(studentdict['studentid'])
+            if assignmentid != '':
+                studentsubmissionlist = list(Submission.objects.filter(assignmentid=assignmentid,disabled=0,deleted=0).values('studentid'))
                 
-            studentstorelist = []
-            for studentstore in studentlist:
-                if studentstore['id'] in studentselectarray:
-                    studentstorelist.append({'id': studentstore['id'], 'firstname': studentstore['firstname'], 'lastname': studentstore['lastname'], 'selected': 'selected'})
-                else:
-                    studentstorelist.append({'id': studentstore['id'], 'firstname': studentstore['firstname'], 'lastname': studentstore['lastname'], 'selected': ''})
-            data = simplejson.dumps(studentstorelist)
+                studentselectarray = []
+                for studentdict in studentsubmissionlist:
+                    studentselectarray.append(studentdict['studentid'])
+                    
+                studentstorelist = []
+                for studentstore in studentlist:
+                    if studentstore['id'] in studentselectarray:
+                        studentstorelist.append({'id': studentstore['id'], 'firstname': studentstore['firstname'], 'lastname': studentstore['lastname'], 'selected': 'selected'})
+                    else:
+                        studentstorelist.append({'id': studentstore['id'], 'firstname': studentstore['firstname'], 'lastname': studentstore['lastname'], 'selected': ''})
+                data = simplejson.dumps(studentstorelist)
+            else:
+                data = simplejson.dumps(studentlist)
             return HttpResponse(data, mimetype='application/json')
     
     def save(self,request):
@@ -255,6 +260,7 @@ class ASSSIGNMENTLIST():
                     studentcheck = studentids.find(',')
                     if studentcheck > -1:
                         studentids = studentids.split(',')
+                        assignmentlist = Assignment.objects.get(id=id)
                         for row in studentids:
                             studentlist = Studentlist.objects.get(id=row[0])
                             try: 
@@ -275,6 +281,7 @@ class ASSSIGNMENTLIST():
                                 submission.save()
                     else:
                         studentlist = Studentlist.objects.get(id=studentids)
+                        assignmentlist = Assignment.objects.get(id=id)
                         try: 
                             submission = Submission.objects.get(Q(studentid=studentlist),Q(assignmentid=assignmentlist),~Q(progress=100))
                         except Submission.DoesNotExist:
@@ -471,6 +478,7 @@ class ASSSIGNMENTLIST():
                     studentcheck = studentids.find(',')
                     if studentcheck > -1:
                         studentids = studentids.split(',')
+                        assignmentlist = Assignment.objects.get(id=id)
                         for row in studentids:
                             studentlist = Studentlist.objects.get(id=row[0])
                             try: 
@@ -491,6 +499,7 @@ class ASSSIGNMENTLIST():
                                 submission.save()
                     else:
                         studentlist = Studentlist.objects.get(id=studentids)
+                        assignmentlist = Assignment.objects.get(id=id)
                         try: 
                             submission = Submission.objects.get(Q(studentid=studentlist),Q(assignmentid=assignmentlist),~Q(progress=100))
                         except Submission.DoesNotExist:

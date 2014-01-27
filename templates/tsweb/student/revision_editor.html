@@ -351,11 +351,15 @@
 							
 							if($(this)[0].children !== undefined){
 								if($(this)[0].children[0] !== undefined){
- 									if($(this)[0].children[0].children !== undefined){
- 										if($(this)[0].children[0].children[0].getAttribute("name") !== undefined){
- 											i++;
- 										}
- 									}
+									if($(this)[0].children[0].getAttribute("name") !== undefined){
+										i++;
+									}else{
+	 									if($(this)[0].children[0].children !== undefined){
+	 										if($(this)[0].children[0].children[0].getAttribute("name") !== undefined){
+	 											i++;
+	 										}
+	 									}
+	 								}
 								}
 							}
 						}else{

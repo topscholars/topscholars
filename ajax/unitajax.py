@@ -140,7 +140,7 @@ class TUNITLISTAJAX():
     def get(self,request):
         try:
             userid = request.session['userid']
-            description=request.GET.get('description',False)
+            unitname=request.GET.get('unitname',False)
         except KeyError:
             return HttpResponseRedirect(reverse('tsweb:login'))
         else:
@@ -148,9 +148,9 @@ class TUNITLISTAJAX():
             clientid = login.clientid
             
             unitlist = ''
-            if description == False or description == '':
+            if unitname == False or unitname == '':
                 unitlist = Unit.objects.filter(clientid=clientid)
             else:
-                unitlist = Unit.objects.filter(clientid=clientid,firstname__contains=description)
+                unitlist = Unit.objects.filter(clientid=clientid,name__contains=unitname)
             context = {'unitlist': unitlist}
             return render(request, 'tsweb/teacher/unitlistajax.html', context)

@@ -1,16 +1,10 @@
-<!--{% load staticfiles %}-->
 {% load staticfiles %}
 <!DOCTYPE html>
 <html>
 
 <head>
 	<meta charset="UTF-8"/> 
-	<!--<link rel="stylesheet" type="text/css" href="{% static 'tsweb/css/Prototype.css' %}" />-->
-<!--	<link rel="stylesheet" type="text/css" href="{% static 'tsweb/css/smoothness/jquery-ui-1.10.3.custom.min.css' %}" />
-	<link rel="stylesheet" type="text/css" href="{% static 'tsweb/css/smoothness/jquery-ui-1.10.3.custom-edited.css' %}" />
-	<link rel="stylesheet" type="text/css" href="{% static 'tsweb/css/bootstrap.css' %}" />
-	<link rel="stylesheet" type="text/css" href="{% static 'tsweb/css/topscholars.css' %}" />-->
-	
+
 	<link rel="stylesheet" href="{% static 'tsweb/css/bootstrap.css' %}" type="text/css" />
 	<link rel="stylesheet" href="{% static 'tsweb/css/bootstrap-glyphicons.css' %}" type="text/css" />
 	<link rel="stylesheet" href="{% static 'tsweb/css/topscholars.css' %}" type="text/css" />
@@ -80,12 +74,12 @@ function EDITTABLE(){
 		thisClass.getData('');
 	}
 	
-	this.getData = function(assignmentname ,classid) {
-		$("#list").html("<div style='width:100%;position=relative;text-align:center;'><img src='{% static 'tsweb/image/ajax-loader.gif' %}' alt='' style='margin:auto;width=100px;height=100px;position=relative;' /></div>");
-		$.get("{% url 'tsweb:tprocessajax' %}?class="+tableClassAjax,
-		{ assignmentname : assignmentname ,
-  		classid : classid},
+	this.getData = function(unitname ,classid) {
+		$.get("{% url 'tsweb:tprocessajax' %}",
+		{ class : tableClassAjax,
+			unitname : unitname },
 		function(result){
+			console.log(result);
 		      $("#list").html(result);
 		}
 		);
@@ -212,6 +206,18 @@ function EDITTABLE(){
 			}
 		});
 		
+		$('#txtSearch').keypress(function(event) {
+			thisClass.Search(this,event);
+		});
+		
+		$('.btnSearch').click(function(){
+			thisClass.getData($('#txtSearch').val(), '');
+		});
+		
+		$( "#search-form" ).submit(function() {
+			return false;
+		});
+	
 		thisClass.initValidateForm();
 		var profile = new EDITPROFILE(url);
 		profile.iniControl();

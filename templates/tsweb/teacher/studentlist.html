@@ -1,32 +1,9 @@
-﻿<!--{% load staticfiles %}
+﻿{% load staticfiles %}
 <!DOCTYPE html>
 <html>
 
 <head>
 	<meta charset="UTF-8"/> 
-	<link rel="stylesheet" type="text/css" href="{% static 'tsweb/css/smoothness/jquery-ui-1.10.3.custom.css' %}" />
-	<link rel="stylesheet" type="text/css" href="{% static 'tsweb/css/jquery.datepick.css' %}" />
-	<link rel="stylesheet" type="text/css" href="{% static 'tsweb/css/Prototype.css' %}" />
-	<script src="{% static 'tsweb/js/jQuery1.10.1.js' %}"></script>
-	<script src="{% static 'tsweb/js/jquery-ui-1.10.3.custom.min.js' %}"></script>
-	<script src="{% static 'tsweb/js/jquery.cookie.js' %}"></script>
-	<script src="{% static 'tsweb/js/WaterMark.js' %}"></script>
-	<script src="{% static 'tsweb/js/jquery.datepick.js' %}"></script>
-	<script src="{% static 'tsweb/js/util.js' %}"></script>
-</head>
-
-<body>-->
-<!--{% load staticfiles %}-->
-<!DOCTYPE html>
-<html>
-
-<head>
-	<meta charset="UTF-8"/> 
-	<!--<link rel="stylesheet" type="text/css" href="{% static 'tsweb/css/Prototype.css' %}" />-->
-<!--	<link rel="stylesheet" type="text/css" href="{% static 'tsweb/css/smoothness/jquery-ui-1.10.3.custom.min.css' %}" />
-	<link rel="stylesheet" type="text/css" href="{% static 'tsweb/css/smoothness/jquery-ui-1.10.3.custom-edited.css' %}" />
-	<link rel="stylesheet" type="text/css" href="{% static 'tsweb/css/bootstrap.css' %}" />
-	<link rel="stylesheet" type="text/css" href="{% static 'tsweb/css/topscholars.css' %}" />-->
 	
 	<link rel="stylesheet" href="{% static 'tsweb/css/bootstrap.css' %}" type="text/css" />
 	<link rel="stylesheet" href="{% static 'tsweb/css/bootstrap-glyphicons.css' %}" type="text/css" />
@@ -330,6 +307,10 @@
 				thisClass.Search(this,event);
 			});
 			
+			$('.btnSearch').click(function(){
+				thisClass.getData($('#txtSearch').val(), '');
+			});
+				
 			$( "#search-form" ).submit(function() {
 				return false;
 			});

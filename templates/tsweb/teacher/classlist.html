@@ -275,6 +275,14 @@ function EDITTABLE(){
 			thisClass.Search(this,event);
 		});
 		
+		$('.btnSearch').click(function(){
+			thisClass.getData($('#txtSearch').val());
+		});
+		
+		$( "#search-form" ).submit(function() {
+			return false;
+		});
+		
 		$("#class-submit").click(function(){
         	thisClass.initValidateFormEvent();
             if(thisClass.submitForm){

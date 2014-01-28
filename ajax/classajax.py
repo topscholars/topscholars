@@ -358,7 +358,7 @@ class CLASSLIST():
                                                            'deleted' : 0,
                                                            'clientid' : clientid} 
                                                            )
-                    data_json = { 'status': 'success', }
+                data_json = { 'status': 'success', }
             else:
                 data_json = { 'status': 'error', }
                 

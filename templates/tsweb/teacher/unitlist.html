@@ -208,7 +208,11 @@ function EDITTABLE(){
 		$("#btnSave").click(function(){
         	thisClass.initValidateFormEvent();
             if(thisClass.submitForm){
-				thisClass.save();
+            	if($("#ele_name").val() == ''){
+            		$('<label class="error" for="ele_name">This field is required.</label>').insertAfter("#ele_name");
+            	}else{
+					thisClass.save();
+				}
 			}
 		});
 		

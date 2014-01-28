@@ -2878,6 +2878,7 @@ button.close {
 .tab-content > .active,
 .pill-content > .active {
   display: block;
+  background: none;
 }
 
 .nav .caret {

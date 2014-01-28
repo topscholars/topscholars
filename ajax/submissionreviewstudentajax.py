@@ -179,6 +179,15 @@ class SUBMISSIONCREATE():
             submissionvs.modifieddt = datetime.now()
             submissionvs.modifiedby = userid
             submissionvs.save()
+            
+            login = Login.objects.get(id=userid)
+            recid = login.recid
+            
+            studentlist = Studentlist.objects.get(id=recid)
+            studentlist.lastsubmissionversionid = submissionversionid
+            studentlist.modifieddt = datetime.now()
+            studentlist.modifiedby = userid
+            studentlist.save()
 
             data_json = {'status': 'success',
                          'submissionversionid': submissionversionid}

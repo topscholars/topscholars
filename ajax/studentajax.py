@@ -134,6 +134,7 @@ class STUDENTLIST():
             studentlist.salutation = salutation
             studentlist.currentaccademicyear = currentaccademicyear
             studentlist.save()
+
             data_json = { 'status': 'success', }
             data = simplejson.dumps(data_json)
             return HttpResponse(data, mimetype='application/json')

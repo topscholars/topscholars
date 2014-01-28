@@ -291,19 +291,20 @@ class SUBMISSIONREVIEW():
             recid = Textcomment.objects.latest('id').id
 
             entitylist = Entity.objects.get(id=14)
-            for tagid in tagids:
-                taglist = Tag.objects.get(id=tagid)
-                taglink = Taglink()
-                taglink.tagid = taglist
-                taglink.entityid = entitylist
-                taglink.recid = recid
-                taglink.createddt = datetime.now()
-                taglink.createdby = userid
-                taglink.modifieddt = datetime.now()
-                taglink.modifiedby = userid
-                taglink.deleted = 0
-                taglink.clientid = clientid
-                taglink.save()
+            if tagids != False and tagids != '':
+                for tagid in tagids:
+                    taglist = Tag.objects.get(id=tagid)
+                    taglink = Taglink()
+                    taglink.tagid = taglist
+                    taglink.entityid = entitylist
+                    taglink.recid = recid
+                    taglink.createddt = datetime.now()
+                    taglink.createdby = userid
+                    taglink.modifieddt = datetime.now()
+                    taglink.modifiedby = userid
+                    taglink.deleted = 0
+                    taglink.clientid = clientid
+                    taglink.save()
 
             if categoryid != False and categoryid != '':
                 category = Category.objects.get(id=categoryid)

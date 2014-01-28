@@ -59,12 +59,35 @@
 	 
 	 -->
 	<script>
+	function EDITTABLE() {
+        var thisClass = this;
+        var evalClass = 'VIEWAJAX';
+        var url = "{% url 'tsweb:tprocessajax' %}";
+        
+        this.getData = function () {
+            $.getJSON(
+                url,
+                {
+                    'class': evalClass,
+                },
+                function (result) {
+                	$('#redactor_content').redactor({ plugins: ['fontcolor', 'fontfamily', 'fontsize'] });
+                	$('#redactor_content').redactor('set', result.essay);
+
+                })
+                .error(function (xhr, status, error) {
+                    alert('Error occur. Please contact the administrator.');
+                });
+        }
+        
+        this.initContent = function () {
+        	thisClass.getData();
+        }
+	}
 	$(document).ready(function () {
-		$(function()
-		{
-		    $('#redactor_content').redactor({
-		        plugins: ['fontcolor', 'fontfamily', 'fontsize']
-		    });
+		$(function(){
+            var gen = new EDITTABLE();
+        	gen.initContent();
 		});
 		
 	});
@@ -88,9 +111,9 @@
 				 			data-container=".container"
 				 			data-toggle="popover" title 
 				 			data-trigger="hover"
-				 			data-content="{ goal_of_task }"><i class="fa fa-file-o"></i> { assignment_name } - { goal_of_task mmodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur }</h4>
+				 			data-content="{{ assignment.goaloftask }}"><i class="fa fa-file-o"></i> {{ assignment.name }} - {{ assignment.goaloftask }}</h4>
 				 	</div>
-			 		<div id="redactor_content" name="content" style="width: 100%; height: auto;">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum</div>
+			 		<div id="redactor_content" name="content" style="width: 100%; height: auto;"></div>
 			 		<!--ADD TAGGING BUTTON OR HIGHLIGHT STATE-->
 			 		
 			 		<div class="controls">
@@ -125,11 +148,9 @@
 				</div>
 				<div id="activityUpdates" class="panel-collapse  in">
 					<div class="block-body">
-						<p><a href="#">{ activity_name }</a></p>
-						<p><a href="#">{ activity_name }</a></p>
-						<p><a href="#">{ activity_name }</a></p>
-						<p><a href="#">{ activity_name }</a></p>
-						
+						{% for lessonactivity in lessonactivitylist %}
+							<p><a href="#">{{ lessonactivity.name }}</a></p>
+						{% endfor %}
 					</div>
 				</div>
 			</div>
@@ -145,17 +166,20 @@
 		    <div id="collapseTwo" class="panel-collapse  in">
 		      <div class="block-body">
 		        <ul class="block-list" id="classesList">
+		        	<!--
+		        	{% for class in classschedulelist %}
 		        	<li>
 		        		<a href="#" id="class-details" rel="popover" 
 		        			data-placement="left" 
 		        			data-container=".container" 
 		        			data-toggle="popover" title
 		        			data-trigger="hover" 
-		        			data-content="{ class-details } this is some more info about this course.  Of course it will be loaded dynamically..."
-		        			role="button">{class-name }
+		        			data-content="{{ class.description }}"
+		        			role="button">{{ class.code }} - {{ class.subcode }}
 		        		</a>	        	 
 		        	</li>
-	
+					{% endfor %}
+					-->
 		        </ul>
 		      </div>
 		    </div>

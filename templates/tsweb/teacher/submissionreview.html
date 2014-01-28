@@ -37,6 +37,7 @@
 <script src="{% static 'tsweb/js/fontcolor.js' %}"></script>
 <script src="{% static 'tsweb/js/fontfamily.js' %}"></script>
 <script src="{% static 'tsweb/js/fontsize.js' %}"></script>
+<script src="{% static 'tsweb/js/jquery.validate.js' %}"></script>
 <!--DELETE BEFORE DEPLOYMENT-->
 <!--<link rel="stylesheet" href="../../../static/tsweb/css/bootstrap.css" type="text/css"/>
 <link rel="stylesheet" href="../../../static/tsweb/css/topscholars.css" type="text/css"/>
@@ -79,6 +80,7 @@
         var thisClass = this;
         var evalClass = 'SUBMISSIONREVIEW';
         var url = "{% url 'tsweb:tprocessajax' %}";
+        var formValidate = $("#submit_block_form");
         this.getSelectRubricCriteria = function (id, rubricid) {
             //var html = '';
             //$.getJSON(
@@ -573,6 +575,32 @@
                     alert('Error occur. Please contact the administrator.');
             });
         }
+        
+        this.initValidateForm = function(){
+			  formValidate.validate({              
+			    rules: {
+			      	progress:{
+			      		required: true,
+			      		number: true,
+			      	},
+			    },
+				 invalidHandler: function(event, validator) {
+				// 'this' refers to the form
+					thisClass.submitForm = false;
+				}
+			  });
+	    }
+	
+		this.initValidateFormEvent = function(){
+			thisClass.submitForm = true;
+		  	formValidate.validate().form();
+		}
+		
+		this.resetValidatForm = function(){
+			var validator = formValidate.validate();
+			validator.resetForm();
+			$(".error").removeClass('error');	
+		}
         this.initContent = function () {
             submissionreviewerid = '{{ id }}';
             $('#ele_submissionversionessay').redactor({ toolbar: false });
@@ -581,6 +609,8 @@
                 autocompleteOptions: { minLength: 1 },
                 allowEdit: false
             });
+            
+            //$(".tagedit-list").css({'background-color': 'white'});
             $('#btnedithighlight').click(function () {
                 thisClass.editHighlightDialog(true);
                 $('.editHighlightSuggest').show();
@@ -605,13 +635,17 @@
                 thisClass.del();
             });
             $('#saveAssignment').click(function () {
+            	thisClass.resetValidatForm();
                 thisClass.showSubmitDialog(true);
             });
             $("#btncancelsubmit").click(function () {
                 thisClass.showSubmitDialog();
             });
             $("#btnsavesubmit").click(function () {
-                thisClass.submit();
+            	thisClass.initValidateFormEvent();
+	            if(thisClass.submitForm){
+					thisClass.submit();
+				}
             });
             $('#ele_submissionversionversion').change(function () {
                 if ($('#ele_submissionversionversion').val() != '') {
@@ -643,6 +677,7 @@
             $('.rubric-process').click(function () {
                 thisClass.categoryHighlightList("process");
             });
+            thisClass.initValidateForm();
             thisClass.essayEvent();
             thisClass.showHighlightDialog(false);
             thisClass.getData();
@@ -658,76 +693,48 @@
         gen.getHighlightData();
     }
 </script>
-<nav class="navbar" role="navigation">
-<div class="container">
-	<h1 class="logo"><a href="#">Writability - My Classroom</a></h1>
-	<ul class="nav navbar-nav pull-right student-nav">
-		<li class="dropdown">
-		<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-bullhorn fa-lg notification"></i></a>
-		<ul class="dropdown-menu">
-			<li class="dropdown-title">Notifications</li>
-			<li><a href="#">{# notification-name #}</a></li>
-		</ul>
-		</li>
-		<li class="dropdown">
-		<a href="#" class="dropdown-toggle student-name" data-toggle="dropdown">{{ user_name }}</a>
-		<ul class="dropdown-menu">
-			<li><a href="{% url 'tsweb:logout' %}"><i class="fa fa-power-off"></i> Log Out</a></li>
-		</ul>
-		</li>
-	</ul>
-	<form class="navbar-form navbar-left" role="search" id="search-form" method="" action="null">
-		<div class="input-group col-lg-3 col-offset-6">
-			<input type="text" class="form-control" id="txtSearch">
-			<span class="input-group-btn">
-			<input class="btn btn-default" type="submit" value="Search">
-			</span>
-		</div>
-		<!-- /input-group -->
-	</form>
-</div>
-</nav>
+{% include "tsweb/main/navbar.html" %}
 <!-- End Nav -->
 <!-- submit block -->
+
+<form role="form" class="form-horizontal" id="submit_block_form">
 <div id="diveditbg" style="display: none; background-color:gray;z-index:1;width:100%;height:100%;position:absolute;opacity:0.4;">
 </div>
-<div id="submitpopup" style="z-index:2;width:500px;position:absolute;background-color:white;margin-top:10%;margin-left:35%;padding:10px;display:none;">
-	<table style="width:100%;">
-	<tr>
-		<td>
-			Stage :
-		</td>
-		<td>
+<div id="submitpopup" class="tag-list-dropdown" style="z-index:2;width:500px;position:absolute;margin-top:10%;margin-left:35%;padding:10px;display:none; color: white;">
+	<div class="form-group">
+		<label for="submit_stage" class="col-sm-4 control-label">Stage :</label>
+		<div class="col-sm-8">
 			<select id="submit_stage">
 				 {% for row in selectionlist %}
 				<option value="{{ row.selectionvalue }}">Revision {{ row.selectionname }}</option>
 				 {% endfor %}
 			</select>
-		</td>
-	</tr>
-	<tr>
-		<td>
-			Comment :
-		</td>
-		<td>
+		</div>
+	</div>
+	
+	<div class="form-group">
+		<label for="submit_comment" class="col-sm-4 control-label">Comment :</label>
+		<div class="col-sm-8">
 			<textarea id="submit_comment"></textarea>
-		</td>
-	</tr>
-	<tr>
-		<td>
-			Progress :
-		</td>
-		<td>
-			<input type="text" id="submit_progress">
-		</td>
-	</tr>
-	<tr id="editSubmit">
-		<td colspan="2" style="text-align:center;">
-			<input id="btnsavesubmit" type="button" class="button" style="width:80px;height:26px;" value="Save">&nbsp; <input id="btncancelsubmit" type="button" class="button" style="width:80px;height:26px;" value="Cancel">
-		</td>
-	</tr>
-	</table>
+		</div>
+	</div>
+	
+	<div class="form-group">
+		<label for="submit_comment" class="col-sm-4 control-label">Progress :</label>
+		<div class="col-sm-8">
+			<input type="text" name="progress" id="submit_progress">
+		</div>
+	</div>
+	
+	<div class="form-group" id="editSubmit">
+		<label for="submit_comment" class="col-sm-4 control-label"></label>
+		<div class="col-sm-8">
+			<input id="btnsavesubmit" type="button" class="btn btn-info btn-small" value="Save">
+			<input id="btncancelsubmit" type="button" class="btn btn-warning btn-small" value="Cancel">
+		</div>
+	</div>
 </div>
+</form>
 <!-- end submit block -->
 <div class="page-container">
 	<div class="assignment-edit-section">
@@ -969,15 +976,15 @@
 	</div>
 </div>
 <!-- /. lesson small -->
-<div id="divedithighlight" style="z-index:2;width:500px;position:absolute;background-color:white;margin-top:10%;margin-left:35%;padding:10px;">
+<div id="divedithighlight" class="tag-list-dropdown" style="z-index:2;width:500px;position:absolute;margin-top:5%;margin-left:35%;padding:10px; color: white;">
         <table style="width:100%;">
         <tr>
             <td>Category:</td>
             <td><select id="ele_highlightCategory">
                 <option value="">Please Select</option>
                 {% for row in categoryentity %}
-                                        <option value="{{ row.categoryid.id }}">{{ row.categoryid.name }}</option>
-                                {% endfor %}
+                        <option value="{{ row.categoryid.id }}">{{ row.categoryid.name }}</option>
+                {% endfor %}
                 </select>
             </td>
         </tr>
@@ -1002,15 +1009,15 @@
                 </tr>
                 <tr id="viewhighlight">
                         <td colspan="2" style="text-align:center;">
-                                <input id="btnedithighlight" type="button" class="button btn btn-default" style="width:80px;" value="Edit">&nbsp;
-                                <input id="btncloseedithighlight" type="button" class="button btn btn-default" style="width:80px;" value="Close">
+                                <input id="btnedithighlight" type="button" class="btn btn-info btn-small" style="width:80px;" value="Edit">&nbsp;
+                                <input id="btncloseedithighlight" type="button" class="btn btn-warning btn-small" style="width:80px;" value="Close">
                         </td>
                 </tr>
                 <tr id="edithighlight">
                         <td colspan="2" style="text-align:center;">
-                                <input id="btnsavehighlight" type="button" class="button btn btn-default" style="width:80px;" value="Save">&nbsp;
-                                <input id="btndeletehighlight" type="button" class="button btn btn-default" style="width:80px;" value="Delete">&nbsp;
-                                <input id="btncancelhighlight" type="button" class="button btn btn-default" style="width:80px;" value="Cancel">
+                                <input id="btnsavehighlight" type="button" class="btn btn-info btn-small" style="width:80px;" value="Save">&nbsp;
+                                <input id="btndeletehighlight" type="button" class="btn btn-danger btn-small" style="width:80px;" value="Delete">&nbsp;
+                                <input id="btncancelhighlight" type="button" class="btn btn-warning btn-small" style="width:80px;" value="Cancel">
                         </td>
                 </tr>
         </table>

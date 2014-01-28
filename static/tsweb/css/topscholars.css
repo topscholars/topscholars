@@ -68,9 +68,9 @@ input:focus, input:active{
 	outline-offset: inherit;
 	outline: none!important;
 }
-html{
+/*html{
 	overflow: hidden;
-}
+}*/
 body{
 	background-color: #cccccc;
 	height: 100%;

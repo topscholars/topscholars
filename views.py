@@ -16,6 +16,7 @@ from ajax.loginajax import *
 from ajax.userajax import *
 from ajax.tagajax import *
 from ajax.unitajax import *
+from ajax.viewajax import *
 
 #Login View
 def login(request):
@@ -62,11 +63,23 @@ def sindex(request):
         clientid = login.clientid
         studentid = login.recid
         user_name = login.loginname
-        studentlist = Studentlist.objects.filter(id=studentid)
+        studentlist = Studentlist.objects.get(id=studentid)
+        submissionversionid = studentlist.lastsubmissionversionid
         submissionlist = Submission.objects.filter(studentid=studentid)
-        context= {'studentlist' : studentlist,
-                  'submissionlist' : submissionlist,
+        submissionversion = Submissionversion.objects.get(id=submissionversionid)
+        assignment = submissionversion.submissionid.assignmentid
+        classscheduleid = Studentclass.objects.filter(studentid=studentid, clientid=clientid,disabled=0,deleted=0).values_list('classscheduleid')
+        classschedulelist = Classschedule.objects.filter(id__in=classscheduleid,disabled=0,deleted=0)
+        
+        lessonactivitylnkid = Studentlessonactivity.objects.filter(studentid=studentid,clientid=clientid,deleted=0).values_list('lessonactivitylnkid')
+        activityid = Lessonactivitylnk.objects.filter(id__in=lessonactivitylnkid,deleted=0).values_list('activityid')
+        lessonactivitylist = Lessonactivity.objects.filter(id__in=activityid,clientid=clientid,deleted=0)
+        context= {'submissionlist' : submissionlist,
                   'submissioncount':submissionlist.count(),
+                  'submissionversion': submissionversion,
+                  'assignment': assignment,
+                  'classschedulelist': classschedulelist,
+                  'lessonactivitylist': lessonactivitylist,
                   'user_name' : user_name}
         return render(request, 'tsweb/student/index.html', context)
 

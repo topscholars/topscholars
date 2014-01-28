@@ -609,6 +609,8 @@
                 autocompleteOptions: { minLength: 1 },
                 allowEdit: false
             });
+            
+            //$(".tagedit-list").css({'background-color': 'white'});
             $('#btnedithighlight').click(function () {
                 thisClass.editHighlightDialog(true);
                 $('.editHighlightSuggest').show();
@@ -694,10 +696,11 @@
 {% include "tsweb/main/navbar.html" %}
 <!-- End Nav -->
 <!-- submit block -->
+
 <form role="form" class="form-horizontal" id="submit_block_form">
 <div id="diveditbg" style="display: none; background-color:gray;z-index:1;width:100%;height:100%;position:absolute;opacity:0.4;">
 </div>
-<div id="submitpopup" style="z-index:2;width:500px;position:absolute;background-color:white;margin-top:10%;margin-left:35%;padding:10px;display:none;">
+<div id="submitpopup" class="tag-list-dropdown" style="z-index:2;width:500px;position:absolute;margin-top:10%;margin-left:35%;padding:10px;display:none; color: white;">
 	<div class="form-group">
 		<label for="submit_stage" class="col-sm-4 control-label">Stage :</label>
 		<div class="col-sm-8">
@@ -969,15 +972,15 @@
 	</div>
 </div>
 <!-- /. lesson small -->
-<div id="divedithighlight" style="z-index:2;width:500px;position:absolute;background-color:white;margin-top:10%;margin-left:35%;padding:10px;">
+<div id="divedithighlight" class="tag-list-dropdown" style="z-index:2;width:500px;position:absolute;margin-top:5%;margin-left:35%;padding:10px; color: white;">
         <table style="width:100%;">
         <tr>
             <td>Category:</td>
             <td><select id="ele_highlightCategory">
                 <option value="">Please Select</option>
                 {% for row in categoryentity %}
-                                        <option value="{{ row.categoryid.id }}">{{ row.categoryid.name }}</option>
-                                {% endfor %}
+                        <option value="{{ row.categoryid.id }}">{{ row.categoryid.name }}</option>
+                {% endfor %}
                 </select>
             </td>
         </tr>
@@ -1002,15 +1005,15 @@
                 </tr>
                 <tr id="viewhighlight">
                         <td colspan="2" style="text-align:center;">
-                                <input id="btnedithighlight" type="button" class="button btn btn-default" style="width:80px;" value="Edit">&nbsp;
-                                <input id="btncloseedithighlight" type="button" class="button btn btn-default" style="width:80px;" value="Close">
+                                <input id="btnedithighlight" type="button" class="btn btn-info btn-small" style="width:80px;" value="Edit">&nbsp;
+                                <input id="btncloseedithighlight" type="button" class="btn btn-warning btn-small" style="width:80px;" value="Close">
                         </td>
                 </tr>
                 <tr id="edithighlight">
                         <td colspan="2" style="text-align:center;">
-                                <input id="btnsavehighlight" type="button" class="button btn btn-default" style="width:80px;" value="Save">&nbsp;
-                                <input id="btndeletehighlight" type="button" class="button btn btn-default" style="width:80px;" value="Delete">&nbsp;
-                                <input id="btncancelhighlight" type="button" class="button btn btn-default" style="width:80px;" value="Cancel">
+                                <input id="btnsavehighlight" type="button" class="btn btn-info btn-small" style="width:80px;" value="Save">&nbsp;
+                                <input id="btndeletehighlight" type="button" class="btn btn-danger btn-small" style="width:80px;" value="Delete">&nbsp;
+                                <input id="btncancelhighlight" type="button" class="btn btn-warning btn-small" style="width:80px;" value="Cancel">
                         </td>
                 </tr>
         </table>

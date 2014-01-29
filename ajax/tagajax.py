@@ -22,7 +22,7 @@ class TAGLIST():
             return HttpResponse('error', mimetype='application/json')
         else:
             #classlist = Classschedule.objects.filter(id=id)
-            cursor.execute("SELECT tag.id, tag.name, tag.description, tag.parentid, cl.categoryid FROM tag as tag join categorylink as cl on tag.id = cl.recid and cl.entityid = '12' WHERE tag.id = %s", [id])
+            cursor.execute("SELECT tag.id, tag.name, tag.description, tag.parentid, cl.categoryid FROM tag as tag left join categorylink as cl on tag.id = cl.recid and cl.entityid = '12' WHERE tag.id = %s", [id])
             results = cursor.fetchall()
             for r in results:
                     

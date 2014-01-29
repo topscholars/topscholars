@@ -122,12 +122,7 @@ class USERLIST():
             userlist.modifieddt = datetime.now()
             userlist.modifiedby = userid
             userlist.save()
-            
-            #if password != False and password != '':
-            #    login = Login.objects.get(id=userid)
-            #    login.password = password
-            #    login.save()
-                
+
             data_json = { 'status': 'success', }
             data = simplejson.dumps(data_json)
             return HttpResponse(data, mimetype='application/json')
@@ -200,9 +195,11 @@ class USERLIST():
                 login.save()
 
                 emailto = [emailaddress]
-                body = 'Your account is: ' + emailaddress + '  with password: ' + str(password)
-                send_mail('Topscholar Education: User Account', body , 'noreply@topscholars.org',emailto, fail_silently=False)
-                
+    
+                body = 'Dear ' + firstname + ' ' + middlename + ' ' + lastname + ',\n\n' + 'Thank you for joining Writability!  We are excited to welcome you to the community.\n\n' + 'You can now login to your account with the following details:\n' + '\n' + 'User: ' + emailaddress + '\n' + 'Password: ' + str(password) + '\n\n' + 'Please don\'t hesitate to contact us at help@writability.org if you have any questions or issues.\n\n' + 'Good luck writing!\n\n' +'The Writability Team'
+    
+                send_mail('New Account Creation - Success', body , 'noreply@writability.org',emailto, fail_silently=False)
+
                 data_json = { 'status': 'success',
                              'email': emailaddress,
                              'password': password, }

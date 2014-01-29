@@ -59,11 +59,14 @@
 	 
 	 -->
 	<script>
+    var submissionversionid;
+    var editable;
+    var highlightid;
 	function EDITTABLE() {
         var thisClass = this;
-        //var evalClass = 'VIEWAJAX';
-        var evalClass = 'SUBMISSIONREVIEW';
+        var evalClass = 'SUBMISSIONCREATE';
         var url = "{% url 'tsweb:tprocessajax' %}";
+        thisClass.arrayTagRemove = [];
         
         this.getData = function () {
             $.getJSON(
@@ -80,7 +83,7 @@
                     alert('Error occur. Please contact the administrator.');
                 });
         }
-       this.categoryHighlightList = function (name) {
+        this.categoryHighlightList = function (name) {
             var categoryid = 0;
             switch (name) {
                 case "impact":
@@ -96,64 +99,64 @@
                     categoryid = 4;
                     break;
             }
-            var textComment = '';
+            //var textComment = '';
             $.getJSON(
                     url,
                     {
                         'class': evalClass,
                         'method': 'tagCategoryHighlightList',
                         'categoryid': categoryid,
-                        'submissionreviewerid': submissionreviewerid
+                        'submissionversionid': submissionversionid
                     },
                     function (result) {
                         $(".essayhighlight").css({ 'background': 'red' });
                         $.each(result, function (i, val) {
                             var spanid = val[0];
                             $('inline[name="' + spanid + '"]').css({ 'background': '#ffff00' });
-                            textComment += "- " + val[1] + "<br/>";
+                            //textComment += "- " + val[1] + "<br/>";
                         });
                         //$("#commentSection").html(textComment);
                     }).error(function (xhr, status, error) {
                         alert('Error occur. Please contact the administrator.');
                     });
         }
+
         this.tagClickHighlightList = function (id) {
-            var textComment = '';
+            //var textComment = '';
             $.getJSON(
-                    url,
-                    {
-                        'class': evalClass,
-                        'method': 'tagClickHighlightList',
-                        'taglinkid': id,
-                        'submissionreviewerid': submissionreviewerid
-                    },
-                    function (result) {
-                        $(".essayhighlight").css({ 'background': 'red' });
-                        $.each(result, function (i, val) {
-                        	
-                            var spanid = val[0];
-                            console.log($('inline[name="' + spanid + '"]'));
-                            $('inline[name="' + spanid + '"]').css({ 'background': val[2] });
-                            textComment += "- " + val[1] + "<br/>";
-                        });
-                        //$("#commentSection").html(textComment);
-                    }).error(function (xhr, status, error) {
-                        alert('Error occur. Please contact the administrator.');
+                url,
+                {
+                    'class': evalClass,
+                    'method': 'tagClickHighlightList',
+                    'taglinkid': id,
+                    'submissionversionid': submissionversionid
+                },
+                function (result) {
+                    $(".essayhighlight").css({ 'background': 'red' });
+                    $.each(result, function (i, val) {
+                        var spanid = val[0];
+                        $('inline[name="' + spanid + '"]').css({ 'background': val[2] });
+                        //textComment += "- " + val[1] + "<br/>";
                     });
+                    //$("#commentSection").html(textComment);
+                }).error(function (xhr, status, error) {
+                    alert('Error occur. Please contact the administrator.');
+                });
         }
+
         this.tagHighlightList = function () {
             $.getJSON(
                 url,
                 {
                     'class': evalClass,
                     'method': 'tagHighlightList',
-                    'submissionreviewerid': submissionreviewerid
+                    'submissionversionid': submissionversionid
                 },
                 function (result) {
                     $("#tagList li").remove();
-                    $("#Ul1").html('');
+                    $("#tagBox").html('');
                     $("#commentArea").val('');
-                    $("<ul>").attr("id", "tagList").appendTo("#Ul1");
+                    $("<ul>").attr("id", "tagList").appendTo("#tagBox");
                     if (result.length > 0) {
                         $.each(result, function (i, val) {
                             var li = $("<li>");
@@ -171,6 +174,7 @@
                     } else {
                         $("#tagList").height('50');
                     }
+
                     $(".tagClickHighlightList").click(function () {
                         var id = $(this).data("id");
                         thisClass.tagClickHighlightList(id);
@@ -180,118 +184,97 @@
                     alert('Error occur. Please contact the administrator.');
                 });
         }
-        this.getSelectionCharOffsetsWithin = function (element) {
-            var start = 0, end = 0;
-            var sel, range, priorRange;
-            if (typeof window.getSelection != "undefined") {
-                range = window.getSelection().getRangeAt(0);
-                priorRange = range.cloneRange();
-                priorRange.selectNodeContents(element);
-                priorRange.setEnd(range.startContainer, range.startOffset);
-                start = priorRange.toString().length;
-                end = start + range.toString().length;
-            } else if (typeof document.selection != "undefined" &&
-                    (sel = document.selection).type != "Control") {
-                range = sel.createRange();
-                priorRange = document.body.createTextRange();
-                priorRange.moveToElementText(element);
-                priorRange.setEndPoint("EndToStart", range);
-                start = priorRange.text.length;
-                end = start + range.text.length;
-            }
-            return {
-                start: start,
-                end: end
-            };
+
+        this.getData = function () {
+            $.getJSON(
+                url,
+                {
+                    'class': evalClass,
+                    'method': 'getSubmissionVersion',
+                    'submissionversionid': submissionversionid
+                },
+                function (result) {
+                    editable = result.status;
+                    if (editable == 0) {
+                        $('#redactor_content').redactor({ plugins: ['fontcolor', 'fontfamily', 'fontsize'] });
+                        $('#redactor_content').redactor('set', result.essay);
+                        $('#btnSave').show();
+                        $('#btnSubmit').show();
+                        $('#redactor_content').unbind("keypress");
+                    }
+                    else {
+                        $('#redactor_content').redactor({ toolbar: false });
+                        $('#redactor_content').redactor('set', result.essay);
+                        $('#btnSave').hide();
+                        $('#btnSubmit').hide();
+                        $('#redactor_content').keypress(function (event) {
+                            event.preventDefault();
+                        });
+                    }
+
+                    thisClass.tagHighlightList();
+                    //thisClass.getSubmitRubric();
+                })
+                .error(function (xhr, status, error) {
+                    alert('Error occur. Please contact the administrator.');
+                });
         }
-        this.essayEvent = function () {
-            $('#ele_submissionversionessay').mouseup(function () {
-                if (thisClass.getSelectionCharOffsetsWithin(this).start != thisClass.getSelectionCharOffsetsWithin(this).end) {
-                    var redactor_object = $('#ele_submissionversionessay').redactor('getObject');
-                    redactor_object.selectionSave();
-                    thisClass.showHighlightDialog(true);
-                }
-            }).keypress(function (e) {
-                return false;
-            });
-        }
+
         this.editHighlightDialog = function (edit) {
             if (edit) {
                 $('#edithighlight').show();
                 $('#viewhighlight').hide();
-                $('#tdtagdisplay').hide();
-                $('#tdtag').show();
-                $('#ele_highlightTag').removeAttr("disabled");
-                $('#ele_highlightComment').removeAttr("disabled");
-                $('.tagedit-list').removeAttr("disabled");
-                $('#ele_highlightCategory').removeAttr("disabled");
             }
             else {
                 $('#edithighlight').hide();
                 $('#viewhighlight').show();
-                $('#tdtagdisplay').show();
-                $('#tdtag').hide();
-                $('#ele_highlightTag').attr("disabled", "disabled");
-                $('#ele_highlightComment').attr("disabled", "disabled");
-                $('#ele_highlightCategory').attr("disabled", "disabled");
             }
         }
+
         this.showHighlightDialog = function (show) {
             if (show) {
                 $('#diveditbg').show();
                 $('#divedithighlight').show();
-                $('.editHighlightSuggest').hide();
-                if (highlightid != '') {
-                    thisClass.editHighlightDialog(false);
-                    $('#btndeletehighlight').show();
-                }
-                else {
-                    thisClass.editHighlightDialog(true);
-                    $('#btndeletehighlight').hide();
-                }
+                thisClass.editHighlightDialog(false);
             }
             else {
                 $('#diveditbg').hide();
                 $('#divedithighlight').hide();
                 highlightid = '';
                 $('#ele_highlightTagDisplay').text('');
-                $('.tagedit-listelement-old').remove();
                 $('#ele_highlightComment').val('');
-                $('#ele_highlightCategory').val('');
+                $('#ele_highlightCategory').text('');
             }
         }
+
         this.getHighlightDataTag = function () {
             var tagids = [];
             $.getJSON(
                 url,
                 {
-                    'class': 'SUBMISSIONREVIEW',
+                    'class': evalClass,
                     'method': 'getSubmissionVersionHighlightTags',
                     'highlightid': highlightid
                 },
                 function (result) {
-                    $(".tagedit-listelement-old").remove();
                     var displaytxt = '';
                     for (var i = 0; i < result.length; i++) {
-                        tagids.push(result[i].id);
-                        thisClass.addTagEditElement(result[i].name, result[i].id);
                         if (displaytxt != '')
                             displaytxt = displaytxt + ', '
                         displaytxt = displaytxt + result[i].name;
                     }
-                    thisClass.tagEditCloseEvent();
-                    thisClass.getSelectSuggest(tagids);
                     $('#ele_highlightTagDisplay').text(displaytxt);
                 })
             .error(function (xhr, status, error) {
                 alert('Error occur. Please contact the administrator.');
             });
         }
+
         this.getHighlightData = function () {
             $.getJSON(
                 url,
                 {
-                    'class': 'SUBMISSIONREVIEW',
+                    'class': evalClass,
                     'method': 'getSubmissionVersionHighlight',
                     'highlightid': highlightid
                 },
@@ -299,9 +282,13 @@
                     $.each(result, function (ini, val) {
                         if ($('#ele_' + ini).is("span") || $('#ele_' + ini).is("div"))
                             $('#ele_' + ini).html(val);
+                        else if ($('#ele_' + ini).is("label")) {
+                            $('#ele_' + ini).text(val);
+                        }
                         else
                             $('#ele_' + ini).val(val);
                     });
+
                     thisClass.getHighlightDataTag();
                     thisClass.showHighlightDialog(true);
                 })
@@ -309,80 +296,9 @@
                 alert('Error occur. Please contact the administrator.');
             });
         }
-        this.saveEditTags = function (tagids, method) {
-            var odata;
-            if (method == 'add') {
-                odata = {
-                    class: evalClass,
-                    method: 'addSubmissionversionHighlight',
-                    submissionreviewerid: submissionreviewerid,
-                    highlightComment: $('#ele_highlightComment').val(),
-                    tagids: tagids,
-                    categoryid: $('#ele_highlightCategory').val()
-                };
-            } else if (method == 'save') {
-                odata = {
-                    class: evalClass,
-                    method: 'saveSubmissionversionHighlight',
-                    highlightid: highlightid,
-                    highlightComment: $('#ele_highlightComment').val(),
-                    tagids: tagids,
-                    categoryid: $('#ele_highlightCategory').val()
-                };
-            }
-            $.post(url, odata,
-                function (result) {
-                    highlightid = result.recid;
-                    var redactor_object = $('#ele_submissionversionessay').redactor('getObject');
-                    redactor_object.selectionRestore();
-                    redactor_object.inlineSetAttr({'name': result.recid, "style": "background-color:red;", "class": 'essayhighlight', "ondblclick" : 'openHighlightDialog(' + result.recid + ')' });
-                    // redactor_object.inlineSetAttr('name', result.recid);
-//                     
-                    // redactor_object.inlineSetStyle("background-color", "red");
-                    // redactor_object.inlineSetClass('essayhighlight');
-                    // redactor_object.inlineSetAttr('ondblclick', 'openHighlightDialog(' + result.recid + ')');
-                    redactor_object.sync();
-                    odata = {
-                        class: evalClass,
-                        method: 'updateReviewerEssay',
-                        submissionreviewerid: submissionreviewerid,
-                        essay: $('#ele_submissionversionessay').redactor('getEditor').html()
-                    };
-                    $.post(url, odata,
-                        function (result) {
-                            thisClass.tagHighlightList();
-                            thisClass.getSubmitRubric();
-                            thisClass.getHighlightData();
-                            thisClass.editHighlightDialog(false);
-                        })
-                    .error(function (xhr, status, error) {
-                        alert('Error occur. Please contact the administrator.');
-                    });
-                })
-                .error(function (xhr, status, error) {
-                    alert('Error occur. Please contact the administrator.');
-                });
-        }
-        this.save = function () {
-            var tagids = [];
-            var i = 0;
-            $('input[name*="-a"]').each(function (index) {
-                var name = $(this).attr('name');
-                name = name.replace('tag[', '');
-                name = name.replace('-a]', '');
-                tagids.push(name);
-            });
-            if (highlightid != '') {
-                //update
-                thisClass.saveEditTags(tagids, 'save');
-            }
-            else {
-                //insert
-                thisClass.saveEditTags(tagids, 'add');
-            }
-        }
+
         this.del = function () {
-            var redactor_object = $('#ele_submissionversionessay').redactor('getObject');
+            var redactor_object = $('#redactor_content').redactor('getObject');
             $('inline[name="' + highlightid + '"]').each(function () {
                 redactor_object.selectionElement(this);
                 redactor_object.inlineRemoveAttr('name');
@@ -392,153 +308,94 @@
                 redactor_object.inlineRemoveAttr('ondblclick');
                 redactor_object.sync();
             });
+            
+            
+            thisClass.arrayTagRemove.push(highlightid);
+            console.log(thisClass.arrayTagRemove);
+            thisClass.showHighlightDialog(false);
+            console.log(submissionversionid);
+            /*
             $.post(url,
                     {
-                        'class': 'SUBMISSIONREVIEW',
+                        'class': evalClass,
                         'method': 'delete',
-                        'submissionreviewerid': submissionreviewerid,
+                        'submissionversionid': submissionversionid,
                         'highlightid': highlightid,
-                        'essay': $('#ele_submissionversionessay').redactor('getEditor').html()
+                        'essay': $('#redactor_content').redactor('getEditor').html()
                     },
                     function (result) {
                         thisClass.showHighlightDialog(false);
                         thisClass.tagHighlightList();
-                        thisClass.getSubmitRubric();
+                        //thisClass.getSubmitRubric();
                     })
             .error(function (xhr, status, error) {
                 alert('Error occur. Please contact the administrator.');
             });
+            */
         }
-        this.tagEditCloseEvent = function () {
-            $(".tagedit-close").unbind('click');
-            $(".tagedit-close").click(function () {
-                var tagElement = $(this).prev();
-                var thisInput = tagElement.attr('name');
-                thisInput = thisInput.replace('tag[', '');
-                thisInput = thisInput.replace('-a]', '');
-                var thisId = thisInput;
-                var tagNewIds = [];
-                $('input[name*="-a"]').each(function (index) {
-                    var nameInput = $(this).attr('name');
-                    nameInput = nameInput.replace('tag[', '');
-                    nameInput = nameInput.replace('-a]', '');
-                    if (nameInput != thisId) {
-                        tagNewIds.push(nameInput);
-                    }
-                });
-                thisClass.getSelectSuggest(tagNewIds);
-            });
-        }
-        this.addTagEditElement = function (name, id) {
-            var tagitem = '<li class="tagedit-listelement tagedit-listelement-old"><span dir="ltr">' + name + '</span><input type="hidden" name="tag[' + id + '-a]" value="' + name + '"><a class="tagedit-close" title="Remove from list.">x</a></li>'
-            $(tagitem).insertBefore('.tagedit-listelement-new');
-        }
-        this.getSelectSuggest = function (tagids) {
-            var option = '';
-            if (tagids != "") {
-                $.post(
-                    url,
-                    {
-                        'class': evalClass,
-                        'method': 'getSelectSuggest',
-                        tagids: tagids
-                    },
-                    function (result) {
-                        $("#ele_suggestTags option").remove();
-                        $.each(result, function (ini, val) {
-                            option += '<option value="' + val.id + '">' + val.label + '</option>';
-                        });
-                        $("#ele_suggestTags").append(option);
-                        $("#ele_suggestTags").unbind('dblclick');
-                        $("#ele_suggestTags").dblclick(function () {
-                            var id = $(this).val();
-                            var name = $("#ele_suggestTags option:selected").text();
-                            $("#ele_suggestTags option[value='" + id + "']").remove();
-                            thisClass.addTagEditElement(name, id);
-                            var tagNewIds = [];
-                            $('input[name*="-a"]').each(function (index) {
-                                var nameInput = $(this).attr('name');
-                                nameInput = nameInput.replace('tag[', '');
-                                nameInput = nameInput.replace('-a]', '');
-                                tagNewIds.push(nameInput);
-                            });
-                            thisClass.tagEditCloseEvent();
-                            thisClass.getSelectSuggest(tagNewIds);
-                        });
-                    }).error(function (xhr, status, error) {
-                        alert('Error occur. Please contact the administrator.');
-                    });
-            } else {
-                $("#ele_suggestTags option").remove();
-                $(".editHighlightSuggest").hide();
-            }
-        }
-        this.showSubmitDialog = function (show) {
-            if (show) {
-                $('#diveditbg').show();
-                $('#submitpopup').show();
-            }
-            else {
-                $('#diveditbg').hide();
-                $('#submitpopup').hide();
-            }
-        }
-        this.submit = function () {
-            thisClass.showSubmitDialog(true);
-            $(".submit_criteria").each(function(){
-                    id = $(this).attr('id');
-                    value = $(this).val();
-                    criteriaid.push(id);
-                    criteriaval.push(value);
-            });
-            odata = {'class' :  'SUBMISSIONREVIEW',
-                     'method' : 'submit',
-                     'submissionreviewerid': submissionreviewerid,
-                     'stage' : $("#submit_stage").val(),
-                     'comment' : $("#submit_comment").val(),
-                     'progress' : $("#submit_progress").val(),
-                     'impact': $(".impact_criteria").val(),
-                     'quality': $(".quality_criteria").val(),
-                     'content': $(".content_criteria").val(),
-                     'process': $(".process_criteria").val()
-                     };
-            $.post(url,odata,
-                    function(result){
-                            //thisClass.showSubmitDialog();
-                            window.location = "{% url 'tsweb:tsubmissionlist' %}";
-                    })
-            .error(function(xhr, status, error) {
-                    alert('Error occur. Please contact the administrator.');
-            });
-        }
-        
-        this.initValidateForm = function(){
-			  formValidate.validate({              
-			    rules: {
-			      	progress:{
-			      		required: true,
-			      		number: true,
-			      	},
-			    },
-				 invalidHandler: function(event, validator) {
-				// 'this' refers to the form
-					thisClass.submitForm = false;
-				}
-			  });
-	    }
-	
-		this.initValidateFormEvent = function(){
-			thisClass.submitForm = true;
-		  	formValidate.validate().form();
-		}
-		
-		this.resetValidatForm = function(){
-			var validator = formValidate.validate();
-			validator.resetForm();
-			$(".error").removeClass('error');	
-		}
+
         this.initContent = function () {
-        	thisClass.getData();
+            submissionversionid = '{{ submissionversion.id }}';
+            
+            $('#btnRevise').hide();
+            $('#btnremovehighlight').click(function () {
+                thisClass.editHighlightDialog(true);
+            });
+            $('#btncloseedithighlight').click(function () {
+                thisClass.showHighlightDialog(false);
+            });
+            $('#btnconfirmhighlight').click(function () {
+                thisClass.del();
+            });
+            $('#btncancelhighlight').click(function () {
+                thisClass.editHighlightDialog(false);
+            });
+            
+            $("#discard_changes").click(function(){
+            	window.location = '{% url 'tsweb:stsubmissionreview' submissionversion.submissionid.id %}';
+            });
+            
+            $("#save_changes").click(function(){
+            	if(thisClass.arrayTagRemove.length > 0){
+            		$.each(thisClass.arrayTagRemove, function(ini,val){
+			            $.post(url,
+			                    {
+			                        'class': evalClass,
+			                        'method': 'delete',
+			                        'submissionversionid': submissionversionid,
+			                        'highlightid': val,
+			                        'essay': $('#redactor_content').redactor('getEditor').html()
+			                    },
+			                    function (result) {
+			                    	if(ini == thisClass.arrayTagRemove.length -1){
+			                         	window.location = "{% url 'tsweb:stsubmissionreview' submissionversion.submissionid.id %}";
+			                        }
+			                    })
+			            .error(function (xhr, status, error) {
+			                alert('Error occur. Please contact the administrator.');
+			            });
+            		});
+            	}else{
+	
+	                $.post(url, {
+				                    'class': evalClass,
+				                    'method': 'save',
+				                    'submissionversionid': submissionversionid,
+				                    'essay': $('#redactor_content').redactor('getEditor').html()
+				                },
+	                    function (result) {
+	                        window.location = "{% url 'tsweb:stsubmissionreview' submissionversion.submissionid.id %}";
+	                    })
+	                .error(function (xhr, status, error) {
+	                    alert('Error occur. Please contact the administrator.');
+	                });
+            	}
+            	
+            	//console.log($('#redactor_content').redactor('getEditor').html());
+            });
+
+            thisClass.showHighlightDialog(false);
+            thisClass.getData();
         }
 	}
     function openHighlightDialog(id) {
@@ -730,6 +587,39 @@
 	</div><!-- /.modal -->
 			
 	</div> <!--End Container-->
+	
+<div id="divedithighlight"  class="tag-list-dropdown" style="z-index:2;width:500px;position:absolute;margin-top:10%;margin-left:35%;padding:10px;color: white;">
+	<table style="width:100%;">
+        <tr>
+            <td>Category:</td>
+            <td>
+				<label id="ele_highlightCategory"></label>
+			</td>
+        </tr>
+		<tr>
+			<td>Tag:</td>
+			<td>
+				<label id="ele_highlightTagDisplay"></label>
+			</td>
+		</tr>
+		<tr>
+			<td style="vertical-align:top;">Comment:</td>
+			<td><textarea id="ele_highlightComment" style="width:420px;height:100px;resize:none;" disabled></textarea></td>
+		</tr>
+		<tr id="viewhighlight">
+			<td colspan="2" style="text-align:center;">
+				<input id="btnremovehighlight" type="button" class="btn btn-danger btn-small" style="width:80px;" value="Remove">&nbsp;
+				<input id="btncloseedithighlight" type="button" class="btn btn-warning btn-small" style="width:80px;" value="Close">
+			</td>
+		</tr>
+		<tr id="edithighlight">
+			<td colspan="2" style="text-align:center;">
+				<input id="btnconfirmhighlight" type="button" class="btn btn-info btn-small" style="width:80px;" value="Confirm">&nbsp;
+				<input id="btncancelhighlight" type="button" class="btn btn-warning btn-small" style="width:80px;" value="Cancel">
+			</td>
+		</tr>
+	</table>
+</div>
 <!--	
 	<footer class="footer">
 		<div class="container">

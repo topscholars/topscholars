@@ -306,7 +306,6 @@
                 redactor_object.inlineRemoveAttr('ondblclick');
                 redactor_object.sync();
             });
-            thisClass.showHighlightDialog(false);
             
             $.post(url,
                     {
@@ -728,14 +727,14 @@
 		</tr>
 		<tr id="viewhighlight">
 			<td colspan="2" style="text-align:center;">
-				<input id="btnremovehighlight" type="button" class="button btn btn-default" style="width:80px;" value="Remove">&nbsp;
-				<input id="btncloseedithighlight" type="button" class="button btn btn-default" style="width:80px;" value="Close">
+				<input id="btnremovehighlight" type="button" class="btn btn-danger btn-small" style="width:80px;" value="Remove">&nbsp;
+				<input id="btncloseedithighlight" type="button" class="btn btn-warning btn-small" style="width:80px;" value="Close">
 			</td>
 		</tr>
 		<tr id="edithighlight">
 			<td colspan="2" style="text-align:center;">
-				<input id="btnconfirmhighlight" type="button" class="button btn btn-default" style="width:80px;" value="Confirm">&nbsp;
-				<input id="btncancelhighlight" type="button" class="button btn btn-default" style="width:80px;" value="Cancel">
+				<input id="btnconfirmhighlight" type="button" class="btn btn-info btn-small" style="width:80px;" value="Confirm">&nbsp;
+				<input id="btncancelhighlight" type="button" class="btn btn-warning btn-small" style="width:80px;" value="Cancel">
 			</td>
 		</tr>
 	</table>

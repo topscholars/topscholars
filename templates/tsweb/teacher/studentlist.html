@@ -168,6 +168,7 @@
 					
 					$('#editStudentBtn').show();
 					$('.modal .form-control, .modal input[type="checkbox"]').attr('disabled', 'disabled');
+					$("#btnSave").attr('disabled', 'disabled');
 					thisClass.showEditTable();
 			})
 			.error(function(xhr, status, error) {
@@ -618,6 +619,7 @@
 	    
 		  $('#editStudentBtn').click(function(){
 		  	$('.modal .form-control, .modal input[type="checkbox"]').removeAttr('disabled', 'disabled');
+		  	$("#btnSave").removeAttr('disabled', 'disabled');
 		  	$("#ele_emailaddress1").attr('disabled', 'disabled');
 	  	  });
 	  

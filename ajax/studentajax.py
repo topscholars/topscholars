@@ -232,8 +232,10 @@ class STUDENTLIST():
                 login.save()
             
                 emailto = [emailaddress1]
-                body = 'Your account is: ' + emailaddress1 + '  with password: ' + str(password)
-                send_mail('Topscholar Education: User Account', body , 'noreply@topscholars.org',emailto, fail_silently=False)
+    
+                body = 'Dear ' + firstname + ' ' + middlename + ' ' + lastname + ',\n\n' + 'Thank you for joining Writability!  We are excited to welcome you to the community.\n\n' + 'You can now login to your account with the following details:\n' + '\n' + 'User: ' + emailaddress + '\n' + 'Password: ' + str(password) + '\n\n' + 'Please don\'t hesitate to contact us at help@writability.org if you have any questions or issues.\n\n' + 'Good luck writing!\n\n' +'The Writability Team'
+    
+                send_mail('New Account Creation - Success', body , 'noreply@writability.org',emailto, fail_silently=False)
                 
                 data_json = { 'status': 'success', }
             except Login.MultipleObjectsReturned:

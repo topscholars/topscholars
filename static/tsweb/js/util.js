@@ -209,7 +209,7 @@ function EDITPROFILE(url) {
 	}
 	
 	this.oEditData = function(odata){
-				$("[id^='edit_']").each(function(){
+		$("[id^='edit_']").each(function(){
 			var attrName = $(this).attr("name");
 			var thisType = $(this).attr("type");
 			
@@ -281,7 +281,28 @@ function EDITPROFILE(url) {
 	            re_password : {
 	                minlength : 5,
 	                equalTo : "#edit_password"
-	            }
+	            },
+		      	firstname:{
+		      		required: true,
+		      	},
+		      	dob :{
+	            	required: true,
+	            },
+                  mobilephone:{
+			      	required: false,
+			      	number: true,
+			      	rangelength: [4, 20]
+			      },
+			      homephone:{
+			      	required: false,
+			      	number: true,
+			      	rangelength: [4, 20]
+			      },
+			      officephone:{
+			      	required: false,
+			      	number: true,
+			      	rangelength: [4, 20]
+			      },
 		    },
 			 invalidHandler: function(event, validator) {
 			// 'this' refers to the form
@@ -304,6 +325,20 @@ function EDITPROFILE(url) {
 		});
 		
 		$( "#edit_dob").datepicker({ dateFormat: 'dd-mm-yy' });
+		
+	  	$('.modal .form-control, .modal input[type="checkbox"]').attr('disabled', 'disabled');
+		$("#edit-profile-submit").attr('disabled', 'disabled');
+		
+	  	$('#editProfileBtn').click(function(){
+		  	$('.modal .form-control, .modal input[type="checkbox"]').removeAttr('disabled', 'disabled');
+		  	$('#edit-profile-submit').removeAttr('disabled', 'disabled');
+		  	$('#edit_user').attr('disabled', 'disabled');
+  	  	});
+  	  	
+  	  	$(".btnEditProfile").click(function(){
+  	  		$('.modal .form-control, .modal input[type="checkbox"]').attr('disabled', 'disabled');
+  	  		$("#edit-profile-submit").attr('disabled', 'disabled');
+  	  	});
 		
 		thisClass.getData();
 		thisClass.selectEditSalutation(); 

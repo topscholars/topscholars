@@ -4,10 +4,12 @@
 		    <div class="modal-content">
 		      <div class="modal-header teacher-header">
 		        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+		        <button type="button" class="btn btn-default btn-small btn-edit pull-right" id="editProfileBtn">Edit</button>
 		        <h4 class="modal-title">Edit Profile</h4>
 		      </div>
+		      <form role="form" class="form-horizontal" id="edit_profile_form">
 		      <div class="modal-body">
-		        <form role="form" class="form-horizontal" id="edit_profile_form">
+		        
 		        	<div class="form-group">
 		        		<label for="ele_salutation" class="col-sm-3 control-label">User</label>
 		        		<div class="col-sm-9">
@@ -106,19 +108,20 @@
 		        			<input type="text" id="edit_mobilephone" class="form-control" name="mobilephone" />
 		        		</div>
 		        	</div>
-		        	
+		        	<!--
 		        	<div class="form-group">
 		        		<label for="endtime" class="col-sm-3 control-label">E-mail Address</label>
 		        		<div class="col-sm-9">
 		        			<input type="text" id="edit_emailaddress" class="form-control" name="emailaddress" />
 		        		</div>
 		        	</div>
-		        </form>
+		        	-->
 		      </div>
 		      <div class="modal-footer">
 		        <input type="reset" class="btn btn-default" data-dismiss="modal" value="Close"/>
-		        <input type="submit" class="btn btn-primary" value="Save Class" id="edit-profile-submit"/>
+		        <input type="submit" class="btn btn-primary" value="Edit" id="edit-profile-submit"/>
 		      </div>
+		      </form>
 		    </div><!-- /.modal-content -->
 		  </div><!-- /.modal-dialog -->
 		</div><!-- /.modal -->

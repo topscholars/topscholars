@@ -97,7 +97,7 @@ class USERLIST():
             officeext = request.POST.get('officeext', False)
             mobilephone = request.POST.get('mobilephone', False)
             securityprofile = request.POST.get('securityprofile', False)
-            #password = request.POST.get('password', False)
+            password = request.POST.get('password', False)
         except KeyError:
             data_json = { 'status': 'error', }
             data = simplejson.dumps(data_json)
@@ -122,6 +122,13 @@ class USERLIST():
             userlist.modifieddt = datetime.now()
             userlist.modifiedby = userid
             userlist.save()
+            
+            if password != False and password != '':
+                login = Login.objects.get(id=userid)
+                login.password = password
+                login.modifieddt = datetime.now()
+                login.modifiedby = userid
+                login.save()
 
             data_json = { 'status': 'success', }
             data = simplejson.dumps(data_json)

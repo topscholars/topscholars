@@ -130,10 +130,16 @@ class SUBMISSIONREVIEW():
     def submit(self,request):
         try:
             userid = request.session['userid']
+            login = Login.objects.get(id=userid)
+            clientid = login.clientid
             submissionreviewerid = request.POST.get('submissionreviewerid', False)
             stage = request.POST.get('stage', False)
             progress = request.POST.get('progress', False)
             comment = request.POST.get('comment', False)
+            impact = request.POST.get('impact', False)
+            quality = request.POST.get('quality', False)
+            content = request.POST.get('content', False)
+            process = request.POST.get('process', False)
 ##            criteriaid = request.POST.getlist('criteriaid[]', False)
 ##            criteriaval = request.POST.getlist('criteriaval[]', False)
 ##            criteriaval[0]
@@ -150,6 +156,80 @@ class SUBMISSIONREVIEW():
             submissionrv.modifiedby = userid
             submissionrv.modifieddt = datetime.now()
             submissionrv.save()
+            
+            submissionrvid = Submissionreviewer.objects.latest("id").id
+            #category weight
+            
+            entity = Entity.objects.get(id=15)
+            categorylist = Category.objects.get(name='Impact')
+            categoryweight = Categoryweight()
+            categoryweight.entityid = entity
+            categoryweight.recid = submissionrvid
+            categoryweight.categoryid = categorylist
+            if impact != False and impact != '':
+                categoryweight.actualweight = impact
+            else:
+                categoryweight.actualweight = 0
+            categoryweight.createddt = datetime.now()
+            categoryweight.createdby = userid
+            categoryweight.modifieddt = datetime.now()
+            categoryweight.modifiedby = userid
+            categoryweight.deleted = 0
+            categoryweight.clientid = clientid
+            categoryweight.save()
+            
+            
+            categorylist = Category.objects.get(name='Content')
+            categoryweight = Categoryweight()
+            categoryweight.entityid = entity
+            categoryweight.recid = submissionrvid
+            categoryweight.categoryid = categorylist
+            if content != False and content != '':
+                categoryweight.actualweight = content
+            else:
+                categoryweight.actualweight = 0
+            categoryweight.createddt = datetime.now()
+            categoryweight.createdby = userid
+            categoryweight.modifieddt = datetime.now()
+            categoryweight.modifiedby = userid
+            categoryweight.deleted = 0
+            categoryweight.clientid = clientid
+            categoryweight.save()
+            
+
+            categorylist = Category.objects.get(name='Quality')
+            categoryweight = Categoryweight()
+            categoryweight.entityid = entity
+            categoryweight.recid = submissionrvid
+            categoryweight.categoryid = categorylist
+            if quality != False and quality != '':
+                categoryweight.actualweight = quality
+            else:
+                categoryweight.actualweight = 0
+            categoryweight.createddt = datetime.now()
+            categoryweight.createdby = userid
+            categoryweight.modifieddt = datetime.now()
+            categoryweight.modifiedby = userid
+            categoryweight.deleted = 0
+            categoryweight.clientid = clientid
+            categoryweight.save()
+            
+            categorylist = Category.objects.get(name='Process')
+            categoryweight = Categoryweight()
+            categoryweight.entityid = entity
+            categoryweight.recid = submissionrvid
+            categoryweight.categoryid = categorylist
+            if process != False and process != '':
+                categoryweight.actualweight = process
+            else:
+                categoryweight.actualweight = 0
+            categoryweight.createddt = datetime.now()
+            categoryweight.createdby = userid
+            categoryweight.modifieddt = datetime.now()
+            categoryweight.modifiedby = userid
+            categoryweight.deleted = 0
+            categoryweight.clientid = clientid
+            categoryweight.save()
             
             submissionvs = Submissionversion.objects.get(id=submissionrv.submissionversionid.id)
             submissionvs.teacherstatus = 1

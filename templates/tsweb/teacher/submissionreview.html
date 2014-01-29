@@ -565,9 +565,11 @@
                      'submissionreviewerid': submissionreviewerid,
                      'stage' : $("#submit_stage").val(),
                      'comment' : $("#submit_comment").val(),
-                     'progress' : $("#submit_progress").val()
-                     //'criteriaid': criteriaid,
-                     //'criteriaval': criteriaval
+                     'progress' : $("#submit_progress").val(),
+                     'impact': $(".impact_criteria").val(),
+                     'quality': $(".quality_criteria").val(),
+                     'content': $(".content_criteria").val(),
+                     'process': $(".process_criteria").val()
                      };
             $.post(url,odata,
                     function(result){
@@ -839,7 +841,7 @@
 							<li>{{ criteria.name }}</li>
 							<li>{{ criteria.tag }}</li>
 							<li>{{ criteria.weight }}</li>
-							<li><input type="text" class="form-control input-small" value="" placeholder="Grade 1-100"/></li>
+							<li><input type="text" class="form-control input-small impact_criteria" value="" placeholder="Grade 1-10"/></li>
 						</ul>
 						<hr/>
 					</div>
@@ -849,7 +851,7 @@
 							<li>{{ criteria.name }}</li>
 							<li>{{ criteria.tag }}</li>
 							<li>{{ criteria.weight }}</li>
-							<li><input type="text" class="form-control input-small" value="" placeholder="1-100"/></li>
+							<li><input type="text" class="form-control input-small quality_criteria" value="" placeholder="1-100"/></li>
 						</ul>
 						<hr/>
 					</div>
@@ -859,7 +861,7 @@
 							<li>{{ criteria.name }}</li>
 							<li>{{ criteria.tag }}</li>
 							<li>{{ criteria.weight }}</li>
-							<li><input type="text" class="form-control input-small" value="" placeholder="1-100"/></li>
+							<li><input type="text" class="form-control input-small content_criteria" value="" placeholder="1-100"/></li>
 						</ul>
 						<hr/>
 					</div>
@@ -869,7 +871,7 @@
 							<li>{{ criteria.name }}</li>
 							<li>{{ criteria.tag }}</li>
 							<li>{{ criteria.weight }}</li>
-							<li><input type="text" class="form-control input-small" value="" placeholder="1-100"/></li>
+							<li><input type="text" class="form-control input-small process_criteria" value="" placeholder="1-100"/></li>
 						</ul>
 						<hr/>
 					</div>
@@ -1361,24 +1363,6 @@
                 </tr>
         </table>
 </div>
-<!--<style>
-#tagBox { 
-	background-color:#575454;
- 	text-align:center;
- 	padding:5px;
- 	overflow:auto;
- 	font-size:70%;
- 	font-family:arial;
-}
-#tagBox h2 { 
-	font-size:2.5em; 
-	margin:0 0 10px -150px; 
-}
-#tagList { margin:0; padding:0; }
-#tagList li { list-style-type:none; float:left; margin:0 10px; height:35px; }
-#tagList li a { text-decoration:none;}
-#tagList li a:hover { text-decoration:underline; }
-</style>-->
 <script>
 	    //$(window).load(function () {
 	    //    openDynamicLesson();

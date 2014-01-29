@@ -406,10 +406,12 @@
                     highlightid = result.recid;
                     var redactor_object = $('#ele_submissionversionessay').redactor('getObject');
                     redactor_object.selectionRestore();
-                    redactor_object.inlineSetAttr('name', result.recid);
-                    redactor_object.inlineSetStyle("background-color", "red");
-                    redactor_object.inlineSetClass('essayhighlight');
-                    redactor_object.inlineSetAttr('ondblclick', 'openHighlightDialog(' + result.recid + ')');
+                    redactor_object.inlineSetAttr({'name': result.recid, "style": "background-color:red;", "class": 'essayhighlight', "ondblclick" : 'openHighlightDialog(' + result.recid + ')' });
+                    // redactor_object.inlineSetAttr('name', result.recid);
+//                     
+                    // redactor_object.inlineSetStyle("background-color", "red");
+                    // redactor_object.inlineSetClass('essayhighlight');
+                    // redactor_object.inlineSetAttr('ondblclick', 'openHighlightDialog(' + result.recid + ')');
                     redactor_object.sync();
                     odata = {
                         class: evalClass,

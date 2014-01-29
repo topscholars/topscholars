@@ -334,7 +334,7 @@ function EDITPROFILE(url) {
 		
 		$( "#edit_dob").datepicker({ dateFormat: 'dd-mm-yy' });
 		
-	  	$('.modal .form-control, .modal input[type="checkbox"]').attr('disabled', 'disabled');
+	  	$('#edit_profile .modal .form-control, #edit_profile .modal input[type="checkbox"]').attr('disabled', 'disabled');
 		$("#edit-profile-submit").attr('disabled', 'disabled');
 		
 	  	$('#editProfileBtn').click(function(){

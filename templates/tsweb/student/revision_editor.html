@@ -306,6 +306,8 @@
                 redactor_object.inlineRemoveAttr('ondblclick');
                 redactor_object.sync();
             });
+            thisClass.showHighlightDialog(false);
+            
             $.post(url,
                     {
                         'class': evalClass,
@@ -322,6 +324,7 @@
             .error(function (xhr, status, error) {
                 alert('Error occur. Please contact the administrator.');
             });
+            
         }
 
         this.initContent = function () {
@@ -705,7 +708,7 @@
 
 	</div> <!--End Page Container-->
 		
-<div id="divedithighlight" style="z-index:2;width:500px;position:absolute;background-color:white;margin-top:10%;margin-left:35%;padding:10px;">
+<div id="divedithighlight"  class="tag-list-dropdown" style="z-index:2;width:500px;position:absolute;margin-top:10%;margin-left:35%;padding:10px;color: white;">
 	<table style="width:100%;">
         <tr>
             <td>Category:</td>

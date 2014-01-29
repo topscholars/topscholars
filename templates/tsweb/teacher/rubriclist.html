@@ -197,6 +197,12 @@ $(function() {
 	        					        				    
 	  				    <div id="impactCollapse" class="hide">
     				    	<legend>Impact Criteria</legend>
+    				    	<div class="form-group">
+    				    		<label for="" class="control-label col-sm-4">Category Weight</label>
+    				    		<div class="col-sm-2">
+    				    			<input class="form-control input-small" type="number" id="impact_weight_input" value="0" min="0" max="100"/>
+    				    		</div>
+    				    	</div>
     				      <div class="panel-body rubric-criteria-panel">
     				      	<div class="alert alert-danger alertCriteria" style="display: none;">Please enter text.</div>
       				      <input type="text" name="add_impact_criteria" id="add_impact_criteria" class="form-control input-small" placeholder="Add Impact Criteria"/>
@@ -219,6 +225,12 @@ $(function() {
 	
 	  				    <div id="qualityCollapse" class="hide">
 	      				    	<legend>Quality Criteria</legend>
+	      				    	<div class="form-group">
+	      				    		<label for="" class="control-label col-sm-4">Category Weight</label>
+	      				    		<div class="col-sm-2">
+	      				    			<input class="form-control input-small" type="number" id="quality_weight_input" value="0" min="0" max="100"/>
+	      				    		</div>
+	      				    	</div>
 	      				      <div class="panel-body rubric-criteria-panel">
 		      				      <div class="alert alert-danger alertCriteria" style="display: none;">Please enter text.</div>
 	      				      	<input type="text" name="add_quality_criteria" id="add_quality_criteria" class="form-control input-small" placeholder="Add Quality Criteria" />
@@ -241,6 +253,12 @@ $(function() {
 	
 	  				    	<div id="contentCollapse" class="hide">
 	    				    	<legend>Content Criteria</legend>
+	    				    	<div class="form-group">
+	    				    		<label for="" class="control-label col-sm-4">Category Weight</label>
+	    				    		<div class="col-sm-2">
+	    				    			<input class="form-control input-small" type="number" id="content_weight_input" value="0" min="0" max="100"/>
+	    				    		</div>
+	    				    	</div>
 	    				      <div class="panel-body rubric-criteria-panel">
 	    				      	<div class="alert alert-danger alertCriteria" style="display: none;">Please enter text.</div>
 	    				      	<input type="text" name="add_content_criteria" id="add_content_criteria" class="form-control input-small" placeholder="Add Content Criteria"/>
@@ -263,6 +281,12 @@ $(function() {
 	  				  
 	  				    <div id="processCollapse" class="hide" >
 	  				    	<legend>Process Criteria</legend>
+	  				    	<div class="form-group">
+	  				    		<label for="" class="control-label col-sm-4">Category Weight</label>
+	  				    		<div class="col-sm-2">
+	  				    			<input class="form-control input-small" type="number" id="process_weight_input" value="0" min="0" max="100"/>
+	  				    		</div>
+	  				    	</div>
 	  				      <div class="panel-body rubric-criteria-panel">
 	  				      	<div class="alert alert-danger alertCriteria" style="display: none;">Please enter text.</div>
 	  				      	<input type="text" name="add_process_criteria" id="add_process_criteria" class="form-control input-small" placeholder="Add Process Criteria"/>
@@ -435,11 +459,21 @@ $(function() {
 				
 			});
 			
+			$('#impact_weight_input').change(function(){
+			    var val = $('#impact_weight_input').val();
+			    $('#impact_percent').val(val);
+			});
+			
 			$('.rubric-impact').click(function () {
 				$('.rubric-categories').addClass('hide');
 				$('#impactCollapse').removeClass('hide');
 				$('#show_rubric_btn').removeClass('hide');
 				
+			});
+			
+			$('#quality_weight_input').change(function(){
+			    var val = $('#quality_weight_input').val();
+			    $('#quality_percent').val(val);
 			});
 			
 			$('.rubric-quality').click(function () {
@@ -449,11 +483,21 @@ $(function() {
 				
 			});
 			
+			$('#content_weight_input').change(function(){
+			    var val = $('#content_weight_input').val();
+			    $('#content_percent').val(val);
+			});
+			
 			$('.rubric-content').click(function () {
 				$('.rubric-categories').addClass('hide');
 				$('#contentCollapse').removeClass('hide');
 				$('#show_rubric_btn').removeClass('hide');
 				
+			});
+			
+			$('#process_weight_input').change(function(){
+			    var val = $('#process_weight_input').val();
+			    $('#process_percent').val(val);
 			});
 			
 			$('.rubric-process').click(function () {

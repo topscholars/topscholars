@@ -303,6 +303,10 @@ function EDITPROFILE(url) {
 			      	number: true,
 			      	rangelength: [4, 20]
 			      },
+			      officeext:{
+			      	number: true,
+			      	rangelength: [1, 5]
+			      }
 		    },
 			 invalidHandler: function(event, validator) {
 			// 'this' refers to the form
@@ -322,6 +326,10 @@ function EDITPROFILE(url) {
             if(thisClass.submitForm){
 				thisClass.save();
 			}
+		});
+		
+		$("#edit_profile_form").submit(function(){
+			return false;
 		});
 		
 		$( "#edit_dob").datepicker({ dateFormat: 'dd-mm-yy' });

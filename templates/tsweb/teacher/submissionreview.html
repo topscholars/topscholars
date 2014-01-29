@@ -743,7 +743,7 @@
 	<div class="assignment-edit-section">
 		<div class="block-cell block-wide">
 			<div class="section-title">
-				<h4><i class="fa fa-file-o"></i> {{ student_name }} - {{ assignment_name }}</h4>
+				<h4><i class="fa fa-file-o"></i> {{ student_name }} - {{ assignment.name }}</h4>
 			</div>
 			<div class="controls">
 				<a href="{% url 'tsweb:tsubmissionlist' %}" class="btn btn-warning btn-small pull-right" id="exitBtn" style="margin-left: 10px;">Exit</a>
@@ -877,33 +877,37 @@
 						<legend>Objective</legend>
 						<ul class="list-unstyled objective-list-item">
 							<li>
-							<h5>{{ assignment_name }}</h5>
+							<h5>{{ assignment.name }}</h5>
 							<p>
-								<b>Goal of task:</b> {# goal_of_task #}
+								<b>Goal of task:</b> {{ assignment.goaloftask }}
 							</p>
 							<p class="text-scroll">
-								<b>Description:</b> {# assignment_description #}
+								<b>Description:</b> {{ assignment.description }}
 							</p>
 							<p>
-								<b>Audience:</b> {# assignment_audience #}
+								<b>Audience:</b> {{ assignment.audience }}
 							</p>
 							<p>
-								<b>Length:</b> {# assignment_length #}
+								<b>Length:</b> {{ assignment.minwords }} - {{ assignment.maxwords }}
 							</p>
 							<p>
-								<b>Revisions:</b> {# assignment_revisions #}
+								<b>Revisions:</b> {{ assignment.revisions }}
 							</p>
+							<!--
 							<p>
 								<b>Max Points:</b> out of 100
 							</p>
+							-->
+							<!--
 							<p>
 								<b>Category:</b> {# assignment_category #}
 							</p>
+							-->
 							<p>
-								<b>Grading Criteria:</b> {{ rubric_name }}
+								<b>Grading Criteria:</b> {{ assignment.rubricid.name }}
 							</p>
 							<p>
-								<b>Due Date:</b> {{ due_date }}
+								<b>Due Date:</b> {{ assignment.duedate }}
 							</p>
 							</li>
 						</ul>
@@ -921,6 +925,7 @@
 			</div>
 			<div id="collapseTwo" class="panel-collapse collapse in">
 				<div class="block-body" style="height: 100px;">
+					<!--
 					<div class="tag-list-dropdown" style="display:;">
 						<button type="button" class="close" id="close_tag_list" aria-hidden="true" style="margin-top: -5px;">&times;</button>
 						<form class="form" role="form">
@@ -932,12 +937,15 @@
 								</span>
 							</div>
 							<!-- /input-group -->
+							<!--
 							<ul id="taglist">
 								<li><a href="#">{# tag #}</a></li>
 							</ul>
 							<!--<input type="submit" name="add-tab" value="Add Tag" class="btn btn-primary btn-small pull-right" />-->
+						<!--
 						</form>
 					</div>
+					-->
 					<ul class="block-list" id="Ul1">
 						<li class="tag">
 						<a href="#" id="tag-details" rel="popover" data-placement="left" data-container="body" data-toggle="popover" title data-trigger="hover" data-content="{# tag-details #} this is some more info about this tag. Of course it will be loaded dynamically.." role="button">{# tag-name #} </a>

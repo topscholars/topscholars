@@ -615,21 +615,37 @@
 							<legend>Objective</legend>
 							<ul class="list-unstyled objective-list-item">
 								<li>
-								<h5>{{ assignment_name }}</h5>
+								<h5>{{ assignment.name }}</h5>
+								<p>
+									<b>Goal of task:</b> {{ assignment.goaloftask }}
+								</p>
 								<p class="text-scroll">
-									<b>Description:</b> {# assignment_description #}
+									<b>Description:</b> {{ assignment.description }}
 								</p>
 								<p>
-									<b>Max Points:</b>out of 100
+									<b>Audience:</b> {{ assignment.audience }}
 								</p>
+								<p>
+									<b>Length:</b> {{ assignment.minwords }} - {{ assignment.maxwords }}
+								</p>
+								<p>
+									<b>Revisions:</b> {{ assignment.revisions }}
+								</p>
+								<!--
+								<p>
+									<b>Max Points:</b> out of 100
+								</p>
+								-->
+								<!--
 								<p>
 									<b>Category:</b> {# assignment_category #}
 								</p>
+								-->
 								<p>
-									<b>Grading Criteria:</b> {{ rubric_name }}
+									<b>Grading Criteria:</b> {{ assignment.rubricid.name }}
 								</p>
 								<p>
-									<b>Due Date:</b> {{ due_date }}
+									<b>Due Date:</b> {{ assignment.duedate }}
 								</p>
 								</li>
 							</ul>

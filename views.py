@@ -273,16 +273,16 @@ def tsubmissionreview(request, id):
         submission = submissionreviewer.submissionversionid.submissionid
         student_name = submissionreviewer.submissionversionid.submissionid.studentid.getFullName()
         assignment = submissionreviewer.submissionversionid.submissionid.assignmentid
-        rubric = submissionreviewer.submissionversionid.submissionid.assignmentid.rubricid
+        
         context= {'id' : id,
                   'user_name' : user_name,
                   'submissionreviewerlist' : submissionreviewerlist,
                   'categoryentity' : categoryentity,
                   'selectionlist': selectionlist,
                   'student_name': student_name,
-                  'assignment_name': assignment.name,
-                  'due_date': submission.duedate,
-                  'rubric_name': rubric.name }
+                  'assignment': assignment,
+                  'due_date': submission.duedate
+                  }
         
         return render(request, 'tsweb/teacher/submissionreview.html', context)
         
@@ -306,9 +306,10 @@ def stsubmissionreview(request, id):
             'user_name' : user_name,
             'assignment' : submission.assignmentid,
             'submissionversionlist' : submissionversionlist,
-            'studentlist' : studentlist, 'submissionlist' : submissionlist,
+            'studentlist' : studentlist, 
+            'submissionlist' : submissionlist,
             'submissioncount':submissionlist.count(),
-            'user_name' : user_name, }
+            }
         return render(request, 'tsweb/student/revision_editor.html', context)
     
 

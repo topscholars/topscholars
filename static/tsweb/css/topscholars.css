@@ -356,6 +356,7 @@ form{
 	margin-top: 70px;
 	padding: 5px;
 	overflow: scroll;
+	padding-bottom: 50px;
 }
 .block-wide.block-padding{
 	padding-top: 30px;

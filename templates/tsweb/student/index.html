@@ -75,9 +75,9 @@
                     'class': 'VIEWAJAX',
                 },
                 function (result) {
+
                 	$('#redactor_content').redactor({ plugins: ['fontcolor', 'fontfamily', 'fontsize'] });
                 	$('#redactor_content').redactor('set', result.essay);
-
                 })
                 .error(function (xhr, status, error) {
                     alert('Error occur. Please contact the administrator.');
@@ -181,41 +181,6 @@
                         return false;
                     });
                 }).error(function (xhr, status, error) {
-                    alert('Error occur. Please contact the administrator.');
-                });
-        }
-
-        this.getData = function () {
-            $.getJSON(
-                url,
-                {
-                    'class': evalClass,
-                    'method': 'getSubmissionVersion',
-                    'submissionversionid': submissionversionid
-                },
-                function (result) {
-                    editable = result.status;
-                    if (editable == 0) {
-                        $('#redactor_content').redactor({ plugins: ['fontcolor', 'fontfamily', 'fontsize'] });
-                        $('#redactor_content').redactor('set', result.essay);
-                        $('#btnSave').show();
-                        $('#btnSubmit').show();
-                        $('#redactor_content').unbind("keypress");
-                    }
-                    else {
-                        $('#redactor_content').redactor({ toolbar: false });
-                        $('#redactor_content').redactor('set', result.essay);
-                        $('#btnSave').hide();
-                        $('#btnSubmit').hide();
-                        $('#redactor_content').keypress(function (event) {
-                            event.preventDefault();
-                        });
-                    }
-
-                    thisClass.tagHighlightList();
-                    //thisClass.getSubmitRubric();
-                })
-                .error(function (xhr, status, error) {
                     alert('Error occur. Please contact the administrator.');
                 });
         }
@@ -352,7 +317,9 @@
             });
             
             $("#discard_changes").click(function(){
-            	window.location = '{% url 'tsweb:stsubmissionreview' submissionversion.submissionid.id %}';
+            	{% if submissionversion.submissionid.id != false %}
+            	window.location = "{% url 'tsweb:stsubmissionreview' submissionversion.submissionid.id %}";
+            	{% endif %}
             });
             
             $("#save_changes").click(function(){
@@ -368,7 +335,9 @@
 			                    },
 			                    function (result) {
 			                    	if(ini == thisClass.arrayTagRemove.length -1){
+			                    		{% if submissionversion.submissionid.id != false %}
 			                         	window.location = "{% url 'tsweb:stsubmissionreview' submissionversion.submissionid.id %}";
+			                         	{% endif %}
 			                        }
 			                    })
 			            .error(function (xhr, status, error) {
@@ -384,7 +353,9 @@
 				                    'essay': $('#redactor_content').redactor('getEditor').html()
 				                },
 	                    function (result) {
+	                    	{%if submissionversion.submissionid.id != false %}
 	                        window.location = "{% url 'tsweb:stsubmissionreview' submissionversion.submissionid.id %}";
+	                        {% endif %}
 	                    })
 	                .error(function (xhr, status, error) {
 	                    alert('Error occur. Please contact the administrator.');

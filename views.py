@@ -77,9 +77,9 @@ def sindex(request):
         except Submissionversion.DoesNotExist:
             context= {'submissionlist' : submissionlist,
                   'submissioncount':submissionlist.count(),
-                  'submissionversion': submissionversion,
+                  #'submissionversion': submissionversion,
                   'classschedulelist': classschedulelist,
-                  'lessonactivitylist': lessonactivitylist,
+                  #'lessonactivitylist': lessonactivitylist,
                   'user_name' : user_name}
         else:
             context= {'submissionlist' : submissionlist,

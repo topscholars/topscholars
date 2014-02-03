@@ -320,8 +320,8 @@ class ASSSIGNMENTLIST():
                     if studentcheck > -1:
                         studentids = studentids.split(',')
                         assignmentlist = Assignment.objects.get(id=id)
-                        for row in studentids:
-                            studentlist = Studentlist.objects.get(id=row[0])
+                        for student in studentids:
+                            studentlist = Studentlist.objects.get(id=student)
                             try: 
                                 submission = Submission.objects.get(Q(studentid=studentlist),Q(assignmentid=assignmentlist),~Q(progress=100))
                             except Submission.DoesNotExist:
@@ -554,8 +554,8 @@ class ASSSIGNMENTLIST():
                     if studentcheck > -1:
                         studentids = studentids.split(',')
                         assignmentlist = Assignment.objects.get(id=id)
-                        for row in studentids:
-                            studentlist = Studentlist.objects.get(id=row[0])
+                        for student in studentids:
+                            studentlist = Studentlist.objects.get(id=student)
                             try: 
                                 submission = Submission.objects.get(Q(studentid=studentlist),Q(assignmentid=assignmentlist),~Q(progress=100))
                             except Submission.DoesNotExist:

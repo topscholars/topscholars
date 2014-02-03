@@ -68,21 +68,21 @@
         var url = "{% url 'tsweb:tprocessajax' %}";
         thisClass.arrayTagRemove = [];
         
-        this.getData = function () {
-            $.getJSON(
-                url,
-                {
-                    'class': 'VIEWAJAX',
-                },
-                function (result) {
-                	$('#redactor_content').redactor({ plugins: ['fontcolor', 'fontfamily', 'fontsize'] });
-                	$('#redactor_content').redactor('set', result.essay);
-
-                })
-                .error(function (xhr, status, error) {
-                    alert('Error occur. Please contact the administrator.');
-                });
-        }
+        // this.getData = function () {
+            // $.getJSON(
+                // url,
+                // {
+                    // 'class': 'VIEWAJAX',
+                // },
+                // function (result) {
+                	// $('#redactor_content').redactor({ plugins: ['fontcolor', 'fontfamily', 'fontsize'] });
+                	// $('#redactor_content').redactor('set', result.essay);
+// 
+                // })
+                // .error(function (xhr, status, error) {
+                    // alert('Error occur. Please contact the administrator.');
+                // });
+        // }
         this.categoryHighlightList = function (name) {
             var categoryid = 0;
             switch (name) {
@@ -186,6 +186,7 @@
         }
 
         this.getData = function () {
+        	if(submissionversionid != ''){
             $.getJSON(
                 url,
                 {
@@ -218,6 +219,13 @@
                 .error(function (xhr, status, error) {
                     alert('Error occur. Please contact the administrator.');
                 });
+               }else{
+					$('#redactor_content').redactor({ toolbar: false });
+                    $('#redactor_content').keypress(function (event) {
+                        event.preventDefault();
+                    });
+                    $("#saveAssignment").hide();
+               }
         }
 
         this.editHighlightDialog = function (edit) {
@@ -352,7 +360,7 @@
             });
             
             $("#discard_changes").click(function(){
-            	{% if submissionversion.submissionid.id  !== false %}
+            	{% if submissionversion.submissionid.id != false %}
             	window.location = '{% url 'tsweb:stsubmissionreview' submissionversion.submissionid.id %}';
             	{% endif %}
             });
@@ -369,9 +377,11 @@
 			                        'essay': $('#redactor_content').redactor('getEditor').html()
 			                    },
 			                    function (result) {
+			                    	{% if submissionversion.submissionid.id != false %}
 			                    	if(ini == thisClass.arrayTagRemove.length -1){
 			                         	window.location = "{% url 'tsweb:stsubmissionreview' submissionversion.submissionid.id %}";
 			                        }
+			                        {% endif %}
 			                    })
 			            .error(function (xhr, status, error) {
 			                alert('Error occur. Please contact the administrator.');
@@ -386,7 +396,9 @@
 				                    'essay': $('#redactor_content').redactor('getEditor').html()
 				                },
 	                    function (result) {
+	                    	{% if submissionversion.submissionid.id != false %}
 	                        window.location = "{% url 'tsweb:stsubmissionreview' submissionversion.submissionid.id %}";
+	                    	{% endif %}
 	                    })
 	                .error(function (xhr, status, error) {
 	                    alert('Error occur. Please contact the administrator.');

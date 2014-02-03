@@ -352,7 +352,9 @@
             });
             
             $("#discard_changes").click(function(){
+            	{% if submissionversion.submissionid.id  !== false %}
             	window.location = '{% url 'tsweb:stsubmissionreview' submissionversion.submissionid.id %}';
+            	{% endif %}
             });
             
             $("#save_changes").click(function(){

@@ -67,28 +67,30 @@ def sindex(request):
         submissionversionid = studentlist.lastsubmissionversionid
         classscheduleid = Studentclass.objects.filter(studentid=studentid, clientid=clientid,disabled=0,deleted=0).values_list('classscheduleid')
         classschedulelist = Classschedule.objects.filter(id__in=classscheduleid,disabled=0,deleted=0)
-        try:
-            submissionlist = Submission.objects.filter(studentid=studentid)
+        submissionlist = Submission.objects.filter(studentid=studentid)
+        context= {'submissionlist' : submissionlist,
+                  'submissioncount':submissionlist.count(),
+                  'classschedulelist': classschedulelist,
+                  'user_name' : user_name}
+        try: 
             submissionversion = Submissionversion.objects.get(id=submissionversionid)
+        except Submissionversion.DoesNotExist:
+            data_json = { 'status': 'blank', }
+        else:
             assignment = submissionversion.submissionid.assignmentid
+            context['submissionversion'] = submissionversion
+            context['assignment'] = assignment
+
+        try:
             lessonactivitylnkid = Studentlessonactivity.objects.filter(studentid=studentid,clientid=clientid,deleted=0).values_list('lessonactivitylnkid')
+
+        except Studentlessonactivity.DoesNotExist:   
+            data_json = { 'status': 'blank', }
+        else:
             activityid = Lessonactivitylnk.objects.filter(id__in=lessonactivitylnkid,deleted=0).values_list('activityid')
             lessonactivitylist = Lessonactivity.objects.filter(id__in=activityid,clientid=clientid,deleted=0)
-        except Submissionversion.DoesNotExist:
-            context= {'submissionlist' : submissionlist,
-                  'submissioncount':submissionlist.count(),
-                  'submissionversion': submissionversion,
-                  'classschedulelist': classschedulelist,
-                  'lessonactivitylist': lessonactivitylist,
-                  'user_name' : user_name}
-        else:
-            context= {'submissionlist' : submissionlist,
-                      'submissioncount':submissionlist.count(),
-                      'submissionversion': submissionversion,
-                      'assignment': assignment,
-                      'classschedulelist': classschedulelist,
-                      'lessonactivitylist': lessonactivitylist,
-                      'user_name' : user_name}
+            context['lessonactivitylist'] = lessonactivitylist
+
         return render(request, 'tsweb/student/index.html', context)
 
 #Teacher Views

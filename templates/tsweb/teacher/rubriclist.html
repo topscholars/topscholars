@@ -147,9 +147,12 @@ $(function() {
 				        	</div>
 				        	<div class="form-group">
 				        		<label for="rubric_parameters" class="control-label col-sm-4">Parameters</label>
-				        		<div class="col-sm-8">
-					        		<input type="text" name="rubric_parameters" id="rubric_parameters" class="form-control input-small" />
-					        	</div>
+				        		<div class="col-sm-4">
+				        			<input type="text" name="rubric_parameters_min" id="rubric_parameters_min" class="form-control input-small" placeholder="Min" />
+				        		</div>
+				        		<div class="col-sm-4">
+				        			<input type="text" name="rubric_parameters_max" id="rubric_parameters_max" class="form-control input-small" placeholder="Max" />
+				        		</div>
 				        	</div>
 				        	<div class="form-group">
 				        		<label for="rubric_scale" class="control-label col-sm-4">Scale</label>
@@ -160,6 +163,7 @@ $(function() {
 				        </div><!-- col-lg-5 -->
 			       		
 		        		<div class="col-lg-7" style="padding-left: 70px;">
+		        			<button role="button" class="btn btn-small btn-default pull-right" id="show-category-btn">Show Categories</button>
 			        		<div class="rubric-categories">
 			        		<div class="rubric-impact circle circle-blue center-block">
 			        			<p>Impact</p>
@@ -192,131 +196,180 @@ $(function() {
 			        </div><!-- col-lg-7 -->
 			        
 	        		<div class="col-lg-7">
-			        		
-		        		<button id="show_rubric_btn" type="button" class="btn btn-small btn-default pull-right hide">Show Rubric</button>
-	        					        				    
-	  				    <div class="criteria-section hide">	
-	            		<ul class="nav nav-tabs nav-justified" id="criteria_tabs">
-	            		  <li><a href="#impactCollapse" data-toggle="tab">Impact</a></li>
-	            		  <li><a href="#qualityCollapse" data-toggle="tab">Quality</a></li>
-	            		  <li><a href="#contentCollapse" data-toggle="tab">Content</a></li>
-	            		  <li><a href="#processCollapse" data-toggle="tab">Process</a></li>
-	            		</ul>
-	          			<br />
-	          			
-	          			<div class="tab-content">		        				    
-	      				    
-	      				    <div id="impactCollapse" class="tab-pane">
-	      				    	<div class="form-group">
-	    				    			<label for="" class="control-label col-sm-4">Category Weight</label>
-	    				    			<div class="col-sm-2">
-	      				    			<input class="form-control input-small" type="number" id="impact_weight_input" value="0" min="0" max="100"/>
-	      				    		</div>
-	      				    	</div>
-	      				      <div class="panel-body rubric-criteria-panel">
-	      				      	<div class="alert alert-danger alertCriteria" style="display: none;">Please enter text.</div>
-	        				      <input type="text" name="add_impact_criteria" id="add_impact_criteria" class="form-control input-small" placeholder="Add Impact Criteria"/>
-	        				      <input type="text" name="add-impact-tag" placeholder="Add Tag" id="add_impact_tag" class="form-control input-small add-tag" />
-	        				      <input type="text" name="add-impact-weight" value="" id="add_impact_weight" class="form-control input-small add-tag" placeholder="Weight 1 - 100" />
-	        				      <input type="button" class="btn btn-blue" value="+" id="add_impact_criteria_btn"/>
-	      				      	
-	      				      	<div class="impact-list-item hide">
-	        				      	<ul class="list-unstyled">
-	          				      	<li><a href="#" class="btn btn-danger btn-small pull-right">Remove</a></li>
-	        				      		<li><a href="#" class="btn btn-small btn-default pull-right">Edit</a></li>
-	        				      		<li>{{ criteria.name }}</li>
-	        				      		<li>{{ criteria.tag }}</li>
-	        				      		<li>{{ criteria.weight }}</li>
-	        				      	</ul>
-	        				      	<hr />
-	      				      	</div>
-	      				      </div>
-	      				     </div>
-	    
-	      				    <div id="qualityCollapse" class="tab-pane">
-	        				    	<div class="form-group">
-	        				    		<label for="" class="control-label col-sm-4">Category Weight</label>
-	        				    		<div class="col-sm-2">
-	        				    			<input class="form-control input-small" type="number" id="quality_weight_input" value="0" min="0" max="100"/>
-	        				    		</div>
-	        				    	</div>
-	        				      <div class="panel-body rubric-criteria-panel">
-	          				      <div class="alert alert-danger alertCriteria" style="display: none;">Please enter text.</div>
-	        				      	<input type="text" name="add_quality_criteria" id="add_quality_criteria" class="form-control input-small" placeholder="Add Quality Criteria" />
-	        				      	<input type="text" name="add-quality-tag" placeholder="Add Tag" id="add_quality_tag" class="form-control input-small add-tag" />
-	        				      	<input type="text" name="add-quality-weight" value="" id="add_quality_weight" class="form-control input-small add-tag" placeholder="Weight 1 - 100" />
-	        				      	<input type="button" class="btn btn-green" value="+" id="add_quality_criteria_btn"/>
-	        				      	
-	        				        <div class="quality-list-item hide">
-	        				        	<ul class="list-unstyled">
-	        				          	<li><a href="#" class="btn btn-danger btn-small pull-right">Remove</a></li>
-	        				        		<li><a href="#" class="btn btn-small btn-default pull-right">Edit</a></li>
-	        				        		<li>{{ criteria.name }}</li>
-	        				        		<li>{{ criteria.tag }}</li>
-	        				        		<li>{{ criteria.weight }}</li>
-	        				        	</ul>
-	        				        	<hr />
-	          				        </div>
-	        				      </div>
-	        				    </div>
-	    
-	      				    <div id="contentCollapse" class="tab-pane">
-	        				    	<div class="form-group">
-	        				    		<label for="" class="control-label col-sm-4">Category Weight</label>
-	        				    		<div class="col-sm-2">
-	        				    			<input class="form-control input-small" type="number" id="content_weight_input" value="0" min="0" max="100"/>
-	        				    		</div>
-	        				    	</div>
-	        				      <div class="panel-body rubric-criteria-panel">
-	        				      	<div class="alert alert-danger alertCriteria" style="display: none;">Please enter text.</div>
-	        				      	<input type="text" name="add_content_criteria" id="add_content_criteria" class="form-control input-small" placeholder="Add Content Criteria"/>
-	        				      	<input type="text" name="add-content-tag" placeholder="Add Tag" id="add_content_tag" class="form-control input-small add-tag" />
-	        				      	<input type="text" name="add-content-weight" value="" id="add_content_weight" class="form-control input-small add-tag" placeholder="Weight 1 - 100" />
-	        				      	<input type="button" class="btn btn-purple" value="+" id="add_content_criteria_btn"/>
-	        				      	
-	        				        <div class="content-list-item hide">
-	        				        	<ul class="list-unstyled">
-	        				          	<li><a href="#" class="btn btn-danger btn-small pull-right">Remove</a></li>
-	        				        		<li><a href="#" class="btn btn-small btn-default pull-right">Edit</a></li>
-	        				        		<li>{{ criteria.name }}</li>
-	        				        		<li>{{ criteria.tag }}</li>
-	        				        		<li>{{ criteria.weight }}</li>
-	        				        	</ul>
-	        				        	<hr />
-	        				        </div>
-	        				      </div>
-	        				    </div>
-	      				  
-	      				    <div id="processCollapse" class="tab-pane">
-	      				    	<div class="form-group">
-	      				    		<label for="" class="control-label col-sm-4">Category Weight</label>
-	      				    		<div class="col-sm-2">
-	      				    			<input class="form-control input-small" type="number" id="process_weight_input" value="0" min="0" max="100"/>
-	      				    		</div>
-	      				    	</div>
-	      				      <div class="panel-body rubric-criteria-panel">
-	      				      	<div class="alert alert-danger alertCriteria" style="display: none;">Please enter text.</div>
-	      				      	<input type="text" name="add_process_criteria" id="add_process_criteria" class="form-control input-small" placeholder="Add Process Criteria"/>
-	      				      	<input type="text" name="add-process-tag" placeholder="Add Tag" id="add_process_tag" class="form-control input-small add-tag" />
-	      				      	<input type="text" name="add-process-weight" value="" id="add_process_weight" class="form-control input-small add-tag" placeholder="Weight 1 - 100" />
-	      				      	<input type="button" class="btn btn-red" value="+" id="add_process_criteria_btn"/>
-	      				      	
-	      				        <div class="process-list-item hide">
-	      				        	<ul class="list-unstyled">
-	      				          	<li><a href="#" class="btn btn-danger btn-small pull-right">Remove</a></li>
-	      				        		<li><a href="#" class="btn btn-small btn-default pull-right">Edit</a></li>
-	      				        		<li>{{ criteria.name }}</li>
-	      				        		<li>{{ criteria.tag }}</li>
-	      				        		<li>{{ criteria.weight }}</li>
-	      				        	</ul>
-	      				        	<hr />
-	      				        </div>
-	      				      </div>
-	      				    </div>
-	    				    </div><!-- /.tab-content -->
-	    			 		</div><!-- /.criteria-section -->
-  				 		
-  				 		</div> <!-- ./col-lg-7 -->
+	        		        		
+  		      		<button id="show_rubric_btn" type="button" class="btn btn-small btn-default pull-right hide">Show Rubric</button>
+  		      	
+  		      		<div class="criteria-section hide">	
+  		        		<ul class="nav nav-tabs nav-justified" id="criteria_tabs">
+  		        		  <li><a href="#impactCollapse" data-toggle="tab">Impact</a></li>
+  		        		  <li><a href="#qualityCollapse" data-toggle="tab">Quality</a></li>
+  		        		  <li><a href="#contentCollapse" data-toggle="tab">Content</a></li>
+  		        		  <li><a href="#processCollapse" data-toggle="tab">Process</a></li>
+  		        		</ul>
+  		      			<br />
+  		      			<div class="tab-content">		        				    
+  		  				    
+  		  				    <div id="impactCollapse" class="tab-pane">
+  		  				    	<div class="form-group">
+  						    			<label class="control-label col-sm-4">Category Weight</label>
+  						    			<div class="col-sm-2">
+  		  				    			<input class="form-control input-small" type="number" id="impact_weight_input" value="0" min="0" max="100"/>
+  		  				    		</div>
+  		  				    		<div class="col-sm-2">
+  		  				    			<input type="button" class="btn btn-blue" value="+" id="add_impact_criteria_btn"/>
+  		  				    		</div>
+  		  				    	</div>
+  		  				      <div class="panel-body rubric-criteria-panel">
+  		  				      	<div class="alert alert-danger alertCriteria" style="display: none;">Please enter text.</div>
+  		    				      <input type="text" name="add_impact_criteria" id="add_impact_criteria" class="form-control input-small" placeholder="Add Impact Criteria"/>
+  		    				      <div class="row">
+  		    				      	<div class="col-lg-6">
+  				    				      <input type="text" name="add-impact-tag" placeholder="Add Tag" id="add_impact_tag" class="form-control input-small add-tag" />
+  			    				      </div>
+  			    				      <div class="col-lg-6">
+  				    				      <input type="text" name="add-impact-weight" value="" id="add_impact_weight" class="form-control input-small add-tag" placeholder="Weight 1 - 100" />
+  				    				    </div>
+  		    				      </div>
+  		    				      
+  		    				      <hr />
+  		  				      	
+  		  				      	<div class="impact-list-item">
+  		  				      		<p class="text-muted">Click and drag to reorder criteria</p>
+  		    				      	<ul class="list-unstyled" id="impact_criteria_list">
+  		    				      		<li class="well well-small">
+  			      				      	<a href="#" class="btn btn-danger btn-small pull-right">Remove</a>
+  			    				      		<a href="#" class="btn btn-small btn-default pull-right">Edit</a>
+  			    				      		<p>{{ criteria.name }}</p>
+  			    				      		<p>{{ criteria.tag }}</p>
+  			    				      		<p>{{ criteria.weight }}</p>
+  			    				      	</li>
+  		    				      	</ul>
+  		  				      	</div>
+  		  				      </div>
+  		  				     </div>
+  		
+  		  				     <div id="qualityCollapse" class="tab-pane">
+  		    				    	<div class="form-group">
+  		    				    		<label for="" class="control-label col-sm-4">Category Weight</label>
+  		    				    		<div class="col-sm-2">
+  		    				    			<input class="form-control input-small" type="number" id="quality_weight_input" value="0" min="0" max="100"/>
+  		    				    		</div>
+  		    				    		<div class="col-sm-2">
+  		    				    			<input type="button" class="btn btn-green" value="+" id="add_quality_criteria_btn"/>
+  		    				    		</div>
+  		    				    	</div>
+  		    				      <div class="panel-body rubric-criteria-panel">
+  		      				      <div class="alert alert-danger alertCriteria" style="display: none;">Please enter text.</div>
+  		    				      	<input type="text" name="add_quality_criteria" id="add_quality_criteria" class="form-control input-small" placeholder="Add Quality Criteria" />
+  		    				      	<div class="row">
+  		    				      		<div class="col-lg-6">
+  			      				      	<input type="text" name="add-quality-tag" placeholder="Add Tag" id="add_quality_tag" class="form-control input-small add-tag" />
+  		    				      		</div>
+  		    				      		<div class="col-lg-6">
+  			      				      	<input type="text" name="add-quality-weight" value="" id="add_quality_weight" class="form-control input-small add-tag" placeholder="Weight 1 - 100" />
+  			      				      </div>
+  			      				    </div>
+  		    				      	
+  		    				      	<hr />
+  		    				      	
+  		    				        <div class="quality-list-item hide">
+  		    				        	<p class="text-muted">Click and drag to reorder criteria</p>
+  		    				        	<ul class="list-unstyled" id="quality_criteria_list">
+  		    				          	<li class="well well-small">
+  		    				          		<a href="#" class="btn btn-danger btn-small pull-right">Remove</a>
+  		    				        			<a href="#" class="btn btn-small btn-default pull-right">Edit</a>
+  		    				        			<p>{{ criteria.name }}</p>
+  		    				        			<p>{{ criteria.tag }}</p>
+  		    				        			<p>{{ criteria.weight }}</p>
+  		    				        		</li>
+  		    				        	</ul>
+  		    				        	<hr />
+  		      				        </div>
+  		    				      </div>
+  		    				    </div>
+  		
+  		  				    	<div id="contentCollapse" class="tab-pane">
+  		    				    	<div class="form-group">
+  		    				    		<label for="" class="control-label col-sm-4">Category Weight</label>
+  		    				    		<div class="col-sm-2">
+  		    				    			<input class="form-control input-small" type="number" id="content_weight_input" value="0" min="0" max="100"/>
+  		    				    		</div>
+  		    				    		<div class="col-sm-2">
+  		    				    			<input type="button" class="btn btn-purple" value="+" id="add_content_criteria_btn"/>
+  		    				    		</div>
+  		    				    	</div>
+  		    				      <div class="panel-body rubric-criteria-panel">
+  		    				      	<div class="alert alert-danger alertCriteria" style="display: none;">Please enter text.</div>
+  		    				      	<input type="text" name="add_content_criteria" id="add_content_criteria" class="form-control input-small" placeholder="Add Content Criteria"/>
+  		    				      	<div class="row">
+  		    				      		<div class="col-lg-6">
+  				    				      	<input type="text" name="add-content-tag" placeholder="Add Tag" id="add_content_tag" class="form-control input-small add-tag" />
+  			    				      	</div>
+  			    				      	<div class="col-lg-6">
+  				    				      	<input type="text" name="add-content-weight" value="" id="add_content_weight" class="form-control input-small add-tag" placeholder="Weight 1 - 100" />
+  				    				      </div>
+  				    				    </div>
+  		    				      	
+  		    				      	<hr />
+  		    				      	
+  		    				        <div class="content-list-item hide">
+  		    				        	<p class="text-muted">Click and drag to reorder criteria</p>
+  		    				        	<ul class="list-unstyled" id="content_criteria_list">
+  		    				          	<li class="well well-small">
+  		    				          		<a href="#" class="btn btn-danger btn-small pull-right">Remove</a>
+  		    				        			<a href="#" class="btn btn-small btn-default pull-right">Edit</a>
+  			    				        		<p>{{ criteria.name }}</p>
+  			    				        		<p>{{ criteria.tag }}</p>
+  			    				        		<p>{{ criteria.weight }}</p>
+  			    				        	</li>
+  		    				        	</ul>
+  		    				        	<hr />
+  		    				        </div>
+  		    				      </div>
+  		    				    </div>
+  		  				  
+  		  				    <div id="processCollapse" class="tab-pane">
+  		  				    	<div class="form-group">
+  		  				    		<label for="" class="control-label col-sm-4">Category Weight</label>
+  		  				    		<div class="col-sm-2">
+  		  				    			<input class="form-control input-small" type="number" id="process_weight_input" value="0" min="0" max="100"/>
+  		  				    		</div>
+  		  				    		<div class="col-sm-2">
+  		  				    			<input type="button" class="btn btn-red" value="+" id="add_process_criteria_btn"/>
+  		  				    		</div>
+  		  				    	</div>
+  		  				      <div class="panel-body rubric-criteria-panel">
+  		  				      	<div class="alert alert-danger alertCriteria" style="display: none;">Please enter text.</div>
+  		  				      	<input type="text" name="add_process_criteria" id="add_process_criteria" class="form-control input-small" placeholder="Add Process Criteria"/>
+  		  				      	<div class="row">
+  		  				      		<div class="col-lg-6">
+  				  				      	<input type="text" name="add-process-tag" placeholder="Add Tag" id="add_process_tag" class="form-control input-small add-tag" />
+  				  				      </div>
+  				  				      <div class="col-lg-6">
+  				  				      	<input type="text" name="add-process-weight" value="" id="add_process_weight" class="form-control input-small add-tag" placeholder="Weight 1 - 100" />
+  				  				      </div>
+  				  				    </div>
+  		  				      	
+  		  				      	<hr />
+  		  				      	
+  		  				        <div class="process-list-item hide">
+  		  				        	<p class="text-muted">Click and drag to reorder criteria</p>
+  		  				        	<ul class="list-unstyled">
+  		  				          	<li class="well well-small">
+  		  				          		<a href="#" class="btn btn-danger btn-small pull-right">Remove</a>
+  			  				        		<a href="#" class="btn btn-small btn-default pull-right">Edit</a>
+  			  				        		<p>{{ criteria.name }}</p>
+  			  				        		<p>{{ criteria.tag }}</p>
+  			  				        		<p>{{ criteria.weight }}</p>
+  			  				        	</li>
+  		  				        	</ul>
+  		  				        	<hr />
+  		  				        </div>
+  		  				      </div>
+  		  				    </div>
+  						    </div>
+  					 		</div><!-- /.criteria-section -->
+  				 		</div>
   				 		
 			        <hr />
 		        </div><!-- /.row -->
@@ -457,68 +510,84 @@ $(function() {
 		    document.getElementById("uploadFile").value = this.value;
 			};
 			$('#show_rubric_btn').click(function () {
-					$(this).addClass('hide');
-					$('.rubric-categories').removeClass('hide');
-					$('.criteria-section').addClass('hide');
-				});
-				
-			 $('#impact_weight_input').change(function(){
-			     var val = $('#impact_weight_input').val();
-			     $('#impact_percent').val(val);
-			 });
+				$(this).addClass('hide');
+				$('.rubric-categories').removeClass('hide');
+				$('.criteria-section').addClass('hide');
+				$('#show-category-btn').removeClass('hide');
+			});
 			
-				
-				$('.rubric-impact').click(function () {	
-					$('.rubric-categories').addClass('hide');
-					$('#impactCollapse').removeClass('hide');
-					$('#show_rubric_btn').removeClass('hide');
-					$('.criteria-section').removeClass('hide');
-					$('#processCollapse, #qualityCollapse, #contentCollapse').removeClass('active');
-					$('#impactCollapse').addClass('active');
-				});
-				
-				$('#quality_weight_input').change(function(){
-				    var val = $('#quality_weight_input').val();
-				    $('#quality_percent').val(val);
-				});
-				
-				$('.rubric-quality').click(function () {
-					$('.rubric-categories').addClass('hide');
-					$('#qualityCollapse').removeClass('hide');
-					$('#show_rubric_btn').removeClass('hide');
-					$('.criteria-section').removeClass('hide');
-					$('#impactCollapse, #processCollapse, #contentCollapse').removeClass('active');
-					$('#qualityCollapse').addClass('active');
-				});
-				
-				$('#content_weight_input').change(function(){
-				    var val = $('#content_weight_input').val();
-				    $('#content_percent').val(val);
-				});
-				
-				$('.rubric-content').click(function () {
-					$('.rubric-categories').addClass('hide');
-					$('#contentCollapse').removeClass('hide');
-					$('#show_rubric_btn').removeClass('hide');
-					$('.criteria-section').removeClass('hide');
-					$('#impactCollapse, #qualityCollapse, #processCollapse').removeClass('active');
-					$('#contentCollapse').addClass('active');
-				});
-				
-				$('#process_weight_input').change(function(){
-				    var val = $('#process_weight_input').val();
-				    $('#process_percent').val(val);
-				});
-				
-				
-				$('.rubric-process').click(function () {
-					$('.rubric-categories').addClass('hide');
-					$('#processCollapse').removeClass('hide');
-					$('#show_rubric_btn').removeClass('hide');
-					$('.criteria-section').removeClass('hide');
-					$('#impactCollapse, #qualityCollapse, #contentCollapse').removeClass('active');
-					$('#processCollapse').addClass('active');
-				});	
+			$('#impact_weight_input').change(function(){
+			    var val = $('#impact_weight_input').val();
+			    $('#impact_percent').val(val);
+			});
+			
+			$('#show-category-btn').click(function () {
+				$('.rubric-categories').addClass('hide');
+				$('.criteria-section').removeClass('hide');
+				$('#show_rubric_btn').removeClass('hide');
+				$('#impactCollapse').removeClass('hide').addClass('active');
+				$(this).addClass('hide');
+			});   
+			
+			$('.rubric-impact').click(function () {	
+				$('.rubric-categories').addClass('hide');
+				$('#impactCollapse').removeClass('hide');
+				$('#show_rubric_btn').removeClass('hide');
+				$('.criteria-section').removeClass('hide');
+				$('#show_rubric_btn').removeClass('hide');
+				$('#processCollapse, #qualityCollapse, #contentCollapse').removeClass('active');
+				$('#impactCollapse').addClass('active');
+				$('#show-category-btn').addClass('hide');
+			});
+			
+			$('#quality_weight_input').change(function(){
+			    var val = $('#quality_weight_input').val();
+			    $('#quality_percent').val(val);
+			});
+			
+			$('.rubric-quality').click(function () {
+				$('.rubric-categories').addClass('hide');
+				$('#qualityCollapse').removeClass('hide');
+				$('#show_rubric_btn').removeClass('hide');
+				$('.criteria-section').removeClass('hide');
+				$('#show_rubric_btn').removeClass('hide');
+				$('#impactCollapse, #processCollapse, #contentCollapse').removeClass('active');
+				$('#qualityCollapse').addClass('active');
+				$('#show-category-btn').addClass('hide');
+			});
+			
+			$('#content_weight_input').change(function(){
+			    var val = $('#content_weight_input').val();
+			    $('#content_percent').val(val);
+			});
+			
+			$('.rubric-content').click(function () {
+				$('.rubric-categories').addClass('hide');
+				$('#contentCollapse').removeClass('hide');
+				$('#show_rubric_btn').removeClass('hide');
+				$('.criteria-section').removeClass('hide');
+				$('#show_rubric_btn').removeClass('hide');
+				$('#impactCollapse, #qualityCollapse, #processCollapse').removeClass('active');
+				$('#contentCollapse').addClass('active');
+				$('#show-category-btn').addClass('hide');
+			});
+			
+			$('#process_weight_input').change(function(){
+			    var val = $('#process_weight_input').val();
+			    $('#process_percent').val(val);
+			});
+			
+			
+			$('.rubric-process').click(function () {
+				$('.rubric-categories').addClass('hide');
+				$('#processCollapse').removeClass('hide');
+				$('#show_rubric_btn').removeClass('hide');
+				$('.criteria-section').removeClass('hide');
+				$('#show_rubric_btn').removeClass('hide');
+				$('#impactCollapse, #qualityCollapse, #contentCollapse').removeClass('active');
+				$('#processCollapse').addClass('active');
+				$('#show-category-btn').addClass('hide');
+			});	
 			
 			
 			
@@ -627,6 +696,12 @@ $(function() {
 			
 			$('.btn-add').click(function (e) {e.preventDefault();});
 		
+		
+			$('#impact_criteria_list').sortable();
+			$('#quality_criteria_list').sortable();
+			$('#content_criteria_list').sortable();
+			$('#process_criteria_list').sortable();
+			
 		</script>	
 
 

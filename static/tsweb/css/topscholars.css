@@ -392,7 +392,7 @@ form{
 	height: auto;
 	overflow: scroll;
 	height: auto;
-	max-height: 130px;
+	/*max-height: 130px;*/
 	padding: 5px;
 }
 .block-body .text-scroll{
@@ -739,12 +739,6 @@ form{
 	font-size: 2.5em;
 }
 .weight-percent input:hover{
-	border: 1px inset rgba(255,255,255,.3);
-	border-radius: 5px;
-	transition: all .5s ease-in-out 0s;
-	-webkit-transition: all .5s ease-in-out 0s;
-	-moz-transition: all .5s ease-in-out 0s;
-	-o-transition: all .5s ease-in-out 0s;
 	cursor: pointer;
 }
 .weight-input{
@@ -902,11 +896,11 @@ form{
 	margin-top: 10px !important;
 }
 #add_impact_criteria_btn, #add_quality_criteria_btn, #add_content_criteria_btn, #add_process_criteria_btn{
-	margin: 10px auto;
-	right: 0;
-	display: inherit;
-	left: 0;
-	right: 0;
+	margin: 0;
+	height: 30px;
+	vertical-align: middle;
+	line-height: 0em;
+	content: "";
 }
 
 .info{
@@ -934,7 +928,14 @@ form{
 #created_rubric .modal-footer{
 	border: none;
 }
-#commentSection textarea{
+#commentSection .comment-header p{
+	display: inline;
+}
+#commentSection .comment-body{
+	
+}
+#commentSection .comment-body textarea{
+	width: 100%;
 	border: 1px solid #cccccc;
 	border-radius: 3px;
 	padding: 5px;
@@ -943,6 +944,25 @@ form{
 	border: 1px solid #cccccc;
 	border-radius: 3px;
 	padding: 5px;
+}
+#commentSection .comment-footer{
+	padding: 5px;
+	
+}
+.comment-list{
+	list-style: none;
+	margin-left: -35px;
+}
+.comment-list li{
+	border-bottom: 1px dashed #bbb;
+	padding-top: 3px;
+	padding-bottom: 3px;
+}
+.comment-list li p{
+	display: inline;
+}
+.commentDate{
+	color: #30b7cb;
 }
 #lesson_form .fa-minus-square-o{
 	position: absolute;
@@ -994,10 +1014,11 @@ form{
 .ui-sortable-helper .panel-heading{
 	background: #a2db8b;
 }
+.ui-sortable-helper.well{
+	background: rgba(155, 255, 255, .75);
+}
 #sortableActivities{
 	margin-left: -20px!important;
-}
-#sortableActivities a{
 }
 .onoffswitch {
     position: relative; width: 102px;

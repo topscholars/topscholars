@@ -33,7 +33,7 @@
 	<script src="{% static 'tsweb/js/hashtag.js' %}"></script>	
 	
 	<!--DELETE BEFORE DEPLOYMENT-->
-<!--	<link rel="stylesheet" href="../../../static/tsweb/css/bootstrap.css" type="text/css"/>
+	<!--<link rel="stylesheet" href="../../../static/tsweb/css/bootstrap.css" type="text/css"/>
 	<link rel="stylesheet" href="../../../static/tsweb/css/topscholars.css" type="text/css"/>
 	<link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
 	<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css"/>
@@ -546,21 +546,31 @@ $(function() {
 			$(this).addClass('hide');
 			$('.rubric-categories').removeClass('hide');
 			$('.criteria-section').addClass('hide');
+			$('#show-category-btn').removeClass('hide');
 		});
 		
     $('#impact_weight_input').change(function(){
         var val = $('#impact_weight_input').val();
         $('#impact_percent').val(val);
     });
-   
+    
+    $('#show-category-btn').click(function () {
+    	$('.rubric-categories').addClass('hide');
+    	$('.criteria-section').removeClass('hide');
+    	$('#show_rubric_btn').removeClass('hide');
+    	$('#impactCollapse').removeClass('hide').addClass('active');
+    	$(this).addClass('hide');
+    });   
 		
 		$('.rubric-impact').click(function () {	
 			$('.rubric-categories').addClass('hide');
 			$('#impactCollapse').removeClass('hide');
 			$('#show_rubric_btn').removeClass('hide');
 			$('.criteria-section').removeClass('hide');
+			$('#show_rubric_btn').removeClass('hide');
 			$('#processCollapse, #qualityCollapse, #contentCollapse').removeClass('active');
 			$('#impactCollapse').addClass('active');
+			$('#show-category-btn').addClass('hide');
 		});
 		
 		$('#quality_weight_input').change(function(){
@@ -573,8 +583,10 @@ $(function() {
 			$('#qualityCollapse').removeClass('hide');
 			$('#show_rubric_btn').removeClass('hide');
 			$('.criteria-section').removeClass('hide');
+			$('#show_rubric_btn').removeClass('hide');
 			$('#impactCollapse, #processCollapse, #contentCollapse').removeClass('active');
 			$('#qualityCollapse').addClass('active');
+			$('#show-category-btn').addClass('hide');
 		});
 		
 		$('#content_weight_input').change(function(){
@@ -587,8 +599,10 @@ $(function() {
 			$('#contentCollapse').removeClass('hide');
 			$('#show_rubric_btn').removeClass('hide');
 			$('.criteria-section').removeClass('hide');
+			$('#show_rubric_btn').removeClass('hide');
 			$('#impactCollapse, #qualityCollapse, #processCollapse').removeClass('active');
 			$('#contentCollapse').addClass('active');
+			$('#show-category-btn').addClass('hide');
 		});
 		
 		$('#process_weight_input').change(function(){
@@ -602,8 +616,10 @@ $(function() {
 			$('#processCollapse').removeClass('hide');
 			$('#show_rubric_btn').removeClass('hide');
 			$('.criteria-section').removeClass('hide');
+			$('#show_rubric_btn').removeClass('hide');
 			$('#impactCollapse, #qualityCollapse, #contentCollapse').removeClass('active');
 			$('#processCollapse').addClass('active');
+			$('#show-category-btn').addClass('hide');
 		});	
 	
 		
@@ -665,6 +681,10 @@ $(function() {
 		});
 		$("#sortable").sortable();
 		$("#sortableActivities").sortable();
+		$('#impact_criteria_list').sortable();
+		$('#quality_criteria_list').sortable();
+		$('#content_criteria_list').sortable();
+		$('#process_criteria_list').sortable();
 		
 		$('.lesson-title').click(function () {
 			openDynamicLesson();
@@ -728,8 +748,11 @@ $(function() {
 				        	</div>
 				        	<div class="form-group">
 				        		<label for="rubric_parameters" class="control-label col-sm-4">Parameters</label>
-				        		<div class="col-sm-8">
-					        		<input type="text" name="rubric_parameters" id="rubric_parameters" class="form-control input-small" />
+				        		<div class="col-sm-4">
+					        		<input type="text" name="rubric_parameters_min" id="rubric_parameters_min" class="form-control input-small" placeholder="Min" />
+					        	</div>
+					        	<div class="col-sm-4">
+					        		<input type="text" name="rubric_parameters_max" id="rubric_parameters_max" class="form-control input-small" placeholder="Max" />
 					        	</div>
 				        	</div>
 				        	<div class="form-group">
@@ -756,10 +779,11 @@ $(function() {
 				        </div><!-- col-lg-5 -->
 			       		
 		        		<div class="col-lg-7" style="padding-left: 70px;">
+		        			<button role="button" class="btn btn-small btn-default pull-right" id="show-category-btn">Show Categories</button>
 			        		<div class="rubric-categories">
 			        		<div class="rubric-impact circle circle-blue center-block">
 			        			<p>Impact</p>
-			        			<div class="weight-percent"><input id="impact_percent" maxlength="3" max="100" autofocus="true" step="1" type="number" name="impact-percent" class="circle-input" value="0" />%</div>
+			        			<div class="weight-percent"><input id="impact_percent" maxlength="3" max="100" maxlength="3" autofocus="true" step="1" type="number" name="impact-percent" class="circle-input" value="0" />%</div>
 			        		</div>
 			        		
 			        		
@@ -803,27 +827,39 @@ $(function() {
 			  				    
 			  				    <div id="impactCollapse" class="tab-pane">
 			  				    	<div class="form-group">
-		  				    			<label for="" class="control-label col-sm-4">Category Weight</label>
+		  				    			<label class="control-label col-sm-4">Category Weight</label>
 		  				    			<div class="col-sm-2">
-			  				    			<input class="form-control input-small" type="number" id="impact_weight_input" value="0" min="0" max="100"/>
+			  				    			<input class="form-control input-small" type="text" id="impact_weight_input" value="0" min="0" max="100" maxlength="3"/>
+			  				    		</div>
+			  				    		<div class="col-sm-2">
+			  				    			<input type="button" class="btn btn-blue" value="+" id="add_impact_criteria_btn"/>
 			  				    		</div>
 			  				    	</div>
 			  				      <div class="panel-body rubric-criteria-panel">
 			  				      	<div class="alert alert-danger alertCriteria" style="display: none;">Please enter text.</div>
 			    				      <input type="text" name="add_impact_criteria" id="add_impact_criteria" class="form-control input-small" placeholder="Add Impact Criteria"/>
-			    				      <input type="text" name="add-impact-tag" placeholder="Add Tag" id="add_impact_tag" class="form-control input-small add-tag" />
-			    				      <input type="text" name="add-impact-weight" value="" id="add_impact_weight" class="form-control input-small add-tag" placeholder="Weight 1 - 100" />
-			    				      <input type="button" class="btn btn-blue" value="+" id="add_impact_criteria_btn"/>
+			    				      <div class="row">
+			    				      	<div class="col-lg-6">
+					    				      <input type="text" name="add-impact-tag" placeholder="Add Tag" id="add_impact_tag" class="form-control input-small add-tag" />
+				    				      </div>
+				    				      <div class="col-lg-6">
+					    				      <input type="text" name="add-impact-weight" value="" id="add_impact_weight" class="form-control input-small add-tag" placeholder="Weight 1 - 100" />
+					    				    </div>
+			    				      </div>
+			    				      
+			    				      <hr />
 			  				      	
-			  				      	<div class="impact-list-item hide">
-			    				      	<ul class="list-unstyled">
-			      				      	<li><a href="#" class="btn btn-danger btn-small pull-right">Remove</a></li>
-			    				      		<li><a href="#" class="btn btn-small btn-default pull-right">Edit</a></li>
-			    				      		<li>{{ criteria.name }}</li>
-			    				      		<li>{{ criteria.tag }}</li>
-			    				      		<li>{{ criteria.weight }}</li>
+			  				      	<div class="impact-list-item">
+			  				      		<p class="text-muted">Click and drag to reorder criteria</p>
+			    				      	<ul class="list-unstyled" id="impact_criteria_list">
+			    				      		<li class="well well-small">
+				      				      	<a href="#" class="btn btn-danger btn-small pull-right">Remove</a>
+				    				      		<a href="#" class="btn btn-small btn-default pull-right">Edit</a>
+				    				      		<p>{{ criteria.name }}</p>
+				    				      		<p>{{ criteria.tag }}</p>
+				    				      		<p>{{ criteria.weight }}</p>
+				    				      	</li>
 			    				      	</ul>
-			    				      	<hr />
 			  				      	</div>
 			  				      </div>
 			  				     </div>
@@ -832,23 +868,36 @@ $(function() {
 		      				    	<div class="form-group">
 		      				    		<label for="" class="control-label col-sm-4">Category Weight</label>
 		      				    		<div class="col-sm-2">
-		      				    			<input class="form-control input-small" type="number" id="quality_weight_input" value="0" min="0" max="100"/>
+		      				    			<input class="form-control input-small" type="text" id="quality_weight_input" value="0" min="0" max="100" maxlength="3"/>
+		      				    		</div>
+		      				    		<div class="col-sm-2">
+		      				    			<input type="button" class="btn btn-green" value="+" id="add_quality_criteria_btn"/>
 		      				    		</div>
 		      				    	</div>
 		      				      <div class="panel-body rubric-criteria-panel">
 			      				      <div class="alert alert-danger alertCriteria" style="display: none;">Please enter text.</div>
 		      				      	<input type="text" name="add_quality_criteria" id="add_quality_criteria" class="form-control input-small" placeholder="Add Quality Criteria" />
-		      				      	<input type="text" name="add-quality-tag" placeholder="Add Tag" id="add_quality_tag" class="form-control input-small add-tag" />
-		      				      	<input type="text" name="add-quality-weight" value="" id="add_quality_weight" class="form-control input-small add-tag" placeholder="Weight 1 - 100" />
-		      				      	<input type="button" class="btn btn-green" value="+" id="add_quality_criteria_btn"/>
+		      				      	<div class="row">
+		      				      		<div class="col-lg-6">
+				      				      	<input type="text" name="add-quality-tag" placeholder="Add Tag" id="add_quality_tag" class="form-control input-small add-tag" />
+		      				      		</div>
+		      				      		<div class="col-lg-6">
+				      				      	<input type="text" name="add-quality-weight" value="" id="add_quality_weight" class="form-control input-small add-tag" placeholder="Weight 1 - 100" />
+				      				      </div>
+				      				    </div>
+		      				      	
+		      				      	<hr />
 		      				      	
 		      				        <div class="quality-list-item hide">
-		      				        	<ul class="list-unstyled">
-		      				          	<li><a href="#" class="btn btn-danger btn-small pull-right">Remove</a></li>
-		      				        		<li><a href="#" class="btn btn-small btn-default pull-right">Edit</a></li>
-		      				        		<li>{{ criteria.name }}</li>
-		      				        		<li>{{ criteria.tag }}</li>
-		      				        		<li>{{ criteria.weight }}</li>
+		      				        	<p class="text-muted">Click and drag to reorder criteria</p>
+		      				        	<ul class="list-unstyled" id="quality_criteria_list">
+		      				          	<li class="well well-small">
+		      				          		<a href="#" class="btn btn-danger btn-small pull-right">Remove</a>
+		      				        			<a href="#" class="btn btn-small btn-default pull-right">Edit</a>
+		      				        			<p>{{ criteria.name }}</p>
+		      				        			<p>{{ criteria.tag }}</p>
+		      				        			<p>{{ criteria.weight }}</p>
+		      				        		</li>
 		      				        	</ul>
 		      				        	<hr />
 			      				        </div>
@@ -859,23 +908,36 @@ $(function() {
 			    				    	<div class="form-group">
 			    				    		<label for="" class="control-label col-sm-4">Category Weight</label>
 			    				    		<div class="col-sm-2">
-			    				    			<input class="form-control input-small" type="number" id="content_weight_input" value="0" min="0" max="100"/>
+			    				    			<input class="form-control input-small" type="text" id="content_weight_input" value="0" min="0" max="100" maxlength="3"/>
+			    				    		</div>
+			    				    		<div class="col-sm-2">
+			    				    			<input type="button" class="btn btn-purple" value="+" id="add_content_criteria_btn"/>
 			    				    		</div>
 			    				    	</div>
 			    				      <div class="panel-body rubric-criteria-panel">
 			    				      	<div class="alert alert-danger alertCriteria" style="display: none;">Please enter text.</div>
 			    				      	<input type="text" name="add_content_criteria" id="add_content_criteria" class="form-control input-small" placeholder="Add Content Criteria"/>
-			    				      	<input type="text" name="add-content-tag" placeholder="Add Tag" id="add_content_tag" class="form-control input-small add-tag" />
-			    				      	<input type="text" name="add-content-weight" value="" id="add_content_weight" class="form-control input-small add-tag" placeholder="Weight 1 - 100" />
-			    				      	<input type="button" class="btn btn-purple" value="+" id="add_content_criteria_btn"/>
+			    				      	<div class="row">
+			    				      		<div class="col-lg-6">
+					    				      	<input type="text" name="add-content-tag" placeholder="Add Tag" id="add_content_tag" class="form-control input-small add-tag" />
+				    				      	</div>
+				    				      	<div class="col-lg-6">
+					    				      	<input type="text" name="add-content-weight" value="" id="add_content_weight" class="form-control input-small add-tag" placeholder="Weight 1 - 100" />
+					    				      </div>
+					    				    </div>
+			    				      	
+			    				      	<hr />
 			    				      	
 			    				        <div class="content-list-item hide">
-			    				        	<ul class="list-unstyled">
-			    				          	<li><a href="#" class="btn btn-danger btn-small pull-right">Remove</a></li>
-			    				        		<li><a href="#" class="btn btn-small btn-default pull-right">Edit</a></li>
-			    				        		<li>{{ criteria.name }}</li>
-			    				        		<li>{{ criteria.tag }}</li>
-			    				        		<li>{{ criteria.weight }}</li>
+			    				        	<p class="text-muted">Click and drag to reorder criteria</p>
+			    				        	<ul class="list-unstyled" id="content_criteria_list">
+			    				          	<li class="well well-small">
+			    				          		<a href="#" class="btn btn-danger btn-small pull-right">Remove</a>
+			    				        			<a href="#" class="btn btn-small btn-default pull-right">Edit</a>
+				    				        		<p>{{ criteria.name }}</p>
+				    				        		<p>{{ criteria.tag }}</p>
+				    				        		<p>{{ criteria.weight }}</p>
+				    				        	</li>
 			    				        	</ul>
 			    				        	<hr />
 			    				        </div>
@@ -886,23 +948,36 @@ $(function() {
 			  				    	<div class="form-group">
 			  				    		<label for="" class="control-label col-sm-4">Category Weight</label>
 			  				    		<div class="col-sm-2">
-			  				    			<input class="form-control input-small" type="number" id="process_weight_input" value="0" min="0" max="100"/>
+			  				    			<input class="form-control input-small" type="text" id="process_weight_input" value="0" min="0" max="100" maxlength="3"/>
+			  				    		</div>
+			  				    		<div class="col-sm-2">
+			  				    			<input type="button" class="btn btn-red" value="+" id="add_process_criteria_btn"/>
 			  				    		</div>
 			  				    	</div>
 			  				      <div class="panel-body rubric-criteria-panel">
 			  				      	<div class="alert alert-danger alertCriteria" style="display: none;">Please enter text.</div>
 			  				      	<input type="text" name="add_process_criteria" id="add_process_criteria" class="form-control input-small" placeholder="Add Process Criteria"/>
-			  				      	<input type="text" name="add-process-tag" placeholder="Add Tag" id="add_process_tag" class="form-control input-small add-tag" />
-			  				      	<input type="text" name="add-process-weight" value="" id="add_process_weight" class="form-control input-small add-tag" placeholder="Weight 1 - 100" />
-			  				      	<input type="button" class="btn btn-red" value="+" id="add_process_criteria_btn"/>
+			  				      	<div class="row">
+			  				      		<div class="col-lg-6">
+					  				      	<input type="text" name="add-process-tag" placeholder="Add Tag" id="add_process_tag" class="form-control input-small add-tag" />
+					  				      </div>
+					  				      <div class="col-lg-6">
+					  				      	<input type="text" name="add-process-weight" value="" id="add_process_weight" class="form-control input-small add-tag" placeholder="Weight 1 - 100" />
+					  				      </div>
+					  				    </div>
+			  				      	
+			  				      	<hr />
 			  				      	
 			  				        <div class="process-list-item hide">
+			  				        	<p class="text-muted">Click and drag to reorder criteria</p>
 			  				        	<ul class="list-unstyled">
-			  				          	<li><a href="#" class="btn btn-danger btn-small pull-right">Remove</a></li>
-			  				        		<li><a href="#" class="btn btn-small btn-default pull-right">Edit</a></li>
-			  				        		<li>{{ criteria.name }}</li>
-			  				        		<li>{{ criteria.tag }}</li>
-			  				        		<li>{{ criteria.weight }}</li>
+			  				          	<li class="well well-small">
+			  				          		<a href="#" class="btn btn-danger btn-small pull-right">Remove</a>
+				  				        		<a href="#" class="btn btn-small btn-default pull-right">Edit</a>
+				  				        		<p>{{ criteria.name }}</p>
+				  				        		<p>{{ criteria.tag }}</p>
+				  				        		<p>{{ criteria.weight }}</p>
+				  				        	</li>
 			  				        	</ul>
 			  				        	<hr />
 			  				        </div>
@@ -941,6 +1016,15 @@ $(function() {
 			        	<!--Create rubric here-->
 			        	<div class="row">
 			        		<div class="col-lg-5">
+			        			<div class="form-group">
+			        				<label for="evidence_performance_name" class="col-sm-4 control-label">Performance Task</label>
+			        				<div class="col-sm-8">
+			        					<select name="evidence_performance_name" id="evidence_performance_name" class="form-control input-small" required="required">
+			        						<option>{# performancetask.name #}</option>
+			        					</select>
+			        				</div>
+			        			</div>
+			        		
 				        		<div class="form-group">
 				        			<label for="evidence_name" class="col-sm-4 control-label">Name</label>
 				        			<div class="col-sm-8">
@@ -964,37 +1048,38 @@ $(function() {
 				       
 				        
 			        		<div class="col-lg-7">
-			        		
-			        			<h4>Impact Criteria</h4>
-			        			<div class="">
-			        				<ul id="impact_list">
-			        					<li><label for="impact_criteria"><input type="checkbox" name="impact_criteria" value="{# add_impact_criteria #}" /> {# choose_impact_criteria #}</label></li>
-			        				</ul>
-			        				<hr />
-			        			</div>
+			        			<ul class="nav nav-tabs nav-justified">
+			        			  <li class="active"><a href="#impact_section_ev" data-toggle="tab">Impact</a></li>
+			        			  <li><a href="#quality_section_ev" data-toggle="tab">Quality</a></li>
+			        			  <li><a href="#content_section_ev" data-toggle="tab">Content</a></li>
+			        			  <li><a href="#process_section_ev" data-toggle="tab">Process</a></li>
+			        			</ul>
 			        			
-			        			<h4>Quality Criteria</h4>
-			        			<div class="">
-			        				<ul id="quality_list">
-			        					<li><label for="quality_criteria"><input type="checkbox" name="quality_criteria" value="{# add_quality_criteria #}" /> {# choose_quality_criteria #}</label></li>
-			        				</ul>
-			        				<hr />
-			        			</div>
-			        			
-			        			<h4>Content Criteria</h4>
-			        			<div class="">
-			        				<ul id="content_list">
-			        					<li><label for="content_criteria"><input type="checkbox" name="content_criteria" value="{# add_content_criteria #}" /> {# choose_content_criteria #}</label></li>
-			        				</ul>
-			        				<hr />
-			        			</div>
-			        			
-			        			<h4>Process Criteria</h4>
-			        			<div class="">
-			        				<ul id="process_list" style="max-height: 100px; overflow: scroll;">
-			        					<li><label for="process_criteria"><input type="checkbox" name="process_criteria" value="{# add_process_criteria #}" /> {# choose_process_criteria #}</label></li>
-			        				</ul>
-			        			</div>
+			        			<div class="tab-content">
+			        				<div id="impact_section_ev" class="tab-pane active">
+				        				<ul id="impact_list">
+				        					<li><label for="impact_criteria"><input type="checkbox" name="impact_criteria" value="{# add_impact_criteria #}" /> {# choose_impact_criteria #}</label></li>
+				        				</ul>
+				        			</div>
+				        			
+				        			<div id="quality_section_ev" class="tab-pane">
+					        				<ul id="quality_list">
+					        					<li><label for="quality_criteria"><input type="checkbox" name="quality_criteria" value="{# add_quality_criteria #}" /> {# choose_quality_criteria #}</label></li>
+					        				</ul>
+				        			</div>
+				        			
+				        			<div id="content_section_ev" class="tab-pane">
+					        				<ul id="content_list">
+					        					<li><label for="content_criteria"><input type="checkbox" name="content_criteria" value="{# add_content_criteria #}" /> {# choose_content_criteria #}</label></li>
+					        				</ul>
+				        			</div>
+				        			
+				        			<div id="process_section_ev" class="tab-pane">
+					        				<ul id="process_list" style="max-height: 100px; overflow: scroll;">
+					        					<li><label for="process_criteria"><input type="checkbox" name="process_criteria" value="{# add_process_criteria #}" /> {# choose_process_criteria #}</label></li>
+					        				</ul>
+				        			</div>
+				        		</div>
 					        		
 			        		</div>
 			        	 </div><!-- row -->
@@ -1040,12 +1125,15 @@ $(function() {
 						
 							<hr />
 							<div class="form-group">
-								<!--<button class="btn btn-danger" role="button" id="pfbBtn">Play From Beginning <i class="fa fa-undo"></i></button>-->
-								<button class="btn btn-success" role="button" id="stageBtn">Stage <i id="stage_val">1</i></button>
+								<div class="btn-group">
+									<button class="btn btn-default" role="button" id="stageBtn1">Stage 1</button>
+									<button class="btn btn-default" role="button" id="stageBtn2">Stage 2</button>
+									<button class="btn btn-default" role="button" id="stageBtn3">Stage 3</button>
+								</div>
 							</div>
 							
 							<div class="form-group">
-								<button class="btn btn-info" role="button">Chronology: {# #}</button>
+								<button class="btn btn-info" disabled="disabled" role="button">Chronology: {# #}</button>
 							</div>
 							<div class="form-group">
 								<button class="btn btn-warning" role="button">Type: {# auto_manual #}</button>
@@ -1073,10 +1161,10 @@ $(function() {
 									<div class="form-group">
 										<label for="content_type_auto">Type</label>
 										<select class="form-control input-small" id="content_type_auto">
-											<option value="rtf">RTF</option>
+											<option value="text">Text</option>
 											<option value="video">Video</option>
-											<option value="styled_text">Styled Text</option>
-											<option value="url_file">URL/File</option>
+											<option value="url">URL</option>
+											<option value="file">File</option>
 											<option value="image">Image</option>
 											<option value="ppt">PowerPoint</option>
 										</select>
@@ -1112,7 +1200,7 @@ $(function() {
 									
 									<div class="form-group">
 										<label for="question_type_input">Question</label>
-										<input type="text" name="question_type_input" class="form-control input-small" id="question_type_input" placeholder="Input Question Here"/>
+										<textarea type="text" name="question_type_input" class="form-control input-small" id="question_type_input" placeholder="Input Question Here" style="height: 125px;"></textarea>
 									</div>
 									
 									<div class="form-group">
@@ -1158,6 +1246,12 @@ $(function() {
 							      </span>
 							      <input type="text" class="form-control input-small" placeholder="Input Answer Here">
 							    </div><!-- /input-group -->
+							    <div class="input-group">
+							      <span class="input-group-addon input-small">
+							        <input type="checkbox">
+							      </span>
+							      <input type="text" class="form-control input-small" placeholder="Input Answer Here">
+							    </div><!-- /input-group -->
 							    
 							    									
 									<div class="form-group">
@@ -1170,9 +1264,15 @@ $(function() {
 								<!--RESULT SECTION-->
 								<div id="result_section" class="tab-pane">
 									<div class="form-group">
-										<label for="result_input_auto">Result(s)</label>
+										<label for="result_input_auto">Result</label>
 									</div>
 									
+									<div class="input-group">
+									  <span class="input-group-addon input-small">
+									    <input type="checkbox">
+									  </span>
+									  <input type="text" class="form-control input-small" value="{# answer #}">
+									</div><!-- /input-group -->
 									<div class="input-group">
 									  <span class="input-group-addon input-small">
 									    <input type="checkbox">
@@ -1233,7 +1333,7 @@ $(function() {
 	
 	
 	<!--ACTIVITY MANUAL-->
-	<div class="lesson" id="manualLesson" style="display:;">
+	<div class="lesson" id="manualLesson" style="display: none;">
 	
 		<div class="lesson-body">
 			<div class="lesson-section">
@@ -1261,12 +1361,15 @@ $(function() {
 						
 							<hr />
 							<div class="form-group">
-								<!--<button class="btn btn-danger" role="button" id="pfbBtn">Play From Beginning <i class="fa fa-undo"></i></button>-->
-								<button class="btn btn-success" role="button" id="stageBtn">Stage <i id="stage_val">1</i></button>
+								<div class="btn-group">
+									<button class="btn btn-default" role="button" id="stageBtn1">Stage 1</button>
+									<button class="btn btn-default" role="button" id="stageBtn2">Stage 2</button>
+									<button class="btn btn-default" role="button" id="stageBtn3">Stage 3</button>
+								</div>
 							</div>
 							
 							<div class="form-group">
-								<button class="btn btn-info" role="button">Chronology: {# #}</button>
+								<button class="btn btn-info" disabled="disabled" role="button">Chronology: {# #}</button>
 							</div>
 							<div class="form-group">
 								<button class="btn btn-warning" role="button">Type: {# auto_manual #}</button>
@@ -1291,26 +1394,8 @@ $(function() {
 							<div class="tab-content">
 								<!--CONTENT SECTION-->
 								<div id="content_section_manual" class="tab-pane active">
-									<div class="form-group">
-										<label for="content_type_manual">Type</label>
-										<select class="form-control input-small" id="content_type_manual">
-											<option value="rtf">RTF</option>
-											<option value="video">Video</option>
-											<option value="styled_text">Styled Text</option>
-											<option value="url_file">URL/File</option>
-											<option value="image">Image</option>
-											<option value="ppt">PowerPoint</option>
-										</select>
-									</div>
-									<div class="form-group">
-										<label for="content_type_input_manual">Content</label>
-										<input type="text" name="content_type_input_manual" class="form-control input-small" id="content_type_input_manual" placeholder="Input Type Here"/>
-									</div>
 									
-									<div class="form-group">
-										<label for="content_type_upload_manual">Content Upload</label>
-										<input type="file" name="content_type_upload_manual" class="form-control input-small upload btn btn-warning" id="content_type_upload_manual"/>
-									</div>
+									<p class="text-muted text-center">Please type your input in the text editor above</p>
 		
 									<div class="form-group">
 										<label for="content_tooltip_manual">Tooltip</label>
@@ -1332,7 +1417,7 @@ $(function() {
 									
 									<div class="form-group">
 										<label for="question_type_input_manual">Question</label>
-										<input type="text" name="question_type_input_manual" class="form-control input-small" id="question_type_input_manual" placeholder="Input Question Here"/>
+										<textarea type="text" name="question_type_input_manual" class="form-control input-small" id="question_type_input_manual" placeholder="Input Question Here" style="height: 125px;"></textarea>
 									</div>
 									
 									<div class="form-group">

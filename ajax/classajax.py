@@ -173,105 +173,123 @@ class CLASSLIST():
                 classschedule.modifiedby = userid
                 classschedule.save()
                 
+                try:
+                    unitclasslist = Unitclass.objects.filter(classscheduleid=id)
+                except Unitclass.DoesNotExist:
+                    data_json = { 'status': 'blank', }
+                except Unitclass.MultipleObjectsReturned:
+                    for unitclassstore in unitclasslist:
+                        unitclassstore.disabled = 1
+                        unitclassstore.save()
+                else:
+                    for unitclassstore in unitclasslist:
+                        unitclassstore.disabled = 1
+                        unitclassstore.save()      
+                
                 if unit != False:
-                    try:
-                        unitclasslist = Unitclass.objects.filter(classscheduleid=id)
-                    except Unitclass.DoesNotExist:
-                        data_json = { 'status': 'blank', }
-                    except Unitclass.MultipleObjectsReturned:
-                        for unitclassstore in unitclasslist:
-                            unitclassstore.disabled = 1
-                            unitclassstore.save()
-                    else:
-                        for unitclassstore in unitclasslist:
-                            unitclassstore.disabled = 1
-                            unitclassstore.save()
-                        
+
                     unitcheck = unit.find(',')
                     if unitcheck > -1:
                         unitids= unit.split(',')
                         for unitid in unitids:
                             unitlist = Unit.objects.get(id=unitid)
         
-                            u, created = Unitclass.objects.get_or_create(unitid = unitlist, 
-                                                               classscheduleid = classschedule,
-                                                               defaults={
-                                                               'createddt' : datetime.now(),
-                                                               'createdby' : userid,
-                                                               'modifieddt' : datetime.now(),
-                                                               'modifiedby' : userid,  
-                                                               'disabled' : 0,                                                        
-                                                               'deleted' : 0,
-                                                               'clientid' : clientid} 
-                                                               )
-                            u.disabled = 0
-                            u.save()
+                            try:
+                                u = Unitclass.objects.get(unitid = unitlist,classscheduleid = classschedule)
+                            except Unitclass.DoesNotExist:
+                                u = Unitclass()
+                                u.unitid = unitlist
+                                u.classscheduleid = classschedule
+                                u.createddt = datetime.now()
+                                u.createdby = userid
+                                u.modifieddt = datetime.now()
+                                u.modifiedby = userid
+                                u.disabled = 0
+                                u.deleted = 0
+                                u.clientid = clientid
+                                u.save()
+                            else:
+                                u.disabled = 0
+                                u.save()
                     else:
                         unitlist = Unit.objects.get(id=unit)
-                        u, created = Unitclass.objects.get_or_create(unitid = unitlist, 
-                                                           classscheduleid = classschedule,
-                                                           defaults={
-                                                           'createddt' : datetime.now(),
-                                                           'createdby' : userid,
-                                                           'modifieddt' : datetime.now(),
-                                                           'modifiedby' : userid,
-                                                           'disabled' : 0,
-                                                           'deleted' : 0,
-                                                           'clientid' : clientid} 
-                                                           )
-                        u.disabled = 0
-                        u.save()
+                        try:
+                            u = Unitclass.objects.get(unitid = unitlist,classscheduleid = classschedule)
+                        except Unitclass.DoesNotExist:
+                            u = Unitclass()
+                            u.unitid = unitlist
+                            u.classscheduleid = classschedule
+                            u.createddt = datetime.now()
+                            u.createdby = userid
+                            u.modifieddt = datetime.now()
+                            u.modifiedby = userid
+                            u.disabled = 0
+                            u.deleted = 0
+                            u.clientid = clientid
+                            u.save()
+                        else:
+                            u.disabled = 0
+                            u.save()
                 
-                if studentid != False:
-                    try:
-                        studentclasslist = Studentclass.objects.filter(classscheduleid=id)
-                    except Unitclass.DoesNotExist:
-                        data_json = { 'status': 'blank', }
-                    except Unitclass.MultipleObjectsReturned:
-                        for studentclassstore in studentclasslist:
-                            studentclassstore.disabled = 1
-                            studentclassstore.save()
-                    else:
-                        for studentclassstore in studentclasslist:
-                            studentclassstore.disabled = 1
-                            studentclassstore.save()
+                try:
+                    studentclasslist = Studentclass.objects.filter(classscheduleid=id)
+                except Studentclass.DoesNotExist:
+                    data_json = { 'status': 'blank', }
+                except Studentclass.MultipleObjectsReturned:
+                    for studentclassstore in studentclasslist:
+                        studentclassstore.disabled = 1
+                        studentclassstore.save()
+                else:
+                    for studentclassstore in studentclasslist:
+                        studentclassstore.disabled = 1
+                        studentclassstore.save()
 
+                if studentid != False:
                     studentcheck = studentid.find(',')
                     if studentcheck > -1:
                         studentid = studentid.split(',')
                         for studentids in studentid:
                             studentlist = Studentlist.objects.get(id=studentids)
-        
-                            s, created = Studentclass.objects.get_or_create(studentid = studentlist, 
-                                                               classscheduleid = classschedule,
-                                                               defaults={'grade': 0,
-                                                               'status' : 0,
-                                                               'createddt' : datetime.now(),
-                                                               'createdby' : userid,
-                                                               'modifieddt' : datetime.now(),
-                                                               'modifiedby' : userid,
-                                                               'disabled' : 0,
-                                                               'deleted' : 0,
-                                                               'clientid' : clientid} 
-                                                               )
-                            s.disabled = 0
-                            s.save()
+                            try:
+                                s = Studentclass.objects.get(studentid = studentlist,classscheduleid = classschedule)
+                            except Studentclass.DoesNotExist:
+                                s = Studentclass()
+                                s.studentid = studentlist
+                                s.classscheduleid = classschedule
+                                s.grade = 0
+                                s.status = 0
+                                s.createddt = datetime.now()
+                                s.createdby = userid
+                                s.modifieddt = datetime.now()
+                                s.modifiedby = userid
+                                s.disabled = 0
+                                s.deleted = 0
+                                s.clientid = clientid
+                                s.save()
+                            else:
+                                s.disabled = 0
+                                s.save()
                     else:
                         studentlist = Studentlist.objects.get(id=studentid)
-                        s, created = Studentclass.objects.get_or_create(studentid = studentlist, 
-                                                           classscheduleid = classschedule,
-                                                           defaults={'grade': 0,
-                                                           'status' : 0,
-                                                           'createddt' : datetime.now(),
-                                                           'createdby' : userid,
-                                                           'modifieddt' : datetime.now(),
-                                                           'modifiedby' : userid,
-                                                           'disabled' : 0,
-                                                           'deleted' : 0,
-                                                           'clientid' : clientid} 
-                                                           )
-                        s.disabled = 0
-                        s.save()
+                        try:
+                            s = Studentclass.objects.get(studentid = studentlist,classscheduleid = classschedule)
+                        except Studentclass.DoesNotExist:
+                            s = Studentclass()
+                            s.studentid = studentlist
+                            s.classscheduleid = classschedule
+                            s.grade = 0
+                            s.status = 0
+                            s.createddt = datetime.now()
+                            s.createdby = userid
+                            s.modifieddt = datetime.now()
+                            s.modifiedby = userid
+                            s.disabled = 0
+                            s.deleted = 0
+                            s.clientid = clientid
+                            s.save()
+                        else:
+                            s.disabled = 0
+                            s.save()
                 data_json = { 'status': 'success', }
             else:
                 data_json = { 'status': 'error', }

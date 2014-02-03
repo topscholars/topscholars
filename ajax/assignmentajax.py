@@ -189,16 +189,23 @@ class ASSSIGNMENTLIST():
                         for classid in classids:
                             classlist = Classschedule.objects.get(id=classid)
                             assignmentlist = Assignment.objects.get(id=id)
-                            
-                            ca, created = Classassignment.objects.get_or_create(classid=classlist, assignmentid=assignmentlist,
-                                                                                defaults={ 'createddt' : datetime.now(),
-                                                                                           'createdby' : userid,
-                                                                                           'modifieddt' : datetime.now(),
-                                                                                           'modifiedby' : userid,
-                                                                                           'disabled' : 0,
-                                                                                           'deleted' : 0,})
-                            ca.disabled= 0
-                            ca.save()
+
+                            try:
+                                ca = Classassignment.objects.get(classid=classlist, assignmentid=assignmentlist)
+                            except Classassignment.DoesNotExist:
+                                ca = Classassignment()
+                                ca.classid = classlist
+                                ca.assignmentid = assignmentlist
+                                ca.createddt = datetime.now()
+                                ca.createdby = userid
+                                ca.modifieddt = datetime.now()
+                                ca.modifiedby = userid
+                                ca.disabled = 0
+                                ca.deleted = 0
+                                ca.save()
+                            else:
+                                ca.disabled = 0
+                                ca.save()
                             
                             studentclass = Studentclass.objects.filter(classscheduleid=classid).values_list('studentid')
                              
@@ -241,15 +248,22 @@ class ASSSIGNMENTLIST():
                         classlist = Classschedule.objects.get(id=classids)
                         assignmentlist = Assignment.objects.get(id=id)
                         
-                        ca, created = Classassignment.objects.get_or_create(classid=classlist, assignmentid=assignmentlist,
-                                                                            defaults={ 'createddt' : datetime.now(),
-                                                                                           'createdby' : userid,
-                                                                                           'modifieddt' : datetime.now(),
-                                                                                           'modifiedby' : userid,
-                                                                                           'disabled' : 0,
-                                                                                           'deleted' : 0,})
-                        ca.disabled= 0
-                        ca.save()
+                        try:
+                            ca = Classassignment.objects.get(classid=classlist, assignmentid=assignmentlist)
+                        except Classassignment.DoesNotExist:
+                            ca = Classassignment()
+                            ca.classid = classlist
+                            ca.assignmentid = assignmentlist
+                            ca.createddt = datetime.now()
+                            ca.createdby = userid
+                            ca.modifieddt = datetime.now()
+                            ca.modifiedby = userid
+                            ca.disabled = 0
+                            ca.deleted = 0
+                            ca.save()
+                        else:
+                            ca.disabled = 0
+                            ca.save()
                         
                         studentclass = Studentclass.objects.filter(classscheduleid=classids).values_list('studentid')
                              

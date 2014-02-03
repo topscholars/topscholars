@@ -171,7 +171,7 @@ class Classschedule(models.Model):
     deleted = models.IntegerField(db_column='Deleted') # Field name made lowercase.
     clientid = models.IntegerField(db_column='ClientId') # Field name made lowercase.
     def getNumberOfStudents(self):
-        return Studentclass.objects.filter(classscheduleid = self.id).count()
+        return Studentclass.objects.filter(classscheduleid = self.id, disabled=0).count()
     class Meta:
         db_table = 'classschedule'
 

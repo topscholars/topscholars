@@ -347,6 +347,9 @@
 				$("[id^='ele_']").each(function(){
 					$(this).val('');
 				});
+		    	$('#editStudentBtn').hide();
+	    		$('.modal .form-control, .modal input[type="checkbox"]').removeAttr('disabled', 'disabled');
+	    		$('#btnSave').removeAttr('disabled', 'disabled');
 			});
 
 			$( "#ele_dob").datepicker({ dateFormat: 'dd/mm/yy' });
@@ -610,11 +613,6 @@
 		$('#new_assignment_modal').on("hidden.bs.modal",function(){
 	    $('#new_assignment_form')[0].reset();
 	    $('#new_assignment_form .form-error').remove();
-	    });
-	    
-	    $("#new_student_btn").click(function(){
-	    	$('#editStudentBtn').hide();
-	    	$('.modal .form-control, .modal input[type="checkbox"]').removeAttr('disabled', 'disabled');
 	    });
 	    
 		  $('#editStudentBtn').click(function(){

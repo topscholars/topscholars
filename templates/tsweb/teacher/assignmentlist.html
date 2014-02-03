@@ -189,6 +189,9 @@ function EDITTABLE(){
 		      	},
 		      	revisions:{
 		      		number: true,
+		      	},
+		      	rubricid:{
+		      		required: true,
 		      	}
 		    },
 			 invalidHandler: function(event, validator) {
@@ -239,6 +242,9 @@ function EDITTABLE(){
 			$("[id^='ele_']").each(function(){
 				$(this).val('');
 			});
+		  	$('#editAssignmentBtn').hide();
+	  		$('.modal .form-control, .modal input[type="checkbox"]').removeAttr('disabled', 'disabled');
+	  		$('#btnSave').removeAttr('disabled', 'disabled');
 		});		
 		
 		formValidate.submit(function(){
@@ -426,12 +432,6 @@ $(function() {
 	  });
 	  
 	  $('.modal .form-control, .modal input[type="checkbox"]').attr('disabled', 'disabled');
-	  
-	  $('#new_assignment_btn').click(function () {
-	  	$('#editAssignmentBtn').hide();
-	  	$('.modal .form-control, .modal input[type="checkbox"]').removeAttr('disabled', 'disabled');
-	  	$('#btnSave').removeAttr('disabled', 'disabled');
-	  });
 	  
 	  $('#editAssignmentBtn').click(function(){
 	  	$('.modal .form-control, .modal input[type="checkbox"]').removeAttr('disabled', 'disabled');

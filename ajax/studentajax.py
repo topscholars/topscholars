@@ -233,8 +233,7 @@ class STUDENTLIST():
             
                 emailto = [emailaddress1]
     
-                body = 'Dear ' + firstname + ' ' + middlename + ' ' + lastname + ',\n\n' + 'Thank you for joining Writability!  We are excited to welcome you to the community.\n\n' + 'You can now login to your account with the following details:\n' + '\n' + 'User: ' + emailaddress + '\n' + 'Password: ' + str(password) + '\n\n' + 'Please don\'t hesitate to contact us at help@writability.org if you have any questions or issues.\n\n' + 'Good luck writing!\n\n' +'The Writability Team'
-    
+                body = 'Dear %s %s %s,\n\nThank you for joining Writability!  We are excited to welcome you to the community.\n\nYou can now login to your account with the following details:\n\nUser: %s \nPassword: %d\n\nPlease don\'t hesitate to contact us at help@writability.org if you have any questions or issues.\n\nGood luck writing!\n\nThe Writability Team' % (firstname, middlename, lastname, emailaddress1, password)
                 send_mail('New Account Creation - Success', body , 'noreply@writability.org',emailto, fail_silently=False)
                 
                 data_json = { 'status': 'success', }
@@ -242,6 +241,7 @@ class STUDENTLIST():
                 data_json = { 'status': 'error',
                              'emailaddress': emailaddress }
             else:
+
                 data_json = { 'status': 'error',
                              'emailaddress': emailaddress }
             data = simplejson.dumps(data_json)

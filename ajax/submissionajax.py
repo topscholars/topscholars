@@ -16,15 +16,16 @@ class TSUBMISSIONLISTAJAX():
     def get(self,request):
         try:
             userid = request.session['userid']
+            login = Login.objects.get(id=userid)
         except KeyError:
             return HttpResponseRedirect(reverse('tsweb:login'))
         else:
             studentname=request.GET.get('studentname',False)
             submissionreviewerlist=''
             if studentname != False and studentname != '':
-                submissionreviewerlist = Submissionreviewer.objects.filter(Q(entityid = 13) & Q(recid = userid) & Q(status = 0) & Q(deleted=0) & Q(disabled = 0) & (Q(submissionversionid__submissionid__studentid__firstname__contains=studentname) | Q(submissionversionid__submissionid__studentid__middlename__contains=studentname) | Q(submissionversionid__submissionid__studentid__lastname__contains=studentname)))
+                submissionreviewerlist = Submissionreviewer.objects.filter(Q(entityid = 13) & Q(recid = login.recid) & Q(status = 0) & Q(deleted=0) & Q(disabled = 0) & (Q(submissionversionid__submissionid__studentid__firstname__contains=studentname) | Q(submissionversionid__submissionid__studentid__middlename__contains=studentname) | Q(submissionversionid__submissionid__studentid__lastname__contains=studentname)))
             else:
-                submissionreviewerlist = Submissionreviewer.objects.filter(Q(entityid = 13) & Q(recid = userid) & Q(status = 0) & Q(deleted=0) & Q(disabled = 0))
+                submissionreviewerlist = Submissionreviewer.objects.filter(Q(entityid = 13) & Q(recid = login.recid) & Q(status = 0) & Q(deleted=0) & Q(disabled = 0))
             currentdate = date.today()
             context = {'submissionreviewerlist': submissionreviewerlist, 'currentdate':currentdate}
             return render(request, 'tsweb/teacher/submissionlistajax.html', context)

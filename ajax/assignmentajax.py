@@ -444,7 +444,13 @@ class ASSSIGNMENTLIST():
                         for classid in classids:
                             classlist = Classschedule.objects.get(id=classid)
                             assignmentlist = Assignment.objects.get(id=id)
-                            Classassignment.objects.get_or_create(classid=classlist, assignmentid=assignmentlist)
+                            Classassignment.objects.get_or_create(classid=classlist, assignmentid=assignmentlist,
+                                                                  defaults={ 'createddt' : datetime.now(),
+                                                                                           'createdby' : userid,
+                                                                                           'modifieddt' : datetime.now(),
+                                                                                           'modifiedby' : userid,
+                                                                                           'disabled' : 0,
+                                                                                           'deleted' : 0,})
                             studentclass = Studentclass.objects.filter(classscheduleid=classid).values_list('studentid')
                              
                             for row in studentclass:
@@ -485,7 +491,13 @@ class ASSSIGNMENTLIST():
                     else:
                         classlist = Classschedule.objects.get(id=classids)
                         assignmentlist = Assignment.objects.get(id=id)
-                        Classassignment.objects.get_or_create(classid=classlist, assignmentid=assignmentlist)
+                        Classassignment.objects.get_or_create(classid=classlist, assignmentid=assignmentlist,
+                                                              defaults={ 'createddt' : datetime.now(),
+                                                                                           'createdby' : userid,
+                                                                                           'modifieddt' : datetime.now(),
+                                                                                           'modifiedby' : userid,
+                                                                                           'disabled' : 0,
+                                                                                           'deleted' : 0,})
                         studentclass = Studentclass.objects.filter(classscheduleid=classids).values_list('studentid')
                              
                         for row in studentclass:

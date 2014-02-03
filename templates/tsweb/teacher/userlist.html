@@ -158,7 +158,7 @@ function EDITTABLE(){
 		$.post(url,odata,
 			function(result){
 				if(result.status == 'error'){
-					$('<label class="error" for="ele_emailaddress">This email have exist data!!.</label>').insertAfter("#ele_emailaddress");
+					$('<label class="error exist" for="ele_emailaddress">This email have exist data!!.</label>').insertAfter("#ele_emailaddress");
 				}else{
 					thisClass.hideEditTable();
 				}
@@ -222,7 +222,9 @@ function EDITTABLE(){
 			}
 		});
 		
-		  $('.modal .form-control, .modal input[type="checkbox"]').attr('disabled', 'disabled');
+ 		  $('.modal .form-control, .modal input[type="checkbox"]').attr('disabled', 'disabled').focus(function(){
+		   		$(".exist").remove();
+		   });
 		  
 		  $('#editUserBtn').click(function(){
 		  	$('.modal .form-control, .modal input[type="checkbox"]').removeAttr('disabled', 'disabled');

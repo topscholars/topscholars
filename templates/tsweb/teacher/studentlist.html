@@ -194,7 +194,7 @@
 						}else{
 							email = result.emailaddress[0]+ "," +result.emailaddress[1];;
 						}
-						$('<label class="error" for="ele_emailaddress1">This email have exist data!!.</label>').insertAfter("#ele_emailaddress1");
+						$('<label class="error exist" for="ele_emailaddress1">This email have exist data!!.</label>').insertAfter("#ele_emailaddress1");
 					}else{
 						thisClass.hideEditTable();
 					}
@@ -341,6 +341,10 @@
 					thisClass.save();
 				}
 			});
+			
+			$('.modal .form-control, .modal input[type="checkbox"]').attr('disabled', 'disabled').focus(function(){
+		   		$(".exist").remove();
+		   });
 			
 			$("#new_student_btn").click(function(){
 				thisClass.resetValidatForm();
@@ -608,8 +612,6 @@
 	 	 	$('#btnSave').val("PROCESSING...").attr("disabled","disabled");
 	  });
 	  
-	   $('.modal .form-control, .modal input[type="checkbox"]').attr('disabled', 'disabled');
-	
 		$('#new_assignment_modal').on("hidden.bs.modal",function(){
 	    $('#new_assignment_form')[0].reset();
 	    $('#new_assignment_form .form-error').remove();

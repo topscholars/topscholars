@@ -219,7 +219,7 @@ function EDITTABLE(){
 		$.post(url,odata,
 			function(result){
 				if(result.status == 'error'){
-					$('<label class="error" for="ele_name">This Code have exist data!!.</label>').insertAfter("#ele_code");
+					$('<label class="error exist" for="ele_name">This Code have exist data!!.</label>').insertAfter("#ele_code");
 				}else{
 					thisClass.hideEditTable();
 				}
@@ -293,6 +293,11 @@ function EDITTABLE(){
 				thisClass.save();
 			}
 		});
+		
+		$('.modal .form-control, .modal input[type="checkbox"]').attr('disabled', 'disabled').focus(function(){
+	   		$(".exist").remove();
+	   });
+		
 		
 		$("#new_class_btn").click(function(){
 			$("[id^='ele_']").each(function(){
@@ -506,8 +511,6 @@ $(function() {
       $('#new_class_form')[0].reset();
       $('#new_class_form .form-error').remove();
     });
-    
-    $('.modal .form-control, .modal input[type="checkbox"]').attr('disabled', 'disabled');
     
     $('#new_class_btn').click(function () {
     	$('#editClassBtn').hide();

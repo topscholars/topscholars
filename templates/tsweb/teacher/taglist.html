@@ -176,14 +176,15 @@ function EDITTABLE(){
 		});
 		
 		$("#btnSave").click(function(){
-			$(".exist").remove();
         	thisClass.initValidateFormEvent();
             if(thisClass.submitForm){
 				thisClass.save();
 			}
 		});
-		  
-		  $('.modal .form-control, .modal input[type="checkbox"]').attr('disabled', 'disabled');
+		   
+		  $('.modal .form-control, .modal input[type="checkbox"]').attr('disabled', 'disabled').focus(function(){
+		   		$(".exist").remove();
+		   });
 		  
 		  $('#editTagBtn').click(function(){
 		  	$('.modal .form-control, .modal input[type="checkbox"]').removeAttr('disabled', 'disabled');

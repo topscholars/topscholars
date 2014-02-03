@@ -68,7 +68,7 @@ def sindex(request):
         submissionversionid = student.lastsubmissionversionid
         classscheduleid = Studentclass.objects.filter(studentid=studentid, clientid=clientid,disabled=0,deleted=0).values_list('classscheduleid')
         classschedulelist = Classschedule.objects.filter(id__in=classscheduleid,disabled=0,deleted=0)
-        submissionlist = Submission.objects.filter(studentid=studentid)
+        submissionlist = Submission.objects.filter(studentid=studentid, disabled=0, deleted=0)
         context= {'studentlist': studentlist,
                   'submissionlist' : submissionlist,
                   'submissioncount':submissionlist.count(),
@@ -307,12 +307,12 @@ def stsubmissionreview(request, id):
     except KeyError:
         return HttpResponseRedirect(reverse('tsweb:login'))
     else:
-        submission = Submission.objects.get(id=id)
-        submissionversion = Submissionversion.objects.get(submissionid=submission.id,version=submission.getLatestVersion)
-        submissionversionlist = Submissionversion.objects.filter(submissionid=id)
+        submission = Submission.objects.get(id=id, disabled=0, deleted=0)
+        submissionversion = Submissionversion.objects.get(submissionid=submission.id,version=submission.getLatestVersion, disabled=0, deleted=0)
+        submissionversionlist = Submissionversion.objects.filter(submissionid=id, disabled=0, deleted=0)
         
         studentlist = Studentlist.objects.filter(id=studentid)
-        submissionlist = Submission.objects.filter(studentid=studentid)
+        submissionlist = Submission.objects.filter(studentid=studentid, disabled=0, deleted=0)
         context = {
             'submissionversion' : submissionversion,
             'user_name' : user_name,

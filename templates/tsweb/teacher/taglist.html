@@ -127,7 +127,7 @@ function EDITTABLE(){
 		$.post(url,odata,
 			function(result){
 				if(result.status == 'error'){
-					$('<label class="error" for="ele_name">This tag have exist data!!.</label>').insertAfter("#ele_name");
+					$('<label class="error exist" for="ele_name">This tag have exist data!!.</label>').insertAfter("#ele_name");
 				}else{
 					thisClass.hideEditTable();
 				}
@@ -176,6 +176,7 @@ function EDITTABLE(){
 		});
 		
 		$("#btnSave").click(function(){
+			$(".exist").remove();
         	thisClass.initValidateFormEvent();
             if(thisClass.submitForm){
 				thisClass.save();

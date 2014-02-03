@@ -615,6 +615,12 @@ class Classassignment(models.Model):
     id = models.IntegerField(primary_key=True, db_column='ID') # Field name made lowercase.
     classid = models.ForeignKey(Classschedule,related_name="Classassignmenttoclassschedule", db_column='ClassId') # Field name made lowercase.
     assignmentid = models.ForeignKey(Assignment,related_name="Classassignmenttoassignment", db_column='AssignmentId') # Field name made lowercase.
+    createddt = models.DateTimeField(db_column='CreatedDT') # Field name made lowercase.
+    createdby = models.IntegerField(db_column='CreatedBy') # Field name made lowercase.
+    modifieddt = models.DateTimeField(db_column='ModifiedDT') # Field name made lowercase.
+    modifiedby = models.IntegerField(db_column='ModifiedBy') # Field name made lowercase.
+    disabled = models.IntegerField(db_column='Disabled') # Field name made lowercase.
+    deleted = models.IntegerField(db_column='Deleted') # Field name made lowercase.
     class Meta:
         db_table = 'classassignment'
 
@@ -705,6 +711,7 @@ class Unitclass(models.Model):
     createdby = models.IntegerField(db_column='CreatedBy') # Field name made lowercase.
     modifieddt = models.DateTimeField(db_column='ModifiedDT') # Field name made lowercase.
     modifiedby = models.IntegerField(db_column='ModifiedBy') # Field name made lowercase.
+    disabled = models.IntegerField(db_column='Disabled') # Field name made lowercase.
     deleted = models.IntegerField(db_column='Deleted') # Field name made lowercase.
     clientid = models.IntegerField(db_column='ClientId') # Field name made lowercase.
     class Meta:

@@ -72,7 +72,7 @@ class ASSSIGNMENTLIST():
             return HttpResponse('error', mimetype='application/json')
         else:
             if id != '':
-                classlistselect = list(Classassignment.objects.filter(assignmentid=id).values('classid'))
+                classlistselect = list(Classassignment.objects.filter(assignmentid=id,disabled=0,deleted=0).values('classid'))
                 classselectarray = []
                 for classdict in classlistselect:
                     classselectarray.append(classdict['classid'])
@@ -121,7 +121,8 @@ class ASSSIGNMENTLIST():
         try:
             DATE_FORMAT = "%d-%m-%Y %H:%M"
             userid = request.session['userid']
-            userlist = Userlist.objects.get(id=userid)
+            login = Login.objects.get(id=userid)
+            userlist = Userlist.objects.get(id=login.recid)
     
             id = request.POST.get('id', False)
             name = request.POST.get('name', False)
@@ -168,15 +169,37 @@ class ASSSIGNMENTLIST():
                 
                 DATE_FORMAT_SUBMISSION = "%d-%m-%Y"
                 
-                
+                try:
+                    classassignmentlist = Classassignment.objects.filter(assignmentid=id)
+                except Classassignment.DoesNotExist:
+                    data_json = { 'status': 'blank', }
+                except Classassignment.MultipleObjectsReturned:
+                    for classassignmentstore in classassignmentlist:
+                        classassignmentstore.disabled = 1
+                        classassignmentstore.save()
+                else:
+                    for classassignmentstore in classassignmentlist:
+                        classassignmentstore.disabled = 1
+                        classassignmentstore.save()
                 if classids != False:
+                    
                     classcheck = classids.find(',')
                     if classcheck > -1:
                         classids = classids.split(',')
                         for classid in classids:
                             classlist = Classschedule.objects.get(id=classid)
                             assignmentlist = Assignment.objects.get(id=id)
-                            Classassignment.objects.get_or_create(classid=classlist, assignmentid=assignmentlist)
+                            
+                            ca, created = Classassignment.objects.get_or_create(classid=classlist, assignmentid=assignmentlist,
+                                                                                defaults={ 'createddt' : datetime.now(),
+                                                                                           'createdby' : userid,
+                                                                                           'modifieddt' : datetime.now(),
+                                                                                           'modifiedby' : userid,
+                                                                                           'disabled' : 0,
+                                                                                           'deleted' : 0,})
+                            ca.disabled= 0
+                            ca.save()
+                            
                             studentclass = Studentclass.objects.filter(classscheduleid=classid).values_list('studentid')
                              
                             for row in studentclass:
@@ -217,7 +240,17 @@ class ASSSIGNMENTLIST():
                     else:
                         classlist = Classschedule.objects.get(id=classids)
                         assignmentlist = Assignment.objects.get(id=id)
-                        Classassignment.objects.get_or_create(classid=classlist, assignmentid=assignmentlist)
+                        
+                        ca, created = Classassignment.objects.get_or_create(classid=classlist, assignmentid=assignmentlist,
+                                                                            defaults={ 'createddt' : datetime.now(),
+                                                                                           'createdby' : userid,
+                                                                                           'modifieddt' : datetime.now(),
+                                                                                           'modifiedby' : userid,
+                                                                                           'disabled' : 0,
+                                                                                           'deleted' : 0,})
+                        ca.disabled= 0
+                        ca.save()
+                        
                         studentclass = Studentclass.objects.filter(classscheduleid=classids).values_list('studentid')
                              
                         for row in studentclass:
@@ -255,7 +288,19 @@ class ASSSIGNMENTLIST():
                                 newversion.deleted = 0
                                 newversion.save()
                                 
-                
+                try:
+                    submissionlist = Submission.objects.filter(assignmentid=id)
+                except Submission.DoesNotExist:
+                    data_json = { 'status': 'blank', }
+                except Submission.MultipleObjectsReturned:
+                    for submissionstore in submissionlist:
+                        submissionstore.disabled = 1
+                        submissionstore.save()
+                else:
+                    for submissionstore in submissionlist:
+                        submissionstore.disabled = 1
+                        submissionstore.save() 
+                        
                 if studentids != False:
                     studentcheck = studentids.find(',')
                     if studentcheck > -1:
@@ -277,6 +322,9 @@ class ASSSIGNMENTLIST():
                                 submission.modifieddt=datetime.now()
                                 submission.modifiedby=userid
                                 submission.deleted=0
+                                submission.disabled=0
+                                submission.save()
+                            else:
                                 submission.disabled=0
                                 submission.save()
                     else:
@@ -326,7 +374,8 @@ class ASSSIGNMENTLIST():
         try:
             DATE_FORMAT = "%d-%m-%Y %H:%M"
             userid = request.session['userid']
-            userlist = Userlist.objects.get(id=userid)
+            login = Login.objects.get(id=userid)
+            userlist = Userlist.objects.get(id=login.recid)
             
             #id = request.POST.get('id', False)
             name = request.POST.get('name', False)

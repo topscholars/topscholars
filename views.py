@@ -63,12 +63,14 @@ def sindex(request):
         clientid = login.clientid
         studentid = login.recid
         user_name = login.loginname
-        studentlist = Studentlist.objects.get(id=studentid)
-        submissionversionid = studentlist.lastsubmissionversionid
+        studentlist = Studentlist.objects.filter(id=studentid)
+        student = Studentlist.objects.get(id=studentid)
+        submissionversionid = student.lastsubmissionversionid
         classscheduleid = Studentclass.objects.filter(studentid=studentid, clientid=clientid,disabled=0,deleted=0).values_list('classscheduleid')
         classschedulelist = Classschedule.objects.filter(id__in=classscheduleid,disabled=0,deleted=0)
         submissionlist = Submission.objects.filter(studentid=studentid)
-        context= {'submissionlist' : submissionlist,
+        context= {'studentlist': studentlist,
+                  'submissionlist' : submissionlist,
                   'submissioncount':submissionlist.count(),
                   'classschedulelist': classschedulelist,
                   'user_name' : user_name}

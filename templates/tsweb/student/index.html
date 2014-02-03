@@ -334,7 +334,7 @@
 			                        'essay': $('#redactor_content').redactor('getEditor').html()
 			                    },
 			                    function (result) {
-			                    	if(ini == thisClass.arrayTagRemove.length -1){
+			                    	if(ini == thisClass.arrayTagRemove.length -1){			                    		
 			                    		{% if submissionversion.submissionid.id != false %}
 			                         	window.location = "{% url 'tsweb:stsubmissionreview' submissionversion.submissionid.id %}";
 			                         	{% endif %}
@@ -345,7 +345,7 @@
 			            });
             		});
             	}else{
-	
+
 	                $.post(url, {
 				                    'class': evalClass,
 				                    'method': 'save',

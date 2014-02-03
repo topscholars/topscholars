@@ -121,7 +121,8 @@ class ASSSIGNMENTLIST():
         try:
             DATE_FORMAT = "%d-%m-%Y %H:%M"
             userid = request.session['userid']
-            userlist = Userlist.objects.get(id=userid)
+            login = Login.objects.get(id=userid)
+            userlist = Userlist.objects.get(id=login.recid)
     
             id = request.POST.get('id', False)
             name = request.POST.get('name', False)
@@ -326,7 +327,8 @@ class ASSSIGNMENTLIST():
         try:
             DATE_FORMAT = "%d-%m-%Y %H:%M"
             userid = request.session['userid']
-            userlist = Userlist.objects.get(id=userid)
+            login = Login.objects.get(id=userid)
+            userlist = Userlist.objects.get(id=login.recid)
             
             #id = request.POST.get('id', False)
             name = request.POST.get('name', False)

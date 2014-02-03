@@ -24,10 +24,16 @@ class VIEWAJAX():
             return HttpResponse(data, mimetype='application/json')
         else:
             submissionversionid = studentlist.lastsubmissionversionid
-            submissionversion = Submissionversion.objects.get(id=submissionversionid)
-
-            data_json = {
-                'essay' : submissionversion.essay,
-                }
+            try:
+                submissionversion = Submissionversion.objects.get(id=submissionversionid)
+            except Submissionversion.DoesNotExist:
+                data_json = {
+                    'essay' : '',
+                    }
+            else:
+                data_json = {
+                    'essay' : submissionversion.essay,
+                    }
+                
             data = simplejson.dumps(data_json)
             return HttpResponse(data, mimetype='application/json')

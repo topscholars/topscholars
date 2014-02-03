@@ -23,12 +23,15 @@ class SUBMISSIONCREATE():
             data = simplejson.dumps(data_json)
             return HttpResponse(data, mimetype='application/json')
         else:
-            submissionversion = Submissionversion.objects.get(id=submissionversionid)
-            data_json = ''
-            data_json = {
-                'essay' : submissionversion.essay,
-                'status' : submissionversion.studentstatus
-                }
+            if submissionversionid != '' and submissionversionid != False:
+                submissionversion = Submissionversion.objects.get(id=submissionversionid)
+            
+                data_json = {
+                    'essay' : submissionversion.essay,
+                    'status' : submissionversion.studentstatus
+                    }
+            else:
+                data_json = {'essay': ''}
             data = simplejson.dumps(data_json)
             return HttpResponse(data, mimetype='application/json')
 

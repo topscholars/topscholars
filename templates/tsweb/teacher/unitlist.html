@@ -33,16 +33,13 @@
 	<script src="{% static 'tsweb/js/hashtag.js' %}"></script>	
 	
 	<!--DELETE BEFORE DEPLOYMENT-->
-	<!--<link rel="stylesheet" href="../../../static/tsweb/css/bootstrap.css" type="text/css"/>
+<!--	<link rel="stylesheet" href="../../../static/tsweb/css/bootstrap.css" type="text/css"/>
 	<link rel="stylesheet" href="../../../static/tsweb/css/topscholars.css" type="text/css"/>
 	<link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
 	<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css"/>
 	<link rel="stylesheet" href="../../../static/tsweb/css/redactor.css"/>
 	<link rel="stylesheet" href="../../../static/tsweb/css/jquery.comment.css"/>
-	
-	<!--<link rel="stylesheet" href="../../../static/tsweb/css/redactor-iframe.css" />--*>
-	<!--<script src="{% static 'tsweb/js/jQuery1.10.1.js' %}"></script>--*>
-	<!--<script src="{% static 'tsweb/js/jquery-ui-1.10.3.custom.min.js' %}"></script>--*>
+
 	<script src="../../../static/tsweb/js/jQuery1-10-1.js" type="text/javascript"></script>
 	<script src="../../../static/tsweb/js/jquery-ui-1-10-3-custom-min.js" type="text/javascript"></script>
 	<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
@@ -686,9 +683,6 @@ $(function() {
 		$('#content_criteria_list').sortable();
 		$('#process_criteria_list').sortable();
 		
-		$('.lesson-title').click(function () {
-			openDynamicLesson();
-		});
 		
 		function openDynamicLesson() {
 			$('#autoLesson').toggle(1000, 'easeOutExpo');
@@ -812,181 +806,180 @@ $(function() {
 			        </div><!-- col-lg-7 -->
 			        
 	        		<div class="col-lg-7">
-			        		
-		        		<button id="show_rubric_btn" type="button" class="btn btn-small btn-default pull-right hide">Show Rubric</button>
-		        	
-		        		<div class="criteria-section hide">	
-			        		<ul class="nav nav-tabs nav-justified" id="criteria_tabs">
-			        		  <li><a href="#impactCollapse" data-toggle="tab">Impact</a></li>
-			        		  <li><a href="#qualityCollapse" data-toggle="tab">Quality</a></li>
-			        		  <li><a href="#contentCollapse" data-toggle="tab">Content</a></li>
-			        		  <li><a href="#processCollapse" data-toggle="tab">Process</a></li>
-			        		</ul>
-		        			<br />
-		        			<div class="tab-content">		        				    
-			  				    
-			  				    <div id="impactCollapse" class="tab-pane">
-			  				    	<div class="form-group">
-		  				    			<label class="control-label col-sm-4">Category Weight</label>
-		  				    			<div class="col-sm-2">
-			  				    			<input class="form-control input-small" type="text" id="impact_weight_input" value="0" min="0" max="100" maxlength="3"/>
-			  				    		</div>
-			  				    		<div class="col-sm-2">
-			  				    			<input type="button" class="btn btn-blue" value="+" id="add_impact_criteria_btn"/>
-			  				    		</div>
-			  				    	</div>
-			  				      <div class="panel-body rubric-criteria-panel">
-			  				      	<div class="alert alert-danger alertCriteria" style="display: none;">Please enter text.</div>
-			    				      <input type="text" name="add_impact_criteria" id="add_impact_criteria" class="form-control input-small" placeholder="Add Impact Criteria"/>
-			    				      <div class="row">
-			    				      	<div class="col-lg-6">
-					    				      <input type="text" name="add-impact-tag" placeholder="Add Tag" id="add_impact_tag" class="form-control input-small add-tag" />
-				    				      </div>
-				    				      <div class="col-lg-6">
-					    				      <input type="text" name="add-impact-weight" value="" id="add_impact_weight" class="form-control input-small add-tag" placeholder="Weight 1 - 100" />
-					    				    </div>
-			    				      </div>
-			    				      
-			    				      <hr />
-			  				      	
-			  				      	<div class="impact-list-item">
-			  				      		<p class="text-muted">Click and drag to reorder criteria</p>
-			    				      	<ul class="list-unstyled" id="impact_criteria_list">
-			    				      		<li class="well well-small">
-				      				      	<a href="#" class="btn btn-danger btn-small pull-right">Remove</a>
-				    				      		<a href="#" class="btn btn-small btn-default pull-right">Edit</a>
-				    				      		<p>{{ criteria.name }}</p>
-				    				      		<p>{{ criteria.tag }}</p>
-				    				      		<p>{{ criteria.weight }}</p>
-				    				      	</li>
-			    				      	</ul>
-			  				      	</div>
-			  				      </div>
-			  				     </div>
-			
-			  				     <div id="qualityCollapse" class="tab-pane">
-		      				    	<div class="form-group">
-		      				    		<label for="" class="control-label col-sm-4">Category Weight</label>
-		      				    		<div class="col-sm-2">
-		      				    			<input class="form-control input-small" type="text" id="quality_weight_input" value="0" min="0" max="100" maxlength="3"/>
-		      				    		</div>
-		      				    		<div class="col-sm-2">
-		      				    			<input type="button" class="btn btn-green" value="+" id="add_quality_criteria_btn"/>
-		      				    		</div>
-		      				    	</div>
-		      				      <div class="panel-body rubric-criteria-panel">
-			      				      <div class="alert alert-danger alertCriteria" style="display: none;">Please enter text.</div>
-		      				      	<input type="text" name="add_quality_criteria" id="add_quality_criteria" class="form-control input-small" placeholder="Add Quality Criteria" />
-		      				      	<div class="row">
-		      				      		<div class="col-lg-6">
-				      				      	<input type="text" name="add-quality-tag" placeholder="Add Tag" id="add_quality_tag" class="form-control input-small add-tag" />
-		      				      		</div>
-		      				      		<div class="col-lg-6">
-				      				      	<input type="text" name="add-quality-weight" value="" id="add_quality_weight" class="form-control input-small add-tag" placeholder="Weight 1 - 100" />
-				      				      </div>
-				      				    </div>
-		      				      	
-		      				      	<hr />
-		      				      	
-		      				        <div class="quality-list-item hide">
-		      				        	<p class="text-muted">Click and drag to reorder criteria</p>
-		      				        	<ul class="list-unstyled" id="quality_criteria_list">
-		      				          	<li class="well well-small">
-		      				          		<a href="#" class="btn btn-danger btn-small pull-right">Remove</a>
-		      				        			<a href="#" class="btn btn-small btn-default pull-right">Edit</a>
-		      				        			<p>{{ criteria.name }}</p>
-		      				        			<p>{{ criteria.tag }}</p>
-		      				        			<p>{{ criteria.weight }}</p>
-		      				        		</li>
-		      				        	</ul>
-		      				        	<hr />
-			      				        </div>
-		      				      </div>
-		      				    </div>
-			
-			  				    	<div id="contentCollapse" class="tab-pane">
-			    				    	<div class="form-group">
-			    				    		<label for="" class="control-label col-sm-4">Category Weight</label>
-			    				    		<div class="col-sm-2">
-			    				    			<input class="form-control input-small" type="text" id="content_weight_input" value="0" min="0" max="100" maxlength="3"/>
-			    				    		</div>
-			    				    		<div class="col-sm-2">
-			    				    			<input type="button" class="btn btn-purple" value="+" id="add_content_criteria_btn"/>
-			    				    		</div>
-			    				    	</div>
-			    				      <div class="panel-body rubric-criteria-panel">
-			    				      	<div class="alert alert-danger alertCriteria" style="display: none;">Please enter text.</div>
-			    				      	<input type="text" name="add_content_criteria" id="add_content_criteria" class="form-control input-small" placeholder="Add Content Criteria"/>
-			    				      	<div class="row">
-			    				      		<div class="col-lg-6">
-					    				      	<input type="text" name="add-content-tag" placeholder="Add Tag" id="add_content_tag" class="form-control input-small add-tag" />
-				    				      	</div>
-				    				      	<div class="col-lg-6">
-					    				      	<input type="text" name="add-content-weight" value="" id="add_content_weight" class="form-control input-small add-tag" placeholder="Weight 1 - 100" />
-					    				      </div>
-					    				    </div>
-			    				      	
-			    				      	<hr />
-			    				      	
-			    				        <div class="content-list-item hide">
-			    				        	<p class="text-muted">Click and drag to reorder criteria</p>
-			    				        	<ul class="list-unstyled" id="content_criteria_list">
-			    				          	<li class="well well-small">
-			    				          		<a href="#" class="btn btn-danger btn-small pull-right">Remove</a>
-			    				        			<a href="#" class="btn btn-small btn-default pull-right">Edit</a>
-				    				        		<p>{{ criteria.name }}</p>
-				    				        		<p>{{ criteria.tag }}</p>
-				    				        		<p>{{ criteria.weight }}</p>
-				    				        	</li>
-			    				        	</ul>
-			    				        	<hr />
-			    				        </div>
-			    				      </div>
-			    				    </div>
-			  				  
-			  				    <div id="processCollapse" class="tab-pane">
-			  				    	<div class="form-group">
-			  				    		<label for="" class="control-label col-sm-4">Category Weight</label>
-			  				    		<div class="col-sm-2">
-			  				    			<input class="form-control input-small" type="text" id="process_weight_input" value="0" min="0" max="100" maxlength="3"/>
-			  				    		</div>
-			  				    		<div class="col-sm-2">
-			  				    			<input type="button" class="btn btn-red" value="+" id="add_process_criteria_btn"/>
-			  				    		</div>
-			  				    	</div>
-			  				      <div class="panel-body rubric-criteria-panel">
-			  				      	<div class="alert alert-danger alertCriteria" style="display: none;">Please enter text.</div>
-			  				      	<input type="text" name="add_process_criteria" id="add_process_criteria" class="form-control input-small" placeholder="Add Process Criteria"/>
-			  				      	<div class="row">
-			  				      		<div class="col-lg-6">
-					  				      	<input type="text" name="add-process-tag" placeholder="Add Tag" id="add_process_tag" class="form-control input-small add-tag" />
-					  				      </div>
-					  				      <div class="col-lg-6">
-					  				      	<input type="text" name="add-process-weight" value="" id="add_process_weight" class="form-control input-small add-tag" placeholder="Weight 1 - 100" />
-					  				      </div>
-					  				    </div>
-			  				      	
-			  				      	<hr />
-			  				      	
-			  				        <div class="process-list-item hide">
-			  				        	<p class="text-muted">Click and drag to reorder criteria</p>
-			  				        	<ul class="list-unstyled">
-			  				          	<li class="well well-small">
-			  				          		<a href="#" class="btn btn-danger btn-small pull-right">Remove</a>
-				  				        		<a href="#" class="btn btn-small btn-default pull-right">Edit</a>
-				  				        		<p>{{ criteria.name }}</p>
-				  				        		<p>{{ criteria.tag }}</p>
-				  				        		<p>{{ criteria.weight }}</p>
-				  				        	</li>
-			  				        	</ul>
-			  				        	<hr />
-			  				        </div>
-			  				      </div>
-			  				    </div>
-		  				    </div>
-						 		</div><!-- /.criteria-section -->
-					 		</div>
-					 		
+	        		    		        		
+  		      		<button id="show_rubric_btn" type="button" class="btn btn-small btn-default pull-right hide">Show Rubric</button>
+  		      	
+  		      		<div class="criteria-section hide">	
+  		        		<ul class="nav nav-tabs nav-justified" id="criteria_tabs">
+  		        		  <li><a href="#impactCollapse" data-toggle="tab">Impact</a></li>
+  		        		  <li><a href="#qualityCollapse" data-toggle="tab">Quality</a></li>
+  		        		  <li><a href="#contentCollapse" data-toggle="tab">Content</a></li>
+  		        		  <li><a href="#processCollapse" data-toggle="tab">Process</a></li>
+  		        		</ul>
+  		      			<br />
+  		      			<div class="tab-content">		        				    
+  		  				    
+  		  				    <div id="impactCollapse" class="tab-pane">
+  		  				    	<div class="form-group">
+  						    			<label class="control-label col-sm-4">Category Weight</label>
+  						    			<div class="col-sm-2">
+  		  				    			<input class="form-control input-small" type="number" id="impact_weight_input" value="0" min="0" max="100"/>
+  		  				    		</div>
+  		  				    		<div class="col-sm-2">
+  		  				    			<input type="button" class="btn btn-blue" value="+" id="add_impact_criteria_btn"/>
+  		  				    		</div>
+  		  				    	</div>
+  		  				      <div class="panel-body rubric-criteria-panel">
+  		  				      	<div class="alert alert-danger alertCriteria" style="display: none;">Please enter text.</div>
+  		    				      <input type="text" name="add_impact_criteria" id="add_impact_criteria" class="form-control input-small" placeholder="Add Impact Criteria"/>
+  		    				      <div class="row">
+  		    				      	<div class="col-lg-6">
+  				    				      <input type="text" name="add-impact-tag" placeholder="Add Tag" id="add_impact_tag" class="form-control input-small add-tag" />
+  			    				      </div>
+  			    				      <div class="col-lg-6">
+  				    				      <input type="text" name="add-impact-weight" value="" id="add_impact_weight" class="form-control input-small add-tag" placeholder="Weight 1 - 100" />
+  				    				    </div>
+  		    				      </div>
+  		    				      
+  		    				      <hr />
+  		  				      	
+  		  				      	<div class="impact-list-item">
+  		  				      		<p class="text-muted">Click and drag to reorder criteria</p>
+  		    				      	<ul class="list-unstyled" id="impact_criteria_list">
+  		    				      		<li class="well well-small">
+  			      				      	<a href="#" class="btn btn-danger btn-small pull-right">Remove</a>
+  			    				      		<a href="#" class="btn btn-small btn-default pull-right">Edit</a>
+  			    				      		<p>{{ criteria.name }}</p>
+  			    				      		<p class="pull-left">{{ criteria.tag }} &#124; </p>
+  			    				      		<p> {{ criteria.weight }}</p>
+  			    				      	</li>
+  		    				      	</ul>
+  		  				      	</div>
+  		  				      </div>
+  		  				     </div>
+  		
+  		  				     <div id="qualityCollapse" class="tab-pane">
+  		    				    	<div class="form-group">
+  		    				    		<label for="" class="control-label col-sm-4">Category Weight</label>
+  		    				    		<div class="col-sm-2">
+  		    				    			<input class="form-control input-small" type="number" id="quality_weight_input" value="0" min="0" max="100"/>
+  		    				    		</div>
+  		    				    		<div class="col-sm-2">
+  		    				    			<input type="button" class="btn btn-green" value="+" id="add_quality_criteria_btn"/>
+  		    				    		</div>
+  		    				    	</div>
+  		    				      <div class="panel-body rubric-criteria-panel">
+  		      				      <div class="alert alert-danger alertCriteria" style="display: none;">Please enter text.</div>
+  		    				      	<input type="text" name="add_quality_criteria" id="add_quality_criteria" class="form-control input-small" placeholder="Add Quality Criteria" />
+  		    				      	<div class="row">
+  		    				      		<div class="col-lg-6">
+  			      				      	<input type="text" name="add-quality-tag" placeholder="Add Tag" id="add_quality_tag" class="form-control input-small add-tag" />
+  		    				      		</div>
+  		    				      		<div class="col-lg-6">
+  			      				      	<input type="text" name="add-quality-weight" value="" id="add_quality_weight" class="form-control input-small add-tag" placeholder="Weight 1 - 100" />
+  			      				      </div>
+  			      				    </div>
+  		    				      	
+  		    				      	<hr />
+  		    				      	
+  		    				        <div class="quality-list-item hide">
+  		    				        	<p class="text-muted">Click and drag to reorder criteria</p>
+  		    				        	<ul class="list-unstyled" id="quality_criteria_list">
+  		    				          	<li class="well well-small">
+  		    				          		<a href="#" class="btn btn-danger btn-small pull-right">Remove</a>
+  		    				        			<a href="#" class="btn btn-small btn-default pull-right">Edit</a>
+  		    				        			<p>{{ criteria.name }}</p>
+  		    				        			<p class="pull-left">{{ criteria.tag }} &#124; </p>
+  		    				        			<p>{{ criteria.weight }}</p>
+  		    				        		</li>
+  		    				        	</ul>
+  		    				        	<hr />
+  		      				        </div>
+  		    				      </div>
+  		    				    </div>
+  		
+  		  				    	<div id="contentCollapse" class="tab-pane">
+  		    				    	<div class="form-group">
+  		    				    		<label for="" class="control-label col-sm-4">Category Weight</label>
+  		    				    		<div class="col-sm-2">
+  		    				    			<input class="form-control input-small" type="number" id="content_weight_input" value="0" min="0" max="100"/>
+  		    				    		</div>
+  		    				    		<div class="col-sm-2">
+  		    				    			<input type="button" class="btn btn-purple" value="+" id="add_content_criteria_btn"/>
+  		    				    		</div>
+  		    				    	</div>
+  		    				      <div class="panel-body rubric-criteria-panel">
+  		    				      	<div class="alert alert-danger alertCriteria" style="display: none;">Please enter text.</div>
+  		    				      	<input type="text" name="add_content_criteria" id="add_content_criteria" class="form-control input-small" placeholder="Add Content Criteria"/>
+  		    				      	<div class="row">
+  		    				      		<div class="col-lg-6">
+  				    				      	<input type="text" name="add-content-tag" placeholder="Add Tag" id="add_content_tag" class="form-control input-small add-tag" />
+  			    				      	</div>
+  			    				      	<div class="col-lg-6">
+  				    				      	<input type="text" name="add-content-weight" value="" id="add_content_weight" class="form-control input-small add-tag" placeholder="Weight 1 - 100" />
+  				    				      </div>
+  				    				    </div>
+  		    				      	
+  		    				      	<hr />
+  		    				      	
+  		    				        <div class="content-list-item hide">
+  		    				        	<p class="text-muted">Click and drag to reorder criteria</p>
+  		    				        	<ul class="list-unstyled" id="content_criteria_list">
+  		    				          	<li class="well well-small">
+  		    				          		<a href="#" class="btn btn-danger btn-small pull-right">Remove</a>
+  		    				        			<a href="#" class="btn btn-small btn-default pull-right">Edit</a>
+  			    				        		<p>{{ criteria.name }}</p>
+  			    				        		<p class="pull-left">{{ criteria.tag }} &#124; </p>
+  			    				        		<p>{{ criteria.weight }}</p>
+  			    				        	</li>
+  		    				        	</ul>
+  		    				        	<hr />
+  		    				        </div>
+  		    				      </div>
+  		    				    </div>
+  		  				  
+  		  				    <div id="processCollapse" class="tab-pane">
+  		  				    	<div class="form-group">
+  		  				    		<label for="" class="control-label col-sm-4">Category Weight</label>
+  		  				    		<div class="col-sm-2">
+  		  				    			<input class="form-control input-small" type="number" id="process_weight_input" value="0" min="0" max="100"/>
+  		  				    		</div>
+  		  				    		<div class="col-sm-2">
+  		  				    			<input type="button" class="btn btn-red" value="+" id="add_process_criteria_btn"/>
+  		  				    		</div>
+  		  				    	</div>
+  		  				      <div class="panel-body rubric-criteria-panel">
+  		  				      	<div class="alert alert-danger alertCriteria" style="display: none;">Please enter text.</div>
+  		  				      	<input type="text" name="add_process_criteria" id="add_process_criteria" class="form-control input-small" placeholder="Add Process Criteria"/>
+  		  				      	<div class="row">
+  		  				      		<div class="col-lg-6">
+  				  				      	<input type="text" name="add-process-tag" placeholder="Add Tag" id="add_process_tag" class="form-control input-small add-tag" />
+  				  				      </div>
+  				  				      <div class="col-lg-6">
+  				  				      	<input type="text" name="add-process-weight" value="" id="add_process_weight" class="form-control input-small add-tag" placeholder="Weight 1 - 100" />
+  				  				      </div>
+  				  				    </div>
+  		  				      	
+  		  				      	<hr />
+  		  				      	
+  		  				        <div class="process-list-item hide">
+  		  				        	<p class="text-muted">Click and drag to reorder criteria</p>
+  		  				        	<ul class="list-unstyled">
+  		  				          	<li class="well well-small">
+  		  				          		<a href="#" class="btn btn-danger btn-small pull-right">Remove</a>
+  			  				        		<a href="#" class="btn btn-small btn-default pull-right">Edit</a>
+  			  				        		<p>{{ criteria.name }}</p>
+  			  				        		<p class="pull-left">{{ criteria.tag }} &#124; </p>
+  			  				        		<p>{{ criteria.weight }}</p>
+  			  				        	</li>
+  		  				        	</ul>
+  		  				        	<hr />
+  		  				        </div>
+  		  				      </div>
+  		  				    </div>
+  						    </div>
+  					 		</div><!-- /.criteria-section -->
+  				 		</div>					 		
 					 		
 		        <hr />
 		        </div><!-- /. row -->
@@ -1508,10 +1501,6 @@ $(function() {
 	</div> <!-- /. ACTIVITY MANUAL -->
 	
 	<script>
-	
-		// document.getElementById("uploadBtn").onchange = function () {
-		//  document.getElementById("uploadFile").value = this.value;
-		// };	
 		
 		$('[rel=tooltip]').tooltip();
 		
@@ -1580,11 +1569,10 @@ $(function() {
 		});
 		
 		
-//		$('#addActivityBtn').click(function (event) {
-//			$('.new_activity_list').append('<li class="well well-small"><div class="row"><div class="col-lg-6 col-md-6 col-sm-6"><input type="text" class="form-control input-small" placeholder="Add Activity Here" value="{# activity_title #}"></div><div class="col-lg-3 col-md-3 col-sm-3"><div class="onoffswitch"><input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="myonoffswitch" checked><label class="onoffswitch-label" for="myonoffswitch"><div class="onoffswitch-inner"></div><div class="onoffswitch-switch"></div></label></div> 
-//			   </div><div class="col-lg-3 col-md-3 col-sm-3"><a href="submissionReview.html" class="btn btn-small btn-success pull-right">Go to activity <i class="fa fa-arrow-right"></i></a></div></div></li>');
-//			   event.preventDefault();
-//		});
+		$('#addActivityBtn').click(function (event) {
+			$('#sortableActivities').append('<li class="well well-small"><div class="row"><div class="col-lg-6 col-md-6 col-sm-6"><input type="text" class="form-control input-small" placeholder="Add Activity Here" value="{# activity_title #}"></div><div class="col-lg-3 col-md-3 col-sm-3"><div class="onoffswitch"><input type="checkbox" name="onoffswitch2" class="onoffswitch-checkbox" id="myonoffswitch2" checked><label class="onoffswitch-label" for="myonoffswitch2"><div class="onoffswitch-inner"></div><div class="onoffswitch-switch"></div></label></div></div><div class="col-lg-3 col-md-3 col-sm-3"><a href="submissionReview.html" class="btn btn-small btn-success pull-right">Go to activity <i class="fa fa-arrow-right"></i></a></div></div></li>');
+			event.preventDefault();
+		});
 		
 	</script>
 </body>

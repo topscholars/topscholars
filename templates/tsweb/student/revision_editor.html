@@ -27,6 +27,7 @@
 	<script src="{% static 'tsweb/js/jquery.cookie.js' %}"></script>
 	<script src="{% static 'tsweb/js/util.js' %}"></script>
 	<script src="{% static 'tsweb/js/popover.js' %}" type="text/javascript"></script>
+	<script src="{% static 'tsweb/js/tooltip.js' %}" type="text/javascript"></script>
 	<script src="{% static 'tsweb/js/redactor.min.js' %}"></script>
 	<script src="{% static 'tsweb/js/jquery.comment.js' %}"></script>
 	<script src="{% static 'tsweb/js/jquery-touch-punch.min.js' %}" type="text/javascript"></script>
@@ -34,41 +35,9 @@
 	<script src="{% static 'tsweb/js/jquery.autoGrowInput.js' %}"></script>
 	<script src="{% static 'tsweb/js/jquery.validate.js' %}"></script>
 	<script src="{% static 'tsweb/js/fontcolor.js' %}"></script>
-    <script src="{% static 'tsweb/js/fontfamily.js' %}"></script>
-    <script src="{% static 'tsweb/js/fontsize.js' %}"></script>
-	
-		<!--DELETE BEFORE DEPLOYMENT-->
-		<!--<link rel="stylesheet" href="../../../static/tsweb/css/bootstrap.css" type="text/css" />
-		<link rel="stylesheet" href="../../../static/tsweb/css/topscholars.css" type="text/css" />
-		<link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
-		<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
-		<link rel="stylesheet" href="../../../static/tsweb/css/redactor.css" />
-		<link rel="stylesheet" href="../../../static/tsweb/css/jquery.comment.css" />
-		<link rel="stylesheet" href="../../../static/tsweb/css/redactor-iframe.css" />
-		<script src="{% static 'tsweb/js/jQuery1.10.1.js' %}"></script>
-		<script src="{% static 'tsweb/js/jquery-ui-1.10.3.custom.min.js' %}"></script>
+  <script src="{% static 'tsweb/js/fontfamily.js' %}"></script>
+  <script src="{% static 'tsweb/js/fontsize.js' %}"></script>
 		
-		<script src="../../../static/tsweb/js/jQuery1-10-1.js" type="text/javascript"></script>
-		<script src="../../../static/tsweb/js/jquery-ui-1-10-3-custom-min.js" type="text/javascript"></script>
-		<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
-		<script src="../../../static/tsweb/js/bootstrap.js" type="text/javascript"></script>
-		<script src="../../../static/tsweb/js/transition.js" type="text/javascript"></script>
-		<script src="../../../static/tsweb/js/popover.js" type="text/javascript"></script>
-		<script src="../../../static/tsweb/js/redactor.min.js" type="text/javascript"></script>
-		<script src="../../../static/tsweb/js/jquery.comment.js" type="text/javascript"></script>
-		<script src="../../../static/tsweb/js/jquery-touch-punch.min.js" type="text/javascript"></script>-->
-	<!--==============================================-->
-	
-	
-	<script>
-		$(document).ready(function () {
-			$('#commentSection').comments({
-				getCommentUrl: "/JqComment/GetComments",
-				postCommentUrl: "/JqComment/PostComment",
-				deleteCommentUrl: "/JqComment/DeleteComment",
-			});
-		})
-	</script>
 </head>
 
 <body>
@@ -686,22 +655,31 @@
 		    </div>
 		  </div>
 	
-		  <div class="panel-default block-cell block-thin">
-		    <div class="panel-heading block-header">
-		      <h3 class="panel-title">
-		        <a href="#collapseThree" data-toggle="collapse" >
-		          Comments
-		        </a>
-		      </h3>
-		    </div>
-		    <div id="collapseThree" class="panel-collapse collapse in">
-		      <div class="block-body">
-		       	<div id="commentSection">
-		       	
-		       	</div>
-		      </div>
-		    </div>
+		  <div class="panel-default block-cell block-thin" >
+		  	<div class="panel-heading block-header">
+		  		<h3 class="panel-title">
+		  		<a href="#collapseThree" data-toggle="collapse"> Comments </a>
+		  		</h3>
+		  	</div>
+		  	<div id="collapseThree" class="panel-collapse collapse in">
+		  		<div class="block-body">
+		  			<div id="commentSection">
+	  					<ul class="comment-list">
+	  						<!--compass is for location based comment-->
+	  						<li><i class="fa fa-compass" data-toggle="tooltip" data-trigger="hover" data-placement="left" rel="tooltip" title data-original-title="Location based" data-container="body"></i> <i>{# student_name #} - </i> 
+	  						{# past_comment #} Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam <time class="commentDate"></time>
+	  						</li>
+	  						<!--file is for document based comment-->
+	  						<li><i class="fa fa-file" data-toggle="tooltip" data-trigger="hover" data-placement="left" rel="tooltip" title data-original-title="Document based" data-container="body"></i> <i>{# student_name #} - </i>
+	  						{# past_comment #} <time class="commentDate"></time>
+	  						</li>
+	  					</ul>
+		  			</div>
+		  		</div>
+		  	</div>
 		  </div>
+		  
+		  
 			  
 		</div> <!--End Side Panel-->
 
@@ -1005,6 +983,7 @@
 		  });
 		
 		$("[rel=popover]").popover();
+		$("[rel=tooltip]").tooltip();
 	
 	</script>
 </body>

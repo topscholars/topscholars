@@ -429,10 +429,16 @@ form{
 	text-shadow: none;
 }
 .tag-list-dropdown{
-	position: absolute;
+	position: relative;
 	padding: 5px;
-	background-color: rgba(100, 100, 100, .75);
+	background-color: rgba(100, 100, 100, .95);
 	border-radius: 3px;
+	margin: 0 auto;
+	left: 0;
+	right: 0;
+	z-index: 1050;
+	margin-top: 100px;
+
 }
 .tag-list-dropdown ul{
 	list-style: none;

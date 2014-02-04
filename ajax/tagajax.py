@@ -80,6 +80,8 @@ class TAGLIST():
                 else:
                     taglist.parentid = parentid
                 taglist.description = descriptions
+                taglist.tagcolor = '#ffff00'
+##                taglist.abilitylevel = 0
                 taglist.modifieddt = datetime.now()
                 taglist.modifiedby = userid
                 taglist.clientid = clientid
@@ -133,6 +135,8 @@ class TAGLIST():
                 else:
                     taglist.system = 0
                 taglist.description = descriptions
+                taglist.tagcolor = '#ffff00'
+##                taglist.abilitylevel = 0
                 taglist.createddt = datetime.now()
                 taglist.createdby = userid
                 taglist.modifieddt = datetime.now()

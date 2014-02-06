@@ -304,7 +304,7 @@ class Category(models.Model):
     clientid = models.IntegerField(db_column='ClientId') # Field name made lowercase.
     system = models.IntegerField(db_column='System') # Field name made lowercase.
     class Meta:
-        db_table = 'Category'
+        db_table = 'category'
 
 class Rubriccriteria(models.Model):
     id = models.IntegerField(primary_key=True, db_column='ID') # Field name made lowercase.
@@ -424,7 +424,7 @@ class Studentlist(models.Model):
     def getStudentGrade(self):
         stdid=self.id
         cursor = connection.cursor()
-        cursor.execute('select grade from Studentclass where studentid = %s and createddt = (select max(createddt) from Studentclass where studentid = %s)',[stdid,stdid])
+        cursor.execute('select grade from studentclass where studentid = %s and createddt = (select max(createddt) from studentclass where studentid = %s)',[stdid,stdid])
         row = cursor.fetchone()
         return row[0]
 
@@ -495,7 +495,7 @@ class Submission(models.Model):
     def getLatestVersion(self):
         submissionid=self.id
         cursor = connection.cursor()
-        cursor.execute('select version from Submissionversion where submissionid = %s and version = (select max(version) from Submissionversion where submissionid = %s and deleted = 0)',[submissionid,submissionid])
+        cursor.execute('select version from submissionversion where submissionid = %s and version = (select max(version) from submissionversion where submissionid = %s and deleted = 0)',[submissionid,submissionid])
         row = cursor.fetchone()
         if row is not None:
             return row[0]
@@ -505,7 +505,7 @@ class Submission(models.Model):
     def getAssignment(self):
         submissionid=self.id
         cursor = connection.cursor()
-        cursor.execute('select asm.name from Submission as sm join Assignment as asm on (sm.assignmentid = asm.id) where sm.id = %s and sm.disabled = 0 and sm.deleted = 0',[submissionid])
+        cursor.execute('select asm.name from submission as sm join assignment as asm on (sm.assignmentid = asm.id) where sm.id = %s and sm.disabled = 0 and sm.deleted = 0',[submissionid])
         row = cursor.fetchone()
         if row is not None:
             return row[0]
@@ -650,7 +650,7 @@ class Categoryentity(models.Model):
     deleted = models.IntegerField(db_column='Deleted') # Field name made lowercase.
     clientid = models.IntegerField(db_column='ClientId') # Field name made lowercase.
     class Meta:
-        db_table = 'CategoryEntity'
+        db_table = 'categoryentity'
 
 class Categorylink(models.Model):
     id = models.IntegerField(primary_key=True, db_column='ID') # Field name made lowercase.
@@ -665,7 +665,7 @@ class Categorylink(models.Model):
     deleted = models.IntegerField(db_column='Deleted') # Field name made lowercase.
     clientid = models.IntegerField(db_column='ClientId') # Field name made lowercase.
     class Meta:
-        db_table = 'CategoryLink'
+        db_table = 'categorylink'
         
 class Categoryweight(models.Model):
     id = models.IntegerField(primary_key=True, db_column='ID') # Field name made lowercase.

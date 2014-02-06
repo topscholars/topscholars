@@ -79,6 +79,8 @@ class TAGLIST():
                     taglist.parentid = 0
                 else:
                     taglist.parentid = parentid
+                taglist.tagcolor = '#ffff00'
+                taglist.abilitylevel = 0
                 taglist.description = descriptions
                 taglist.tagcolor = '#ffff00'
 ##                taglist.abilitylevel = 0
@@ -134,6 +136,8 @@ class TAGLIST():
                     taglist.system = 1
                 else:
                     taglist.system = 0
+                taglist.tagcolor = '#ffff00'
+                taglist.abilitylevel = 0
                 taglist.description = descriptions
                 taglist.tagcolor = '#ffff00'
 ##                taglist.abilitylevel = 0
@@ -182,9 +186,9 @@ class TTAGLISTAJAX():
             description=request.GET.get('description',False)
             taglist = ''
             if description == False or description == '':
-                taglist = Tag.objects.filter(clientid=clientid)
+                taglist = Tag.objects.filter(clientid=clientid, disabled=0, deleted=0)
             else:
-                taglist = Tag.objects.filter(clientid=clientid,firstname__contains=description)
+                taglist = Tag.objects.filter(clientid=clientid,firstname__contains=description, disabled=0, deleted=0)
             context = {'taglist': taglist}
             return render(request, 'tsweb/teacher/taglistajax.html', context)
             

@@ -251,13 +251,15 @@ class TSTUDENTLISTAJAX():
     def get(self,request):
         try:
             userid = request.session['userid']
+            studentname=request.GET.get('studentname',False)
+            classid=request.GET.get('classid',False)
         except KeyError:
-            return HttpResponseRedirect(reverse('tsweb:login'))
+            data_json = { 'status': 'error'}
+            data = simplejson.dumps(data_json)
+            return HttpResponse(data, mimetype='application/json')
         else:
             login = Login.objects.get(id=userid)
             clientid = login.clientid
-            studentname=request.GET.get('studentname',False)
-            classid=request.GET.get('classid',False)
             studentlist = ''
             activeid = Login.objects.filter(deleted=0,usertypeid=2).values_list('recid',flat=True)
             if (studentname != False and studentname != '') and (classid != False and classid != ''):

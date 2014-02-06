@@ -385,12 +385,14 @@ class TUSERLISTAJAX():
         else:
             login = Login.objects.get(id=userid)
             clientid = login.clientid
+            
+            id = Login.objects.filter(usertypeid=1,disabled=0,deleted=0).values_list('recid')
             description=request.GET.get('description',False)
             userlist = ''
             if description == False or description == '':
-                userlist = Userlist.objects.filter(clientid=clientid)
+                userlist = Userlist.objects.filter(id__in=id, clientid=clientid)
             else:
-                userlist = Userlist.objects.filter(clientid=clientid,firstname__contains=description)
+                userlist = Userlist.objects.filter(id__in=id,clientid=clientid,firstname__contains=description)
             context = {'userlist': userlist}
             return render(request, 'tsweb/teacher/userlistajax.html', context)
             

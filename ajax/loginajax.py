@@ -30,7 +30,7 @@ class LOGINAJAX():
 ##                else:
 ##                    userdetails = Userlist.objects.get(id=user.recid)
 ##                    email = [userdetails.emailaddress]
-                send_mail('Topscholar Education: Password', body , 'noreply@topscholars.org',email, fail_silently=False)
+                send_mail('Topscholar Education: Password', body , 'noreply@writability.org',email, fail_silently=False)
                 data_json = {'status': 'Email Sent.',}
 ##                try:
 ##                    send_mail('Topscholar Education: Password Hint', body , settings.EMAIL_HOST_USER,[email], fail_silently=False)

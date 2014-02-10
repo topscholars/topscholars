@@ -576,11 +576,11 @@ class SUBMISSIONREVIEW():
             tagentity = TagEntity.objects.filter(entityid=5,tagid__id__in=tagids)
             for row in tagentity:
                 if row.tagid.parentid != 0:
-                    tagentitysibling = TagEntity.objects.filter(Q(entityid=5),~Q(tagid__id__in=tagids),Q(tagid__parentid=row.tagid.parentid))
+                    tagentitysibling = TagEntity.objects.filter(Q(entityid=5),~Q(tagid__id__in=tagids),Q(tagid__parentid=row.tagid.parentid),Q(tagid__deleted = 0))
                     for rowsibling in tagentitysibling:
                         if { "id": str(rowsibling.tagid.id), "label": rowsibling.tagid.name, "value": rowsibling.tagid.name } not in data_json:
                             data_json.append({ "id": str(rowsibling.tagid.id), "label": rowsibling.tagid.name, "value": rowsibling.tagid.name })
-                tagentitychild = TagEntity.objects.filter(Q(entityid=5), ~Q(tagid__id__in=tagids), Q(tagid__parentid=row.tagid.id))
+                tagentitychild = TagEntity.objects.filter(Q(entityid=5), ~Q(tagid__id__in=tagids), Q(tagid__parentid=row.tagid.id),Q(tagid__deleted = 0))
                 for rowchild in tagentitychild:
                     if { "id": str(rowchild.tagid.id), "label": rowchild.tagid.name, "value": rowchild.tagid.name } not in data_json:
                         data_json.append({ "id": str(rowchild.tagid.id), "label": rowchild.tagid.name, "value": rowchild.tagid.name })

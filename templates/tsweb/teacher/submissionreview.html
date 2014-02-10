@@ -177,7 +177,7 @@
                         $.each(result, function (i, val) {
                         	
                             var spanid = val[0];
-                            console.log($('inline[name="' + spanid + '"]'));
+                            //console.log($('inline[name="' + spanid + '"]'));
                             $('inline[name="' + spanid + '"]').css({ 'background': val[2] });
                             textComment += "- " + val[1] + "<br/>";
                         });
@@ -329,6 +329,8 @@
                 $('.tagedit-listelement-old').remove();
                 $('#ele_highlightComment').val('');
                 $('#ele_highlightCategory').val('');
+                var redactor_object = $('#ele_submissionversionessay').redactor('getObject');
+                redactor_object.selectionRemoveMarkers();
             }
         }
         this.getHighlightDataTag = function () {
@@ -391,27 +393,14 @@
                     tagids: tagids,
                     categoryid: $('#ele_highlightCategory').val()
                 };
-            } else if (method == 'save') {
-                odata = {
-                    class: evalClass,
-                    method: 'saveSubmissionversionHighlight',
-                    highlightid: highlightid,
-                    highlightComment: $('#ele_highlightComment').val(),
-                    tagids: tagids,
-                    categoryid: $('#ele_highlightCategory').val()
-                };
-            }
-            $.post(url, odata,
+
+                $.post(url, odata,
                 function (result) {
                     highlightid = result.recid;
                     var redactor_object = $('#ele_submissionversionessay').redactor('getObject');
                     redactor_object.selectionRestore();
-                    redactor_object.inlineSetAttr({'name': result.recid, "style": "background-color:red;", "class": 'essayhighlight', "ondblclick" : 'openHighlightDialog(' + result.recid + ')' });
-                    // redactor_object.inlineSetAttr('name', result.recid);
-//                     
-                    // redactor_object.inlineSetStyle("background-color", "red");
-                    // redactor_object.inlineSetClass('essayhighlight');
-                    // redactor_object.inlineSetAttr('ondblclick', 'openHighlightDialog(' + result.recid + ')');
+                    redactor_object.inlineSetAttr({ 'name': result.recid, "style": "background-color:red;", "class": 'essayhighlight', "ondblclick": 'openHighlightDialog(' + result.recid + ')' });
+
                     redactor_object.sync();
                     odata = {
                         class: evalClass,
@@ -433,6 +422,27 @@
                 .error(function (xhr, status, error) {
                     alert('Error occur. Please contact the administrator.');
                 });
+            } else if (method == 'save') {
+                odata = {
+                    class: evalClass,
+                    method: 'saveSubmissionversionHighlight',
+                    highlightid: highlightid,
+                    highlightComment: $('#ele_highlightComment').val(),
+                    tagids: tagids,
+                    categoryid: $('#ele_highlightCategory').val()
+                };
+
+                $.post(url, odata,
+                function (result) {
+                    thisClass.tagHighlightList();
+                    thisClass.getSubmitRubric();
+                    thisClass.getHighlightData();
+                    thisClass.editHighlightDialog(false);
+                })
+                .error(function (xhr, status, error) {
+                    alert('Error occur. Please contact the administrator.');
+                });
+            }
         }
         this.save = function () {
             var tagids = [];
@@ -516,25 +526,28 @@
                     },
                     function (result) {
                         $("#ele_suggestTags option").remove();
+                        option += '<option value="">Suggest Tag</option>';
                         $.each(result, function (ini, val) {
                             option += '<option value="' + val.id + '">' + val.label + '</option>';
                         });
                         $("#ele_suggestTags").append(option);
                         $("#ele_suggestTags").unbind('dblclick');
-                        $("#ele_suggestTags").dblclick(function () {
+                        $("#ele_suggestTags").change(function () {
                             var id = $(this).val();
-                            var name = $("#ele_suggestTags option:selected").text();
-                            $("#ele_suggestTags option[value='" + id + "']").remove();
-                            thisClass.addTagEditElement(name, id);
-                            var tagNewIds = [];
-                            $('input[name*="-a"]').each(function (index) {
-                                var nameInput = $(this).attr('name');
-                                nameInput = nameInput.replace('tag[', '');
-                                nameInput = nameInput.replace('-a]', '');
-                                tagNewIds.push(nameInput);
-                            });
-                            thisClass.tagEditCloseEvent();
-                            thisClass.getSelectSuggest(tagNewIds);
+                            if (id != "") {
+                                var name = $("#ele_suggestTags option:selected").text();
+                                $("#ele_suggestTags option[value='" + id + "']").remove();
+                                thisClass.addTagEditElement(name, id);
+                                var tagNewIds = [];
+                                $('input[name*="-a"]').each(function (index) {
+                                    var nameInput = $(this).attr('name');
+                                    nameInput = nameInput.replace('tag[', '');
+                                    nameInput = nameInput.replace('-a]', '');
+                                    tagNewIds.push(nameInput);
+                                });
+                                thisClass.tagEditCloseEvent();
+                                thisClass.getSelectSuggest(tagNewIds);
+                            }
                         });
                     }).error(function (xhr, status, error) {
                         alert('Error occur. Please contact the administrator.');
@@ -622,22 +635,27 @@
                 thisClass.editHighlightDialog(true);
                 $('.editHighlightSuggest').show();
             });
-            $('#btncloseedithighlight').click(function () {
-                thisClass.showHighlightDialog(false);
-            });
+            //$('#btncloseedithighlight').click(function () {
+            //    thisClass.showHighlightDialog(false);
+            //});
             $('#btnsavehighlight').click(function () {
                 thisClass.save();
                 thisClass.editHighlightDialog(false);
             });
-            $('#btncancelhighlight').click(function () {
-                if (highlightid != '') {
-                    thisClass.getHighlightData();
-                    thisClass.editHighlightDialog(false);
-                }
-                else {
-                    thisClass.showHighlightDialog(false);
-                }
+            //$('#btncancelhighlight').click(function () {
+            //    if (highlightid != '') {
+            //        thisClass.getHighlightData();
+            //        thisClass.editHighlightDialog(false);
+            //    }
+            //    else {
+            //        thisClass.showHighlightDialog(false);
+            //    }
+            //});
+
+            $('#close_tag_list').click(function () {
+                thisClass.showHighlightDialog(false);
             });
+
             $('#btndeletehighlight').click(function () {
                 thisClass.del();
             });
@@ -751,7 +769,7 @@
 			</div>
 			<div class="controls">
 				<a href="{% url 'tsweb:tsubmissionlist' %}" class="btn btn-warning btn-small pull-right" id="exitBtn" style="margin-left: 10px;">Exit</a>
-				<input type="submit" id="saveAssignment" class="btn btn-info btn-small pull-right" value="Save Assignment" style="margin-left: 10px;"/>
+				<input type="submit" id="saveAssignment" class="btn btn-info btn-small pull-right" value="Return Assignment" style="margin-left: 10px;"/>
 				<div class="searchlist pull-right">
 					<div class="form-group">
 						<!--<label for="lstClassid" class="col-sm-4 control-label">Revision Filter:&nbsp;</label>-->
@@ -1419,9 +1437,9 @@ $('.commentDate').text(curr_hour + " : " + curr_min + " " + a_p);
 
 
 
-<div class="tag-list-dropdown" id="divedithighlight" style="width: 300px;">
+<div class="tag-list-dropdown" id="divedithighlight" style="width: 300px;z-index:2;">
 	<button type="button" class="close" id="close_tag_list" aria-hidden="true" style="margin-top: -5px; color: white;">&times;</button>
-	<form class="form" role="form">
+	<!--<form class="form" role="form">-->
 	
 		<div class="form-group">
 			<select class="form-control input-small" id="ele_highlightCategory">
@@ -1432,11 +1450,15 @@ $('.commentDate').text(curr_hour + " : " + curr_min + " " + a_p);
 			</select>
 		</div>
 		
-		<div class="form-group">
-			<input type="text" class="form-control input-small"  id="ele_highlightTag" name="tag[]" placeholder="Tag name">
+		<div id="tdtag" class="form-group">
+			<input type="text" class="tag form-control input-small"  id="ele_highlightTag" name="tag[]" placeholder="Tag name">
 		</div>
+
+        <div id="tdtagdisplay" class="form-group">
+            <label id="ele_highlightTagDisplay"></label>
+        </div>
 		
-		<div class="form-group">
+		<div class="editHighlightSuggest form-group">
 			<select class="form-control input-small" id="ele_suggestTags">
 				<option>Suggested Tags</option>
 			</select>
@@ -1445,12 +1467,16 @@ $('.commentDate').text(curr_hour + " : " + curr_min + " " + a_p);
 		<div class="form-group">
 			<textarea class="form-control input-small" id="ele_highlightComment" placeholder="Comments..." style="height: 80px;"></textarea>
 		</div>
-		<div class="text-center">
+
+        <div id="viewhighlight" class="text-center">
+            <button class="btn btn-info btn-small" role="button" id="btnedithighlight">Edit</button>
+        </div>
+
+		<div id="edithighlight" class="text-center">
 			<button class="btn btn-danger btn-small" role="button" id="btndeletehighlight">Delete</button>
-			<button class="btn btn-info btn-small" role="button" id="btnedithighlight">Edit</button>
 			<button class="btn btn-success btn-small" role="button" id="btnsavehighlight">Save</button>
 		</div>
-	</form>
+	<!--</form>-->
 </div>
 
 <!--<div id="divedithighlight" class="tag-list-dropdown" style="z-index:2;width:500px;position:absolute;margin-top:5%;margin-left:35%;padding:10px; color: white;">
@@ -1561,9 +1587,9 @@ $('.commentDate').text(curr_hour + " : " + curr_min + " " + a_p);
       $('[rel=tooltip]').tooltip();	        
 	        
 
-	    $('#close_tag_list').click(function () {
-	    	$('.tag-list-dropdown').hide('hide');
-	    });
+	    //$('#close_tag_list').click(function () {
+	    //	$('.tag-list-dropdown').hide('hide');
+	    //});
 	</script>
 </body>
 </html>

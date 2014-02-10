@@ -341,21 +341,21 @@ def gettags(request, entityid):
         
         if len(term) == 1:
             data_json = []
-            tagentity = TagEntity.objects.filter(entityid=entityid,tagid__name__istartswith=term, tagid__parentid=0)
+            tagentity = TagEntity.objects.filter(entityid=entityid,tagid__name__istartswith=term, tagid__parentid=0, tagid__deleted = 0)
             for row in tagentity:
                 data_json.append({ "id": str(row.tagid.id), "label": row.tagid.name, "value": row.tagid.name })
         else:
             data_json = []
-            tagentity = TagEntity.objects.filter(entityid=entityid,tagid__name__istartswith=term)
+            tagentity = TagEntity.objects.filter(entityid=entityid,tagid__name__istartswith=term, tagid__deleted = 0)
             for row in tagentity:
                 if { "id": str(row.tagid.id), "label": row.tagid.name, "value": row.tagid.name } not in data_json:
                     data_json.append({ "id": str(row.tagid.id), "label": row.tagid.name, "value": row.tagid.name })
                 if row.tagid.parentid != 0:
-                    tagentitysibling = TagEntity.objects.filter(entityid=entityid,tagid__parentid=row.tagid.parentid)
+                    tagentitysibling = TagEntity.objects.filter(entityid=entityid,tagid__parentid=row.tagid.parentid, tagid__deleted = 0)
                     for rowsibling in tagentitysibling:
                         if { "id": str(rowsibling.tagid.id), "label": rowsibling.tagid.name, "value": rowsibling.tagid.name } not in data_json:
                             data_json.append({ "id": str(rowsibling.tagid.id), "label": rowsibling.tagid.name, "value": rowsibling.tagid.name })
-                tagentitychild = TagEntity.objects.filter(entityid=entityid,tagid__parentid=row.tagid.id)
+                tagentitychild = TagEntity.objects.filter(entityid=entityid,tagid__parentid=row.tagid.id, tagid__deleted = 0)
                 for rowchild in tagentitychild:
                     if { "id": str(rowchild.tagid.id), "label": rowchild.tagid.name, "value": rowchild.tagid.name } not in data_json:
                         data_json.append({ "id": str(rowchild.tagid.id), "label": rowchild.tagid.name, "value": rowchild.tagid.name })

@@ -205,7 +205,7 @@ class SUBMISSIONCREATE():
         except KeyError:
             return HttpResponse('error', mimetype='application/json')
         else:
-            cursor.execute("select t.id,t.name,t.parentid,count(t.id) as number from textcomment as smh join taglink as tl on tl.recid = smh.id and tl.entityid=14 and tl.deleted = 0 and tl.clientid= %s join tag as t on t.id = tl.tagid and t.disabled=0 and t.deleted = 0 and t.clientid= %s where smh.recid = %s and smh.disabled=0 and smh.deleted=0 group by t.id", [clientid,clientid,submissionversionid])
+            cursor.execute("select t.id,t.name,t.parentid,count(t.id) as number from textcomment as smh join taglink as tl on tl.recid = smh.id and tl.entityid=14 and tl.deleted = 0 and tl.clientid= %s join tag as t on t.id = tl.tagid and t.disabled=0 and t.deleted = 0 and t.clientid= %s where smh.recid = %s and smh.disabled=0 and smh.deleted=0 and smh.entityid = 16 group by t.id", [clientid,clientid,submissionversionid])
             taglist = cursor.fetchall() 
             data = simplejson.dumps(taglist)
             return HttpResponse(data, mimetype='application/json')
@@ -241,7 +241,7 @@ class SUBMISSIONCREATE():
             data = simplejson.dumps(data_json)
             return HttpResponse(data, mimetype='application/json')
         else:
-            cursor.execute("select smh.id, smh.comment, t.tagcolor from taglink as tl  join textcomment as smh on smh.id = tl.recid and smh.disabled=0 and smh.deleted=0 join tag as t on tl.tagid = t.id where tl.entityid=14 and tl.deleted=0 and tl.clientid=%s and smh.recid = %s and smh.entityid = 5 and smh.id in (select recid from categorylink where categoryid = %s and entityid = 14)", [clientid,submissionversionid,categoryid])
+            cursor.execute("select smh.id, smh.comment, t.tagcolor from taglink as tl  join textcomment as smh on smh.id = tl.recid and smh.disabled=0 and smh.deleted=0 join tag as t on tl.tagid = t.id where tl.entityid=14 and tl.deleted=0 and tl.clientid=%s and smh.recid = %s and smh.entityid = 16 and smh.id in (select recid from categorylink where categoryid = %s and entityid = 14)", [clientid,submissionversionid,categoryid])
             submissionvshglist = cursor.fetchall()
             data = simplejson.dumps(submissionvshglist)
             return HttpResponse(data, mimetype='application/json')

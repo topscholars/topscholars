@@ -84,47 +84,7 @@
         var evalClass = 'SUBMISSIONREVIEW';
         var url = "{% url 'tsweb:tprocessajax' %}";
         var formValidate = $("#submit_block_form");
-        this.getSelectRubricCriteria = function (id, rubricid) {
-            //var html = '';
-            //$.getJSON(
-            //    url,
-            //    {
-            //        'class': evalClass,
-            //        'method': 'getSelectRubricCriteria',
-            //        'rubricid': rubricid
-            //    },
-            //    function (result) {
-            //        $.each(result, function (ini, val) {
-            //            html += '<option value="' + val.id + '">' + val.scale + '</option>';
-            //        });
-            //        $('#' + id + '.submit_criteria').append(html);
-            //    }).error(function (xhr, status, error) {
-            //        alert('Error occur. Please contact the administrator.');
-            //    });
-        }
-        this.getSubmitRubric = function () {
-            //var html = '';
-            //$.getJSON(
-            //    url,
-            //    {
-            //        'class': evalClass,
-            //        'method': 'getSubmitRubric',
-            //        'submissionid': $("#ele_submissionid").val()
-            //    },
-            //    function (result) {
-            //$(".submitRubricTr").remove();
-            //$.each(result,function(ini, val){
-            //        html += '<tr class="submitRubricTr"><td>'+val.criteria+' :</td><td>';
-            //        html += '<select class="submit_criteria" id="'+val.id+'" name="'+val.criteria+'">';
-            //        html += '</select>';
-            //        html += '</td></tr>';
-            //        thisClass.getSelectRubricCriteria(val.id, val.rubricid); 
-            //});
-            //$(html).insertBefore("#editSubmit");
-            //}).error(function (xhr, status, error) {
-            //    alert('Error occur. Please contact the administrator.');
-            //});
-        }
+        
         this.categoryHighlightList = function (name) {
             var categoryid = 0;
             switch (name) {
@@ -157,7 +117,6 @@
                             $('inline[name="' + spanid + '"]').css({ 'background': '#ffff00' });
                             textComment += "- " + val[1] + "<br/>";
                         });
-                        //$("#commentSection").html(textComment);
                     }).error(function (xhr, status, error) {
                         alert('Error occur. Please contact the administrator.');
                     });
@@ -177,11 +136,9 @@
                         $.each(result, function (i, val) {
                         	
                             var spanid = val[0];
-                            //console.log($('inline[name="' + spanid + '"]'));
                             $('inline[name="' + spanid + '"]').css({ 'background': val[2] });
                             textComment += "- " + val[1] + "<br/>";
                         });
-                        //$("#commentSection").html(textComment);
                     }).error(function (xhr, status, error) {
                         alert('Error occur. Please contact the administrator.');
                     });
@@ -245,7 +202,6 @@
                         $('#ele_submissionversionessay').unbind('mouseup');
                     }
                     thisClass.tagHighlightList();
-                    thisClass.getSubmitRubric();
                 })
                 .error(function (xhr, status, error) {
                     alert('Error occur. Please contact the administrator.');
@@ -411,7 +367,6 @@
                     $.post(url, odata,
                         function (result) {
                             thisClass.tagHighlightList();
-                            thisClass.getSubmitRubric();
                             thisClass.getHighlightData();
                             thisClass.editHighlightDialog(false);
                         })
@@ -435,7 +390,6 @@
                 $.post(url, odata,
                 function (result) {
                     thisClass.tagHighlightList();
-                    thisClass.getSubmitRubric();
                     thisClass.getHighlightData();
                     thisClass.editHighlightDialog(false);
                 })
@@ -484,7 +438,6 @@
                     function (result) {
                         thisClass.showHighlightDialog(false);
                         thisClass.tagHighlightList();
-                        thisClass.getSubmitRubric();
                     })
             .error(function (xhr, status, error) {
                 alert('Error occur. Please contact the administrator.');
@@ -588,7 +541,6 @@
                      };
             $.post(url,odata,
                     function(result){
-                            //thisClass.showSubmitDialog();
                             window.location = "{% url 'tsweb:tsubmissionlist' %}";
                     })
             .error(function(xhr, status, error) {
@@ -621,6 +573,54 @@
 			validator.resetForm();
 			$(".error").removeClass('error');	
 		}
+		this.getCommentlist = function () {
+		    odata = {
+		        'class': 'SUBMISSIONREVIEW',
+		        'method': 'getCommentlist',
+		        'submissionreviewerid': submissionreviewerid
+		    };
+		    $.getJSON(url, odata,
+                    function (result) {
+                        $('#comment-list').html('');
+                        var html = '';
+                        for (var i = 0; i < result.length; i++) {
+                            html += '<li id="' + result[i].id + '">';
+                            if(result[i].entityid == 5) {
+                                html += '<i class="fa fa-file" data-toggle="tooltip" data-trigger="hover" data-placement="left" rel="tooltip" title data-original-title="Document based" data-container="body"></i>&nbsp;&nbsp;';
+                            }
+                            else {
+                                html += '<i class="fa fa-compass" data-toggle="tooltip" data-trigger="hover" data-placement="left" rel="tooltip" title data-original-title="Location based" data-container="body"></i>&nbsp;&nbsp;';
+                            }
+                                        
+                            html += '<i>' + result[i].creator + ' - </i>';
+                            html += result[i].comment + ' <br /> <time class="commentDate">' + result[i].createddt + '</time>';
+                            html += '</li>';
+                        }
+                        $('#comment-list').html(html);
+                    })
+            .error(function (xhr, status, error) {
+                alert('Error occur. Please contact the administrator.');
+            });
+		}
+		this.addComment = function () {
+		    var comment = $('#comment').val();
+		    if (comment != "") {
+		        odata = {
+		            'class': 'SUBMISSIONREVIEW',
+		            'method': 'addComment',
+		            'submissionreviewerid': submissionreviewerid,
+		            'comment': comment
+		        };
+		        $.post(url, odata,
+                        function (result) {
+                            thisClass.getCommentlist();
+                            $('#comment').val('');
+                        })
+                .error(function (xhr, status, error) {
+                    alert('Error occur. Please contact the administrator.');
+                });
+		    }
+		}
         this.initContent = function () {
             submissionreviewerid = '{{ id }}';
             $('#ele_submissionversionessay').redactor({ toolbar: false });
@@ -630,27 +630,15 @@
                 allowEdit: false
             });
             
-            //$(".tagedit-list").css({'background-color': 'white'});
             $('#btnedithighlight').click(function () {
                 thisClass.editHighlightDialog(true);
                 $('.editHighlightSuggest').show();
             });
-            //$('#btncloseedithighlight').click(function () {
-            //    thisClass.showHighlightDialog(false);
-            //});
+            
             $('#btnsavehighlight').click(function () {
                 thisClass.save();
                 thisClass.editHighlightDialog(false);
             });
-            //$('#btncancelhighlight').click(function () {
-            //    if (highlightid != '') {
-            //        thisClass.getHighlightData();
-            //        thisClass.editHighlightDialog(false);
-            //    }
-            //    else {
-            //        thisClass.showHighlightDialog(false);
-            //    }
-            //});
 
             $('#close_tag_list').click(function () {
                 thisClass.showHighlightDialog(false);
@@ -702,6 +690,8 @@
             $('.rubric-process').click(function () {
                 thisClass.categoryHighlightList("process");
             });
+            $('#sent-comment').attr('href', 'javascript:var gen = new EDITTABLE();gen.addComment();');
+
             thisClass.initValidateForm();
             thisClass.essayEvent();
             thisClass.showHighlightDialog(false);
@@ -956,18 +946,21 @@
 								<textarea id="comment"></textarea>
 							</div>
 							<div class="comment-footer">
-								<a href="#" type="submit" name="sent-comment" value="Send" class="pull-right">Send</a>
+								<a id="sent-comment" type="submit" name="sent-comment" value="Send" class="pull-right">Send</a>
 							</div>
 							<hr />
-							<ul class="comment-list">
-								<!--compass is for location based comment-->
-								<li><i class="fa fa-compass" data-toggle="tooltip" data-trigger="hover" data-placement="left" rel="tooltip" title data-original-title="Location based" data-container="body"></i> <i>{# student_name #} - </i> 
-								{# past_comment #} Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam <time class="commentDate"></time>
-								</li>
-								<!--file is for document based comment-->
-								<li><i class="fa fa-file" data-toggle="tooltip" data-trigger="hover" data-placement="left" rel="tooltip" title data-original-title="Document based" data-container="body"></i> <i>{# student_name #} - </i>
-								{# past_comment #} <time class="commentDate"></time>
-								</li>
+							<ul id="comment-list" class="comment-list">
+                                {% for row in textcommentlist %}
+                                    <li id="{{ row.id }}">
+                                        {% if row.entityid.id == 5 %}
+	                                        <i class="fa fa-file" data-toggle="tooltip" data-trigger="hover" data-placement="left" rel="tooltip" title data-original-title="Document based" data-container="body"></i>&nbsp;
+                                        {% else %}
+                                            <i class="fa fa-compass" data-toggle="tooltip" data-trigger="hover" data-placement="left" rel="tooltip" title data-original-title="Location based" data-container="body"></i>&nbsp;
+                                        {% endif %}
+                                        <i>{{ row.getCreatorFirstname }} - </i>
+								        {{ row.comment }} <br /> <time class="commentDate">{{ row.getFormatCreateDT }}</time>
+                                    </li>
+							    {% endfor %}
 							</ul>
 						</form>
 					</div>
@@ -977,41 +970,6 @@
 	</div>
 	<!--End Side Panel-->
 </div>
-<script type="text/javascript">
-<!--
-
-var a_p = "";
-var d = new Date();
-var curr_hour = d.getHours();
-if (curr_hour < 12)
-   {
-   a_p = "AM";
-   }
-else
-   {
-   a_p = "PM";
-   }
-if (curr_hour == 0)
-   {
-   curr_hour = 12;
-   }
-if (curr_hour > 12)
-   {
-   curr_hour = curr_hour - 12;
-   }
-
-var curr_min = d.getMinutes();
-
-curr_min = curr_min + "";
-
-if (curr_min.length == 1)
-   {
-   curr_min = "0" + curr_min;
-   }
-
-$('.commentDate').text(curr_hour + " : " + curr_min + " " + a_p);
-//-->
-</script>
 <!-- end page container -->
 
 <div class="lesson" id="autoLesson" style="display: none;">
@@ -1479,52 +1437,6 @@ $('.commentDate').text(curr_hour + " : " + curr_min + " " + a_p);
 	<!--</form>-->
 </div>
 
-<!--<div id="divedithighlight" class="tag-list-dropdown" style="z-index:2;width:500px;position:absolute;margin-top:5%;margin-left:35%;padding:10px; color: white;">
-        <table style="width:100%;">
-        <tr>
-            <td>Category:</td>
-            <td><select id="ele_highlightCategory">
-                <option value="">Please Select</option>
-                {% for row in categoryentity %}
-                        <option value="{{ row.categoryid.id }}">{{ row.categoryid.name }}</option>
-                {% endfor %}
-                </select>
-            </td>
-        </tr>
-                <tr>
-                        <td>Tag:</td>
-                        <td id="tdtag">
-                                <input id="ele_highlightTag" type="text" name="tag[]" value="" class="tag" style="width:420px;"/>
-                        </td>
-                        <td id="tdtagdisplay">
-                                <label id="ele_highlightTagDisplay"></label>
-                        </td>
-                </tr>
-                <tr class="editHighlightSuggest">
-                        <td>Suggest tags:</td>
-                        <td>
-                                <select id="ele_suggestTags" size="4"></select>
-                        </td>
-                </tr>
-                <tr>
-                        <td style="vertical-align:top;">Comment:</td>
-                        <td><textarea id="ele_highlightComment" style="width:420px;height:100px;resize:none;"></textarea></td>
-                </tr>
-                <tr id="viewhighlight">
-                        <td colspan="2" style="text-align:center;">
-                                <input id="btnedithighlight" type="button" class="btn btn-info btn-small" style="width:80px;" value="Edit">&nbsp;
-                                <input id="btncloseedithighlight" type="button" class="btn btn-warning btn-small" style="width:80px;" value="Close">
-                        </td>
-                </tr>
-                <tr id="edithighlight">
-                        <td colspan="2" style="text-align:center;">
-                                <input id="btnsavehighlight" type="button" class="btn btn-info btn-small" style="width:80px;" value="Save">&nbsp;
-                                <input id="btndeletehighlight" type="button" class="btn btn-danger btn-small" style="width:80px;" value="Delete">&nbsp;
-                                <input id="btncancelhighlight" type="button" class="btn btn-warning btn-small" style="width:80px;" value="Cancel">
-                        </td>
-                </tr>
-        </table>
-</div>-->
 <script>
 
 	    $('#auto_switch').click(function (event) {
@@ -1584,12 +1496,7 @@ $('.commentDate').text(curr_hour + " : " + curr_min + " " + a_p);
   		});
 	       
       $("[rel=popover]").popover();
-      $('[rel=tooltip]').tooltip();	        
-	        
-
-	    //$('#close_tag_list').click(function () {
-	    //	$('.tag-list-dropdown').hide('hide');
-	    //});
+      $('[rel=tooltip]').tooltip();	          
 	</script>
 </body>
 </html>

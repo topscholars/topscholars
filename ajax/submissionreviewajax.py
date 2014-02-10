@@ -8,7 +8,7 @@ from tsweb.models import *
 from django.db.models import Q
 from itertools import chain
 
-from datetime import datetime
+from datetime import datetime, timedelta
 import time
 
 class SUBMISSIONREVIEW():
@@ -265,7 +265,7 @@ class SUBMISSIONREVIEW():
                 newid = Submissionversion.objects.latest("id")
 
                 textcommentlist = Textcomment.objects.filter(entityid=15,recid=submissionreviewerid,deleted=0,disabled=0)
-                entity = Entity.objects.get(id=5)
+                entity = Entity.objects.get(id=16)
                 for row in textcommentlist:
                     newtextcomment = Textcomment()
                     newtextcomment.entityid = entity
@@ -273,6 +273,7 @@ class SUBMISSIONREVIEW():
                     newtextcomment.comment = row.comment
                     newtextcomment.weight = row.weight
                     newtextcomment.createddt = row.createddt
+                    newtextcomment.createdbyentity = row.createdbyentity
                     newtextcomment.createdby = row.createdby
                     newtextcomment.modifieddt = row.modifieddt
                     newtextcomment.modifiedby = row.modifiedby
@@ -321,7 +322,7 @@ class SUBMISSIONREVIEW():
     
 ##            i=0
 ##            for criteria in criteriaid:
-##                entity = Entity.objects.get(id=5)
+##                entity = Entity.objects.get(id=15)
 ##                criteriaid = Rubriccriteria.objects.get(id=criteria)
 ##                scaleid = Rubricscale.objects.get(id=criteriaval[i])
 ##                rubricklink = Rubriclink()
@@ -362,6 +363,7 @@ class SUBMISSIONREVIEW():
             submissionvshg.comment = comment
             submissionvshg.weight = 0
             submissionvshg.createddt = datetime.now()
+            submissionvshg.createdbyentity = 13
             submissionvshg.createdby = userid
             submissionvshg.modifieddt = datetime.now()
             submissionvshg.modifiedby = userid
@@ -584,6 +586,56 @@ class SUBMISSIONREVIEW():
                 for rowchild in tagentitychild:
                     if { "id": str(rowchild.tagid.id), "label": rowchild.tagid.name, "value": rowchild.tagid.name } not in data_json:
                         data_json.append({ "id": str(rowchild.tagid.id), "label": rowchild.tagid.name, "value": rowchild.tagid.name })
+            data = simplejson.dumps(data_json)
+            return HttpResponse(data, mimetype='application/json')
+
+    def getCommentlist(self,request):
+        try:
+            DATE_FORMAT = "%d/%m/%Y %H:%M" 
+            submissionreviewerid = request.GET.get('submissionreviewerid', False)
+        except KeyError:
+            data_json = { 'status': 'error', }
+            data = simplejson.dumps(data_json)
+            return HttpResponse(data, mimetype='application/json')
+        else:
+            data_json = []
+            submissionreviewer = Submissionreviewer.objects.get(id = submissionreviewerid)
+            textcommentlist = Textcomment.objects.filter((Q(entityid=5) & Q(recid=submissionreviewer.submissionversionid.submissionid.id) & Q(deleted=0)) | (Q(entityid=15) & Q(recid=submissionreviewerid) & Q(deleted=0))).order_by('createddt')
+            for row in textcommentlist.reverse():
+                data_json.append({ "id": str(row.id), "entityid": str(row.entityid.id), "comment": row.comment, "createddt": row.getFormatCreateDT(), 'createdbyentity': row.createdbyentity, 'createdby': row.createdby, 'creator': row.getCreatorFirstname() })
+            data = simplejson.dumps(data_json)
+            return HttpResponse(data, mimetype='application/json')
+
+    def addComment(self,request):
+        try:
+            userid = request.session['userid']
+            login = Login.objects.get(id=userid)
+            clientid = login.clientid
+            submissionreviewerid = request.POST.get('submissionreviewerid', False)
+            comment = request.POST.get('comment', False)
+        except KeyError:
+            data_json = { 'status': 'error', }
+            data = simplejson.dumps(data_json)
+            return HttpResponse(data, mimetype='application/json')
+        else:
+            submissionreviewer = Submissionreviewer.objects.get(id = submissionreviewerid)
+            entitylist = Entity.objects.get(id=5)
+            submissionvshg = Textcomment()
+            submissionvshg.entityid = entitylist
+            submissionvshg.recid = submissionreviewer.submissionversionid.submissionid.id
+            submissionvshg.comment = comment
+            submissionvshg.weight = 0
+            submissionvshg.createddt = datetime.now()
+            submissionvshg.createdbyentity = 13
+            submissionvshg.createdby = userid
+            submissionvshg.modifieddt = datetime.now()
+            submissionvshg.modifiedby = userid
+            submissionvshg.disabled = 0
+            submissionvshg.deleted = 0
+            submissionvshg.save()
+            recid = Textcomment.objects.latest('id').id
+            
+            data_json = { 'recid': recid, }
             data = simplejson.dumps(data_json)
             return HttpResponse(data, mimetype='application/json')
 

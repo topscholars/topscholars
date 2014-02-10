@@ -12,6 +12,8 @@ from django.db import models
 from django.db import connection
 from django.contrib.contenttypes import generic
 from django.contrib.contenttypes.models import ContentType
+from datetime import datetime, timedelta
+import time
 
 class Selectiongroup(models.Model):
     id = models.IntegerField(primary_key=True, db_column='ID') # Field name made lowercase.
@@ -889,6 +891,7 @@ class Textcomment(models.Model):
     comment = models.TextField(db_column='Comment', blank=True) # Field name made lowercase.
     weight = models.IntegerField(db_column='Weight') # Field name made lowercase.
     createddt = models.DateTimeField(db_column='CreatedDT') # Field name made lowercase.
+    createdbyentity = models.IntegerField(db_column='CreatedByEntity') # Field name made lowercase.
     createdby = models.IntegerField(db_column='CreatedBy') # Field name made lowercase.
     modifieddt = models.DateTimeField(db_column='ModifiedDT') # Field name made lowercase.
     modifiedby = models.IntegerField(db_column='ModifiedBy') # Field name made lowercase.
@@ -896,3 +899,19 @@ class Textcomment(models.Model):
     deleted = models.IntegerField(db_column='Deleted') # Field name made lowercase.
     class Meta:
         db_table = 'textcomment'
+
+    def getCreatorFirstname(self):
+        entityid=self.createdbyentity
+        recid=self.createdby
+        
+        if entityid == 13:
+            teacher = Userlist.objects.get(id=recid)
+            return teacher.firstname
+        else:
+            student = Studentlist.objects.get(id=recid)
+            return student.firstname
+
+    def getFormatCreateDT(self):
+        DATE_FORMAT = '%d/%m/%Y %H:%M'
+        dt = self.createddt
+        return dt.strftime(DATE_FORMAT)

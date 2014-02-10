@@ -285,6 +285,7 @@ def tsubmissionreview(request, id):
         submission = submissionreviewer.submissionversionid.submissionid
         student_name = submissionreviewer.submissionversionid.submissionid.studentid.getFullName()
         assignment = submissionreviewer.submissionversionid.submissionid.assignmentid
+        textcommentlist = Textcomment.objects.filter((Q(entityid=5) & Q(recid=submission.id) & Q(deleted=0)) | (Q(entityid=15) & Q(recid=id) & Q(deleted=0))).order_by('createddt')
         
         context= {'id' : id,
                   'user_name' : user_name,
@@ -293,7 +294,8 @@ def tsubmissionreview(request, id):
                   'selectionlist': selectionlist,
                   'student_name': student_name,
                   'assignment': assignment,
-                  'due_date': submission.duedate
+                  'due_date': submission.duedate,
+                  'textcommentlist': textcommentlist.reverse()
                   }
         
         return render(request, 'tsweb/teacher/submissionreview.html', context)

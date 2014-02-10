@@ -600,7 +600,7 @@ class SUBMISSIONREVIEW():
         else:
             data_json = []
             submissionreviewer = Submissionreviewer.objects.get(id = submissionreviewerid)
-            textcommentlist = Textcomment.objects.filter((Q(entityid=5) & Q(recid=submissionreviewer.submissionversionid.submissionid.id) & Q(deleted=0)) | (Q(entityid=15) & Q(recid=submissionreviewerid) & Q(deleted=0))).order_by('createddt')
+            textcommentlist = Textcomment.objects.filter((Q(entityid=5) & Q(recid=submissionreviewer.submissionversionid.submissionid.id) & Q(deleted=0)) | (Q(entityid=15) & Q(recid=submissionreviewerid) & Q(deleted=0))).exclude(comment__isnull=True).exclude(comment='').order_by('createddt')
             for row in textcommentlist.reverse():
                 data_json.append({ "id": str(row.id), "entityid": str(row.entityid.id), "comment": row.comment, "createddt": row.getFormatCreateDT(), 'createdbyentity': row.createdbyentity, 'createdby': row.createdby, 'creator': row.getCreatorFirstname() })
             data = simplejson.dumps(data_json)

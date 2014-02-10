@@ -84,6 +84,11 @@
         var evalClass = 'SUBMISSIONREVIEW';
         var url = "{% url 'tsweb:tprocessajax' %}";
         var formValidate = $("#submit_block_form");
+
+        this.getCommentPos = function (id) {
+            $(".essayhighlight").css({ 'background': 'red' });
+            $('inline[name="' + id + '"]').css({ 'background': '#ffff00' });
+        }
         
         this.categoryHighlightList = function (name) {
             var categoryid = 0;
@@ -368,6 +373,7 @@
                         function (result) {
                             thisClass.tagHighlightList();
                             thisClass.getHighlightData();
+                            thisClass.getCommentlist();
                             thisClass.editHighlightDialog(false);
                         })
                     .error(function (xhr, status, error) {
@@ -391,6 +397,7 @@
                 function (result) {
                     thisClass.tagHighlightList();
                     thisClass.getHighlightData();
+                    thisClass.getCommentlist();
                     thisClass.editHighlightDialog(false);
                 })
                 .error(function (xhr, status, error) {
@@ -438,6 +445,7 @@
                     function (result) {
                         thisClass.showHighlightDialog(false);
                         thisClass.tagHighlightList();
+                        thisClass.getCommentlist();
                     })
             .error(function (xhr, status, error) {
                 alert('Error occur. Please contact the administrator.');
@@ -580,15 +588,16 @@
 		        'submissionreviewerid': submissionreviewerid
 		    };
 		    $.getJSON(url, odata,
-                    function (result) {
+                    function (result) {//onclick="getCommentPos('{{ row.id }}');" style="cursor:pointer;
                         $('#comment-list').html('');
                         var html = '';
                         for (var i = 0; i < result.length; i++) {
-                            html += '<li id="' + result[i].id + '">';
-                            if(result[i].entityid == 5) {
+                            if (result[i].entityid == 5) {
+                                html += '<li id="' + result[i].id + '">';
                                 html += '<i class="fa fa-file" data-toggle="tooltip" data-trigger="hover" data-placement="left" rel="tooltip" title data-original-title="Document based" data-container="body"></i>&nbsp;&nbsp;';
                             }
                             else {
+                                html += '<li id="' + result[i].id + '" onclick="getCommentPos(' + result[i].id + ');" style="cursor:pointer;">';
                                 html += '<i class="fa fa-compass" data-toggle="tooltip" data-trigger="hover" data-placement="left" rel="tooltip" title data-original-title="Location based" data-container="body"></i>&nbsp;&nbsp;';
                             }
                                         
@@ -706,6 +715,10 @@
         var gen = new EDITTABLE();
         highlightid = id;
         gen.getHighlightData();
+    }
+    function getCommentPos(id) {
+        var gen = new EDITTABLE();
+        gen.getCommentPos(id);
     }
 </script>
 {% include "tsweb/main/navbar.html" %}
@@ -951,10 +964,12 @@
 							<hr />
 							<ul id="comment-list" class="comment-list">
                                 {% for row in textcommentlist %}
-                                    <li id="{{ row.id }}">
+                                    <li id="{{ row.id }}"
                                         {% if row.entityid.id == 5 %}
+                                        >
 	                                        <i class="fa fa-file" data-toggle="tooltip" data-trigger="hover" data-placement="left" rel="tooltip" title data-original-title="Document based" data-container="body"></i>&nbsp;
                                         {% else %}
+                                        onclick="getCommentPos('{{ row.id }}');" style="cursor:pointer;">
                                             <i class="fa fa-compass" data-toggle="tooltip" data-trigger="hover" data-placement="left" rel="tooltip" title data-original-title="Location based" data-container="body"></i>&nbsp;
                                         {% endif %}
                                         <i>{{ row.getCreatorFirstname }} - </i>

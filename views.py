@@ -285,7 +285,7 @@ def tsubmissionreview(request, id):
         submission = submissionreviewer.submissionversionid.submissionid
         student_name = submissionreviewer.submissionversionid.submissionid.studentid.getFullName()
         assignment = submissionreviewer.submissionversionid.submissionid.assignmentid
-        textcommentlist = Textcomment.objects.filter((Q(entityid=5) & Q(recid=submission.id) & Q(deleted=0)) | (Q(entityid=15) & Q(recid=id) & Q(deleted=0))).order_by('createddt')
+        textcommentlist = Textcomment.objects.filter((Q(entityid=5) & Q(recid=submission.id) & Q(deleted=0)) | (Q(entityid=15) & Q(recid=id) & Q(deleted=0))).exclude(comment__isnull=True).exclude(comment='').order_by('createddt')
         
         context= {'id' : id,
                   'user_name' : user_name,

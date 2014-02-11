@@ -354,7 +354,8 @@ class SUBMISSIONREVIEW():
             maxrevision = submissionrv.submissionversionid.submissionid.assignmentid.revisions
             progress = 0
             if maxrevision != 0:
-                progress = submissionrv.submissionversionid.version / maxrevision * 100
+                dprogress = submissionrv.submissionversionid.version / maxrevision * 100
+                progress = int(dprogress)
             submissionrv.status = 1
 ##            submissionrv.comment = comment
             submissionrv.modifiedby = userid

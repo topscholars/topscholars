@@ -510,7 +510,7 @@ class SUBMISSIONREVIEW():
             
             submissionvs = Submissionversion.objects.get(id=submissionrv.submissionversionid.id)
             submissionvs.teacherstatus = 1
-##            submissionvs.stage = stage
+            submissionvs.stage = 0
 ##            submissionvs.comment = comment
             submissionvs.modifiedby = userid
             submissionvs.modifieddt = datetime.now()
@@ -529,7 +529,7 @@ class SUBMISSIONREVIEW():
                 newversion.essay = submissionrv.essay
                 newversion.studentstatus = 0
                 newversion.teacherstatus = 0
-##                newversion.stage = stage
+                newversion.stage = 0
                 newversion.createddt = datetime.now()
                 newversion.createdby = userid
                 newversion.modifieddt = datetime.now()

@@ -353,7 +353,7 @@ def stsubmissionreview(request, id):
         submission = Submission.objects.get(id=id, disabled=0, deleted=0)
         submissionversion = Submissionversion.objects.get(submissionid=submission.id,version=submission.getLatestVersion, disabled=0, deleted=0)
         submissionversionlist = Submissionversion.objects.filter(submissionid=id, disabled=0, deleted=0)
-        textcommentlist = Textcomment.objects.filter((Q(entityid=5) & Q(recid=submission.id) & Q(deleted=0)) | (Q(entityid=16) & Q(recid=id) & Q(deleted=0))).exclude(comment__isnull=True).exclude(comment='').order_by('createddt')
+        textcommentlist = Textcomment.objects.filter((Q(entityid=5) & Q(recid=submission.id) & Q(deleted=0)) | (Q(entityid=16) & Q(recid=submissionversion.id) & Q(deleted=0))).exclude(comment__isnull=True).exclude(comment='').order_by('createddt')
         
         studentlist = Studentlist.objects.filter(id=studentid)
         submissionlist = Submission.objects.filter(studentid=studentid, disabled=0, deleted=0)

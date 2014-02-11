@@ -588,7 +588,7 @@
 		        'submissionreviewerid': submissionreviewerid
 		    };
 		    $.getJSON(url, odata,
-                    function (result) {//onclick="getCommentPos('{{ row.id }}');" style="cursor:pointer;
+                    function (result) {
                         $('#comment-list').html('');
                         var html = '';
                         for (var i = 0; i < result.length; i++) {

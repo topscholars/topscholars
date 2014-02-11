@@ -50,6 +50,11 @@
         var evalClass = 'SUBMISSIONCREATE';
         var url = "{% url 'tsweb:tprocessajax' %}";
 
+        this.getCommentPos = function (id) {
+            $(".essayhighlight").css({ 'background': 'red' });
+            $('inline[name="' + id + '"]').css({ 'background': '#ffff00' });
+        }
+
         this.categoryHighlightList = function (name) {
             var categoryid = 0;
             switch (name) {
@@ -287,12 +292,44 @@
                     function (result) {
                         thisClass.showHighlightDialog(false);
                         thisClass.tagHighlightList();
+                        thisClass.getCommentlist();
                         //thisClass.getSubmitRubric();
                     })
             .error(function (xhr, status, error) {
                 alert('Error occur. Please contact the administrator.');
             });
             
+        }
+
+        this.getCommentlist = function () {
+            odata = {
+                'class': evalClass,
+                'method': 'getCommentlist',
+                'submissionversionid': submissionversionid
+            };
+            $.getJSON(url, odata,
+                    function (result) {
+                        $('#comment-list').html('');
+                        var html = '';
+                        for (var i = 0; i < result.length; i++) {
+                            if (result[i].entityid == 5) {
+                                html += '<li id="' + result[i].id + '">';
+                                html += '<i class="fa fa-file" data-toggle="tooltip" data-trigger="hover" data-placement="left" rel="tooltip" title data-original-title="Document based" data-container="body"></i>&nbsp;&nbsp;';
+                            }
+                            else {
+                                html += '<li id="' + result[i].id + '" onclick="getCommentPos(' + result[i].id + ');" style="cursor:pointer;">';
+                                html += '<i class="fa fa-compass" data-toggle="tooltip" data-trigger="hover" data-placement="left" rel="tooltip" title data-original-title="Location based" data-container="body"></i>&nbsp;&nbsp;';
+                            }
+
+                            html += '<i>' + result[i].creator + ' - </i>';
+                            html += result[i].comment + ' <br /> <time class="commentDate">' + result[i].createddt + '</time>';
+                            html += '</li>';
+                        }
+                        $('#comment-list').html(html);
+                    })
+            .error(function (xhr, status, error) {
+                alert('Error occur. Please contact the administrator.');
+            });
         }
 
         this.initContent = function () {
@@ -396,7 +433,6 @@
             $('.rubric-process').click(function () {
                 thisClass.categoryHighlightList("process");
             });
-
             thisClass.showHighlightDialog(false);
             thisClass.getData();
         }
@@ -410,6 +446,10 @@
         var gen = new EDITTABLE();
         highlightid = id;
         gen.getHighlightData();
+    }
+    function getCommentPos(id) {
+        var gen = new EDITTABLE();
+        gen.getCommentPos(id);
     }
 </script>
 	
@@ -665,14 +705,21 @@
 		  		<div class="block-body">
 		  			<div id="commentSection">
 	  					<ul class="comment-list">
-	  						<!--compass is for location based comment-->
-	  						<li><i class="fa fa-compass" data-toggle="tooltip" data-trigger="hover" data-placement="left" rel="tooltip" title data-original-title="Location based" data-container="body"></i> <i>{# student_name #} - </i> 
-	  						{# past_comment #} Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam <time class="commentDate"></time>
-	  						</li>
-	  						<!--file is for document based comment-->
-	  						<li><i class="fa fa-file" data-toggle="tooltip" data-trigger="hover" data-placement="left" rel="tooltip" title data-original-title="Document based" data-container="body"></i> <i>{# student_name #} - </i>
-	  						{# past_comment #} <time class="commentDate"></time>
-	  						</li>
+	  						<ul id="comment-list" class="comment-list">
+                                {% for row in textcommentlist %}
+                                    <li id="{{ row.id }}"
+                                        {% if row.entityid.id == 5 %}
+                                        >
+	                                        <i class="fa fa-file" data-toggle="tooltip" data-trigger="hover" data-placement="left" rel="tooltip" title data-original-title="Document based" data-container="body"></i>&nbsp;
+                                        {% else %}
+                                        onclick="getCommentPos('{{ row.id }}');" style="cursor:pointer;">
+                                            <i class="fa fa-compass" data-toggle="tooltip" data-trigger="hover" data-placement="left" rel="tooltip" title data-original-title="Location based" data-container="body"></i>&nbsp;
+                                        {% endif %}
+                                        <i>{{ row.getCreatorFirstname }} - </i>
+								        {{ row.comment }} <br /> <time class="commentDate">{{ row.getFormatCreateDT }}</time>
+                                    </li>
+							    {% endfor %}
+							</ul>
 	  					</ul>
 		  			</div>
 		  		</div>

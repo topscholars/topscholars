@@ -245,3 +245,20 @@ class SUBMISSIONCREATE():
             submissionvshglist = cursor.fetchall()
             data = simplejson.dumps(submissionvshglist)
             return HttpResponse(data, mimetype='application/json')
+
+    def getCommentlist(self,request):
+        try:
+            DATE_FORMAT = "%d/%m/%Y %H:%M" 
+            submissionversionid = request.GET.get('submissionversionid', False)
+        except KeyError:
+            data_json = { 'status': 'error', }
+            data = simplejson.dumps(data_json)
+            return HttpResponse(data, mimetype='application/json')
+        else:
+            data_json = []
+            submissionversion = Submissionversion.objects.get(id = submissionversionid)
+            textcommentlist = Textcomment.objects.filter((Q(entityid=5) & Q(recid=submissionversion.submissionid.id) & Q(deleted=0)) | (Q(entityid=16) & Q(recid=submissionversionid) & Q(deleted=0))).exclude(comment__isnull=True).exclude(comment='').order_by('createddt')
+            for row in textcommentlist.reverse():
+                data_json.append({ "id": str(row.id), "entityid": str(row.entityid.id), "comment": row.comment, "createddt": row.getFormatCreateDT(), 'createdbyentity': row.createdbyentity, 'createdby': row.createdby, 'creator': row.getCreatorFirstname() })
+            data = simplejson.dumps(data_json)
+            return HttpResponse(data, mimetype='application/json')

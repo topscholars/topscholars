@@ -24,10 +24,52 @@ class SUBMISSIONREVIEW():
             return HttpResponse(data, mimetype='application/json')
         else:
             submissionreviewer = Submissionreviewer.objects.get(id = submissionreviewerid)
+
+            entity = Entity.objects.get(id=15)
+            categorylist = Category.objects.get(name='Impact')
+            Impact = 0
+            try:
+                categoryweight = Categoryweight.objects.get(entityid=entity, categoryid=categorylist, recid=submissionreviewerid)
+            except Categoryweight.DoesNotExist:
+                Impact = 0
+            else:
+                Impact = categoryweight.actualweight
+
+            categorylist = Category.objects.get(name='Content')
+            Content = 0
+            try:
+                categoryweight = Categoryweight.objects.get(entityid=entity, categoryid=categorylist, recid=submissionreviewerid)
+            except Categoryweight.DoesNotExist:
+                Content = 0
+            else:
+                Content = categoryweight.actualweight
+
+            categorylist = Category.objects.get(name='Quality')
+            Quality = 0
+            try:
+                categoryweight = Categoryweight.objects.get(entityid=entity, categoryid=categorylist, recid=submissionreviewerid)
+            except Categoryweight.DoesNotExist:
+                Quality = 0
+            else:
+                Quality = categoryweight.actualweight
+
+            categorylist = Category.objects.get(name='Process')
+            Process = 0
+            try:
+                categoryweight = Categoryweight.objects.get(entityid=entity, categoryid=categorylist, recid=submissionreviewerid)
+            except Categoryweight.DoesNotExist:
+                Process = 0
+            else:
+                Process = categoryweight.actualweight
+                
             data_json = ''
             data_json = {
                 'essay' : submissionreviewer.essay,
-                'status' : submissionreviewer.status
+                'status' : submissionreviewer.status,
+                'Impact': Impact,
+                'Content': Content,
+                'Quality': Quality,
+                'Process': Process
                 }
             data = simplejson.dumps(data_json)
             return HttpResponse(data, mimetype='application/json')
@@ -127,15 +169,173 @@ class SUBMISSIONREVIEW():
             data = simplejson.dumps(data_json)
             return HttpResponse(data, mimetype='application/json')
 
+    def stpsave(self,request):
+        try:
+            userid = request.session['userid']
+            login = Login.objects.get(id=userid)
+            clientid = login.clientid
+            submissionrvid = request.POST.get('submissionreviewerid', False)
+            impact = request.POST.get('impact', False)
+            quality = request.POST.get('quality', False)
+            content = request.POST.get('content', False)
+            process = request.POST.get('process', False)
+        except KeyError:
+            data_json = {
+                        'status': 'user not logged in',
+                        }
+            data = simplejson.dumps(data_json)
+            return HttpResponse(data, mimetype='application/json')
+        else:
+            entity = Entity.objects.get(id=15)
+            categorylist = Category.objects.get(name='Impact')
+            try:
+                categoryweight = Categoryweight.objects.get(entityid=entity, categoryid=categorylist, recid=submissionrvid)
+            except Categoryweight.DoesNotExist:
+                categoryweight = Categoryweight()
+                categoryweight.entityid = entity
+                categoryweight.recid = submissionrvid
+                categoryweight.categoryid = categorylist
+                if impact != False and impact != '':
+                    categoryweight.actualweight = impact
+                else:
+                    categoryweight.actualweight = 0
+                categoryweight.createddt = datetime.now()
+                categoryweight.createdby = userid
+                categoryweight.modifieddt = datetime.now()
+                categoryweight.modifiedby = userid
+                categoryweight.deleted = 0
+                categoryweight.clientid = clientid
+                categoryweight.save()
+            else:
+                categoryweight.entityid = entity
+                categoryweight.recid = submissionrvid
+                categoryweight.categoryid = categorylist
+                if impact != False and impact != '':
+                    categoryweight.actualweight = impact
+                else:
+                    categoryweight.actualweight = 0
+                categoryweight.modifieddt = datetime.now()
+                categoryweight.modifiedby = userid
+                categoryweight.deleted = 0
+                categoryweight.clientid = clientid
+                categoryweight.save()
+            
+            
+            categorylist = Category.objects.get(name='Content')
+            try:
+                categoryweight = Categoryweight.objects.get(entityid=entity, categoryid=categorylist, recid=submissionrvid)
+            except Categoryweight.DoesNotExist:
+                categoryweight = Categoryweight()
+                categoryweight.entityid = entity
+                categoryweight.recid = submissionrvid
+                categoryweight.categoryid = categorylist
+                if content != False and content != '':
+                    categoryweight.actualweight = content
+                else:
+                    categoryweight.actualweight = 0
+                categoryweight.createddt = datetime.now()
+                categoryweight.createdby = userid
+                categoryweight.modifieddt = datetime.now()
+                categoryweight.modifiedby = userid
+                categoryweight.deleted = 0
+                categoryweight.clientid = clientid
+                categoryweight.save()
+            else:
+                categoryweight.entityid = entity
+                categoryweight.recid = submissionrvid
+                categoryweight.categoryid = categorylist
+                if content != False and content != '':
+                    categoryweight.actualweight = content
+                else:
+                    categoryweight.actualweight = 0
+                categoryweight.modifieddt = datetime.now()
+                categoryweight.modifiedby = userid
+                categoryweight.deleted = 0
+                categoryweight.clientid = clientid
+                categoryweight.save()
+            
+
+            categorylist = Category.objects.get(name='Quality')
+            try:
+                categoryweight = Categoryweight.objects.get(entityid=entity, categoryid=categorylist, recid=submissionrvid)
+            except Categoryweight.DoesNotExist:
+                categoryweight = Categoryweight()
+                categoryweight.entityid = entity
+                categoryweight.recid = submissionrvid
+                categoryweight.categoryid = categorylist
+                if quality != False and quality != '':
+                    categoryweight.actualweight = quality
+                else:
+                    categoryweight.actualweight = 0
+                categoryweight.createddt = datetime.now()
+                categoryweight.createdby = userid
+                categoryweight.modifieddt = datetime.now()
+                categoryweight.modifiedby = userid
+                categoryweight.deleted = 0
+                categoryweight.clientid = clientid
+                categoryweight.save()
+            else:
+                categoryweight.entityid = entity
+                categoryweight.recid = submissionrvid
+                categoryweight.categoryid = categorylist
+                if quality != False and quality != '':
+                    categoryweight.actualweight = quality
+                else:
+                    categoryweight.actualweight = 0
+                categoryweight.modifieddt = datetime.now()
+                categoryweight.modifiedby = userid
+                categoryweight.deleted = 0
+                categoryweight.clientid = clientid
+                categoryweight.save()
+
+            categorylist = Category.objects.get(name='Process')
+            try:
+                categoryweight = Categoryweight.objects.get(entityid=entity, categoryid=categorylist, recid=submissionrvid)
+            except Categoryweight.DoesNotExist:
+                categoryweight = Categoryweight()
+                categoryweight.entityid = entity
+                categoryweight.recid = submissionrvid
+                categoryweight.categoryid = categorylist
+                if process != False and process != '':
+                    categoryweight.actualweight = process
+                else:
+                    categoryweight.actualweight = 0
+                categoryweight.modifieddt = datetime.now()
+                categoryweight.modifiedby = userid
+                categoryweight.deleted = 0
+                categoryweight.clientid = clientid
+                categoryweight.save()
+            else:
+                categoryweight.entityid = entity
+                categoryweight.recid = submissionrvid
+                categoryweight.categoryid = categorylist
+                if process != False and process != '':
+                    categoryweight.actualweight = process
+                else:
+                    categoryweight.actualweight = 0
+                categoryweight.createddt = datetime.now()
+                categoryweight.createdby = userid
+                categoryweight.modifieddt = datetime.now()
+                categoryweight.modifiedby = userid
+                categoryweight.deleted = 0
+                categoryweight.clientid = clientid
+                categoryweight.save()
+                
+            data_json = {
+                        'status': '1',
+                        }
+            data = simplejson.dumps(data_json)
+            return HttpResponse(data, mimetype='application/json')
+
     def submit(self,request):
         try:
             userid = request.session['userid']
             login = Login.objects.get(id=userid)
             clientid = login.clientid
             submissionreviewerid = request.POST.get('submissionreviewerid', False)
-            stage = request.POST.get('stage', False)
-            progress = request.POST.get('progress', False)
-            comment = request.POST.get('comment', False)
+##            stage = request.POST.get('stage', False)
+##            progress = request.POST.get('progress', False)
+##            comment = request.POST.get('comment', False)
             impact = request.POST.get('impact', False)
             quality = request.POST.get('quality', False)
             content = request.POST.get('content', False)
@@ -151,8 +351,12 @@ class SUBMISSIONREVIEW():
             return HttpResponse(data, mimetype='application/json')
         else:
             submissionrv = Submissionreviewer.objects.get(id=submissionreviewerid)
+            maxrevision = submissionrv.submissionversionid.submissionid.assignmentid.revisions
+            progress = 0
+            if maxrevision != 0:
+                progress = submissionrv.submissionversionid.version / maxrevision * 100
             submissionrv.status = 1
-            submissionrv.comment = comment
+##            submissionrv.comment = comment
             submissionrv.modifiedby = userid
             submissionrv.modifieddt = datetime.now()
             submissionrv.save()
@@ -162,79 +366,151 @@ class SUBMISSIONREVIEW():
             
             entity = Entity.objects.get(id=15)
             categorylist = Category.objects.get(name='Impact')
-            categoryweight = Categoryweight()
-            categoryweight.entityid = entity
-            categoryweight.recid = submissionrvid
-            categoryweight.categoryid = categorylist
-            if impact != False and impact != '':
-                categoryweight.actualweight = impact
+            try:
+                categoryweight = Categoryweight.objects.get(entityid=entity, categoryid=categorylist, recid=submissionrvid)
+            except Categoryweight.DoesNotExist:
+                categoryweight = Categoryweight()
+                categoryweight.entityid = entity
+                categoryweight.recid = submissionrvid
+                categoryweight.categoryid = categorylist
+                if impact != False and impact != '':
+                    categoryweight.actualweight = impact
+                else:
+                    categoryweight.actualweight = 0
+                categoryweight.createddt = datetime.now()
+                categoryweight.createdby = userid
+                categoryweight.modifieddt = datetime.now()
+                categoryweight.modifiedby = userid
+                categoryweight.deleted = 0
+                categoryweight.clientid = clientid
+                categoryweight.save()
             else:
-                categoryweight.actualweight = 0
-            categoryweight.createddt = datetime.now()
-            categoryweight.createdby = userid
-            categoryweight.modifieddt = datetime.now()
-            categoryweight.modifiedby = userid
-            categoryweight.deleted = 0
-            categoryweight.clientid = clientid
-            categoryweight.save()
+                categoryweight.entityid = entity
+                categoryweight.recid = submissionrvid
+                categoryweight.categoryid = categorylist
+                if impact != False and impact != '':
+                    categoryweight.actualweight = impact
+                else:
+                    categoryweight.actualweight = 0
+                categoryweight.createddt = datetime.now()
+                categoryweight.createdby = userid
+                categoryweight.modifieddt = datetime.now()
+                categoryweight.modifiedby = userid
+                categoryweight.deleted = 0
+                categoryweight.clientid = clientid
+                categoryweight.save()
             
             
             categorylist = Category.objects.get(name='Content')
-            categoryweight = Categoryweight()
-            categoryweight.entityid = entity
-            categoryweight.recid = submissionrvid
-            categoryweight.categoryid = categorylist
-            if content != False and content != '':
-                categoryweight.actualweight = content
+            try:
+                categoryweight = Categoryweight.objects.get(entityid=entity, categoryid=categorylist, recid=submissionrvid)
+            except Categoryweight.DoesNotExist:
+                categoryweight = Categoryweight()
+                categoryweight.entityid = entity
+                categoryweight.recid = submissionrvid
+                categoryweight.categoryid = categorylist
+                if content != False and content != '':
+                    categoryweight.actualweight = content
+                else:
+                    categoryweight.actualweight = 0
+                categoryweight.createddt = datetime.now()
+                categoryweight.createdby = userid
+                categoryweight.modifieddt = datetime.now()
+                categoryweight.modifiedby = userid
+                categoryweight.deleted = 0
+                categoryweight.clientid = clientid
+                categoryweight.save()
             else:
-                categoryweight.actualweight = 0
-            categoryweight.createddt = datetime.now()
-            categoryweight.createdby = userid
-            categoryweight.modifieddt = datetime.now()
-            categoryweight.modifiedby = userid
-            categoryweight.deleted = 0
-            categoryweight.clientid = clientid
-            categoryweight.save()
+                categoryweight.entityid = entity
+                categoryweight.recid = submissionrvid
+                categoryweight.categoryid = categorylist
+                if content != False and content != '':
+                    categoryweight.actualweight = content
+                else:
+                    categoryweight.actualweight = 0
+                categoryweight.createddt = datetime.now()
+                categoryweight.createdby = userid
+                categoryweight.modifieddt = datetime.now()
+                categoryweight.modifiedby = userid
+                categoryweight.deleted = 0
+                categoryweight.clientid = clientid
+                categoryweight.save()
             
 
             categorylist = Category.objects.get(name='Quality')
-            categoryweight = Categoryweight()
-            categoryweight.entityid = entity
-            categoryweight.recid = submissionrvid
-            categoryweight.categoryid = categorylist
-            if quality != False and quality != '':
-                categoryweight.actualweight = quality
+            try:
+                categoryweight = Categoryweight.objects.get(entityid=entity, categoryid=categorylist, recid=submissionrvid)
+            except Categoryweight.DoesNotExist:
+                categoryweight = Categoryweight()
+                categoryweight.entityid = entity
+                categoryweight.recid = submissionrvid
+                categoryweight.categoryid = categorylist
+                if quality != False and quality != '':
+                    categoryweight.actualweight = quality
+                else:
+                    categoryweight.actualweight = 0
+                categoryweight.createddt = datetime.now()
+                categoryweight.createdby = userid
+                categoryweight.modifieddt = datetime.now()
+                categoryweight.modifiedby = userid
+                categoryweight.deleted = 0
+                categoryweight.clientid = clientid
+                categoryweight.save()
             else:
-                categoryweight.actualweight = 0
-            categoryweight.createddt = datetime.now()
-            categoryweight.createdby = userid
-            categoryweight.modifieddt = datetime.now()
-            categoryweight.modifiedby = userid
-            categoryweight.deleted = 0
-            categoryweight.clientid = clientid
-            categoryweight.save()
+                categoryweight.entityid = entity
+                categoryweight.recid = submissionrvid
+                categoryweight.categoryid = categorylist
+                if quality != False and quality != '':
+                    categoryweight.actualweight = quality
+                else:
+                    categoryweight.actualweight = 0
+                categoryweight.createddt = datetime.now()
+                categoryweight.createdby = userid
+                categoryweight.modifieddt = datetime.now()
+                categoryweight.modifiedby = userid
+                categoryweight.deleted = 0
+                categoryweight.clientid = clientid
+                categoryweight.save()
             
             categorylist = Category.objects.get(name='Process')
-            categoryweight = Categoryweight()
-            categoryweight.entityid = entity
-            categoryweight.recid = submissionrvid
-            categoryweight.categoryid = categorylist
-            if process != False and process != '':
-                categoryweight.actualweight = process
+            try:
+                categoryweight = Categoryweight.objects.get(entityid=entity, categoryid=categorylist, recid=submissionrvid)
+            except Categoryweight.DoesNotExist:
+                categoryweight = Categoryweight()
+                categoryweight.entityid = entity
+                categoryweight.recid = submissionrvid
+                categoryweight.categoryid = categorylist
+                if process != False and process != '':
+                    categoryweight.actualweight = process
+                else:
+                    categoryweight.actualweight = 0
+                categoryweight.createddt = datetime.now()
+                categoryweight.createdby = userid
+                categoryweight.modifieddt = datetime.now()
+                categoryweight.modifiedby = userid
+                categoryweight.deleted = 0
+                categoryweight.clientid = clientid
+                categoryweight.save()
             else:
-                categoryweight.actualweight = 0
-            categoryweight.createddt = datetime.now()
-            categoryweight.createdby = userid
-            categoryweight.modifieddt = datetime.now()
-            categoryweight.modifiedby = userid
-            categoryweight.deleted = 0
-            categoryweight.clientid = clientid
-            categoryweight.save()
+                categoryweight.entityid = entity
+                categoryweight.recid = submissionrvid
+                categoryweight.categoryid = categorylist
+                if process != False and process != '':
+                    categoryweight.actualweight = process
+                else:
+                    categoryweight.actualweight = 0
+                categoryweight.createddt = datetime.now()
+                categoryweight.createdby = userid
+                categoryweight.modifieddt = datetime.now()
+                categoryweight.modifiedby = userid
+                categoryweight.deleted = 0
+                categoryweight.clientid = clientid
+                categoryweight.save()
             
             submissionvs = Submissionversion.objects.get(id=submissionrv.submissionversionid.id)
             submissionvs.teacherstatus = 1
-            submissionvs.stage = stage
-            submissionvs.comment = comment
+##            submissionvs.stage = stage
+##            submissionvs.comment = comment
             submissionvs.modifiedby = userid
             submissionvs.modifieddt = datetime.now()
             submissionvs.save()
@@ -252,7 +528,7 @@ class SUBMISSIONREVIEW():
                 newversion.essay = submissionrv.essay
                 newversion.studentstatus = 0
                 newversion.teacherstatus = 0
-                newversion.stage = stage
+##                newversion.stage = stage
                 newversion.createddt = datetime.now()
                 newversion.createdby = userid
                 newversion.modifieddt = datetime.now()

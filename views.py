@@ -286,7 +286,44 @@ def tsubmissionreview(request, id):
         student_name = submissionreviewer.submissionversionid.submissionid.studentid.getFullName()
         assignment = submissionreviewer.submissionversionid.submissionid.assignmentid
         textcommentlist = Textcomment.objects.filter((Q(entityid=5) & Q(recid=submission.id) & Q(deleted=0)) | (Q(entityid=15) & Q(recid=id) & Q(deleted=0))).exclude(comment__isnull=True).exclude(comment='').order_by('createddt')
-        
+
+        entity = Entity.objects.get(id=15)
+        categorylist = Category.objects.get(name='Impact')
+        Impact = 0
+        try:
+            categoryweight = Categoryweight.objects.get(entityid=entity, categoryid=categorylist, recid=id)
+        except Categoryweight.DoesNotExist:
+            Impact = 0
+        else:
+            Impact = categoryweight.actualweight
+
+        categorylist = Category.objects.get(name='Content')
+        Content = 0
+        try:
+            categoryweight = Categoryweight.objects.get(entityid=entity, categoryid=categorylist, recid=id)
+        except Categoryweight.DoesNotExist:
+            Content = 0
+        else:
+            Content = categoryweight.actualweight
+
+        categorylist = Category.objects.get(name='Quality')
+        Quality = 0
+        try:
+            categoryweight = Categoryweight.objects.get(entityid=entity, categoryid=categorylist, recid=id)
+        except Categoryweight.DoesNotExist:
+            Quality = 0
+        else:
+            Quality = categoryweight.actualweight
+
+        categorylist = Category.objects.get(name='Process')
+        Process = 0
+        try:
+            categoryweight = Categoryweight.objects.get(entityid=entity, categoryid=categorylist, recid=id)
+        except Categoryweight.DoesNotExist:
+            Process = 0
+        else:
+            Process = categoryweight.actualweight
+    
         context= {'id' : id,
                   'user_name' : user_name,
                   'submissionreviewerlist' : submissionreviewerlist,
@@ -295,7 +332,11 @@ def tsubmissionreview(request, id):
                   'student_name': student_name,
                   'assignment': assignment,
                   'due_date': submission.duedate,
-                  'textcommentlist': textcommentlist.reverse()
+                  'textcommentlist': textcommentlist.reverse(),
+                  'Impact': Impact,
+                  'Content': Content,
+                  'Quality': Quality,
+                  'Process': Process
                   }
         
         return render(request, 'tsweb/teacher/submissionreview.html', context)

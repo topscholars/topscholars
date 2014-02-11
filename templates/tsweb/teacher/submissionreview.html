@@ -198,13 +198,21 @@
                 },
                 function (result) {
                     $('#ele_submissionversionessay').redactor('set', result.essay);
+
+                    $(".impact_criteria").val(result.Impact);
+                    $(".quality_criteria").val(result.Content);
+                    $(".content_criteria").val(result.Quality);
+                    $(".process_criteria").val(result.Process);
+
                     if (result.status == 0) {
                         $('#btnedithighlight').show();
                         $('#saveAssignment').show();
+                        $('#btnStpSave').show();
                     }
                     else {
                         $('#btnedithighlight').hide();
                         $('#saveAssignment').hide();
+                        $('#btnStpSave').hide();
                         $('#ele_submissionversionessay').unbind('mouseup');
                     }
                     thisClass.tagHighlightList();
@@ -530,7 +538,7 @@
             }
         }
         this.submit = function () {
-            thisClass.showSubmitDialog(true);
+            //thisClass.showSubmitDialog(true);
             $(".submit_criteria").each(function(){
                     id = $(this).attr('id');
                     value = $(this).val();
@@ -540,9 +548,9 @@
             odata = {'class' :  'SUBMISSIONREVIEW',
                      'method' : 'submit',
                      'submissionreviewerid': submissionreviewerid,
-                     'stage' : $("#submit_stage").val(),
-                     'comment' : $("#submit_comment").val(),
-                     'progress' : $("#submit_progress").val(),
+                     //'stage' : $("#submit_stage").val(),
+                     //'comment' : $("#submit_comment").val(),
+                     //'progress' : $("#submit_progress").val(),
                      'impact': $(".impact_criteria").val(),
                      'quality': $(".quality_criteria").val(),
                      'content': $(".content_criteria").val(),
@@ -733,8 +741,9 @@
                 thisClass.del();
             });
             $('#saveAssignment').click(function () {
-            	thisClass.resetValidatForm();
-                thisClass.showSubmitDialog(true);
+            	//thisClass.resetValidatForm();
+                //thisClass.showSubmitDialog(true);
+                thisClass.submit();
             });
             $("#btncancelsubmit").click(function () {
                 thisClass.showSubmitDialog();
@@ -778,7 +787,28 @@
             $('#sent-comment').attr('href', 'javascript:var gen = new EDITTABLE();gen.addComment();');
 
             $('#btnStpSave').click(function () {
-                window.location = "{% url 'tsweb:tsubmissionlist' %}";
+                $(".submit_criteria").each(function () {
+                    id = $(this).attr('id');
+                    value = $(this).val();
+                    criteriaid.push(id);
+                    criteriaval.push(value);
+                });
+                odata = {
+                    'class': 'SUBMISSIONREVIEW',
+                    'method': 'stpsave',
+                    'submissionreviewerid': submissionreviewerid,
+                    'impact': $(".impact_criteria").val(),
+                    'quality': $(".quality_criteria").val(),
+                    'content': $(".content_criteria").val(),
+                    'process': $(".process_criteria").val()
+                };
+                $.post(url, odata,
+                        function (result) {
+                            window.location = "{% url 'tsweb:tsubmissionlist' %}";
+                        })
+                .error(function (xhr, status, error) {
+                    alert('Error occur. Please contact the administrator.');
+                });
             });
 
             thisClass.initValidateForm();
@@ -939,7 +969,7 @@
 							<li>{{ criteria.name }}</li>
 							<li>{{ criteria.tag }}</li>
 							<li>{{ criteria.weight }}</li>
-							<li><input type="text" class="form-control input-small impact_criteria" value="" placeholder="Grade 1-10"/></li>
+							<li><input type="text" class="form-control input-small impact_criteria" value="{{ Impact }}" placeholder="Grade 1-10"/></li>
 						</ul>
 						<hr/>
 					</div>
@@ -949,7 +979,7 @@
 							<li>{{ criteria.name }}</li>
 							<li>{{ criteria.tag }}</li>
 							<li>{{ criteria.weight }}</li>
-							<li><input type="text" class="form-control input-small quality_criteria" value="" placeholder="1-100"/></li>
+							<li><input type="text" class="form-control input-small quality_criteria" value="{{ Content }}" placeholder="1-100"/></li>
 						</ul>
 						<hr/>
 					</div>
@@ -959,7 +989,7 @@
 							<li>{{ criteria.name }}</li>
 							<li>{{ criteria.tag }}</li>
 							<li>{{ criteria.weight }}</li>
-							<li><input type="text" class="form-control input-small content_criteria" value="" placeholder="1-100"/></li>
+							<li><input type="text" class="form-control input-small content_criteria" value="{{ Quality }}" placeholder="1-100"/></li>
 						</ul>
 						<hr/>
 					</div>
@@ -969,7 +999,7 @@
 							<li>{{ criteria.name }}</li>
 							<li>{{ criteria.tag }}</li>
 							<li>{{ criteria.weight }}</li>
-							<li><input type="text" class="form-control input-small process_criteria" value="" placeholder="1-100"/></li>
+							<li><input type="text" class="form-control input-small process_criteria" value="{{ Process }}" placeholder="1-100"/></li>
 						</ul>
 						<hr/>
 					</div>

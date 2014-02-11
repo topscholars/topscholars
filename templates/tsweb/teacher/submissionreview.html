@@ -651,8 +651,60 @@
             });
 		}
 		this.getCommentDetails = function () {
-		    //var comment = $('#comment-list').find('#' + doccommentid).find('span').html();
-		    //$('#comment').val(comment);
+		    odata = {
+		        'class': 'SUBMISSIONREVIEW',
+		        'method': 'getCommentlist',
+		        'submissionreviewerid': submissionreviewerid
+		    };
+		    $.getJSON(url, odata,
+                    function (result) {
+                        $('#comment-list').html('');
+                        var html = '';
+                        for (var i = 0; i < result.length; i++) {
+                            if (result[i].entityid == 5) {
+                                html += '<li id="' + result[i].id + '">';
+                                html += '<i class="fa fa-file" data-toggle="tooltip" data-trigger="hover" data-placement="left" rel="tooltip" title data-original-title="Document based" data-container="body"></i>&nbsp;&nbsp;';
+                            }
+                            else {
+                                html += '<li id="' + result[i].id + '" onclick="getCommentPos(' + result[i].id + ');" style="cursor:pointer;">';
+                                html += '<i class="fa fa-compass" data-toggle="tooltip" data-trigger="hover" data-placement="left" rel="tooltip" title data-original-title="Location based" data-container="body"></i>&nbsp;&nbsp;';
+                            }
+
+                            html += '<i>' + result[i].creator + ' - </i>';
+                            html += '<span class="commentvalue">' + result[i].comment + '</span> <br /> <time class="commentDate">' + result[i].createddt + '</time>';
+                            if (result[i].entityid == 5) {
+                                html += '&nbsp;<a type="submit" onclick="editComment(' + result[i].id + ');" style="cursor:pointer;">Edit</a>&nbsp;<a type="submit" onclick="delComment(' + result[i].id + ');" style="cursor:pointer;">Delete</a>';
+                            }
+                            html += '</li>';
+                        }
+                        $('#comment-list').html(html);
+
+                        var comment = $('#comment-list').find('#' + doccommentid).find('span').html();
+                        $('#comment-list').find('#' + doccommentid).find('span').replaceWith($('<textarea>').val(comment));
+                        $('#comment-list').find('#' + doccommentid).find('textarea').keypress(function (event) {
+                            if (event.keyCode == 13) {
+                                comment = $('#comment-list').find('#' + doccommentid).find('textarea').val();
+
+                                odata = {
+                                    'class': 'SUBMISSIONREVIEW',
+                                    'method': 'editComment',
+                                    'textcommentid': doccommentid,
+                                    'comment': comment
+                                };
+                                $.post(url, odata,
+                                        function (result) {
+                                            $('#comment-list').find('#' + doccommentid).find('textarea').replaceWith($('<span>').addClass('commentvalue').html(comment));
+                                            doccommentid = '';
+                                        })
+                                .error(function (xhr, status, error) {
+                                    alert('Error occur. Please contact the administrator.');
+                                });
+                            }
+                        });
+                    })
+            .error(function (xhr, status, error) {
+                alert('Error occur. Please contact the administrator.');
+            });
 		}
         this.initContent = function () {
             submissionreviewerid = '{{ id }}';

@@ -639,6 +639,29 @@ class SUBMISSIONREVIEW():
             data = simplejson.dumps(data_json)
             return HttpResponse(data, mimetype='application/json')
 
+    def delComment(self,request):
+        try:
+            userid = request.session['userid']
+            login = Login.objects.get(id=userid)
+            clientid = login.clientid
+            textcommentid = request.POST.get('textcommentid', False)
+        except KeyError:
+            data_json = { 'status': 'error', }
+            data = simplejson.dumps(data_json)
+            return HttpResponse(data, mimetype='application/json')
+        else:
+            textcomment = Textcomment.objects.get(id=textcommentid)
+            textcomment.deleted = 1
+            textcomment.modifieddt = datetime.now()
+            textcomment.modifiedby = userid
+            textcomment.save()
+
+            data_json = {
+                        'status': 'success',
+                        }
+            data = simplejson.dumps(data_json)
+            return HttpResponse(data, mimetype='application/json')
+            
 ##    def getSubmitRubric(self,request):
 ##        try:
 ##            userid = request.session['userid']

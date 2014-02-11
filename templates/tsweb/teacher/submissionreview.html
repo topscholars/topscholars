@@ -79,6 +79,7 @@
 <script>
     var submissionreviewerid;
     var highlightid;
+    var doccommentid;
     function EDITTABLE() {
         var thisClass = this;
         var evalClass = 'SUBMISSIONREVIEW';
@@ -602,7 +603,10 @@
                             }
                                         
                             html += '<i>' + result[i].creator + ' - </i>';
-                            html += result[i].comment + ' <br /> <time class="commentDate">' + result[i].createddt + '</time>';
+                            html += '<span class="commentvalue">' + result[i].comment + '</span> <br /> <time class="commentDate">' + result[i].createddt + '</time>';
+                            if (result[i].entityid == 5) {
+                                html += '&nbsp;<a type="submit" onclick="editComment(' + result[i].id + ');" style="cursor:pointer;">Edit</a>&nbsp;<a type="submit" onclick="delComment(' + result[i].id + ');" style="cursor:pointer;">Delete</a>';
+                            }
                             html += '</li>';
                         }
                         $('#comment-list').html(html);
@@ -624,11 +628,31 @@
                         function (result) {
                             thisClass.getCommentlist();
                             $('#comment').val('');
+
+                            doccommentid = '';
                         })
                 .error(function (xhr, status, error) {
                     alert('Error occur. Please contact the administrator.');
                 });
 		    }
+		}
+		this.delComment = function (id) {
+		    odata = {
+		        'class': 'SUBMISSIONREVIEW',
+		        'method': 'delComment',
+		        'textcommentid': id
+		    };
+		    $.post(url, odata,
+                    function (result) {
+                        thisClass.getCommentlist();
+                    })
+            .error(function (xhr, status, error) {
+                alert('Error occur. Please contact the administrator.');
+            });
+		}
+		this.getCommentDetails = function () {
+		    //var comment = $('#comment-list').find('#' + doccommentid).find('span').html();
+		    //$('#comment').val(comment);
 		}
         this.initContent = function () {
             submissionreviewerid = '{{ id }}';
@@ -723,6 +747,15 @@
     function getCommentPos(id) {
         var gen = new EDITTABLE();
         gen.getCommentPos(id);
+    }
+    function delComment(id) {
+        var gen = new EDITTABLE();
+        gen.delComment(id);
+    }
+    function editComment(id) {
+        var gen = new EDITTABLE();
+        doccommentid = id;
+        gen.getCommentDetails();
     }
 </script>
 {% include "tsweb/main/navbar.html" %}
@@ -978,7 +1011,10 @@
                                             <i class="fa fa-compass" data-toggle="tooltip" data-trigger="hover" data-placement="left" rel="tooltip" title data-original-title="Location based" data-container="body"></i>&nbsp;
                                         {% endif %}
                                         <i>{{ row.getCreatorFirstname }} - </i>
-								        {{ row.comment }} <br /> <time class="commentDate">{{ row.getFormatCreateDT }}</time>
+								        <span class="commentvalue">{{ row.comment }}</span> <br /> <time class="commentDate">{{ row.getFormatCreateDT }}</time>
+                                        {% if row.entityid.id == 5 %}
+                                           <a type="submit" onclick="editComment('{{ row.id }}');" style="cursor:pointer;">Edit</a>&nbsp;<a type="submit" onclick="delComment('{{ row.id }}');" style="cursor:pointer;">Delete</a>
+                                        {% endif %}
                                     </li>
 							    {% endfor %}
 							</ul>

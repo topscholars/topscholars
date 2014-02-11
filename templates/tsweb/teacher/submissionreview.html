@@ -701,6 +701,10 @@
             });
             $('#sent-comment').attr('href', 'javascript:var gen = new EDITTABLE();gen.addComment();');
 
+            $('#btnStpSave').click(function () {
+                window.location = "{% url 'tsweb:tsubmissionlist' %}";
+            });
+
             thisClass.initValidateForm();
             thisClass.essayEvent();
             thisClass.showHighlightDialog(false);
@@ -773,6 +777,7 @@
 			<div class="controls">
 				<a href="{% url 'tsweb:tsubmissionlist' %}" class="btn btn-warning btn-small pull-right" id="exitBtn" style="margin-left: 10px;">Exit</a>
 				<input type="submit" id="saveAssignment" class="btn btn-info btn-small pull-right" value="Return Assignment" style="margin-left: 10px;"/>
+                <input type="button" class="button btn btn-default btn-small editor-btn" value="Save" id="btnStpSave">
 				<div class="searchlist pull-right">
 					<div class="form-group">
 						<!--<label for="lstClassid" class="col-sm-4 control-label">Revision Filter:&nbsp;</label>-->

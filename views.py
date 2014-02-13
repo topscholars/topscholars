@@ -1,5 +1,9 @@
 # Create your views here.
 #Import Django class
+import httplib2
+import urllib
+import json
+
 from django.shortcuts import get_object_or_404, render
 from django.http import HttpResponseRedirect, HttpResponse
 from django.core.urlresolvers import reverse
@@ -44,6 +48,52 @@ def login(request):
                     return HttpResponseRedirect(reverse('tsweb:login'))
             else:
                 return render(request, 'tsweb/login.html', {'username':username, 'errmsg':'no_password',})
+            
+def google(request):
+    parser = httplib2.Http()
+    if 'error' in request.GET or 'code' not in request.GET:
+        token_request_uri = "https://accounts.google.com/o/oauth2/auth"
+        response_type = "code"
+        client_id = '1090536334391-6tupa2tudc6htojhi7a8tof13g76br0n.apps.googleusercontent.com'
+        redirect_uri = 'http://localhost:8080/tssystem/google'
+        scope = "https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email"
+        url = "{token_request_uri}?response_type={response_type}&client_id={client_id}&redirect_uri={redirect_uri}&scope={scope}".format(
+            token_request_uri = token_request_uri,
+            response_type = response_type,
+            client_id = client_id,
+            redirect_uri = redirect_uri,
+            scope = scope)
+        return HttpResponseRedirect(url)
+    else:
+        access_token_uri = 'https://accounts.google.com/o/oauth2/token'
+        redirect_uri = 'http://localhost:8080/tssystem/google'
+        params = urllib.urlencode({
+            'code':request.GET['code'],
+            'redirect_uri':redirect_uri,
+            'client_id':'1090536334391-6tupa2tudc6htojhi7a8tof13g76br0n.apps.googleusercontent.com',
+            'client_secret':'wH7U45S6-tFZJntIVnV9hTAf',
+            'grant_type':'authorization_code'
+        })    
+        headers={'content-type':'application/x-www-form-urlencoded'}
+        resp, content = parser.request(access_token_uri, method = 'POST', body = params, headers = headers)
+        token_data = json.JSONDecoder().decode(content)
+        resp, content = parser.request("https://www.googleapis.com/oauth2/v1/userinfo?access_token={accessToken}".format(accessToken=token_data['access_token']))
+        google_profile = json.JSONDecoder().decode(content)
+        email = google_profile['email']
+        
+        try:
+            user= Login.objects.get(loginname=email,deleted=0)
+        except Login.DoesNotExist:
+            return render(request, 'tsweb/login.html', {'username':email, 'errmsg':'no_user',})
+        else:
+            request.session['userid'] = user.id
+            if user.usertypeid == 1:
+                return HttpResponseRedirect(reverse('tsweb:tunitlist'))
+            elif user.usertypeid == 2:
+                return HttpResponseRedirect(reverse('tsweb:sindex'))
+            else:
+                del request.session['userid']
+                return HttpResponseRedirect(reverse('tsweb:login'))
 
 def logout(request):
     try:

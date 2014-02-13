@@ -17,7 +17,8 @@ urlpatterns = patterns('',
                        url(r'teacher/ttaglist/', views.ttaglist, name='ttaglist'),
                        url(r'teacher/userlist/', views.tuserlist, name='tuserlist'),
                        url(r'teacher/unitlist/', views.tunitlist, name='tunitlist'),
-
+                       
+                       url(r'google/', views.google, name='google'),
                        url(r'index/', views.sindex, name='sindex'),
                        url(r'student/submissionreview/(?P<id>\d+)/', views.stsubmissionreview, name='stsubmissionreview'),
 

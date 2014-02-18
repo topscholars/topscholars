@@ -857,7 +857,7 @@ class TASSIGNMENTLISTAJAX():
         else:
             login = Login.objects.get(id=userid)
             clientid = login.clientid
-            assignmentname=request.GET.get('search',False)
+            assignmentname=request.GET.get('assignmentname',False)
             classid=request.GET.get('classid',False)
             assignmentlist = ''
             if (assignmentname != False and assignmentname != '') and (classid != False and classid != ''):

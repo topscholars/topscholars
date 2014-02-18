@@ -546,7 +546,8 @@ class TCLASSLISTAJAX():
             if description == False or description == '':
                 classlist = Classschedule.objects.filter(clientid=clientid,deleted=0)
             else:
-                classlist = Classschedule.objects.filter(clientid=clientid,classid__description__contains=description,deleted=0)
+                classlist = Classschedule.objects.filter(clientid=clientid,code__contains=description,deleted=0)
+                #classlist = Classschedule.objects.filter(clientid=clientid,classid__description__contains=description,deleted=0)
             context = {'classlist': classlist}
             return render(request, 'tsweb/teacher/classlistajax.html', context)
             

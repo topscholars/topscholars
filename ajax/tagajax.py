@@ -182,7 +182,7 @@ class TTAGLISTAJAX():
             if description == False or description == '':
                 taglist = Tag.objects.filter(clientid=clientid, disabled=0, deleted=0)
             else:
-                taglist = Tag.objects.filter(clientid=clientid,firstname__contains=description, disabled=0, deleted=0)
+                taglist = Tag.objects.filter(clientid=clientid,name__contains=description, disabled=0, deleted=0)
             context = {'taglist': taglist}
             return render(request, 'tsweb/teacher/taglistajax.html', context)
             

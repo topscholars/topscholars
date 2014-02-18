@@ -175,6 +175,13 @@ function EDITTABLE(){
 			thisClass.Search(this,event);
 		});
 		
+		$('#btnSearch').click(function(){
+	        var term = $('#txtSearch').val();
+	        if (term == 'Search') term = '';
+			thisClass.getData(term);
+		});
+		
+		
 		$("#btnSave").click(function(){
         	thisClass.initValidateFormEvent();
             if(thisClass.submitForm){

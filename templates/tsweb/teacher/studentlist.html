@@ -331,6 +331,12 @@
 				thisClass.Search(this,event);
 			});
 			
+			$('#btnSearch').click(function(){
+		        var term = $('#txtSearch').val();
+	        	if (term == 'Search') term = '';
+				thisClass.getData(term);
+			});
+			
 			$( "#search-form" ).submit(function() {
 				return false;
 			});

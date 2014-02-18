@@ -73,14 +73,14 @@
 			});
 
 			element.parent().parent().find(".highlighter").html(str);
-			//add space condition
-			for (key in options.autocompleteURL) {
-				if(options.autocompleteURL[key].value.search(" ") >-1){
-	    			findAndReplace(options.autocompleteURL[key].value, function(text){
-						return '<span class="hashtag">' + text + '</span>';
-					});
-				}
-		    }
+			////add space condition
+			//for (key in options.autocompleteURL) {
+			//	if(options.autocompleteURL[key].value.search(" ") >-1){
+	    	//		findAndReplace(options.autocompleteURL[key].value, function(text){
+			//			return '<span class="hashtag">' + text + '</span>';
+			//		});
+			//	}
+		    //}
 		    
 		}
 

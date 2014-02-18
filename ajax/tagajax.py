@@ -22,7 +22,7 @@ class TAGLIST():
             return HttpResponse('error', mimetype='application/json')
         else:
             #classlist = Classschedule.objects.filter(id=id)
-            cursor.execute("SELECT tag.id, tag.name, tag.description, tag.parentid, cl.categoryid FROM tag as tag left join categorylink as cl on tag.id = cl.recid and cl.entityid = '12' WHERE tag.id = %s", [id])
+            cursor.execute("SELECT tag.id, tag.name, tag.description, tag.parentid, cl.categoryid, tag.tagcolor FROM tag as tag left join categorylink as cl on tag.id = cl.recid and cl.entityid = '12' WHERE tag.id = %s", [id])
             results = cursor.fetchall()
             for r in results:
                     
@@ -32,6 +32,7 @@ class TAGLIST():
                         'descriptions': r[2],
                         'parentid': r[3],
                         'categoryid': r[4],
+                        'tagcolor': r[5]
                         }
             data = simplejson.dumps(data_json)
         return HttpResponse(data, mimetype='application/json')
@@ -51,6 +52,20 @@ class TAGLIST():
                 taglist = list(Tag.objects.filter(~Q(id=id),Q(disabled=0,deleted=0,clientid=clientid)).values('id','name'))
             data = simplejson.dumps(taglist)
         return HttpResponse(data, mimetype='application/json')
+            
+    def getEntitySelect(self,request):
+        try:
+            userid = request.session['userid']
+            login = Login.objects.get(id=userid)
+            clientid = login.clientid
+            id = request.GET.get('id', False)
+        except KeyError:
+            return HttpResponse('error', mimetype='application/json')
+        else:
+            tagenityselect = list(TagEntity.objects.filter(tagid=id,disabled=0,deleted=0).values('entityid'))
+            data = simplejson.dumps(tagenityselect)
+            return HttpResponse(data, mimetype='application/json')
+
     
     def save(self,request):
         DATE_FORMAT = "%d-%m-%Y" 
@@ -64,6 +79,8 @@ class TAGLIST():
             descriptions = request.POST.get('descriptions', False)
             categoryid = request.POST.get('categoryid', False)
             parentid = request.POST.get('parentid', False)
+            tagcolor = request.POST.get('tagcolor', False)
+            entityid = request.POST.get('entityid', False)
             
         except KeyError:
             data_json = { 'status': 'error', }
@@ -80,7 +97,10 @@ class TAGLIST():
                 else:
                     taglist.parentid = parentid
                 taglist.description = descriptions
-                taglist.tagcolor = '#ffff00'
+                if tagcolor ==  False or tagcolor == '':
+                    taglist.tagcolor = '#ffff00'
+                else:
+                    taglist.tagcolor = tagcolor
                 taglist.modifieddt = datetime.now()
                 taglist.modifiedby = userid
                 taglist.clientid = clientid
@@ -93,6 +113,68 @@ class TAGLIST():
                 categorylinklist.modifieddt = datetime.now()
                 categorylinklist.modifiedby = userid
                 categorylinklist.save()
+                
+                taglist = Tag.objects.get(id=id)
+                try:
+                    tagentitylist = TagEntity.objects.filter(tagid=taglist)
+                except TagEntity.DoesNotExist:
+                    data_json = { 'status': 'blank', }
+                except TagEntity.MultipleObjectsReturned:
+                    for tagentitystore in tagentitylist:
+                        tagentitystore.disabled = 1
+                        tagentitystore.save()
+                else:
+                    for tagentitystore in tagentitylist:
+                        tagentitystore.disabled = 1
+                        tagentitystore.save() 
+                        
+                if entityid != False:
+                    entityidcheck = entityid.find(',')
+                    if entityidcheck > -1:
+                        entityids = entityid.split(',')
+                        for entid in entityids:
+                            try: 
+                                tagentity = TagEntity.objects.get(Q(entityid=entid),Q(tagid=taglist))
+                                
+                            except TagEntity.DoesNotExist:
+                                entitylist = Entity.objects.get(id=entid)
+                                tagentity = TagEntity()
+                                tagentity.tagid = taglist
+                                tagentity.entityid = entitylist
+                                tagentity.createddt = datetime.now()
+                                tagentity.createdby = userid
+                                tagentity.modifieddt = datetime.now()
+                                tagentity.modifiedby = userid
+                                tagentity.disabled = 0
+                                tagentity.deleted = 0
+                                tagentity.clientid = clientid
+                                tagentity.save()
+                            else:
+                                tagentity.disabled=0
+                                tagentity.modifieddt = datetime.now()
+                                tagentity.modifiedby = userid
+                                tagentity.save()
+                    else:
+                        try: 
+                            tagentity = TagEntity.objects.get(Q(entityid=entityid),Q(tagid=taglist))
+                        except TagEntity.DoesNotExist:
+                            entitylist = Entity.objects.get(id=entityid)
+                            tagentity = TagEntity()
+                            tagentity.tagid = taglist
+                            tagentity.entityid = entitylist
+                            tagentity.createddt = datetime.now()
+                            tagentity.createdby = userid
+                            tagentity.modifieddt = datetime.now()
+                            tagentity.modifiedby = userid
+                            tagentity.disabled = 0
+                            tagentity.deleted = 0
+                            tagentity.clientid = clientid
+                            tagentity.save()
+                        else:
+                            tagentity.disabled=0
+                            tagentity.modifieddt = datetime.now()
+                            tagentity.modifiedby = userid
+                            tagentity.save()
                     
                 data_json = { 'status': 'success', }
             else:
@@ -112,6 +194,8 @@ class TAGLIST():
             descriptions = request.POST.get('descriptions', False)
             categoryid = request.POST.get('categoryid', False)
             parentid = request.POST.get('parentid', False)
+            tagcolor = request.POST.get('tagcolor', False)
+            entityid = request.POST.get('entityid', False)
             
         except KeyError:
             data_json = { 'status': 'error', }
@@ -134,7 +218,10 @@ class TAGLIST():
                 else:
                     taglist.system = 0
                 taglist.description = descriptions
-                taglist.tagcolor = '#ffff00'
+                if tagcolor ==  False or tagcolor == '':
+                    taglist.tagcolor = '#ffff00'
+                else:
+                    taglist.tagcolor = tagcolor
                 taglist.createddt = datetime.now()
                 taglist.createdby = userid
                 taglist.modifieddt = datetime.now()
@@ -161,6 +248,68 @@ class TAGLIST():
                 categorylinklist.deleted = 0
                 categorylinklist.clientid = clientid
                 categorylinklist.save()
+                
+                taglist = Tag.objects.get(id=recid)
+                try:
+                    tagentitylist = TagEntity.objects.filter(tagid=taglist)
+                except TagEntity.DoesNotExist:
+                    data_json = { 'status': 'blank', }
+                except TagEntity.MultipleObjectsReturned:
+                    for tagentitystore in tagentitylist:
+                        tagentitystore.disabled = 1
+                        tagentitystore.save()
+                else:
+                    for tagentitystore in tagentitylist:
+                        tagentitystore.disabled = 1
+                        tagentitystore.save() 
+                        
+                if entityid != False:
+                    entityidcheck = entityid.find(',')
+                    if entityidcheck > -1:
+                        entityids = entityid.split(',')
+                        for entid in entityids:
+                            try: 
+                                tagentity = TagEntity.objects.get(Q(entityid=entid),Q(tagid=taglist))
+                                
+                            except TagEntity.DoesNotExist:
+                                entitylist = Entity.objects.get(id=entid)
+                                tagentity = TagEntity()
+                                tagentity.tagid = taglist
+                                tagentity.entityid = entitylist
+                                tagentity.createddt = datetime.now()
+                                tagentity.createdby = userid
+                                tagentity.modifieddt = datetime.now()
+                                tagentity.modifiedby = userid
+                                tagentity.disabled = 0
+                                tagentity.deleted = 0
+                                tagentity.clientid = clientid
+                                tagentity.save()
+                            else:
+                                tagentity.disabled=0
+                                tagentity.modifieddt = datetime.now()
+                                tagentity.modifiedby = userid
+                                tagentity.save()
+                    else:
+                        try: 
+                            tagentity = TagEntity.objects.get(Q(entityid=entityid),Q(tagid=taglist))
+                        except TagEntity.DoesNotExist:
+                            entitylist = Entity.objects.get(id=entityid)
+                            tagentity = TagEntity()
+                            tagentity.tagid = taglist
+                            tagentity.entityid = entitylist
+                            tagentity.createddt = datetime.now()
+                            tagentity.createdby = userid
+                            tagentity.modifieddt = datetime.now()
+                            tagentity.modifiedby = userid
+                            tagentity.disabled = 0
+                            tagentity.deleted = 0
+                            tagentity.clientid = clientid
+                            tagentity.save()
+                        else:
+                            tagentity.disabled=0
+                            tagentity.modifieddt = datetime.now()
+                            tagentity.modifiedby = userid
+                            tagentity.save()
                 
                 data_json = { 'status': 'success', }
             else:

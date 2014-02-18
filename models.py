@@ -638,7 +638,7 @@ class TagEntity(models.Model):
     deleted = models.IntegerField(db_column='Deleted') # Field name made lowercase.
     clientid = models.IntegerField(db_column='ClientId') # Field name made lowercase.
     class Meta:
-        db_table = 'TagEntity'
+        db_table = 'tagentity'
 
 class Categoryentity(models.Model):
     id = models.IntegerField(primary_key=True, db_column='ID') # Field name made lowercase.

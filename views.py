@@ -226,11 +226,12 @@ def ttaglist(request):
         entityid = entity.id
         categoryentity = Categoryentity.objects.filter(entityid=entityid).values_list('categoryid')
         categorylist = Category.objects.filter(id__in=categoryentity)
-        
+        entitylist = Entity.objects.filter(mainentity=1).order_by('name')
         context= {'user_name' : user_name,
                   'securityprofile' : securityprofile,
                   'categorylist': categorylist,
-                  'urlActive': urlActive,}
+                  'urlActive': urlActive,
+                  'entitylist': entitylist}
         return render(request, 'tsweb/teacher/taglist.html', context)
     
 def tuserlist(request):

@@ -8,6 +8,7 @@
 	<link rel="stylesheet" href="{% static 'tsweb/css/bootstrap.css' %}" type="text/css" />
 	<link rel="stylesheet" href="{% static 'tsweb/css/bootstrap-glyphicons.css' %}" type="text/css" />
 	<link rel="stylesheet" href="{% static 'tsweb/css/topscholars.css' %}" type="text/css" />
+	<link rel="stylesheet" href="{% static 'tsweb/css/colorpicker.css' %}" type="text/css" />
 	<link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
 	
 	<script src="{% static 'tsweb/js/jQuery1-10-1.js' %}" type="text/javascript"></script>
@@ -20,6 +21,7 @@
 	<script src="{% static 'tsweb/js/jquery.datepick.js' %}"></script>
 	<script src="{% static 'tsweb/js/util.js' %}"></script>
 	<script src="{% static 'tsweb/js/jquery.validate.js' %}"></script>
+	<script src="{% static 'tsweb/js/colorpicker.js' %}"></script>
 	
 <script>
 EDITTABLE.prototype = new GridBase();
@@ -63,7 +65,7 @@ function EDITTABLE(){
 				$('.modal .form-control, .modal input[type="checkbox"]').attr('disabled', 'disabled');
 				$('#btnSave').attr('disabled', 'disabled');
 				thisClass.getParentTag(parentid);
-				
+				thisClass.getEntitySelect();
 				thisClass.showEditTable();
 		})
 		.error(function(xhr, status, error) {
@@ -91,6 +93,27 @@ function EDITTABLE(){
     		alert('Error occur. Please contact the administrator.');
     	});
     	
+	}
+	
+	this.getEntitySelect = function(){
+		var tagid = $("#ele_id").val();
+		var aSelect = [];
+		var html ='';
+		$.getJSON(
+			url,
+			{	class: evalClass,
+				method: 'getEntitySelect',
+				id: tagid },
+			function(result){
+				$.each(result, function(ini,val){
+					aSelect.push(val.entityid);
+				});
+				$("#ele_entityid").val(aSelect);
+
+		})
+		.error(function(xhr, status, error) {
+    		alert('Error occur. Please contact the administrator.');
+    	});
 	}
 	
 	this.getData = function(description) {
@@ -207,7 +230,20 @@ function EDITTABLE(){
 		  	$('#btnSave').removeAttr('disabled', 'disabled');
 			thisClass.resetValidatForm();
 			thisClass.getParentTag();
-		});		
+		});	
+		
+		$('#ele_tagcolor').ColorPicker({
+			onSubmit: function(hsb, hex, rgb, el) {
+				$(el).val("#"+hex);
+				$(el).ColorPickerHide();
+			},
+			onBeforeShow: function () {
+				$(this).ColorPickerSetColor(this.value);
+			},
+			onChange: function (hsb, hex, rgb) {
+				$('#ele_tagcolor').val("#"+hex);
+			}
+		});	
 		
 		thisClass.initValidateForm();
 		
@@ -313,6 +349,13 @@ $(function() {
         		</div>
         		
         		<div class="form-group">
+        			<label for="parent_tags" class="col-sm-4 control-label">Tag Color</label>
+        			<div class="col-sm-8">
+        				<input type="text" id="ele_tagcolor" class="form-control input-small" name="tagcolor" />
+        			</div>
+        		</div>
+        		
+        		<div class="form-group">
         			<label for="tag_category" class="col-sm-4 control-label">Category</label>
         			<div class="col-sm-8">
         				<select id="ele_categoryid" name="categoryid" class="form-control input-small">
@@ -329,6 +372,17 @@ $(function() {
         				<select id="ele_parentid" name="parentid" class="form-control input-small"></select>
         			</div>
         		</div>
+        		
+	        	<div class="form-group">
+	        		<label for="entityid" class="col-sm-4 control-label">Entity <div class="text-muted" style="font-size: .8em;">Hold Command or Ctrl to select multiple entity</div></label>
+	        		<div class="col-sm-8">
+	        			<select id="ele_entityid" name="entityid" class="form-control input-medium" multiple="multiple">
+	        				{% for row in entitylist %}
+	        				<option value="{{ row.id }}">{{ row.name }}</option>
+	        				{% endfor %}
+	        			</select>
+	        		</div>
+	        	</div>
         		
         	</form>
         </div><!-- /.modal-body -->

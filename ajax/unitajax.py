@@ -26,7 +26,7 @@ class UNITLIST():
             results = cursor.fetchall()
             for r in results:
                 data_json = {
-                        'id': r[0],
+                        'unitid': r[0],
                         'name': r[1],
                         'description': r[2],
                         'essentialquestion': r[3],
@@ -72,7 +72,7 @@ class UNITLIST():
                 unit.modifiedby = userid
                 unit.clientid = clientid
                 unit.save()
-                data_json = { 'status': 'success', }
+                data_json = { 'status': 'success', 'id': id }
             else:
                 data_json = { 'status': 'error', }
             data = simplejson.dumps(data_json)
@@ -116,7 +116,8 @@ class UNITLIST():
                 unit.createdby = userid
                 unit.clientid = clientid
                 unit.save()
-                data_json = { 'status': 'success', }
+                unitid = Unit.objects.latest("id").id
+                data_json = { 'status': 'success', 'id': unitid }
             else:
                 data_json = { 'status': 'error', }
             data = simplejson.dumps(data_json)

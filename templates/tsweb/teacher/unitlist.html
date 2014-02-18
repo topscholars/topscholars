@@ -104,8 +104,9 @@ function EDITTABLE(){
 
 	this.getUnitlist = function (description) {
 	    $("#list").html("<div style='width:100%;position=relative;text-align:center;'><img src='{% static 'tsweb/image/ajax-loader.gif' %}' alt='' style='margin:auto;width=100px;height=100px;position=relative;' /></div>");
-	    $.get("{% url 'tsweb:tprocessajax' %}?class=" + tableClassAjax,
+	    $.get("{% url 'tsweb:tprocessajax' %}",
 		{
+			class: tableClassAjax,
 		    description: description
 		},
 		function (result) {
@@ -192,6 +193,15 @@ function EDITTABLE(){
 	//	$(".error").removeClass('error');	
 	//}
 	
+	this.Search = function(ele,event)
+	{
+		if (event.keyCode == 13) {
+			thisClass.getUnitlist($('#txtSearch').val());
+		}
+		else
+			ele.onKeyPress=event.keyCode;
+	}
+	
 	this.DisplayStage1 = function () {
 	    $('#new_unit_modal .modal-title').text('New Unit - Stage 1 - Desired Results');
 	    $('#stage_one').show();
@@ -229,6 +239,11 @@ function EDITTABLE(){
 	    Watermark('txtSearch', 'Search', 'noclass');
 
 	    thisClass.getUnitlist('');
+	    
+		$('#txtSearch').keypress(function(event) {
+			thisClass.Search(this,event);
+		});
+		
 	    $('#btnSearch').click(function () {
 	        var term = $('#txtSearch').val();
 	        if (term == 'Search') term = '';

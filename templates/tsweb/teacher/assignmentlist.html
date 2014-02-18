@@ -224,6 +224,12 @@ function EDITTABLE(){
 			thisClass.Search(this,event);
 		});
 		
+		$('#btnSearch').click(function(){
+	        var term = $('#txtSearch').val();
+	        if (term == 'Search') term = '';
+			thisClass.getData(term);
+		});
+		
 		$('#btnSetup').click(function(){
 			window.location = "{% url 'tsweb:trubriclist' %}";
 		});

@@ -96,8 +96,8 @@ class Assignment(models.Model):
     disabled = models.IntegerField(db_column='Disabled') # Field name made lowercase.
     deleted = models.IntegerField(db_column='Deleted') # Field name made lowercase.
     clientid = models.IntegerField(db_column='ClientId') # Field name made lowercase.
-    audience = models.TextField(db_column='Audience') # Field name made lowercase.
-    contextsituation = models.TextField(db_column='ContextSituation') # Field name made lowercase.
+    audience = models.TextField(db_column='Audience', blank=True) # Field name made lowercase.
+    contextsituation = models.TextField(db_column='ContextSituation', blank=True) # Field name made lowercase.
     duedate = models.DateTimeField(db_column='DueDateTime') # Field name made lowercase.
     revisions = models.IntegerField(db_column='NumRevisions') # Field name made lowercase.
     class Meta:
@@ -690,11 +690,11 @@ class Unit(models.Model):
     name = models.CharField(max_length=100L, db_column='Name') # Field name made lowercase.
     description = models.TextField(db_column='Description', blank=True) # Field name made lowercase.
     abilitylevel = models.ForeignKey(Selectionlist,related_name="Unittoselectionlist", db_column='AbilityLevel') # Field name made lowercase.
-    establishedgoal = models.TextField(db_column='EstablishedGoal') # Field name made lowercase.
-    understanding = models.TextField(db_column='Understanding') # Field name made lowercase.
-    essentialquestion = models.TextField(db_column='EssentialQuestion') # Field name made lowercase.
-    knowledge = models.TextField(db_column='Knowledge') # Field name made lowercase.
-    skill = models.TextField(db_column='Skill') # Field name made lowercase.
+    establishedgoal = models.TextField(db_column='EstablishedGoal', blank=True) # Field name made lowercase.
+    understanding = models.TextField(db_column='Understanding', blank=True) # Field name made lowercase.
+    essentialquestion = models.TextField(db_column='EssentialQuestion', blank=True) # Field name made lowercase.
+    knowledge = models.TextField(db_column='Knowledge', blank=True) # Field name made lowercase.
+    skill = models.TextField(db_column='Skill', blank=True) # Field name made lowercase.
     createddt = models.DateTimeField(db_column='CreatedDT') # Field name made lowercase.
     createdby = models.IntegerField(db_column='CreatedBy') # Field name made lowercase.
     modifieddt = models.DateTimeField(db_column='ModifiedDT') # Field name made lowercase.
@@ -704,6 +704,20 @@ class Unit(models.Model):
     clientid = models.IntegerField(db_column='ClientId') # Field name made lowercase.
     class Meta:
         db_table = 'unit'
+
+class UnitAssignment(models.Model):
+    id = models.IntegerField(primary_key=True, db_column='ID') # Field name made lowercase.
+    unitid = models.ForeignKey(Unit,related_name="Unitassignmenttounit", db_column='UnitID') # Field name made lowercase.
+    assignmentid = models.ForeignKey(Unit,related_name="Unitassignmenttoassignment", db_column='AssignmentID') # Field name made lowercase.
+    createddt = models.DateTimeField(db_column='CreatedDT') # Field name made lowercase.
+    createdby = models.IntegerField(db_column='CreatedBy') # Field name made lowercase.
+    modifieddt = models.DateTimeField(db_column='ModifiedDT') # Field name made lowercase.
+    modifiedby = models.IntegerField(db_column='ModifiedBy') # Field name made lowercase.
+    disabled = models.IntegerField(db_column='Disabled') # Field name made lowercase.
+    deleted = models.IntegerField(db_column='Deleted') # Field name made lowercase.
+    clientid = models.IntegerField(db_column='ClientId') # Field name made lowercase.
+    class Meta:
+        db_table = 'unitassignment'
         
 class Unitclass(models.Model):
     id = models.IntegerField(primary_key=True, db_column='ID') # Field name made lowercase.
@@ -725,6 +739,7 @@ class Lesson(models.Model):
     lessontype = models.IntegerField(db_column='LessonType') # Field name made lowercase.
     abilitylevel = models.ForeignKey(Selectionlist,related_name="Lessontoselectionlist", db_column='AbilityLevel') # Field name made lowercase.
     description = models.TextField(db_column='Description', blank=True) # Field name made lowercase.
+    goaloftask = models.TextField(db_column='GoalofTask', blank=True) # Field name made lowercase.
     deliverable = models.TextField(db_column='Deliverable', blank=True) # Field name made lowercase.
     createddt = models.DateTimeField(db_column='CreatedDT') # Field name made lowercase.
     createdby = models.IntegerField(db_column='CreatedBy') # Field name made lowercase.
@@ -739,6 +754,7 @@ class Lesson(models.Model):
 class Unitlessonlnk(models.Model):
     id = models.IntegerField(primary_key=True, db_column='ID') # Field name made lowercase.
     unitid = models.ForeignKey(Unit,related_name="Unitlessonlnktounit", db_column='UnitID') # Field name made lowercase.
+    assignmentid = models.ForeignKey(Unit,related_name="Unitlessonlnktoassignmentid", db_column='AssignmentID') # Field name made lowercase.
     lessonid = models.ForeignKey(Lesson,related_name="Unitlessonlnktolesson", db_column='LessonID') # Field name made lowercase.
     createddt = models.DateTimeField(db_column='CreatedDT') # Field name made lowercase.
     createdby = models.IntegerField(db_column='CreatedBy') # Field name made lowercase.

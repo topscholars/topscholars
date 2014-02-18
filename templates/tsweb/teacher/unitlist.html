@@ -22,7 +22,7 @@
 	<script src="{% static 'tsweb/js/WaterMark.js' %}"></script>
 	<script src="{% static 'tsweb/js/bootstrap.js' %}" type="text/javascript"></script>
 	<script src="{% static 'tsweb/js/transition.js' %}" type="text/javascript"></script>
-	<script src="{% static 'tsweb/js/tooltip.js' %}"></script>	
+	<!--<script src="{% static 'tsweb/js/tooltip.js' %}"></script>-->	
 	<script src="{% static 'tsweb/js/jquery-ui-1.10.3.custom.min.js' %}"></script>
 	<script src="{% static 'tsweb/js/jquery.cookie.js' %}"></script>
 	<script src="{% static 'tsweb/js/jquery.datepick.js' %}"></script>
@@ -59,11 +59,40 @@ function EDITTABLE(){
 	var url = "{% url 'tsweb:tprocessajax' %}";
 	var evalClass = 'UNITLIST';
 	var tableClassAjax = 'TUNITLISTAJAX';
-	var formValidate = $("#new_unit_form");
+	//var formValidate = $("#new_unit_form");
 	this.availableTags = [];
+
+	this.doTag = function (element) {
+	    var str = element.val();
+
+	    str = str.replace(/\n/g, '<br>');
+	    if (!str.match(/(http|ftp|https):\/\/[\w-]+(\.[\w-]+)+([\w.,@?^=%&amp;:\/~+#-]*[\w@?^=%&amp;\/~+#-])?#([a-zA-Z0-9]+)/g)) {
+	        if (!str.match(/#([a-zA-Z0-9]+)#/g)) {
+	            str = str.replace(/#([a-zA-Z0-9\.]+)/g, '<span class="hashtag">#$1</span>');
+	        } else {
+	            str = str.replace(/#([a-zA-Z0-9\.]+)#([a-zA-Z0-9]+)/g, '<span class="hashtag">#$1</span>');
+	        }
+	    }
+
+	    element.parent().parent().find(".highlighter").html(str);
+	    element.parent().parent().find(".highlighter").find("span").each(function () {
+	        var value = $(this).html();
+	        var match = false;
+	        for (key in thisClass.availableTags) {
+	            if (value == thisClass.availableTags[key].value) {
+	                match = true;
+	                break;
+	            }
+	        }
+
+	        if (!match) {
+	            str = str.replace('<span class="hashtag">' + value + '</span>', value);
+	        }
+	    });
+	}
 	
-	this.editTable = function(id){
-		
+	this.editTable = function (id) {
+	    thisClass.DisplayStage1();
 		$.getJSON(
 			url,
 			{	class: evalClass,
@@ -72,22 +101,24 @@ function EDITTABLE(){
 				$("[id^=ele_]").val('');
 				$.each(result, function(ini,val){
 					thisClass.seperateElement($("#ele_"+ini), val);
-					thisClass.seperateView(ini,val);
+					thisClass.seperateView(ini, val);
+					if ((ini == 'establishedgoal') || (ini == 'essentialquestion') || (ini == 'knowledge') || (ini == 'skill') || (ini == 'understanding')) {
+					    $("#ele_" + ini).parent().parent().find(".highlighter").html(val);
+					    thisClass.doTag($("#ele_" + ini));
+					}
+
+					$('#accordion').find('.in').removeClass('in').addClass('collapse').css('height', '0px');
+					$('#collapseName').removeClass('collapse').addClass('in').css('height', 'auto');
 				});
 			
-			thisClass.resetValidatForm();
-			thisClass.loadAvailableTags();
-			$(".highlighter").remove();
- 
-	        $("#ele_establishedgoal").hashtags({ autocompleteURL:thisClass.availableTags });
-	        
-			$("#ele_essentialquestion").hashtags({ autocompleteURL:thisClass.availableTags });
-			
-			$("#ele_understanding").hashtags({ autocompleteURL:thisClass.availableTags });
-			
-			$("#ele_knowledge").hashtags({ autocompleteURL:thisClass.availableTags });
-			
-			$("#ele_skill").hashtags({ autocompleteURL:thisClass.availableTags });
+			//thisClass.resetValidatForm();
+			//thisClass.loadAvailableTags();
+			//$(".highlighter").remove();
+	        //$("#ele_establishedgoal").hashtags({ autocompleteURL:thisClass.availableTags });
+			//$("#ele_essentialquestion").hashtags({ autocompleteURL:thisClass.availableTags });
+			//$("#ele_understanding").hashtags({ autocompleteURL:thisClass.availableTags });
+			//$("#ele_knowledge").hashtags({ autocompleteURL:thisClass.availableTags });
+			//$("#ele_skill").hashtags({ autocompleteURL:thisClass.availableTags });
 		})
 		.error(function(xhr, status, error) {
     		alert('Error occur. Please contact the administrator.');
@@ -95,58 +126,56 @@ function EDITTABLE(){
 		return false;
 	}
 
-	this.hideEditTable =function(){
-		$("#new_unit_modal").modal('hide');
-		
-		thisClass.getData('');
-	}
-	
-	this.getData = function(assignmentname ,classid) {
-		$("#list").html("<div style='width:100%;position=relative;text-align:center;'><img src='{% static 'tsweb/image/ajax-loader.gif' %}' alt='' style='margin:auto;width=100px;height=100px;position=relative;' /></div>");
-		$.get("{% url 'tsweb:tprocessajax' %}?class="+tableClassAjax,
-		{ assignmentname : assignmentname ,
-  		classid : classid},
-		function(result){
-		      $("#list").html(result);
+	//this.hideEditTable =function(){
+	//	$("#new_unit_modal").modal('hide');
+    //	thisClass.getUnitlist('');
+	//}
+
+	this.getUnitlist = function (description) {
+	    $("#list").html("<div style='width:100%;position=relative;text-align:center;'><img src='{% static 'tsweb/image/ajax-loader.gif' %}' alt='' style='margin:auto;width=100px;height=100px;position=relative;' /></div>");
+	    $.get("{% url 'tsweb:tprocessajax' %}?class=" + tableClassAjax,
+		{
+		    description: description
+		},
+		function (result) {
+		    $("#list").html(result);
 		}
 		);
 	}
 	
-	this.save = function(){
-		var odata;
-		if($("#ele_id").val() == ""){
-			odata = {'class' :  evalClass, 'method' : "add" };
-		}else{
-			odata = {'class' :  evalClass, 'method' : "save" };
-		}
-		odata = thisClass.oData(odata);
+	//this.save = function(){
+	//	var odata;
+	//	if($("#ele_id").val() == ""){
+	//		odata = {'class' :  evalClass, 'method' : "add" };
+	//	}else{
+	//		odata = {'class' :  evalClass, 'method' : "save" };
+	//	}
+	//	odata = thisClass.oData(odata);
 		
-		$.post(url,odata,
-			function(result){
-				if(result.status == 'error'){
-					$('<label class="error exist" for="ele_name">This Name have exist data!!.</label>').insertAfter("#ele_name");
-				}else{
-					thisClass.hideEditTable();
-				}
-			})
-		.error(function(xhr, status, error) {
-    		alert('Error occur. Please contact the administrator.');
-    	});
-	}
+	//	$.post(url,odata,
+	//		function(result){
+	//			if(result.status == 'error'){
+	//				$('<label class="error exist" for="ele_name">This Name have exist data!!.</label>').insertAfter("#ele_name");
+	//			}else{
+	//				thisClass.hideEditTable();
+	//			}
+	//		})
+	//	.error(function(xhr, status, error) {
+    //		alert('Error occur. Please contact the administrator.');
+    //	});
+	//}
 	
-	this.Search = function(ele,event)
-	{
-		if (event.keyCode == 13) {
-			thisClass.getData($('#txtSearch').val(), '');
-		}
-		else
-			ele.onKeyPress=event.keyCode;
-	}
+	//this.Search = function(ele,event)
+	//{
+	//	if (event.keyCode == 13) {
+    //		thisClass.getUnitlist($('#txtSearch').val());
+	//	}
+	//	else
+	//		ele.onKeyPress=event.keyCode;
+	//}
 	
 	this.loadAvailableTags = function(){
-
 		var obj;
-		
 		$.ajax({
 	                type: "POST",
 	                url: url,
@@ -167,83 +196,130 @@ function EDITTABLE(){
                 });
 	}
 	
-    this.initValidateForm = function(){
-		  formValidate.validate({              
-		    rules: {
-		      	name:{
-		      		required: true,
-		      	},
-		    },
-			 invalidHandler: function(event, validator) {
-			// 'this' refers to the form
-				thisClass.submitForm = false;
-			}
-		  });
-    }
+    //this.initValidateForm = function(){
+	//	  formValidate.validate({              
+	//	    rules: {
+	//	      	name:{
+	//	      		required: true,
+	//	      	},
+	//	    },
+	//		 invalidHandler: function(event, validator) {
+	//		// 'this' refers to the form
+	//			thisClass.submitForm = false;
+	//		}
+	//	  });
+    //}
 
-	this.initValidateFormEvent = function(){
-		thisClass.submitForm = true;
-	  	formValidate.validate().form();
-	}
+	//this.initValidateFormEvent = function(){
+	//	thisClass.submitForm = true;
+	//  	formValidate.validate().form();
+	//}
 	
-	this.resetValidatForm = function(){
-		var validator = formValidate.validate();
-		validator.resetForm();
-		$(".error").removeClass('error');	
-	}
+	//this.resetValidatForm = function(){
+	//	var validator = formValidate.validate();
+	//	validator.resetForm();
+	//	$(".error").removeClass('error');	
+	//}
 	
+	this.DisplayStage1 = function () {
+	    $('#new_unit_modal .modal-title').text('New Unit - Stage 1 - Desired Results');
+	    $('#stage_one').show();
+	    $('#stage_two').hide();
+	    $('#stage_three').hide();
+	    $('#stage2Btn').show();
+	    $('#stage3Btn').hide();
+	    $('#goStage1').addClass('hide');
+	    $('#goStage2').addClass('hide');
+	}
 
-	this.iniControl = function(){
-		thisClass.getData('','');
-		Watermark('txtSearch', 'Search', 'noclass');
-		
+	this.DisplayStage2 = function () {
+	    $('#new_unit_modal .modal-title').text('New Unit - Stage 2 - Assessment Evidence');
+	    $('#stage_one').hide();
+	    $('#stage_two').show();
+	    $('#stage_three').hide();
+	    $('#stage2Btn').hide();
+	    $('#stage3Btn').show();
+	    $('#goStage1').removeClass('hide');
+	    $('#goStage2').addClass('hide');
+	}
+
+	this.DisplayStage3 = function () {
+	    $('#new_unit_modal .modal-title').text('New Unit - Stage 3 - Activity Creation');
+	    $('#stage_one').hide();
+	    $('#stage_two').hide();
+	    $('#stage_three').show();
+	    $('#stage2Btn').hide();
+	    $('#stage3Btn').hide();
+	    $('#goStage1').addClass('hide');
+	    $('#goStage2').removeClass('hide');
+	}
+
+	this.iniControl = function () {
+	    Watermark('txtSearch', 'Search', 'noclass');
+
+	    thisClass.getUnitlist('');
+	    $('#btnSearch').click(function () {
+	        var term = $('#txtSearch').val();
+	        if (term == 'Search') term = '';
+	        thisClass.getUnitlist(term);
+	    });
+
 		thisClass.loadAvailableTags();	 
         $("#ele_establishedgoal").hashtags({ autocompleteURL:thisClass.availableTags });
-        
 		$("#ele_essentialquestion").hashtags({ autocompleteURL:thisClass.availableTags });
-		
 		$("#ele_understanding").hashtags({ autocompleteURL:thisClass.availableTags });
-		
 		$("#ele_knowledge").hashtags({ autocompleteURL:thisClass.availableTags });
+		$("#ele_skill").hashtags({ autocompleteURL: thisClass.availableTags });
 		
-		$("#ele_skill").hashtags({ autocompleteURL:thisClass.availableTags });
-		
-		$("#new_unit_btn").click(function(){
-			thisClass.resetValidatForm();
+		$("#new_unit_btn").click(function () {
+		    $('#accordion').find('.in').removeClass('in').addClass('collapse').css('height', '0px');
+		    $('#collapseName').removeClass('collapse').addClass('in').css('height', 'auto');
+
+	        thisClass.DisplayStage1();
+
+			//thisClass.resetValidatForm();
 			$("[id^='ele_']").each(function(){
-				$(this).val('');
-				$(this).parent().parent().find(".highlighter").remove();
+			    $(this).val('');
+			    $(this).parent().parent().find(".highlighter").html('');
+				//$(this).parent().parent().find(".highlighter").remove();
 			});
 
-	        $("#ele_establishedgoal").hashtags({ autocompleteURL:thisClass.availableTags });
-	        
-			$("#ele_essentialquestion").hashtags({ autocompleteURL:thisClass.availableTags });
-			
-			$("#ele_understanding").hashtags({ autocompleteURL:thisClass.availableTags });
-			
-			$("#ele_knowledge").hashtags({ autocompleteURL:thisClass.availableTags });
-			
-			$("#ele_skill").hashtags({ autocompleteURL:thisClass.availableTags });
+	        //$("#ele_establishedgoal").hashtags({ autocompleteURL:thisClass.availableTags });
+			//$("#ele_essentialquestion").hashtags({ autocompleteURL:thisClass.availableTags });
+			//$("#ele_understanding").hashtags({ autocompleteURL:thisClass.availableTags });
+			//$("#ele_knowledge").hashtags({ autocompleteURL:thisClass.availableTags });
+			//$("#ele_skill").hashtags({ autocompleteURL:thisClass.availableTags });
 		});
 		
-		$('.modal .form-control, .modal input[type="checkbox"]').focus(function(){
-	   		$(".exist").remove();
-	   });
+	   // $('.modal .form-control, .modal input[type="checkbox"]').focus(function(){
+	   //		$(".exist").remove();
+	   //});
 		
-		$("#btnSave").click(function(){
-        	thisClass.initValidateFormEvent();
-            if(thisClass.submitForm){
-            	if($("#ele_name").val() == ''){
-            		$('<label class="error" for="ele_name">This field is required.</label>').insertAfter("#ele_name");
-            	}else{
-					thisClass.save();
-				}
-			}
-		});
-		
-		thisClass.initValidateForm();
-		var profile = new EDITPROFILE(url);
-		profile.iniControl();
+	    $("#btnSave").click(function(){
+        	//thisClass.initValidateFormEvent();
+            //if(thisClass.submitForm){
+            //	if($("#ele_name").val() == ''){
+            //		$('<label class="error" for="ele_name">This field is required.</label>').insertAfter("#ele_name");
+            //	}else{
+	    	//		//thisClass.save();
+	    	//	}
+	    	//}
+	    });
+
+	    $('#stage2Btn').click(function () {
+	        thisClass.DisplayStage2();
+	    });
+
+	    $('#stage3Btn').click(function () {
+	        thisClass.DisplayStage3();
+	    });
+
+	    $('#goStage1').attr('href', 'javascript:var event = new EDITTABLE();event.DisplayStage1();');
+	    $('#goStage2').attr('href', 'javascript:var event = new EDITTABLE();event.DisplayStage2();');
+
+		//thisClass.initValidateForm();
+		//var profile = new EDITPROFILE(url);
+		//profile.iniControl();
 	}
 }
 $(function() {
@@ -527,172 +603,169 @@ $(function() {
 	        <a href="#" id="goStage2" class="btn btn-default hide"><i class="fa fa-arrow-left"></i> Stage 2</a>
 	        <input type="submit" id="btnSave" class="btn btn-primary" value="Save Unit" />
 	        <input type="button" id="stage2Btn" class="btn btn-success" value="Go to stage 2 "/>
-	        <input type="button" id="stage3Btn" class="btn btn-success hide" value="Go to stage 3"/>
+	        <input type="button" id="stage3Btn" class="btn btn-success" value="Go to stage 3"/>
 	      </div><!-- /.modal-footer -->
 	    </div><!-- /.modal-content -->
 	  </div><!-- /.modal-dialog -->
 	</div><!-- /.modal -->
 	
 	<script>
+	//$(document).ready(function () {		
 	
-	
-	
-	$(document).ready(function () {		
-	
-		$('#show_rubric_btn').click(function () {
-			$(this).addClass('hide');
-			$('.rubric-categories').removeClass('hide');
-			$('.criteria-section').addClass('hide');
-			$('#show-category-btn').removeClass('hide');
-		});
+	//	$('#show_rubric_btn').click(function () {
+	//		$(this).addClass('hide');
+	//		$('.rubric-categories').removeClass('hide');
+	//		$('.criteria-section').addClass('hide');
+	//		$('#show-category-btn').removeClass('hide');
+	//	});
 		
-    $('#impact_weight_input').change(function(){
-        var val = $('#impact_weight_input').val();
-        $('#impact_percent').val(val);
-    });
+    //$('#impact_weight_input').change(function(){
+    //    var val = $('#impact_weight_input').val();
+    //    $('#impact_percent').val(val);
+    //});
     
-    $('#show-category-btn').click(function () {
-    	$('.rubric-categories').addClass('hide');
-    	$('.criteria-section').removeClass('hide');
-    	$('#show_rubric_btn').removeClass('hide');
-    	$('#impactCollapse').removeClass('hide').addClass('active');
-    	$(this).addClass('hide');
-    });   
+    //$('#show-category-btn').click(function () {
+    //	$('.rubric-categories').addClass('hide');
+    //	$('.criteria-section').removeClass('hide');
+    //	$('#show_rubric_btn').removeClass('hide');
+    //	$('#impactCollapse').removeClass('hide').addClass('active');
+    //	$(this).addClass('hide');
+    //});   
 		
-		$('.rubric-impact').click(function () {	
-			$('.rubric-categories').addClass('hide');
-			$('#impactCollapse').removeClass('hide');
-			$('#show_rubric_btn').removeClass('hide');
-			$('.criteria-section').removeClass('hide');
-			$('#show_rubric_btn').removeClass('hide');
-			$('#processCollapse, #qualityCollapse, #contentCollapse').removeClass('active');
-			$('#impactCollapse').addClass('active');
-			$('#show-category-btn').addClass('hide');
-		});
+	//	$('.rubric-impact').click(function () {	
+	//		$('.rubric-categories').addClass('hide');
+	//		$('#impactCollapse').removeClass('hide');
+	//		$('#show_rubric_btn').removeClass('hide');
+	//		$('.criteria-section').removeClass('hide');
+	//		$('#show_rubric_btn').removeClass('hide');
+	//		$('#processCollapse, #qualityCollapse, #contentCollapse').removeClass('active');
+	//		$('#impactCollapse').addClass('active');
+	//		$('#show-category-btn').addClass('hide');
+	//	});
 		
-		$('#quality_weight_input').change(function(){
-		    var val = $('#quality_weight_input').val();
-		    $('#quality_percent').val(val);
-		});
+	//	$('#quality_weight_input').change(function(){
+	//	    var val = $('#quality_weight_input').val();
+	//	    $('#quality_percent').val(val);
+	//	});
 		
-		$('.rubric-quality').click(function () {
-			$('.rubric-categories').addClass('hide');
-			$('#qualityCollapse').removeClass('hide');
-			$('#show_rubric_btn').removeClass('hide');
-			$('.criteria-section').removeClass('hide');
-			$('#show_rubric_btn').removeClass('hide');
-			$('#impactCollapse, #processCollapse, #contentCollapse').removeClass('active');
-			$('#qualityCollapse').addClass('active');
-			$('#show-category-btn').addClass('hide');
-		});
+	//	$('.rubric-quality').click(function () {
+	//		$('.rubric-categories').addClass('hide');
+	//		$('#qualityCollapse').removeClass('hide');
+	//		$('#show_rubric_btn').removeClass('hide');
+	//		$('.criteria-section').removeClass('hide');
+	//		$('#show_rubric_btn').removeClass('hide');
+	//		$('#impactCollapse, #processCollapse, #contentCollapse').removeClass('active');
+	//		$('#qualityCollapse').addClass('active');
+	//		$('#show-category-btn').addClass('hide');
+	//	});
 		
-		$('#content_weight_input').change(function(){
-		    var val = $('#content_weight_input').val();
-		    $('#content_percent').val(val);
-		});
+	//	$('#content_weight_input').change(function(){
+	//	    var val = $('#content_weight_input').val();
+	//	    $('#content_percent').val(val);
+	//	});
 		
-		$('.rubric-content').click(function () {
-			$('.rubric-categories').addClass('hide');
-			$('#contentCollapse').removeClass('hide');
-			$('#show_rubric_btn').removeClass('hide');
-			$('.criteria-section').removeClass('hide');
-			$('#show_rubric_btn').removeClass('hide');
-			$('#impactCollapse, #qualityCollapse, #processCollapse').removeClass('active');
-			$('#contentCollapse').addClass('active');
-			$('#show-category-btn').addClass('hide');
-		});
+	//	$('.rubric-content').click(function () {
+	//		$('.rubric-categories').addClass('hide');
+	//		$('#contentCollapse').removeClass('hide');
+	//		$('#show_rubric_btn').removeClass('hide');
+	//		$('.criteria-section').removeClass('hide');
+	//		$('#show_rubric_btn').removeClass('hide');
+	//		$('#impactCollapse, #qualityCollapse, #processCollapse').removeClass('active');
+	//		$('#contentCollapse').addClass('active');
+	//		$('#show-category-btn').addClass('hide');
+	//	});
 		
-		$('#process_weight_input').change(function(){
-		    var val = $('#process_weight_input').val();
-		    $('#process_percent').val(val);
-		});
+	//	$('#process_weight_input').change(function(){
+	//	    var val = $('#process_weight_input').val();
+	//	    $('#process_percent').val(val);
+	//	});
 		
 		
-		$('.rubric-process').click(function () {
-			$('.rubric-categories').addClass('hide');
-			$('#processCollapse').removeClass('hide');
-			$('#show_rubric_btn').removeClass('hide');
-			$('.criteria-section').removeClass('hide');
-			$('#show_rubric_btn').removeClass('hide');
-			$('#impactCollapse, #qualityCollapse, #contentCollapse').removeClass('active');
-			$('#processCollapse').addClass('active');
-			$('#show-category-btn').addClass('hide');
-		});	
+	//	$('.rubric-process').click(function () {
+	//		$('.rubric-categories').addClass('hide');
+	//		$('#processCollapse').removeClass('hide');
+	//		$('#show_rubric_btn').removeClass('hide');
+	//		$('.criteria-section').removeClass('hide');
+	//		$('#show_rubric_btn').removeClass('hide');
+	//		$('#impactCollapse, #qualityCollapse, #contentCollapse').removeClass('active');
+	//		$('#processCollapse').addClass('active');
+	//		$('#show-category-btn').addClass('hide');
+	//	});	
 	
 		
-		$('#stage2Btn').click(function () {
-			$('#new_unit_modal .modal-title').text('New Unit - Stage 2 - Assessment Evidence');
+		//$('#stage2Btn').click(function () {
+		//	$('#new_unit_modal .modal-title').text('New Unit - Stage 2 - Assessment Evidence');
 			
-			$('#closeBtn').hide();
+		//	$('#closeBtn').hide();
 			
-			$('#stage_one').hide();
-			$('#stage_two').show();
+		//	$('#stage_one').hide();
+		//	$('#stage_two').show();
 			
-			$(this).hide();
+		//	$(this).hide();
 			
-			$('#stage3Btn').removeClass('hide');
-			$('#goStage1').removeClass('hide');
+		//	$('#stage3Btn').removeClass('hide');
+		//	$('#goStage1').removeClass('hide');
 			
-		});
+		//});
 		
-		$('#stage3Btn').click(function() {
-			$('#new_unit_modal .modal-title').text('New Unit - Stage 3 - Activity Creation');
+		//$('#stage3Btn').click(function() {
+		//	$('#new_unit_modal .modal-title').text('New Unit - Stage 3 - Activity Creation');
 			
-			$('#closeBtn').hide();
-			$('#stage_two').hide();
-			$('#stage_three').show();
-			$(this).hide();
+		//	$('#closeBtn').hide();
+		//	$('#stage_two').hide();
+		//	$('#stage_three').show();
+		//	$(this).hide();
 			
-			$('#goStage2').removeClass('hide').show();
-			$('#goStage1').addClass('hide');
-			$('#stage3Btn').addClass('hide');
+		//	$('#goStage2').removeClass('hide').show();
+		//	$('#goStage1').addClass('hide');
+		//	$('#stage3Btn').addClass('hide');
 			
-		});
+		//});
 		
-		$('#goStage1').click(function () {
-			$('#new_unit_modal .modal-title').text('New Unit - Stage 1 - Desired Results');
-			$('#stage2Btn').show();
-			$('#closeBtn').show();
-			$('#stage3Btn').addClass('hide');
-			$('#stage_two').hide();
-			$('#stage_one').show();
+		//$('#goStage1').click(function () {
+		//	$('#new_unit_modal .modal-title').text('New Unit - Stage 1 - Desired Results');
+		//	$('#stage2Btn').show();
+		//	$('#closeBtn').show();
+		//	$('#stage3Btn').addClass('hide');
+		//	$('#stage_two').hide();
+		//	$('#stage_one').show();
 			
-			$(this).addClass('hide');
+		//	$(this).addClass('hide');
 			
-		});
+		//});
 		
-		$('#goStage2').click(function () {
-			$('#new_unit_modal .modal-title').text('New Unit - Stage 2 - Assessment Evidence');
+		//$('#goStage2').click(function () {
+		//	$('#new_unit_modal .modal-title').text('New Unit - Stage 2 - Assessment Evidence');
 			
-			$('#closeBtn').hide();
+		//	$('#closeBtn').hide();
 			
-			$('#stage_three').hide();
-			$('#stage_two').show();
+		//	$('#stage_three').hide();
+		//	$('#stage_two').show();
 			
-			$(this).hide();
+		//	$(this).hide();
 			
-			$('#stage3Btn').removeClass('hide');
-			$('#stage3Btn').show();
-			$('#goStage1').removeClass('hide');
+		//	$('#stage3Btn').removeClass('hide');
+		//	$('#stage3Btn').show();
+		//	$('#goStage1').removeClass('hide');
 			
-		});
-		$("#sortable").sortable();
-		$("#sortableActivities").sortable();
-		$('#impact_criteria_list').sortable();
-		$('#quality_criteria_list').sortable();
-		$('#content_criteria_list').sortable();
-		$('#process_criteria_list').sortable();
+		//});
+		//$("#sortable").sortable();
+		//$("#sortableActivities").sortable();
+		//$('#impact_criteria_list').sortable();
+		//$('#quality_criteria_list').sortable();
+		//$('#content_criteria_list').sortable();
+		//$('#process_criteria_list').sortable();
 		
 		
-		function openDynamicLesson() {
-			$('#autoLesson').toggle(1000, 'easeOutExpo');
-			$('#autoLesson').css('display', 'block').css('z-index', '99999');	
-		}
-		$('#autoLesson .close').click(function () {
-			openDynamicLesson();
-		});
+		//function openDynamicLesson() {
+		//	$('#autoLesson').toggle(1000, 'easeOutExpo');
+		//	$('#autoLesson').css('display', 'block').css('z-index', '99999');	
+		//}
+		//$('#autoLesson .close').click(function () {
+		//	openDynamicLesson();
+		//});
 	
-	});
+	//});
 	</script>		
 			
 	<!--New Performance Task Details Modal Form--> 
@@ -1502,77 +1575,77 @@ $(function() {
 	
 	<script>
 		
-		$('[rel=tooltip]').tooltip();
+		//$('[rel=tooltip]').tooltip();
 		
-		$('#btnAddGoal').click(function(event){
-			$('.new-goal').append('<div class="ngText"><input type="text" name="ele_goal" class="form-control input-small" id="nGoal" /><i class="fa fa-minus-square-o minus fa-lg"></i></div>');
+		//$('#btnAddGoal').click(function(event){
+		//	$('.new-goal').append('<div class="ngText"><input type="text" name="ele_goal" class="form-control input-small" id="nGoal" /><i class="fa fa-minus-square-o minus fa-lg"></i></div>');
 			
-			$('.minus').unbind( "click" ).click(function () {
-				$('.ngText').last().remove();
-			});
-			event.preventDefault();
-		});
-		$('#btnAddUnderstanding').click(function(event){
-			$('.new-understanding').append('<div class="ngText"><input type="text" name="ele_goal" class="form-control input-small" id="nUnderstanding" /><i class="fa fa-minus-square-o minus fa-lg"></i></div>');
+		//	$('.minus').unbind( "click" ).click(function () {
+		//		$('.ngText').last().remove();
+		//	});
+		//	event.preventDefault();
+		//});
+		//$('#btnAddUnderstanding').click(function(event){
+		//	$('.new-understanding').append('<div class="ngText"><input type="text" name="ele_goal" class="form-control input-small" id="nUnderstanding" /><i class="fa fa-minus-square-o minus fa-lg"></i></div>');
 			
-			$('.minus').unbind( "click" ).click(function () {
-				$('.ngText').last().remove();
-			});
-			event.preventDefault();
-		});$('#btnAddQuestion').click(function(event){
-			$('.new-question').append('<div class="ngText"><input type="text" name="ele_goal" class="form-control input-small" id="nQuestion" /><i class="fa fa-minus-square-o minus fa-lg"></i></div>');
+		//	$('.minus').unbind( "click" ).click(function () {
+		//		$('.ngText').last().remove();
+		//	});
+		//	event.preventDefault();
+		//});$('#btnAddQuestion').click(function(event){
+		//	$('.new-question').append('<div class="ngText"><input type="text" name="ele_goal" class="form-control input-small" id="nQuestion" /><i class="fa fa-minus-square-o minus fa-lg"></i></div>');
 			
-			$('.minus').unbind( "click" ).click(function () {
-				$('.ngText').last().remove();
-			});
-			event.preventDefault();
-		});
-		$('#btnAddKnow').click(function(event){
-			$('.new-know').append('<div class="ngText"><input type="text" name="ele_goal" class="form-control input-small" id="nKnow" /><i class="fa fa-minus-square-o minus fa-lg"></i></div>');
+		//	$('.minus').unbind( "click" ).click(function () {
+		//		$('.ngText').last().remove();
+		//	});
+		//	event.preventDefault();
+		//});
+		//$('#btnAddKnow').click(function(event){
+		//	$('.new-know').append('<div class="ngText"><input type="text" name="ele_goal" class="form-control input-small" id="nKnow" /><i class="fa fa-minus-square-o minus fa-lg"></i></div>');
 			
-			$('.minus').unbind( "click" ).click(function () {
-				$('.ngText').last().remove();
-			});
-			event.preventDefault();
-		});
-		$('#btnAddAble').click(function(event){
-			$('.new-able').append('<div class="ngText"><input type="text" name="ele_goal" class="form-control input-small" id="nAble" /><i class="fa fa-minus-square-o minus fa-lg"></i></div>');
+		//	$('.minus').unbind( "click" ).click(function () {
+		//		$('.ngText').last().remove();
+		//	});
+		//	event.preventDefault();
+		//});
+		//$('#btnAddAble').click(function(event){
+		//	$('.new-able').append('<div class="ngText"><input type="text" name="ele_goal" class="form-control input-small" id="nAble" /><i class="fa fa-minus-square-o minus fa-lg"></i></div>');
 			
-			$('.minus').unbind( "click" ).click(function () {
-				$('.ngText').last().remove();
-			});
-			event.preventDefault();
-		});
-		$('#btnAddPerformance').click(function(event){
-			$('.new-performance').append('<div class="ngText"><input type="text" name="ele_goal" class="form-control input-small" id="nEvidence" /><i class="fa fa-minus-square-o minus fa-lg"></i> <button class="btn btn-small btn-default" data-toggle="modal" data-target="#new_pt_details_modal">Details</button></div>');
+		//	$('.minus').unbind( "click" ).click(function () {
+		//		$('.ngText').last().remove();
+		//	});
+		//	event.preventDefault();
+		//});
+		//$('#btnAddPerformance').click(function(event){
+		//	$('.new-performance').append('<div class="ngText"><input type="text" name="ele_goal" class="form-control input-small" id="nEvidence" /><i class="fa fa-minus-square-o minus fa-lg"></i> <button class="btn btn-small btn-default" data-toggle="modal" data-target="#new_pt_details_modal">Details</button></div>');
 			
-			$('.minus').unbind( "click" ).click(function () {
-				$('.ngText').last().remove();
-			});
-			event.preventDefault();
-		});
-		$('#btnAddEvidence').click(function(event){
-			$('.new-evidence').append('<div class="ngText"><input type="text" name="ele_goal" class="form-control input-small" id="nEvidence" /><i class="fa fa-minus-square-o minus fa-lg"></i><button class="btn btn-small btn-default" data-toggle="modal" data-target="#new_evidence_details_modal">Details</button></div>');
+		//	$('.minus').unbind( "click" ).click(function () {
+		//		$('.ngText').last().remove();
+		//	});
+		//	event.preventDefault();
+		//});
+		//$('#btnAddEvidence').click(function(event){
+		//	$('.new-evidence').append('<div class="ngText"><input type="text" name="ele_goal" class="form-control input-small" id="nEvidence" /><i class="fa fa-minus-square-o minus fa-lg"></i><button class="btn btn-small btn-default" data-toggle="modal" data-target="#new_evidence_details_modal">Details</button></div>');
 			
-			$('.minus').unbind( "click" ).click(function () {
-				$('.ngText').last().remove();
-			});
-			event.preventDefault();
-		});
-		$('#btnAddLessonQuestion').click(function (event) {
-			$('.new-lesson-question').append('<div class="ngText"><input type="text" name="ele_goal" class="form-control input-small" id="nQuestion" /><i class="fa fa-minus-square-o minus fa-lg"></i></div>');
+		//	$('.minus').unbind( "click" ).click(function () {
+		//		$('.ngText').last().remove();
+		//	});
+		//	event.preventDefault();
+		//});
+		//$('#btnAddLessonQuestion').click(function (event) {
+		//	$('.new-lesson-question').append('<div class="ngText"><input type="text" name="ele_goal" class="form-control input-small" id="nQuestion" /><i class="fa fa-minus-square-o minus fa-lg"></i></div>');
 			
-			$('.minus').unbind( "click" ).click(function () {
-				$('.ngText').last().remove();
-			});
-			event.preventDefault();
-		});
+		//	$('.minus').unbind( "click" ).click(function () {
+		//		$('.ngText').last().remove();
+		//	});
+		//	event.preventDefault();
+		//});
 		
 		
-		$('#addActivityBtn').click(function (event) {
-			$('#sortableActivities').append('<li class="well well-small"><div class="row"><div class="col-lg-6 col-md-6 col-sm-6"><input type="text" class="form-control input-small" placeholder="Add Activity Here" value="{# activity_title #}"></div><div class="col-lg-3 col-md-3 col-sm-3"><div class="onoffswitch"><input type="checkbox" name="onoffswitch2" class="onoffswitch-checkbox" id="myonoffswitch2" checked><label class="onoffswitch-label" for="myonoffswitch2"><div class="onoffswitch-inner"></div><div class="onoffswitch-switch"></div></label></div></div><div class="col-lg-3 col-md-3 col-sm-3"><a href="submissionReview.html" class="btn btn-small btn-success pull-right">Go to activity <i class="fa fa-arrow-right"></i></a></div></div></li>');
-			event.preventDefault();
-		});
+		//$('#addActivityBtn').click(function (event) {
+		//	$('#sortableActivities').append('<li class="well well-small"><div class="row"><div class="col-lg-6 col-md-6 col-sm-6"><input type="text" class="form-control input-small" placeholder="Add Activity Here" value="{# activity_title #}"></div><div class="col-lg-3 col-md-3 col-sm-3"><div class="onoffswitch"><input type="checkbox" name="onoffswitch2" class="onoffswitch-checkbox" id="myonoffswitch2" checked><label class="onoffswitch-label" for="myonoffswitch2"><div class="onoffswitch-inner"></div><div class="onoffswitch-switch"></div></label></div></div><div class="col-lg-3 col-md-3 col-sm-3"><a href="submissionReview.html" class="btn btn-small btn-success pull-right">Go to activity <i class="fa fa-arrow-right"></i></a></div></div></li>');
+		//	event.preventDefault();
+		//});
 		
 	</script>
 </body>

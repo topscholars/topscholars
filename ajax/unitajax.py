@@ -151,6 +151,6 @@ class TUNITLISTAJAX():
             if description == False or description == '':
                 unitlist = Unit.objects.filter(clientid=clientid)
             else:
-                unitlist = Unit.objects.filter(clientid=clientid,firstname__contains=description)
+                unitlist = Unit.objects.filter(clientid=clientid,description__icontains=description)
             context = {'unitlist': unitlist}
             return render(request, 'tsweb/teacher/unitlistajax.html', context)

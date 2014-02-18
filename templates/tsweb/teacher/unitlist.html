@@ -53,7 +53,8 @@
 	<!--==============================================-->
 
 <script>
-EDITTABLE.prototype = new GridBase();
+    EDITTABLE.prototype = new GridBase();
+    var taglist;
 function EDITTABLE(){
 	var thisClass = this;
 	var url = "{% url 'tsweb:tprocessajax' %}";
@@ -77,8 +78,7 @@ function EDITTABLE(){
 					thisClass.seperateView(ini, val);
 					if ((ini == 'establishedgoal') || (ini == 'essentialquestion') || (ini == 'knowledge') || (ini == 'skill') || (ini == 'understanding')) {
 					    $("#ele_" + ini).parent().parent().find(".highlighter").html(val);
-					    
-					    $("#ele_" + ini).hashtags({ refresh: true });
+					    $("#ele_" + ini).hashtags({ refresh: true, autocompleteURL: taglist });
 					}
 				});
 			
@@ -161,6 +161,7 @@ function EDITTABLE(){
 							obj = { id : 1 , value: '#'+val.name};
 							thisClass.availableTags.push(obj);
 						});
+						taglist = thisClass.availableTags;
 	                },
 	                error: function(response) {
 						alert('Error occur. Please contact the administrator.');
@@ -250,7 +251,8 @@ function EDITTABLE(){
 	        thisClass.getUnitlist(term);
 	    });
 
-		thisClass.loadAvailableTags();	 
+	    thisClass.loadAvailableTags();
+
         $("#ele_establishedgoal").hashtags({ autocompleteURL:thisClass.availableTags });
 		$("#ele_essentialquestion").hashtags({ autocompleteURL:thisClass.availableTags });
 		$("#ele_understanding").hashtags({ autocompleteURL:thisClass.availableTags });

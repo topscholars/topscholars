@@ -25,7 +25,6 @@
 		}
 							
 		function wrapControl(element){
-			///console.log(element);
 			//add hash
 			element.wrap('<div class="jqueryHashtags"><div class="highlighter"></div></div>').unwrap().before('<div class="highlighter"></div>').wrap('<div class="typehead"></div></div>');
 			element.addClass("theSelector");
@@ -38,7 +37,15 @@
 		
 		function doTag(element){
 			var str = element.val();
-			element.parent().parent().find(".highlighter").css("width",element.css("width"));
+			element.parent().parent().find(".highlighter").css("width", element.css("width"));
+
+			var currentcarret = element.prop("selectionStart");
+			if (currentcarret != 0) {
+			    var result = /\S+$/.exec(element.val().slice(0, currentcarret));
+			    if ((result != null) && (result[0] != null) && (result[0].indexOf('#') == 0)) {
+			        str = [str.slice(0, result.index), '<span class="hashtagPosition"></span>', str.slice(result.index)].join('');
+			    }
+			}
 			
 			str = str.replace(/\n/g, '<br>');
 			if(!str.match(/(http|ftp|https):\/\/[\w-]+(\.[\w-]+)+([\w.,@?^=%&amp;:\/~+#-]*[\w@?^=%&amp;\/~+#-])?#([a-zA-Z0-9]+)/g)) {
@@ -51,8 +58,8 @@
 	
 			element.parent().parent().find(".highlighter").html(str);
 			element.parent().parent().find(".highlighter").find("span").each(function(){
-				var value = $(this).html();
-				var match = false;
+			    var value = $(this).html();
+			    var match = false;
 				for (key in options.autocompleteURL) {
 			        if(value == options.autocompleteURL[key].value) {
 			        	match = true;
@@ -64,7 +71,7 @@
 			    	str = str.replace('<span class="hashtag">' + value + '</span>',value);
 			    }
 			});
-			str = str.replace(/#(\S*)/g,'<span class="hashtagPosition"></span>#$1');
+
 			element.parent().parent().find(".highlighter").html(str);
 			//add space condition
 			for (key in options.autocompleteURL) {
@@ -76,8 +83,7 @@
 		    }
 		    
 		}
-		
-		
+
 		function findAndReplace(searchText, replacement, searchNode) {
 		    if (!searchText || typeof replacement === 'undefined') {
 		        // Throw error here if you want...
@@ -170,14 +176,17 @@
  						if (term.length > options.minLength) {
  							var firstchar = term.substring(0,1);
  							if(firstchar == '#') {
- 								console.log(options.autocompleteURL);
  								response($.ui.autocomplete.filter(
 			                    options.autocompleteURL, term));
  							}
  						}
 
-						$(".ui-autocomplete:visible").css({'position': 'absolute', 'width':'auto', 'z-index': '2000', 'left': $(".hashtagPosition:last").offset().left, 'top': $(".hashtagPosition:last").offset().top + 16 });
-						$(".hashtagPosition").remove();
+					    var offset = $(".hashtagPosition:last").offset();
+					    if(offset != null)
+					        $(".ui-autocomplete:visible").css({ 'position': 'absolute', 'width': 'auto', 'z-index': '2000', 'left': offset.left, 'top': offset.top + 16 });
+					    else
+					        $(".ui-autocomplete:visible").css({ 'position': 'absolute', 'width': 'auto', 'z-index': '2000', 'left': '0', 'top': '16' });
+					    $(".hashtagPosition").remove();
 					},
 					
 					select: function( event, ui ) {

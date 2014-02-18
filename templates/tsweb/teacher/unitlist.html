@@ -61,37 +61,10 @@ function EDITTABLE(){
 	var tableClassAjax = 'TUNITLISTAJAX';
 	//var formValidate = $("#new_unit_form");
 	this.availableTags = [];
-
-	this.doTag = function (element) {
-	    var str = element.val();
-
-	    str = str.replace(/\n/g, '<br>');
-	    if (!str.match(/(http|ftp|https):\/\/[\w-]+(\.[\w-]+)+([\w.,@?^=%&amp;:\/~+#-]*[\w@?^=%&amp;\/~+#-])?#([a-zA-Z0-9]+)/g)) {
-	        if (!str.match(/#([a-zA-Z0-9]+)#/g)) {
-	            str = str.replace(/#([a-zA-Z0-9\.]+)/g, '<span class="hashtag">#$1</span>');
-	        } else {
-	            str = str.replace(/#([a-zA-Z0-9\.]+)#([a-zA-Z0-9]+)/g, '<span class="hashtag">#$1</span>');
-	        }
-	    }
-
-	    element.parent().parent().find(".highlighter").html(str);
-	    element.parent().parent().find(".highlighter").find("span").each(function () {
-	        var value = $(this).html();
-	        var match = false;
-	        for (key in thisClass.availableTags) {
-	            if (value == thisClass.availableTags[key].value) {
-	                match = true;
-	                break;
-	            }
-	        }
-
-	        if (!match) {
-	            str = str.replace('<span class="hashtag">' + value + '</span>', value);
-	        }
-	    });
-	}
 	
 	this.editTable = function (id) {
+	    $('#accordion').find('.in').removeClass('in').addClass('collapse').css('height', '0px');
+	    $('#collapseName').removeClass('collapse').addClass('in').css('height', 'auto');
 	    thisClass.DisplayStage1();
 		$.getJSON(
 			url,
@@ -104,11 +77,9 @@ function EDITTABLE(){
 					thisClass.seperateView(ini, val);
 					if ((ini == 'establishedgoal') || (ini == 'essentialquestion') || (ini == 'knowledge') || (ini == 'skill') || (ini == 'understanding')) {
 					    $("#ele_" + ini).parent().parent().find(".highlighter").html(val);
-					    thisClass.doTag($("#ele_" + ini));
+					    
+					    $("#ele_" + ini).hashtags({ refresh: true });
 					}
-
-					$('#accordion').find('.in').removeClass('in').addClass('collapse').css('height', '0px');
-					$('#collapseName').removeClass('collapse').addClass('in').css('height', 'auto');
 				});
 			
 			//thisClass.resetValidatForm();

@@ -8,15 +8,21 @@
 		options = $.extend(true, {
 			// default options here
 			autocompleteURL: null,
-			minLength:2,
+			minLength: 2,
+            refresh: false
 		}, options || {});
-						
-		wrapControl($(this));
-		doTag($(this));
-		textareaKeyDown($(this));
-		textareaKeyUp($(this));
-		
-		bindAutocomplete($(this));
+			
+		if (options.refresh) {
+		    doTag($(this));
+		}
+		else {
+		    wrapControl($(this));
+		    doTag($(this));
+		    textareaKeyDown($(this));
+		    textareaKeyUp($(this));
+
+		    bindAutocomplete($(this));
+		}
 							
 		function wrapControl(element){
 			///console.log(element);

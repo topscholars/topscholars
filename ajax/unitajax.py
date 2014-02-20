@@ -25,6 +25,12 @@ class UNITLIST():
             
             results = cursor.fetchall()
             for r in results:
+                assignment = UnitAssignment.objects.filter(unitid=id,deleted=0).values('assignmentid')
+                assignmentname = []
+                for item in assignment:
+                    assignmentname.append({ "id": str(item.id), "name": item.name})
+                assignmentlist = simplejson.dumps(assignmentname)
+                                          
                 data_json = {
                         'unitid': r[0],
                         'name': r[1],
@@ -34,6 +40,7 @@ class UNITLIST():
                         'knowledge': r[5],
                         'skill': r[6],
                         'understanding': r[7],
+                        'assignment': assignmentlist,
                         }
             data = simplejson.dumps(data_json)
         return HttpResponse(data, mimetype='application/json')

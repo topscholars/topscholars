@@ -2,10 +2,9 @@
 {% load staticfiles %}
 <!DOCTYPE html>
 <html>
-
 <head>
+    <title>Unit</title>
 	<meta charset="UTF-8"/> 
-	<!--<link rel="stylesheet" type="text/css" href="{% static 'tsweb/css/Prototype.css' %}" />-->
 	<link rel="stylesheet" type="text/css" href="{% static 'tsweb/css/smoothness/jquery-ui-1.10.3.custom.min.css' %}" />
 	<link rel="stylesheet" type="text/css" href="{% static 'tsweb/css/smoothness/jquery-ui-1.10.3.custom-edited.css' %}" />
 	<link rel="stylesheet" type="text/css" href="{% static 'tsweb/css/bootstrap.css' %}" />
@@ -24,7 +23,6 @@
 	<script src="{% static 'tsweb/js/jquery.autosize.js' %}"></script>
 	<script src="{% static 'tsweb/js/rangyinputs-jquery-1.1.2.min.js' %}"></script>
 	<script src="{% static 'tsweb/js/hashtag.js' %}"></script>	
-
 <script>
     EDITTABLE.prototype = new GridBase();
     var currentstage;
@@ -178,6 +176,34 @@ function EDITTABLE(){
 	    $('#goStage2').removeClass('hide');
 	    $('#btnSave').show();
 	}
+	this.getPerformanceData = function (id) {
+	}
+	this.addImpactCriteria = function () {
+	    if ($('#add_impact_criteria').val() != '') {
+	    }
+	}
+	this.addQualityCriteria = function () {
+	    if ($('#add_quality_criteria').val() != '') {
+	    }
+	}
+	this.addContentCriteria = function () {
+	    if ($('#add_content_criteria').val() != '') {
+	    } 
+	}
+	this.addProcessCriteria = function () {
+	    if ($('#add_process_criteria').val() != '') {
+	    }
+	}
+	this.savePerformance = function () {
+	    if ($('#rubric_name').val() != '') {
+	    }
+	}
+	this.getEvidenceData = function (id) {
+	}
+	this.saveEvidence = function () {
+	    if ($('#evidence_name').val() != '') {
+	    }
+	}
 	this.iniControl = function () {
 	    $('form').submit(function (e) {
 	        e.preventDefault();
@@ -203,9 +229,7 @@ function EDITTABLE(){
 		    currentstage = 1;
 		    $('#accordion').find('.in').removeClass('in').addClass('collapse').css('height', '0px');
 		    $('#collapseName').removeClass('collapse').addClass('in').css('height', 'auto');
-
 	        thisClass.DisplayStage1();
-
 			$("[id^='ele_']").each(function(){
 			    $(this).val('');
 			    $(this).parent().parent().find(".highlighter").html('');
@@ -214,8 +238,6 @@ function EDITTABLE(){
 		$("#btnSave").click(function () {
 		    if (currentstage == 1) {
 		        thisClass.savestage1(false);
-		    }
-		    else if (currentstage == 2) {
 		    }
 		    else if (currentstage == 3) {
 		    }
@@ -228,9 +250,14 @@ function EDITTABLE(){
 	    });
 	    $('#goStage1').attr('href', 'javascript:var event = new EDITTABLE();event.DisplayStage1();');
 	    $('#goStage2').attr('href', 'javascript:var event = new EDITTABLE();event.DisplayStage2();');
-	    $('#btnAddPerformance').click(function(event){
-	    	
-	    });
+	    $('#new_pt_details_modal').on('show.bs.modal', function (e) {
+	        $('#criteria_tabs a:first').tab('show');
+	        $('.rubric-categories').removeClass('hide');
+	        $('.criteria-section').addClass('hide');
+	        $('#show-category-btn').removeClass('hide');
+	        $('#show_rubric_btn').addClass('hide');
+	        thisClass.getPerformanceData('');
+	    })
 	    $('#show-category-btn').click(function () {
 	        $('.rubric-categories').addClass('hide');
 	        $('.criteria-section').removeClass('hide');
@@ -244,66 +271,92 @@ function EDITTABLE(){
 	    	$('.criteria-section').addClass('hide');
 	    	$('#show-category-btn').removeClass('hide');
 	    });
-	    //$('#impact_weight_input').change(function(){
-	    //    var val = $('#impact_weight_input').val();
-	    //    $('#impact_percent').val(val);
-	    //});
-	    //	$('.rubric-impact').click(function () {	
-	    //		$('.rubric-categories').addClass('hide');
-	    //		$('#impactCollapse').removeClass('hide');
-	    //		$('#show_rubric_btn').removeClass('hide');
-	    //		$('.criteria-section').removeClass('hide');
-	    //		$('#show_rubric_btn').removeClass('hide');
-	    //		$('#processCollapse, #qualityCollapse, #contentCollapse').removeClass('active');
-	    //		$('#impactCollapse').addClass('active');
-	    //		$('#show-category-btn').addClass('hide');
-	    //	});
-	    //	$('#quality_weight_input').change(function(){
-	    //	    var val = $('#quality_weight_input').val();
-	    //	    $('#quality_percent').val(val);
-	    //	});
-	    //	$('.rubric-quality').click(function () {
-	    //		$('.rubric-categories').addClass('hide');
-	    //		$('#qualityCollapse').removeClass('hide');
-	    //		$('#show_rubric_btn').removeClass('hide');
-	    //		$('.criteria-section').removeClass('hide');
-	    //		$('#show_rubric_btn').removeClass('hide');
-	    //		$('#impactCollapse, #processCollapse, #contentCollapse').removeClass('active');
-	    //		$('#qualityCollapse').addClass('active');
-	    //		$('#show-category-btn').addClass('hide');
-	    //	});
-	    //	$('#content_weight_input').change(function(){
-	    //	    var val = $('#content_weight_input').val();
-	    //	    $('#content_percent').val(val);
-	    //	});
-	    //	$('.rubric-content').click(function () {
-	    //		$('.rubric-categories').addClass('hide');
-	    //		$('#contentCollapse').removeClass('hide');
-	    //		$('#show_rubric_btn').removeClass('hide');
-	    //		$('.criteria-section').removeClass('hide');
-	    //		$('#show_rubric_btn').removeClass('hide');
-	    //		$('#impactCollapse, #qualityCollapse, #processCollapse').removeClass('active');
-	    //		$('#contentCollapse').addClass('active');
-	    //		$('#show-category-btn').addClass('hide');
-	    //	});
-	    //	$('#process_weight_input').change(function(){
-	    //	    var val = $('#process_weight_input').val();
-	    //	    $('#process_percent').val(val);
-	    //	});
-	    //	$('.rubric-process').click(function () {
-	    //		$('.rubric-categories').addClass('hide');
-	    //		$('#processCollapse').removeClass('hide');
-	    //		$('#show_rubric_btn').removeClass('hide');
-	    //		$('.criteria-section').removeClass('hide');
-	    //		$('#show_rubric_btn').removeClass('hide');
-	    //		$('#impactCollapse, #qualityCollapse, #contentCollapse').removeClass('active');
-	    //		$('#processCollapse').addClass('active');
-	    //		$('#show-category-btn').addClass('hide');
-	    //	});	
-	    //$('#addActivityBtn').click(function (event) {
-	    //	$('#sortableActivities').append('<li class="well well-small"><div class="row"><div class="col-lg-6 col-md-6 col-sm-6"><input type="text" class="form-control input-small" placeholder="Add Activity Here" value="{# activity_title #}"></div><div class="col-lg-3 col-md-3 col-sm-3"><div class="onoffswitch"><input type="checkbox" name="onoffswitch2" class="onoffswitch-checkbox" id="myonoffswitch2" checked><label class="onoffswitch-label" for="myonoffswitch2"><div class="onoffswitch-inner"></div><div class="onoffswitch-switch"></div></label></div></div><div class="col-lg-3 col-md-3 col-sm-3"><a href="submissionReview.html" class="btn btn-small btn-success pull-right">Go to activity <i class="fa fa-arrow-right"></i></a></div></div></li>');
-	    //	event.preventDefault();
-	    //});
+	    $('#impact_weight_input').change(function(){
+	        var val = $('#impact_weight_input').val();
+	        $('#impact_percent').val(val);
+	    });
+	    $('.rubric-impact').click(function () {	
+	    	$('.rubric-categories').addClass('hide');
+	    	$('#impactCollapse').removeClass('hide');
+	    	$('#show_rubric_btn').removeClass('hide');
+	    	$('.criteria-section').removeClass('hide');
+	    	$('#show_rubric_btn').removeClass('hide');
+	    	$('#processCollapse, #qualityCollapse, #contentCollapse').removeClass('active');
+	    	$('#impactCollapse').addClass('active');
+	    	$('#show-category-btn').addClass('hide');
+	    });
+	    $('#quality_weight_input').change(function(){
+	    	var val = $('#quality_weight_input').val();
+	    	$('#quality_percent').val(val);
+	    });
+	    $('.rubric-quality').click(function () {
+	    	$('.rubric-categories').addClass('hide');
+	    	$('#qualityCollapse').removeClass('hide');
+	    	$('#show_rubric_btn').removeClass('hide');
+	    	$('.criteria-section').removeClass('hide');
+	    	$('#show_rubric_btn').removeClass('hide');
+	    	$('#impactCollapse, #processCollapse, #contentCollapse').removeClass('active');
+	    	$('#qualityCollapse').addClass('active');
+	    	$('#show-category-btn').addClass('hide');
+	    });
+	    $('#content_weight_input').change(function(){
+	    	var val = $('#content_weight_input').val();
+	    	$('#content_percent').val(val);
+	    });
+	    $('.rubric-content').click(function () {
+	    	$('.rubric-categories').addClass('hide');
+	    	$('#contentCollapse').removeClass('hide');
+	    	$('#show_rubric_btn').removeClass('hide');
+	    	$('.criteria-section').removeClass('hide');
+	    	$('#show_rubric_btn').removeClass('hide');
+	    	$('#impactCollapse, #qualityCollapse, #processCollapse').removeClass('active');
+	    	$('#contentCollapse').addClass('active');
+	    	$('#show-category-btn').addClass('hide');
+	    });
+	    $('#process_weight_input').change(function(){
+	    	var val = $('#process_weight_input').val();
+	    	$('#process_percent').val(val);
+	    });
+	    $('.rubric-process').click(function () {
+	    	$('.rubric-categories').addClass('hide');
+	    	$('#processCollapse').removeClass('hide');
+	    	$('#show_rubric_btn').removeClass('hide');
+	    	$('.criteria-section').removeClass('hide');
+	    	$('#show_rubric_btn').removeClass('hide');
+	    	$('#impactCollapse, #qualityCollapse, #contentCollapse').removeClass('active');
+	    	$('#processCollapse').addClass('active');
+	    	$('#show-category-btn').addClass('hide');
+	    });	
+	    $('#addActivityBtn').click(function (event) {
+	    	$('#sortableActivities').append('<li class="well well-small"><div class="row"><div class="col-lg-6 col-md-6 col-sm-6"><input type="text" class="form-control input-small" placeholder="Add Activity Here" value="{# activity_title #}"></div><div class="col-lg-3 col-md-3 col-sm-3"><div class="onoffswitch"><input type="checkbox" name="onoffswitch2" class="onoffswitch-checkbox" id="myonoffswitch2" checked><label class="onoffswitch-label" for="myonoffswitch2"><div class="onoffswitch-inner"></div><div class="onoffswitch-switch"></div></label></div></div><div class="col-lg-3 col-md-3 col-sm-3"><a href="submissionReview.html" class="btn btn-small btn-success pull-right">Go to activity <i class="fa fa-arrow-right"></i></a></div></div></li>');
+	    	event.preventDefault();
+	    });
+	    $('#add_impact_criteria_btn').click(function () {
+	        thisClass.addImpactCriteria();
+	    });
+	    $('#add_quality_criteria_btn').click(function () {
+	        thisClass.addQualityCriteria();
+	    }); 
+	    $('#add_content_criteria_btn').click(function () {
+	        thisClass.addContentCriteria();
+	    });
+	    $('#add_process_criteria_btn').click(function () {
+	        thisClass.addProcessCriteria();
+	    }); 
+	    $('#rubric_assignment').change(function () {
+	    });
+	    $('#btnSavePerformance').click(function () {
+	        thisClass.savePerformance();
+	    });
+	    $('#new_evidence_details_modal').on('show.bs.modal', function (e) {
+	        $('#evidencecategorytab a:first').tab('show');
+	        thisClass.getEvidenceData('');
+	    })
+	    $('#evidence_performance_name').change(function() {
+	    });
+	    $('#btnSaveEvidence').click(function () {
+	        thisClass.saveEvidence();
+	    });
 	    $("#sortable").sortable();
 	    $("#sortableActivities").sortable();
 	    $('#impact_criteria_list').sortable();
@@ -554,21 +607,20 @@ $(function() {
 			        		<div class="form-group">
 			        			<label for="rubric_name" class="col-sm-4 control-label">Name</label>
 			        			<div class="col-sm-8">
-				        			<input type="text" name="rubric_name" id="rubric_name" class="form-control input-small" required="required"/>
+				        			<input type="text" name="rubric_name" id="rubric_name" class="form-control input-small" required/>
 				        		</div>
 			        		</div>
 			        		<div class="form-group">
 			        			<label for="rubric_assignment" class="control-label col-sm-4">Assignment</label>
 				        		<div class="col-sm-8">
-				        			<select class="form-control input-small">
-				        				<option>{# assignment_name #}</option>
+				        			<select class="form-control input-small" id="rubric_assignment">
 				        			</select>
 				        		</div>
 			        		</div>
 				        	<div class="form-group">
 				        		<label for="rubric_goal" class="control-label col-sm-4">Goal Of Task</label>
 				        		<div class="col-sm-8">
-					        		<input type="text" name="rubric_goal" id="rubric_goal" class="form-control input-small" required="required"/>
+					        		<input type="text" name="rubric_goal" id="rubric_goal" class="form-control input-small" />
 					        	</div>
 				        	</div>
 				        	<div class="form-group">
@@ -610,22 +662,22 @@ $(function() {
 			        		<div class="rubric-categories">
 			        		<div class="rubric-impact circle circle-blue center-block">
 			        			<p>Impact</p>
-			        			<div class="weight-percent"><input id="impact_percent" type="number" max="100" step="1" name="impact-percent" class="circle-input" value="0" onClick="this.select();" />%</div>
+			        			<div class="weight-percent"><input id="impact_percent" type="number" max="100" step="1" name="impact-percent" class="circle-input" value="0" disabled />%</div>
 			        		</div>
 			        		<div class="rubric-quality circle circle-green">
 			        			<p>Quality</p>
-			        			<div class="weight-percent"><input id="quality_percent" type="number" max="100" step="1" name="quality-percent" class="circle-input" value="0" onClick="this.select();"/>%</div>
+			        			<div class="weight-percent"><input id="quality_percent" type="number" max="100" step="1" name="quality-percent" class="circle-input" value="0" disabled />%</div>
 			        		</div>
 			        		<div class="rubric-objective circle circle-grey">
 			        			<div>Objective</div>
 			        		</div>
 			        		<div class="rubric-content circle circle-purple">
 			        			<p>Content</p>
-			        			<div class="weight-percent"><input id="content_percent" max="100" step="1" type="number" name="content-percent" class="circle-input" value="0" onClick="this.select();" />%</div>
+			        			<div class="weight-percent"><input id="content_percent" max="100" step="1" type="number" name="content-percent" class="circle-input" value="0" disabled />%</div>
 			        		</div>
 			        		<div class="rubric-process circle circle-red">
 			        			<p>Process</p>
-			        			<div class="weight-percent"><input id="process_percent" max="100" step="1" type="number" name="process-percent" class="circle-input" value="0" onClick="this.select();" />%</div>
+			        			<div class="weight-percent"><input id="process_percent" max="100" step="1" type="number" name="process-percent" class="circle-input" value="0" disabled />%</div>
 			        		</div>
 			        	</div>
 			        </div><!-- col-lg-7 -->
@@ -665,12 +717,6 @@ $(function() {
   		  				      	<div class="impact-list-item">
   		  				      		<p class="text-muted">Click and drag to reorder criteria</p>
   		    				      	<ul class="list-unstyled" id="impact_criteria_list">
-  		    				      		<li class="well well-small">
-                                            <span class="pull-left" style="margin-top:5px;margin-bottom:0px;">name&nbsp;&#124;&nbsp;100</span>
-                                            <button type="button" class="btn btn-danger btn-small pull-right">Remove</button>
-                                            <button type="button" class="btn btn-default btn-small pull-right">Edit</button>
-                                            <div class="clearfix"></div>
-  			    				      	</li>
   		    				      	</ul>
   		  				      	</div>
   		  				      </div>
@@ -759,7 +805,7 @@ $(function() {
   		  				      	<hr />
   		  				        <div class="process-list-item">
   		  				        	<p class="text-muted">Click and drag to reorder criteria</p>
-  		  				        	<ul class="list-unstyled">
+  		  				        	<ul class="list-unstyled" id="process_criteria_list">
   		  				        	</ul>
   		  				        	<hr />
   		  				        </div>
@@ -788,26 +834,25 @@ $(function() {
 			        <h4 class="modal-title">Other Evidence Details</h4>
 			      </div>
 			      <div class="modal-body">
-			        <div role="form" class="form-horizontal" id="new_evidence_form">
+			        <form role="form" class="form-horizontal" id="new_evidence_form">
 			        	<!--Create rubric here-->
 			        	<div class="row">
-			        		<div class="col-lg-5">
+			        		<div class="col-lg-7">
 			        			<div class="form-group">
 			        				<label for="evidence_performance_name" class="col-sm-4 control-label">Performance Task</label>
 			        				<div class="col-sm-8">
-			        					<select name="evidence_performance_name" id="evidence_performance_name" class="form-control input-small" required="required">
-			        						<option>{# performancetask.name #}</option>
+			        					<select name="evidence_performance_name" id="evidence_performance_name" class="form-control input-small">
 			        					</select>
 			        				</div>
 			        			</div>
 				        		<div class="form-group">
 				        			<label for="evidence_name" class="col-sm-4 control-label">Name</label>
 				        			<div class="col-sm-8">
-					        			<input type="text" name="evidence_name" id="evidence_name" class="form-control input-small" required="required"/>
+					        			<input type="text" name="evidence_name" id="evidence_name" class="form-control input-small" required />
 					        		</div>
 				        		</div>
 				        		<div class="form-group">
-				        			<label for="evidence_goal" class="control-label col-sm-4">Goal of task</label>
+				        			<label for="evidence_goal" class="control-label col-sm-4">Goal</label>
 					        		<div class="col-sm-8">
 					        			<input type="text" name="evidence_goal" id="evidence_goal" class="form-control input-small" />
 					        		</div>
@@ -819,8 +864,8 @@ $(function() {
 						        	</div>
 					        	</div>
 					        </div><!-- col-lg-5 -->
-			        		<div class="col-lg-7">
-			        			<ul class="nav nav-tabs nav-justified">
+			        		<div class="col-lg-5">
+			        			<ul id="evidencecategorytab" class="nav nav-tabs nav-justified">
 			        			  <li class="active"><a href="#impact_section_ev" data-toggle="tab">Impact</a></li>
 			        			  <li><a href="#quality_section_ev" data-toggle="tab">Quality</a></li>
 			        			  <li><a href="#content_section_ev" data-toggle="tab">Content</a></li>
@@ -829,23 +874,19 @@ $(function() {
 			        			<div class="tab-content">
 			        				<div id="impact_section_ev" class="tab-pane active">
 				        				<ul id="impact_list">
-				        					<li><label for="impact_criteria"><input type="checkbox" name="impact_criteria" value="{# add_impact_criteria #}" /> {# choose_impact_criteria #}</label></li>
 				        				</ul>
 				        			</div>
 				        			<div id="quality_section_ev" class="tab-pane">
-					        				<ul id="quality_list">
-					        					<li><label for="quality_criteria"><input type="checkbox" name="quality_criteria" value="{# add_quality_criteria #}" /> {# choose_quality_criteria #}</label></li>
-					        				</ul>
+					        			<ul id="quality_list">
+					        			</ul>
 				        			</div>
 				        			<div id="content_section_ev" class="tab-pane">
-					        				<ul id="content_list">
-					        					<li><label for="content_criteria"><input type="checkbox" name="content_criteria" value="{# add_content_criteria #}" /> {# choose_content_criteria #}</label></li>
-					        				</ul>
+					        			<ul id="content_list">
+					        			</ul>
 				        			</div>
 				        			<div id="process_section_ev" class="tab-pane">
-					        				<ul id="process_list" style="max-height: 100px; overflow: scroll;">
-					        					<li><label for="process_criteria"><input type="checkbox" name="process_criteria" value="{# add_process_criteria #}" /> {# choose_process_criteria #}</label></li>
-					        				</ul>
+					        			<ul id="process_list" style="max-height: 100px; overflow: scroll;">
+					        			</ul>
 				        			</div>
 				        		</div>
 			        		</div>
@@ -854,7 +895,7 @@ $(function() {
 			        	  <input type="reset" class="btn btn-default" data-dismiss="modal" value="Close"/>
 			        	  <input type="submit" class="btn btn-primary" value="Save Details" id="btnSaveEvidence"/>
 			        	</div>
-			        </div>
+			        </form>
 			      </div>
 			    </div><!-- /.modal-content -->
 			  </div><!-- /.modal-dialog -->

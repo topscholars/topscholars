@@ -499,8 +499,24 @@
 		    </div>
 		    <div id="collapseTwo" class="panel-collapse  in">
 		      <div class="block-body">
-		        <ul class="block-list" id="classesList">
-		        	<!--
+		      		<table class="table table-hover" id="classesList">
+		        	{% for class in classschedulelist %}
+		        	<tr>
+		        		<td>
+			        		<a href="#" id="class-details" rel="popover" 
+			        			data-placement="left" 
+			        			data-container=".container" 
+			        			data-toggle="popover" title
+			        			data-trigger="hover" 
+			        			data-content="{{ class.description }}"
+			        			role="button">{{ class.code }} - {{ class.subcode }}
+			        		</a>
+		        		</td>	        	 
+		        	</tr>
+					{% endfor %}
+		      		</table>
+		      		<!--
+		        	<ul class="block-list" id="classesList">
 		        	{% for class in classschedulelist %}
 		        	<li>
 		        		<a href="#" id="class-details" rel="popover" 
@@ -513,8 +529,8 @@
 		        		</a>	        	 
 		        	</li>
 					{% endfor %}
-					-->
 		        </ul>
+		       -->
 		      </div>
 		    </div>
 		  </div>

@@ -164,7 +164,7 @@
                     $("<ul>").attr("id", "tagList").appendTo("#Ul1");
                     if (result.length > 0) {
                         $.each(result, function (i, val) {
-                            var li = $("<li>");
+                            var li = $("<li class='tag'>");
                             //create link
                             $("<a>").text(val[1] + "(" + val[3] + ")").attr({ "data-id": val[0], href: "#", class: "tagClickHighlightList" }).appendTo(li);
                             //set tag size

@@ -300,10 +300,10 @@ function EDITTABLE(){
 	    //		$('#processCollapse').addClass('active');
 	    //		$('#show-category-btn').addClass('hide');
 	    //	});	
-	    //$('#addActivityBtn').click(function (event) {
-	    //	$('#sortableActivities').append('<li class="well well-small"><div class="row"><div class="col-lg-6 col-md-6 col-sm-6"><input type="text" class="form-control input-small" placeholder="Add Activity Here" value="{# activity_title #}"></div><div class="col-lg-3 col-md-3 col-sm-3"><div class="onoffswitch"><input type="checkbox" name="onoffswitch2" class="onoffswitch-checkbox" id="myonoffswitch2" checked><label class="onoffswitch-label" for="myonoffswitch2"><div class="onoffswitch-inner"></div><div class="onoffswitch-switch"></div></label></div></div><div class="col-lg-3 col-md-3 col-sm-3"><a href="submissionReview.html" class="btn btn-small btn-success pull-right">Go to activity <i class="fa fa-arrow-right"></i></a></div></div></li>');
-	    //	event.preventDefault();
-	    //});
+	    $('#addActivityBtn').click(function (event) {
+	    	$('#sortableActivities').append('<li class="well well-small"><div class="row"><div class="col-lg-6 col-md-6 col-sm-6"><input type="text" class="form-control input-small" placeholder="Add Activity Here" value="{# activity_title #}"></div><div class="col-lg-3 col-md-3 col-sm-3"><div class="onoffswitch"><input type="checkbox" name="onoffswitch2" class="onoffswitch-checkbox" id="myonoffswitch2" checked><label class="onoffswitch-label" for="myonoffswitch2"><div class="onoffswitch-inner"></div><div class="onoffswitch-switch"></div></label></div></div><div class="col-lg-3 col-md-3 col-sm-3"><a href="submissionReview.html" class="btn btn-small btn-success pull-right">Go to activity <i class="fa fa-arrow-right"></i></a></div></div></li>');
+	    	event.preventDefault();
+	    });
 	    $("#sortable").sortable();
 	    $("#sortableActivities").sortable();
 	    $('#impact_criteria_list').sortable();

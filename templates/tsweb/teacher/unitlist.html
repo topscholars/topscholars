@@ -44,13 +44,22 @@ function EDITTABLE(){
 			{	class: evalClass,
 				id: id  },
 			function(result){
-				$("[id^=ele_]").val('');
+			    $("[id^=ele_]").val('');
 				$.each(result, function (ini, val) {
 				    if (ini == "assignment") {
-				        for (var i = 0; i < val.lenght; i++) {
-				            var html = '<input type="text" name="ele_performance" class="form-control input-small" id="ele_performance" />';
-				            html += '<button class="btn btn-small btn-default" data-toggle="modal" data-target="#new_pt_details_modal">Details</button>';
-				            console.log(val[i]);
+				        var performance = eval(val);
+				        if (performance.length > 0) {
+				            var html = '<div id="performancebtngrp" class="btn-group-vertical" style="width:100%;"></div>';
+                            html += '<div id="performancebtnclr" class="clearfix" style="height:10px;"></div>';
+				            $(html).insertBefore("#btnAddPerformance");
+				        }
+				        else {
+				            $('#performancebtngrp').remove();
+				            $('#performancebtnclr').remove();
+				        }
+				        for (var i = 0; i < performance.length; i++) {
+				            var html = '<button class="btn" data-toggle="modal" data-target="#new_pt_details_modal" onclick="var event = new EDITTABLE();event.getPerformanceData(' + performance[i].id + ',1);">' + performance[i].name + '</button>';
+				            $('#performancebtngrp').append(html);
 				        }
 				    }
 				    else {
@@ -176,26 +185,137 @@ function EDITTABLE(){
 	    $('#goStage2').removeClass('hide');
 	    $('#btnSave').show();
 	}
-	this.getPerformanceData = function (id) {
+	this.clearPerformanceValue = function () {
+	    $("[id^='pfm_']").each(function () {
+	        $(this).val('');
+	    });
+	    $("[id^='pfmi_']").each(function () {
+	        $(this).val('0');
+	    });
+	    $('#impact_criteria_list li').remove();
+	    $('#quality_criteria_list li').remove();
+	    $('#content_criteria_list li').remove();
+	    $('#process_criteria_list li').remove();
+	}
+	this.getAssignmentList = function () {
+	    $.getJSON(
+            url,
+            {
+                'class': evalClass,
+                'method': 'getAssignmentList',
+            },
+            function (result) {
+                var option = '';
+                $("#pfm_rubric_assignment option").remove();
+                option += '<option value="">Assignment</option>';
+                for (var i = 0; i < result.assignmentlist.length; i++) {
+                    option += '<option value="' + result.assignmentlist[i].id + '">' + result.assignmentlist[i].name + '</option>';
+                }
+                $("#pfm_rubric_assignment").append(option);
+            }).error(function (xhr, status, error) {
+                alert('Error occur. Please contact the administrator.');
+            });
+	}
+	this.getPerformanceData = function (id, type) {
+	    var method = 'getAssignment';
+	    if (type == 1) method = 'getPerformance';
+	    $.getJSON(
+            url,
+            {
+                'class': evalClass,
+                'method': method,
+                'id': id,
+            },
+            function (result) {
+                thisClass.clearPerformanceValue();
+                $.each(result, function (ini, val) {
+                    if ((ini != 'impactlist') && (ini != 'qualitylist') && (ini != 'contentlist') && (ini != 'processlist')) {
+                        $('#' + ini).val(val);
+                    }
+
+                    if ((ini == 'pfm_add_impact_tag') || (ini == 'pfm_add_quality_tag') || (ini == 'pfm_add_content_tag') || (ini == 'pfm_add_process_tag')) {
+                        $("#" + ini).parent().parent().find(".highlighter").html(val);
+                        $("#" + ini).hashtags({ refresh: true, autocompleteURL: taglist });
+                    }
+                });
+            }).error(function (xhr, status, error) {
+                alert('Error occur. Please contact the administrator.');
+            });
 	}
 	this.addImpactCriteria = function () {
-	    if ($('#add_impact_criteria').val() != '') {
+	    if ($('#pfm_add_impact_criteria').val() != '') {
+	        var html = '<li class="well well-small">';
+	        html += '<span class="pull-left" style="margin-top:5px;margin-bottom:0px;">' + $('#pfm_add_impact_criteria').val() + '&nbsp;&#124;&nbsp;' + $('#pfm_add_impact_weight').val() + '</span>';
+	        html += '<button type="button" class="btn btn-danger btn-small pull-right">Remove</button>';
+	        html += '<button type="button" class="btn btn-default btn-small pull-right">Edit</button>';
+	        html += '<input type="hidden" name="id" class="form-control input-small" value="" />';
+	        html += '<input type="hidden" name="name" class="form-control input-small" value="' + $('#pfm_add_impact_criteria').val() + '" />';
+	        html += '<input type="hidden" name="tag" class="form-control input-small" value="' + $('#pfm_add_impact_tag').val() + '" />';
+	        html += '<input type="hidden" name="weight" class="form-control input-small" value="' + $('#pfm_add_impact_weight').val() + '" />';
+	        html += '<div class="clearfix"></div>';
+	        html += '</li>';
+	        $('#impact_criteria_list').append(html);
+	        $('#pfm_add_impact_criteria').val('');
+	        $('#pfm_add_impact_tag').val('');
+	        $('#pfm_add_impact_weight').val('');
 	    }
 	}
 	this.addQualityCriteria = function () {
-	    if ($('#add_quality_criteria').val() != '') {
+	    if ($('#pfm_add_quality_criteria').val() != '') {
+	        var html = '<li class="well well-small">';
+	        html += '<span class="pull-left" style="margin-top:5px;margin-bottom:0px;">' + $('#pfm_add_quality_criteria').val() + '&nbsp;&#124;&nbsp;' + $('#pfm_add_quality_weight').val() + '</span>';
+	        html += '<button type="button" class="btn btn-danger btn-small pull-right">Remove</button>';
+	        html += '<button type="button" class="btn btn-default btn-small pull-right">Edit</button>';
+	        html += '<input type="hidden" name="id" class="form-control input-small" value="" />';
+	        html += '<input type="hidden" name="name" class="form-control input-small" value="' + $('#pfm_add_quality_criteria').val() + '" />';
+	        html += '<input type="hidden" name="tag" class="form-control input-small" value="' + $('#pfm_add_quality_tag').val() + '" />';
+	        html += '<input type="hidden" name="weight" class="form-control input-small" value="' + $('#pfm_add_quality_weight').val() + '" />';
+	        html += '<div class="clearfix"></div>';
+	        html += '</li>';
+	        $('#quality_criteria_list').append(html);
+	        $('#pfm_add_quality_criteria').val('');
+	        $('#pfm_add_quality_tag').val('');
+	        $('#pfm_add_quality_weight').val('');
 	    }
 	}
 	this.addContentCriteria = function () {
-	    if ($('#add_content_criteria').val() != '') {
+	    if ($('#pfm_add_content_criteria').val() != '') {
+	        var html = '<li class="well well-small">';
+	        html += '<span class="pull-left" style="margin-top:5px;margin-bottom:0px;">' + $('#pfm_add_content_criteria').val() + '&nbsp;&#124;&nbsp;' + $('#pfm_add_content_weight').val() + '</span>';
+	        html += '<button type="button" class="btn btn-danger btn-small pull-right">Remove</button>';
+	        html += '<button type="button" class="btn btn-default btn-small pull-right">Edit</button>';
+	        html += '<input type="hidden" name="id" class="form-control input-small" value="" />';
+	        html += '<input type="hidden" name="name" class="form-control input-small" value="' + $('#pfm_add_content_criteria').val() + '" />';
+	        html += '<input type="hidden" name="tag" class="form-control input-small" value="' + $('#pfm_add_content_tag').val() + '" />';
+	        html += '<input type="hidden" name="weight" class="form-control input-small" value="' + $('#pfm_add_content_weight').val() + '" />';
+	        html += '<div class="clearfix"></div>';
+	        html += '</li>';
+	        $('#content_criteria_list').append(html);
+	        $('#pfm_add_content_criteria').val('');
+	        $('#pfm_add_content_tag').val('');
+	        $('#pfm_add_content_weight').val('');
 	    } 
 	}
 	this.addProcessCriteria = function () {
-	    if ($('#add_process_criteria').val() != '') {
+	    if ($('#pfm_add_process_criteria').val() != '') {
+	        var html = '<li class="well well-small">';
+	        html += '<span class="pull-left" style="margin-top:5px;margin-bottom:0px;">' + $('#pfm_add_process_criteria').val() + '&nbsp;&#124;&nbsp;' + $('#pfm_add_process_weight').val() + '</span>';
+	        html += '<button type="button" class="btn btn-danger btn-small pull-right">Remove</button>';
+	        html += '<button type="button" class="btn btn-default btn-small pull-right">Edit</button>';
+	        html += '<input type="hidden" name="id" class="form-control input-small" value="" />';
+	        html += '<input type="hidden" name="name" class="form-control input-small" value="' + $('#pfm_add_process_criteria').val() + '" />';
+	        html += '<input type="hidden" name="tag" class="form-control input-small" value="' + $('#pfm_add_process_tag').val() + '" />';
+	        html += '<input type="hidden" name="weight" class="form-control input-small" value="' + $('#pfm_add_process_weight').val() + '" />';
+	        html += '<div class="clearfix"></div>';
+	        html += '</li>';
+	        $('#process_criteria_list').append(html);
+	        $('#pfm_add_process_criteria').val('');
+	        $('#pfm_add_process_tag').val('');
+	        $('#pfm_add_process_weight').val('');
 	    }
 	}
 	this.savePerformance = function () {
-	    if ($('#rubric_name').val() != '') {
+	    if ($('#pfm_rubric_name').val() != '') {
 	    }
 	}
 	this.getEvidenceData = function (id) {
@@ -224,6 +344,10 @@ function EDITTABLE(){
 		$("#ele_understanding").hashtags({ autocompleteURL:thisClass.availableTags });
 		$("#ele_knowledge").hashtags({ autocompleteURL:thisClass.availableTags });
 		$("#ele_skill").hashtags({ autocompleteURL: thisClass.availableTags });
+		$("#pfm_add_impact_tag").hashtags({ autocompleteURL: thisClass.availableTags });
+		$("#pfm_add_quality_tag").hashtags({ autocompleteURL: thisClass.availableTags });
+		$("#pfm_add_content_tag").hashtags({ autocompleteURL: thisClass.availableTags });
+		$("#pfm_add_process_tag").hashtags({ autocompleteURL: thisClass.availableTags });
 		$("#new_unit_btn").click(function () {
 		    $('.error').remove();
 		    currentstage = 1;
@@ -234,6 +358,8 @@ function EDITTABLE(){
 			    $(this).val('');
 			    $(this).parent().parent().find(".highlighter").html('');
 			});
+			$('#performancebtngrp').remove();
+			$('#performancebtnclr').remove();
 		});
 		$("#btnSave").click(function () {
 		    if (currentstage == 1) {
@@ -250,13 +376,19 @@ function EDITTABLE(){
 	    });
 	    $('#goStage1').attr('href', 'javascript:var event = new EDITTABLE();event.DisplayStage1();');
 	    $('#goStage2').attr('href', 'javascript:var event = new EDITTABLE();event.DisplayStage2();');
+	    $('#btnAddPerformance').click(function () {
+	        thisClass.clearPerformanceValue();
+	        $("[id^='pfm_']").each(function () {
+	            $(this).val('');
+	            $(this).parent().parent().find(".highlighter").html('');
+	        });
+	    });
 	    $('#new_pt_details_modal').on('show.bs.modal', function (e) {
 	        $('#criteria_tabs a:first').tab('show');
 	        $('.rubric-categories').removeClass('hide');
 	        $('.criteria-section').addClass('hide');
 	        $('#show-category-btn').removeClass('hide');
 	        $('#show_rubric_btn').addClass('hide');
-	        thisClass.getPerformanceData('');
 	    })
 	    $('#show-category-btn').click(function () {
 	        $('.rubric-categories').addClass('hide');
@@ -271,9 +403,9 @@ function EDITTABLE(){
 	    	$('.criteria-section').addClass('hide');
 	    	$('#show-category-btn').removeClass('hide');
 	    });
-	    $('#impact_weight_input').change(function(){
-	        var val = $('#impact_weight_input').val();
-	        $('#impact_percent').val(val);
+	    $('#pfmi_impact_weight_input').change(function(){
+	        var val = $('#pfmi_impact_weight_input').val();
+	        $('#pfmi_impact_percent').val(val);
 	    });
 	    $('.rubric-impact').click(function () {	
 	    	$('.rubric-categories').addClass('hide');
@@ -285,9 +417,9 @@ function EDITTABLE(){
 	    	$('#impactCollapse').addClass('active');
 	    	$('#show-category-btn').addClass('hide');
 	    });
-	    $('#quality_weight_input').change(function(){
-	    	var val = $('#quality_weight_input').val();
-	    	$('#quality_percent').val(val);
+	    $('#pfmi_quality_weight_input').change(function(){
+	    	var val = $('#pfmi_quality_weight_input').val();
+	    	$('#pfmi_quality_percent').val(val);
 	    });
 	    $('.rubric-quality').click(function () {
 	    	$('.rubric-categories').addClass('hide');
@@ -299,9 +431,9 @@ function EDITTABLE(){
 	    	$('#qualityCollapse').addClass('active');
 	    	$('#show-category-btn').addClass('hide');
 	    });
-	    $('#content_weight_input').change(function(){
-	    	var val = $('#content_weight_input').val();
-	    	$('#content_percent').val(val);
+	    $('#pfmi_content_weight_input').change(function(){
+	    	var val = $('#pfmi_content_weight_input').val();
+	    	$('#pfmi_content_percent').val(val);
 	    });
 	    $('.rubric-content').click(function () {
 	    	$('.rubric-categories').addClass('hide');
@@ -313,9 +445,9 @@ function EDITTABLE(){
 	    	$('#contentCollapse').addClass('active');
 	    	$('#show-category-btn').addClass('hide');
 	    });
-	    $('#process_weight_input').change(function(){
-	    	var val = $('#process_weight_input').val();
-	    	$('#process_percent').val(val);
+	    $('#pfmi_process_weight_input').change(function(){
+	    	var val = $('#pfmi_process_weight_input').val();
+	    	$('#pfmi_process_percent').val(val);
 	    });
 	    $('.rubric-process').click(function () {
 	    	$('.rubric-categories').addClass('hide');
@@ -343,7 +475,8 @@ function EDITTABLE(){
 	    $('#add_process_criteria_btn').click(function () {
 	        thisClass.addProcessCriteria();
 	    }); 
-	    $('#rubric_assignment').change(function () {
+	    $('#pfm_rubric_assignment').change(function () {
+	        thisClass.getPerformanceData($('#pfm_rubric_assignment').val(),0);
 	    });
 	    $('#btnSavePerformance').click(function () {
 	        thisClass.savePerformance();
@@ -605,55 +738,59 @@ $(function() {
 		        	<div class="row">
 		        		<div class="col-lg-5">
 			        		<div class="form-group">
-			        			<label for="rubric_name" class="col-sm-4 control-label">Name</label>
+			        			<label for="pfm_rubric_name" class="col-sm-4 control-label">Name</label>
 			        			<div class="col-sm-8">
-				        			<input type="text" name="rubric_name" id="rubric_name" class="form-control input-small" required/>
+                                    <input type="hidden" name="pfm_rubric_id" class="form-control input-small" id="pfm_rubric_id"/>	
+				        			<input type="text" name="pfm_rubric_name" id="pfm_rubric_name" class="form-control input-small" required/>
 				        		</div>
 			        		</div>
 			        		<div class="form-group">
-			        			<label for="rubric_assignment" class="control-label col-sm-4">Assignment</label>
+			        			<label for="pfm_rubric_assignment" class="control-label col-sm-4">Assignment</label>
 				        		<div class="col-sm-8">
-				        			<select class="form-control input-small" id="rubric_assignment">
+				        			<select class="form-control input-small" id="pfm_rubric_assignment">
+                                        {% for row in assignmentlist %}
+				                            <option value="{{ row.id }}">{{ row.name }}</option>
+				                        {% endfor %}
 				        			</select>
 				        		</div>
 			        		</div>
 				        	<div class="form-group">
-				        		<label for="rubric_goal" class="control-label col-sm-4">Goal Of Task</label>
+				        		<label for="pfm_rubric_goal" class="control-label col-sm-4">Goal Of Task</label>
 				        		<div class="col-sm-8">
-					        		<input type="text" name="rubric_goal" id="rubric_goal" class="form-control input-small" />
+					        		<input type="text" name="pfm_rubric_goal" id="pfm_rubric_goal" class="form-control input-small" />
 					        	</div>
 				        	</div>
 				        	<div class="form-group">
-				        		<label for="rubric_audience" class="control-label col-sm-4">Audience</label>
+				        		<label for="pfm_rubric_audience" class="control-label col-sm-4">Audience</label>
 				        		<div class="col-sm-8">
-					        		<input type="text" name="rubric_audience" id="rubric_audience" class="form-control input-small" />
+					        		<input type="text" name="pfm_rubric_audience" id="pfm_rubric_audience" class="form-control input-small" />
 					        	</div>
 				        	</div>
 				        	<div class="form-group">
-				        		<label for="rubric_context" class="control-label col-sm-4">Context/Situation</label>
+				        		<label for="pfm_rubric_context" class="control-label col-sm-4">Context/Situation</label>
 				        		<div class="col-sm-8">
-					        		<input type="text" name="rubric_context" id="rubric_context" class="form-control input-small" />
+					        		<input type="text" name="pfm_rubric_context" id="pfm_rubric_context" class="form-control input-small" />
 					        	</div>
 				        	</div>
 				        	<div class="form-group">
 				        		<label for="rubric_parameters" class="control-label col-sm-4">Parameters</label>
 				        		<div class="col-sm-4">
-					        		<input type="number" name="rubric_parameters_min" id="rubric_parameters_min" class="form-control input-small" placeholder="Min" />
+					        		<input type="number" name="pfm_rubric_parameters_min" id="pfm_rubric_parameters_min" class="form-control input-small" placeholder="Min" />
 					        	</div>
 					        	<div class="col-sm-4">
-					        		<input type="number" name="rubric_parameters_max" id="rubric_parameters_max" class="form-control input-small" placeholder="Max" />
+					        		<input type="number" name="pfm_rubric_parameters_max" id="pfm_rubric_parameters_max" class="form-control input-small" placeholder="Max" />
 					        	</div>
 				        	</div>
 				        	<div class="form-group">
-				        		<label for="rubric_revisions" class="control-label col-sm-4">Revisions</label>
+				        		<label for="pfm_rubric_revisions" class="control-label col-sm-4">Revisions</label>
 				        		<div class="col-sm-8">
-				        			<input type="number" name="rubric_revisions" id="rubric_revisions" class="form-control input-small" />
+				        			<input type="number" name="pfm_rubric_revisions" id="pfm_rubric_revisions" class="form-control input-small" />
 				        		</div>
 				        	</div>
 				        	<div class="form-group">
-				        		<label for="rubric_scale" class="control-label col-sm-4">Scale</label>
+				        		<label for="pfm_rubric_scale" class="control-label col-sm-4">Scale</label>
 				        		<div class="col-sm-8">
-					        		<input type="number" min="1" max="100" name="rubric_scale" id="rubric_scale" class="form-control input-small" placeholder="1 - 100"/>
+					        		<input type="number" min="1" max="100" name="pfm_rubric_scale" id="pfm_rubric_scale" class="form-control input-small" placeholder="1 - 100"/>
 					        	</div>
 				        	</div>
 				        </div><!-- col-lg-5 -->
@@ -662,22 +799,22 @@ $(function() {
 			        		<div class="rubric-categories">
 			        		<div class="rubric-impact circle circle-blue center-block">
 			        			<p>Impact</p>
-			        			<div class="weight-percent"><input id="impact_percent" type="number" max="100" step="1" name="impact-percent" class="circle-input" value="0" disabled />%</div>
+			        			<div class="weight-percent"><input id="pfmi_impact_percent" type="number" max="100" step="1" name="impact-percent" class="circle-input" value="0" disabled />%</div>
 			        		</div>
 			        		<div class="rubric-quality circle circle-green">
 			        			<p>Quality</p>
-			        			<div class="weight-percent"><input id="quality_percent" type="number" max="100" step="1" name="quality-percent" class="circle-input" value="0" disabled />%</div>
+			        			<div class="weight-percent"><input id="pfmi_quality_percent" type="number" max="100" step="1" name="quality-percent" class="circle-input" value="0" disabled />%</div>
 			        		</div>
 			        		<div class="rubric-objective circle circle-grey">
 			        			<div>Objective</div>
 			        		</div>
 			        		<div class="rubric-content circle circle-purple">
 			        			<p>Content</p>
-			        			<div class="weight-percent"><input id="content_percent" max="100" step="1" type="number" name="content-percent" class="circle-input" value="0" disabled />%</div>
+			        			<div class="weight-percent"><input id="pfmi_content_percent" max="100" step="1" type="number" name="content-percent" class="circle-input" value="0" disabled />%</div>
 			        		</div>
 			        		<div class="rubric-process circle circle-red">
 			        			<p>Process</p>
-			        			<div class="weight-percent"><input id="process_percent" max="100" step="1" type="number" name="process-percent" class="circle-input" value="0" disabled />%</div>
+			        			<div class="weight-percent"><input id="pfmi_process_percent" max="100" step="1" type="number" name="process-percent" class="circle-input" value="0" disabled />%</div>
 			        		</div>
 			        	</div>
 			        </div><!-- col-lg-7 -->
@@ -696,7 +833,7 @@ $(function() {
   		  				    	<div class="form-group">
   						    			<label class="control-label col-sm-4">Category Weight</label>
   						    			<div class="col-sm-2">
-  		  				    			<input class="form-control input-small" type="number" id="impact_weight_input" value="0" min="0" max="100"/>
+  		  				    			<input class="form-control input-small" type="number" id="pfmi_impact_weight_input" value="0" min="0" max="100"/>
   		  				    		</div>
   		  				    		<div class="col-sm-2">
   		  				    			<input type="button" class="btn btn-blue" value="+" id="add_impact_criteria_btn"/>
@@ -704,13 +841,14 @@ $(function() {
   		  				    	</div>
   		  				      <div class="panel-body rubric-criteria-panel">
   		  				      	<div class="alert alert-danger alertCriteria" style="display: none;">Please enter text.</div>
-  		    				      <input type="text" name="add_impact_criteria" id="add_impact_criteria" class="form-control input-small" placeholder="Add Impact Criteria"/>
+  		    				      <input type="text" name="pfm_add_impact_criteria" id="pfm_add_impact_criteria" class="form-control input-small" placeholder="Add Impact Criteria"/>
   		    				      <div class="row">
   		    				      	<div class="col-lg-6">
-  				    				      <input type="text" name="add-impact-tag" placeholder="Add Tag" id="add_impact_tag" class="form-control input-small add-tag" />
+  				    				      <!--<input type="text" name="add-impact-tag" placeholder="Add Tag" id="pfm_add_impact_tag" class="form-control input-small add-tag" />-->
+                                        <textarea name="add-impact-tag" placeholder="Add Tag" id="pfm_add_impact_tag" class="form-control input-small add-tag"></textarea>
   			    				      </div>
   			    				      <div class="col-lg-6">
-  				    				      <input type="number" min="1" max="100" name="add-impact-weight" value="" id="add_impact_weight" class="form-control input-small add-tag" placeholder="Weight 1 - 100" />
+  				    				      <input type="number" min="1" max="100" name="add-impact-weight" value="" id="pfm_add_impact_weight" class="form-control input-small add-tag" placeholder="Weight 1 - 100" />
   				    				    </div>
   		    				      </div>
   		    				      <hr />
@@ -725,7 +863,7 @@ $(function() {
   		    				    	<div class="form-group">
   		    				    		<label for="" class="control-label col-sm-4">Category Weight</label>
   		    				    		<div class="col-sm-2">
-  		    				    			<input class="form-control input-small" type="number" id="quality_weight_input" value="0" min="0" max="100"/>
+  		    				    			<input class="form-control input-small" type="number" id="pfmi_quality_weight_input" value="0" min="0" max="100"/>
   		    				    		</div>
   		    				    		<div class="col-sm-2">
   		    				    			<input type="button" class="btn btn-green" value="+" id="add_quality_criteria_btn"/>
@@ -733,13 +871,14 @@ $(function() {
   		    				    	</div>
   		    				      <div class="panel-body rubric-criteria-panel">
   		      				      <div class="alert alert-danger alertCriteria" style="display: none;">Please enter text.</div>
-  		    				      	<input type="text" name="add_quality_criteria" id="add_quality_criteria" class="form-control input-small" placeholder="Add Quality Criteria" />
+  		    				      	<input type="text" name="pfm_add_quality_criteria" id="pfm_add_quality_criteria" class="form-control input-small" placeholder="Add Quality Criteria" />
   		    				      	<div class="row">
   		    				      		<div class="col-lg-6">
-  			      				      	<input type="text" name="add-quality-tag" placeholder="Add Tag" id="add_quality_tag" class="form-control input-small add-tag" />
+  			      				      	<!--<input type="text" name="add-quality-tag" placeholder="Add Tag" id="pfm_add_quality_tag" class="form-control input-small add-tag" />-->
+                                        <textarea name="add-quality-tag" placeholder="Add Tag" id="pfm_add_quality_tag" class="form-control input-small add-tag"></textarea>
   		    				      		</div>
   		    				      		<div class="col-lg-6">
-  			      				      	<input type="number" min="1" max="100" name="add-quality-weight" value="" id="add_quality_weight" class="form-control input-small add-tag" placeholder="Weight 1 - 100" />
+  			      				      	<input type="number" min="1" max="100" name="add-quality-weight" value="" id="pfm_add_quality_weight" class="form-control input-small add-tag" placeholder="Weight 1 - 100" />
   			      				      </div>
   			      				    </div>
   		    				      	<hr />
@@ -755,7 +894,7 @@ $(function() {
   		    				    	<div class="form-group">
   		    				    		<label for="" class="control-label col-sm-4">Category Weight</label>
   		    				    		<div class="col-sm-2">
-  		    				    			<input class="form-control input-small" type="number" id="content_weight_input" value="0" min="0" max="100"/>
+  		    				    			<input class="form-control input-small" type="number" id="pfmi_content_weight_input" value="0" min="0" max="100"/>
   		    				    		</div>
   		    				    		<div class="col-sm-2">
   		    				    			<input type="button" class="btn btn-purple" value="+" id="add_content_criteria_btn"/>
@@ -763,13 +902,14 @@ $(function() {
   		    				    	</div>
   		    				      <div class="panel-body rubric-criteria-panel">
   		    				      	<div class="alert alert-danger alertCriteria" style="display: none;">Please enter text.</div>
-  		    				      	<input type="text" name="add_content_criteria" id="add_content_criteria" class="form-control input-small" placeholder="Add Content Criteria"/>
+  		    				      	<input type="text" name="pfm_add_content_criteria" id="pfm_add_content_criteria" class="form-control input-small" placeholder="Add Content Criteria"/>
   		    				      	<div class="row">
   		    				      		<div class="col-lg-6">
-  				    				      	<input type="text" name="add-content-tag" placeholder="Add Tag" id="add_content_tag" class="form-control input-small add-tag" />
+  				    				      	<!--<input type="text" name="add-content-tag" placeholder="Add Tag" id="pfm_add_content_tag" class="form-control input-small add-tag" />-->
+                                            <textarea name="add-content-tag" placeholder="Add Tag" id="pfm_add_content_tag" class="form-control input-small add-tag"></textarea>
   			    				      	</div>
   			    				      	<div class="col-lg-6">
-  				    				      	<input type="number" min="1" max="100" name="add-content-weight" value="" id="add_content_weight" class="form-control input-small add-tag" placeholder="Weight 1 - 100" />
+  				    				      	<input type="number" min="1" max="100" name="add-content-weight" value="" id="pfm_add_content_weight" class="form-control input-small add-tag" placeholder="Weight 1 - 100" />
   				    				      </div>
   				    				    </div>
   		    				      	<hr />
@@ -785,7 +925,7 @@ $(function() {
   		  				    	<div class="form-group">
   		  				    		<label for="" class="control-label col-sm-4">Category Weight</label>
   		  				    		<div class="col-sm-2">
-  		  				    			<input class="form-control input-small" type="number" id="process_weight_input" value="0" min="0" max="100"/>
+  		  				    			<input class="form-control input-small" type="number" id="pfmi_process_weight_input" value="0" min="0" max="100"/>
   		  				    		</div>
   		  				    		<div class="col-sm-2">
   		  				    			<input type="button" class="btn btn-red" value="+" id="add_process_criteria_btn"/>
@@ -793,13 +933,14 @@ $(function() {
   		  				    	</div>
   		  				      <div class="panel-body rubric-criteria-panel">
   		  				      	<div class="alert alert-danger alertCriteria" style="display: none;">Please enter text.</div>
-  		  				      	<input type="text" name="add_process_criteria" id="add_process_criteria" class="form-control input-small" placeholder="Add Process Criteria"/>
+  		  				      	<input type="text" name="pfm_add_process_criteria" id="pfm_add_process_criteria" class="form-control input-small" placeholder="Add Process Criteria"/>
   		  				      	<div class="row">
   		  				      		<div class="col-lg-6">
-  				  				      	<input type="text" name="add-process-tag" placeholder="Add Tag" id="add_process_tag" class="form-control input-small add-tag" />
+  				  				      	<!--<input type="text" name="add-process-tag" placeholder="Add Tag" id="pfm_add_process_tag" class="form-control input-small add-tag" />-->
+                                        <textarea name="add-process-tag" placeholder="Add Tag" id="pfm_add_process_tag" class="form-control input-small add-tag"></textarea>
   				  				      </div>
   				  				      <div class="col-lg-6">
-  				  				      	<input type="number" min="1" max="100" name="add-process-weight" value="" id="add_process_weight" class="form-control input-small add-tag" placeholder="Weight 1 - 100" />
+  				  				      	<input type="number" min="1" max="100" name="add-process-weight" value="" id="pfm_add_process_weight" class="form-control input-small add-tag" placeholder="Weight 1 - 100" />
   				  				      </div>
   				  				    </div>
   		  				      	<hr />

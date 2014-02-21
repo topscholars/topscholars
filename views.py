@@ -258,14 +258,17 @@ def tunitlist(request):
         return HttpResponseRedirect(reverse('tsweb:login'))
     else:
         login = Login.objects.get(id=userid)
+        clientid = login.clientid
         user_name = login.loginname
         recid = login.recid
         userlist = Userlist.objects.get(id=recid)
         securityprofile = userlist.securityprofileid
+        assignmentlist = list(Assignment.objects.filter(disabled = 0, deleted = 0, clientid = clientid).values("id","name"))
         urlActive = 'unitlist'
         context= {'user_name' : user_name,
                   'securityprofile' : securityprofile,
-                  'urlActive': urlActive,}
+                  'urlActive': urlActive,
+                  'assignmentlist': assignmentlist,}
         return render(request, 'tsweb/teacher/unitlist.html', context)
 
 

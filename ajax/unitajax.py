@@ -1,3 +1,5 @@
+import json
+
 from django.http import HttpResponse,HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.utils import simplejson
@@ -146,15 +148,24 @@ class UNITLIST():
             return HttpResponse(data, mimetype='application/json')
 
     def getAssignmentList(self,request):
-        userid = request.session['userid']
-        login = Login.objects.get(id=userid)
-        clientid = login.clientid
-        assignmentlist = list(Assignment.objects.filter(disabled = 0, deleted = 0, clientid = clientid).values("id","name"))                              
-        data_json = {
-                'assignmentlist': assignmentlist,
-                }
-        data = simplejson.dumps(data_json)
-        return HttpResponse(data, mimetype='application/json')
+        try:
+            userid = request.session['userid']
+            login = Login.objects.get(id=userid)
+            clientid = login.clientid
+            unitid = request.GET.get('unitid', False)
+        except KeyError:
+            return HttpResponse('error', mimetype='application/json')
+        else:
+            if unitid == False or unitid == '':
+                assignmentlist = list(Assignment.objects.filter(disabled = 0, deleted = 0, clientid = clientid).values("id","name"))                              
+            else:
+                assignment = UnitAssignment.objects.filter(unitid__id=unitid,deleted=0).values_list("assignmentid", flat=True)
+                assignmentlist = list(Assignment.objects.filter(disabled = 0, deleted = 0, clientid = clientid).exclude(id__in=assignment).values("id","name"))                              
+            data_json = {
+                    'assignmentlist': assignmentlist,
+                    }
+            data = simplejson.dumps(data_json)
+            return HttpResponse(data, mimetype='application/json')
 
     def getAssignment(self,request):
         try:
@@ -191,10 +202,10 @@ class UNITLIST():
                 processpercent = 0
             else:
                 processpercent = process.totalweight
-            impactlist = list(Rubriccriteria.objects.filter(disabled = 0, deleted = 0, rubricid = assignment.rubricid.id, categoryid = 1).values("id","criteria","weight"))
-            qualitylist = list(Rubriccriteria.objects.filter(disabled = 0, deleted = 0, rubricid = assignment.rubricid.id, categoryid = 2).values("id","criteria","weight"))
-            contentlist = list(Rubriccriteria.objects.filter(disabled = 0, deleted = 0, rubricid = assignment.rubricid.id, categoryid = 3).values("id","criteria","weight"))
-            processlist = list(Rubriccriteria.objects.filter(disabled = 0, deleted = 0, rubricid = assignment.rubricid.id, categoryid = 4).values("id","criteria","weight"))
+            impactlist = list(Rubriccriteria.objects.filter(disabled = 0, deleted = 0, rubricid = assignment.rubricid.id, categoryid = 1).values("id","criteria","weight","hashtag"))
+            qualitylist = list(Rubriccriteria.objects.filter(disabled = 0, deleted = 0, rubricid = assignment.rubricid.id, categoryid = 2).values("id","criteria","weight","hashtag"))
+            contentlist = list(Rubriccriteria.objects.filter(disabled = 0, deleted = 0, rubricid = assignment.rubricid.id, categoryid = 3).values("id","criteria","weight","hashtag"))
+            processlist = list(Rubriccriteria.objects.filter(disabled = 0, deleted = 0, rubricid = assignment.rubricid.id, categoryid = 4).values("id","criteria","weight","hashtag"))
             data_json = {
                     'pfm_rubric_name': assignment.name,
                     'pfm_rubric_assignment': id,
@@ -256,10 +267,10 @@ class UNITLIST():
                 processpercent = 0
             else:
                 processpercent = process.totalweight
-            impactlist = list(Rubriccriteria.objects.filter(disabled = 0, deleted = 0, rubricid = assignment.assignmentid.rubricid.id, categoryid = 1).values("id","criteria","weight"))
-            qualitylist = list(Rubriccriteria.objects.filter(disabled = 0, deleted = 0, rubricid = assignment.assignmentid.rubricid.id, categoryid = 2).values("id","criteria","weight"))
-            contentlist = list(Rubriccriteria.objects.filter(disabled = 0, deleted = 0, rubricid = assignment.assignmentid.rubricid.id, categoryid = 3).values("id","criteria","weight"))
-            processlist = list(Rubriccriteria.objects.filter(disabled = 0, deleted = 0, rubricid = assignment.assignmentid.rubricid.id, categoryid = 4).values("id","criteria","weight"))
+            impactlist = list(Rubriccriteria.objects.filter(disabled = 0, deleted = 0, rubricid = assignment.assignmentid.rubricid.id, categoryid = 1).values("id","criteria","weight","hashtag"))
+            qualitylist = list(Rubriccriteria.objects.filter(disabled = 0, deleted = 0, rubricid = assignment.assignmentid.rubricid.id, categoryid = 2).values("id","criteria","weight","hashtag"))
+            contentlist = list(Rubriccriteria.objects.filter(disabled = 0, deleted = 0, rubricid = assignment.assignmentid.rubricid.id, categoryid = 3).values("id","criteria","weight","hashtag"))
+            processlist = list(Rubriccriteria.objects.filter(disabled = 0, deleted = 0, rubricid = assignment.assignmentid.rubricid.id, categoryid = 4).values("id","criteria","weight","hashtag"))
             data_json = {
                     'pfm_rubric_id': id,
                     'pfm_rubric_name': assignment.assignmentid.name,
@@ -284,6 +295,1439 @@ class UNITLIST():
                     'contentlist': contentlist,
                     'processlist': processlist
                     }
+            data = simplejson.dumps(data_json)
+            return HttpResponse(data, mimetype='application/json')
+
+    def savePerformance(self,request):
+        DATE_FORMAT = "%d-%m-%Y" 
+        try:
+            userid = request.session['userid']
+            login = Login.objects.get(id=userid)
+            clientid = login.clientid
+            unitassignmentid = request.POST.get('unitassignmentid', False)
+            maxwords = request.POST.get('maxwords', False)
+            minwords = request.POST.get('minwords', False)
+            audience = request.POST.get('audience', False)
+            context = request.POST.get('context', False)
+            goal = request.POST.get('goal-of-task', False)
+            revisions = request.POST.get('revisions', False)
+            maxscalevalue = request.POST.get('maxscale', False)
+            impact_weight = request.POST.get('impact_weight', False)
+            quality_weight = request.POST.get('quality_weight', False)
+            content_weight = request.POST.get('content_weight', False)
+            process_weight = request.POST.get('process_weight', False)
+            impact_criteria = request.POST.get('impact_criteria', False)
+            quality_criteria = request.POST.get('quality_criteria', False)
+            content_criteria = request.POST.get('content_criteria', False)
+            process_criteria = request.POST.get('process_criteria', False)
+        except KeyError:
+            data_json = { 'status': 'error' }
+            data = simplejson.dumps(data_json)
+            return HttpResponse(data, mimetype='application/json')
+        else:
+            try:
+                unitassignment = UnitAssignment.objects.get(id=unitassignmentid)
+            except UnitAssignment.DoesNotExist:
+                data_json = { 'status': 'error' }
+                data = simplejson.dumps(data_json)
+                return HttpResponse(data, mimetype='application/json')
+            else:
+                unit = Unit.objects.get(id=unitassignment.unitid.id)
+                assignment = Assignment.objects.get(id=unitassignment.assignmentid.id)
+                rubric = Rubric.objects.get(id=assignment.rubricid.id)
+                
+                impactcriterialist = json.JSONDecoder().decode(impact_criteria)
+                qualitycriterialist = json.JSONDecoder().decode(quality_criteria)
+                contentcriterialist = json.JSONDecoder().decode(content_criteria)
+                processcriterialist = json.JSONDecoder().decode(process_criteria)
+                Rubriccriteria.objects.filter(Q(rubricid = rubric.id) & (Q(categoryid = 1) | Q(categoryid = 2) | Q(categoryid = 3) | Q(categoryid = 4))).update(deleted=1,modifiedby=userid,modifieddt = datetime.now())
+                c1 = Category.objects.get(id=1)
+                c2 = Category.objects.get(id=2)
+                c3 = Category.objects.get(id=3)
+                c4 = Category.objects.get(id=4)
+                    
+                order = 1
+                for r in impactcriterialist:
+                    if r['id'] == '':
+                        impactcriteria = Rubriccriteria()
+                        impactcriteria.rubricid = rubric
+                        impactcriteria.criteria = r['criteria']
+                        impactcriteria.categoryid = c1
+                        if r['weight'] == '':
+                            impactcriteria.weight = 0
+                        else:
+                            impactcriteria.weight = int(r['weight'])
+                        impactcriteria.hashtag = r['tag']
+                        impactcriteria.order = order
+                        impactcriteria.createddt = datetime.now()
+                        impactcriteria.createdby = userid
+                        impactcriteria.modifieddt = datetime.now()
+                        impactcriteria.modifiedby = userid
+                        impactcriteria.disabled = 0
+                        impactcriteria.deleted = 0
+                        impactcriteria.clientid = clientid
+                        impactcriteria.save()
+                        order = order + 1
+                    else:
+                        try:
+                            impactcriteria = Rubriccriteria.objects.get(id=int(r['id']))
+                        except ValueError:
+                            impactcriteria = Rubriccriteria()
+                            impactcriteria.rubricid = rubric
+                            impactcriteria.criteria = r['criteria']
+                            impactcriteria.categoryid = c1
+                            if r['weight'] == '':
+                                impactcriteria.weight = 0
+                            else:
+                                impactcriteria.weight = int(r['weight'])
+                            impactcriteria.hashtag = r['tag']
+                            impactcriteria.order = order
+                            impactcriteria.createddt = datetime.now()
+                            impactcriteria.createdby = userid
+                            impactcriteria.modifieddt = datetime.now()
+                            impactcriteria.modifiedby = userid
+                            impactcriteria.disabled = 0
+                            impactcriteria.deleted = 0
+                            impactcriteria.clientid = clientid
+                            impactcriteria.save()
+                            order = order + 1
+                        except Rubriccriteria.DoesNotExist:
+                            impactcriteria = Rubriccriteria()
+                            impactcriteria.rubricid = rubric
+                            impactcriteria.criteria = r['criteria']
+                            impactcriteria.categoryid = c1
+                            if r['weight'] == '':
+                                impactcriteria.weight = 0
+                            else:
+                                impactcriteria.weight = int(r['weight'])
+                            impactcriteria.hashtag = r['tag']
+                            impactcriteria.order = order
+                            impactcriteria.createddt = datetime.now()
+                            impactcriteria.createdby = userid
+                            impactcriteria.modifieddt = datetime.now()
+                            impactcriteria.modifiedby = userid
+                            impactcriteria.disabled = 0
+                            impactcriteria.deleted = 0
+                            impactcriteria.clientid = clientid
+                            impactcriteria.save()
+                            order = order + 1
+                        else:
+                            impactcriteria.rubricid = rubric
+                            if r['weight'] == '':
+                                impactcriteria.weight = 0
+                            else:
+                                impactcriteria.weight = int(r['weight'])
+                            impactcriteria.hashtag = r['tag']
+                            impactcriteria.order = order
+                            impactcriteria.modifieddt = datetime.now()
+                            impactcriteria.modifiedby = userid
+                            impactcriteria.deleted = 0
+                            impactcriteria.save()
+                            order = order + 1
+
+                order = 1
+                for r in qualitycriterialist:
+                    if r['id'] == '':
+                        qualitycriteria = Rubriccriteria()
+                        qualitycriteria.rubricid = rubric
+                        qualitycriteria.criteria = r['criteria']
+                        qualitycriteria.categoryid = c2
+                        if r['weight'] == '':
+                            qualitycriteria.weight = 0
+                        else:
+                            qualitycriteria.weight = int(r['weight'])
+                        qualitycriteria.hashtag = r['tag']
+                        qualitycriteria.order = order
+                        qualitycriteria.createddt = datetime.now()
+                        qualitycriteria.createdby = userid
+                        qualitycriteria.modifieddt = datetime.now()
+                        qualitycriteria.modifiedby = userid
+                        qualitycriteria.disabled = 0
+                        qualitycriteria.deleted = 0
+                        qualitycriteria.clientid = clientid
+                        qualitycriteria.save()
+                        order = order + 1
+                    else:
+                        try:
+                            qualitycriteria = Rubriccriteria.objects.get(id=int(r['id']))
+                        except ValueError:
+                            qualitycriteria = Rubriccriteria()
+                            qualitycriteria.rubricid = rubric
+                            qualitycriteria.criteria = r['criteria']
+                            qualitycriteria.categoryid = c2
+                            if r['weight'] == '':
+                                qualitycriteria.weight = 0
+                            else:
+                                qualitycriteria.weight = int(r['weight'])
+                            qualitycriteria.hashtag = r['tag']
+                            qualitycriteria.order = order
+                            qualitycriteria.createddt = datetime.now()
+                            qualitycriteria.createdby = userid
+                            qualitycriteria.modifieddt = datetime.now()
+                            qualitycriteria.modifiedby = userid
+                            qualitycriteria.disabled = 0
+                            qualitycriteria.deleted = 0
+                            qualitycriteria.clientid = clientid
+                            qualitycriteria.save()
+                            order = order + 1
+                        except Rubriccriteria.DoesNotExist:
+                            qualitycriteria = Rubriccriteria()
+                            qualitycriteria.rubricid = rubric
+                            qualitycriteria.criteria = r['criteria']
+                            qualitycriteria.categoryid = c2
+                            if r['weight'] == '':
+                                qualitycriteria.weight = 0
+                            else:
+                                qualitycriteria.weight = int(r['weight'])
+                            qualitycriteria.hashtag = r['tag']
+                            qualitycriteria.order = order
+                            qualitycriteria.createddt = datetime.now()
+                            qualitycriteria.createdby = userid
+                            qualitycriteria.modifieddt = datetime.now()
+                            qualitycriteria.modifiedby = userid
+                            qualitycriteria.disabled = 0
+                            qualitycriteria.deleted = 0
+                            qualitycriteria.clientid = clientid
+                            qualitycriteria.save()
+                            order = order + 1
+                        else:
+                            qualitycriteria.rubricid = rubric
+                            if r['weight'] == '':
+                                qualitycriteria.weight = 0
+                            else:
+                                qualitycriteria.weight = int(r['weight'])
+                            qualitycriteria.hashtag = r['tag']
+                            qualitycriteria.order = order
+                            qualitycriteria.modifieddt = datetime.now()
+                            qualitycriteria.modifiedby = userid
+                            qualitycriteria.deleted = 0
+                            qualitycriteria.save()
+                            order = order + 1
+
+                order = 1
+                for r in contentcriterialist:
+                    if r['id'] == '':
+                        contentcriteria = Rubriccriteria()
+                        contentcriteria.rubricid = rubric
+                        contentcriteria.criteria = r['criteria']
+                        contentcriteria.categoryid = c3
+                        if r['weight'] == '':
+                            contentcriteria.weight = 0
+                        else:
+                            contentcriteria.weight = int(r['weight'])
+                        contentcriteria.hashtag = r['tag']
+                        contentcriteria.order = order
+                        contentcriteria.createddt = datetime.now()
+                        contentcriteria.createdby = userid
+                        contentcriteria.modifieddt = datetime.now()
+                        contentcriteria.modifiedby = userid
+                        contentcriteria.disabled = 0
+                        contentcriteria.deleted = 0
+                        contentcriteria.clientid = clientid
+                        contentcriteria.save()
+                        order = order + 1
+                    else:
+                        try:
+                            contentcriteria = Rubriccriteria.objects.get(id=int(r['id']))
+                        except ValueError:
+                            contentcriteria = Rubriccriteria()
+                            contentcriteria.rubricid = rubric
+                            contentcriteria.criteria = r['criteria']
+                            contentcriteria.categoryid = c3
+                            if r['weight'] == '':
+                                contentcriteria.weight = 0
+                            else:
+                                contentcriteria.weight = int(r['weight'])
+                            contentcriteria.hashtag = r['tag']
+                            contentcriteria.order = order
+                            contentcriteria.createddt = datetime.now()
+                            contentcriteria.createdby = userid
+                            contentcriteria.modifieddt = datetime.now()
+                            contentcriteria.modifiedby = userid
+                            contentcriteria.disabled = 0
+                            contentcriteria.deleted = 0
+                            contentcriteria.clientid = clientid
+                            contentcriteria.save()
+                            order = order + 1
+                        except Rubriccriteria.DoesNotExist:
+                            contentcriteria = Rubriccriteria()
+                            contentcriteria.rubricid = rubric
+                            contentcriteria.criteria = r['criteria']
+                            contentcriteria.categoryid = c3
+                            if r['weight'] == '':
+                                contentcriteria.weight = 0
+                            else:
+                                contentcriteria.weight = int(r['weight'])
+                            contentcriteria.hashtag = r['tag']
+                            contentcriteria.order = order
+                            contentcriteria.createddt = datetime.now()
+                            contentcriteria.createdby = userid
+                            contentcriteria.modifieddt = datetime.now()
+                            contentcriteria.modifiedby = userid
+                            contentcriteria.disabled = 0
+                            contentcriteria.deleted = 0
+                            contentcriteria.clientid = clientid
+                            contentcriteria.save()
+                            order = order + 1
+                        else:
+                            contentcriteria.rubricid = rubric
+                            if r['weight'] == '':
+                                contentcriteria.weight = 0
+                            else:
+                                contentcriteria.weight = int(r['weight'])
+                            contentcriteria.hashtag = r['tag']
+                            contentcriteria.order = order
+                            contentcriteria.modifieddt = datetime.now()
+                            contentcriteria.modifiedby = userid
+                            contentcriteria.deleted = 0
+                            contentcriteria.save()
+                            order = order + 1
+
+                order = 1
+                for r in processcriterialist:
+                    if r['id'] == '':
+                        processcriteria = Rubriccriteria()
+                        processcriteria.rubricid = rubric
+                        processcriteria.criteria = r['criteria']
+                        processcriteria.categoryid = c4
+                        if r['weight'] == '':
+                            processcriteria.weight = 0
+                        else:
+                            processcriteria.weight = int(r['weight'])
+                        processcriteria.hashtag = r['tag']
+                        processcriteria.order = order
+                        processcriteria.createddt = datetime.now()
+                        processcriteria.createdby = userid
+                        processcriteria.modifieddt = datetime.now()
+                        processcriteria.modifiedby = userid
+                        processcriteria.disabled = 0
+                        processcriteria.deleted = 0
+                        processcriteria.clientid = clientid
+                        processcriteria.save()
+                        order = order + 1
+                    else:
+                        try:
+                            processcriteria = Rubriccriteria.objects.get(id=int(r['id']))
+                        except ValueError:
+                            processcriteria = Rubriccriteria()
+                            processcriteria.rubricid = rubric
+                            processcriteria.criteria = r['criteria']
+                            processcriteria.categoryid = c4
+                            if r['weight'] == '':
+                                processcriteria.weight = 0
+                            else:
+                                processcriteria.weight = int(r['weight'])
+                            processcriteria.hashtag = r['tag']
+                            processcriteria.order = order
+                            processcriteria.createddt = datetime.now()
+                            processcriteria.createdby = userid
+                            processcriteria.modifieddt = datetime.now()
+                            processcriteria.modifiedby = userid
+                            processcriteria.disabled = 0
+                            processcriteria.deleted = 0
+                            processcriteria.clientid = clientid
+                            processcriteria.save()
+                            order = order + 1
+                        except Rubriccriteria.DoesNotExist:
+                            processcriteria = Rubriccriteria()
+                            processcriteria.rubricid = rubric
+                            processcriteria.criteria = r['criteria']
+                            processcriteria.categoryid = c4
+                            if r['weight'] == '':
+                                processcriteria.weight = 0
+                            else:
+                                processcriteria.weight = int(r['weight'])
+                            processcriteria.hashtag = r['tag']
+                            processcriteria.order = order
+                            processcriteria.createddt = datetime.now()
+                            processcriteria.createdby = userid
+                            processcriteria.modifieddt = datetime.now()
+                            processcriteria.modifiedby = userid
+                            processcriteria.disabled = 0
+                            processcriteria.deleted = 0
+                            processcriteria.clientid = clientid
+                            processcriteria.save()
+                            order = order + 1
+                        else:
+                            processcriteria.rubricid = rubric
+                            if r['weight'] == '':
+                                processcriteria.weight = 0
+                            else:
+                                processcriteria.weight = int(r['weight'])
+                            processcriteria.hashtag = r['tag']
+                            processcriteria.order = order
+                            processcriteria.modifieddt = datetime.now()
+                            processcriteria.modifiedby = userid
+                            processcriteria.deleted = 0
+                            processcriteria.save()
+                            order = order + 1
+
+                entityid = Entity.objects.get(id=6)
+                try:
+                    impact = Categorylink.objects.get(entityid = 6,recid = assignment.rubricid.id, categoryid = 1)
+                except Categorylink.DoesNotExist:
+                    impact = Categorylink()
+                    impact.entityid = entityid
+                    impact.recid = rubric.id
+                    impact.categoryid = c1
+                    impact.totalweight = impact_weight
+                    impact.createddt = datetime.now()
+                    impact.createdby = userid
+                    impact.modifieddt = datetime.now()
+                    impact.modifiedby = userid
+                    impact.deleted = 0
+                    impact.clientid = clientid
+                    impact.save()
+                else:
+                    impact.totalweight = impact_weight
+                    impact.modifieddt = datetime.now()
+                    impact.modifiedby = userid
+                    impact.save()
+
+                try:
+                    quality = Categorylink.objects.get(entityid = 6,recid = assignment.rubricid.id, categoryid = 2)
+                except Categorylink.DoesNotExist:
+                    quality = Categorylink()
+                    quality.entityid = entityid
+                    quality.recid = rubric.id
+                    quality.categoryid = c2
+                    quality.totalweight = quality_weight
+                    quality.createddt = datetime.now()
+                    quality.createdby = userid
+                    quality.modifieddt = datetime.now()
+                    quality.modifiedby = userid
+                    quality.deleted = 0
+                    quality.clientid = clientid
+                    quality.save()
+                else:
+                    quality.totalweight = quality_weight
+                    quality.modifieddt = datetime.now()
+                    quality.modifiedby = userid
+                    quality.save()
+
+                try:
+                    content = Categorylink.objects.get(entityid = 6,recid = assignment.rubricid.id, categoryid = 3)
+                except Categorylink.DoesNotExist:
+                    content = Categorylink()
+                    content.entityid = entityid
+                    content.recid = rubric.id
+                    content.categoryid = c3
+                    content.totalweight = content_weight
+                    content.createddt = datetime.now()
+                    content.createdby = userid
+                    content.modifieddt = datetime.now()
+                    content.modifiedby = userid
+                    content.deleted = 0
+                    content.clientid = clientid
+                    content.save()
+                else:
+                    content.totalweight = content_weight
+                    content.modifieddt = datetime.now()
+                    content.modifiedby = userid
+                    content.save()
+
+                try:
+                    process = Categorylink.objects.get(entityid = 6,recid = assignment.rubricid.id, categoryid = 4)
+                except Categorylink.DoesNotExist:
+                    process = Categorylink()
+                    process.entityid = entityid
+                    process.recid = rubric.id
+                    process.categoryid = c4
+                    process.totalweight = process_weight
+                    process.createddt = datetime.now()
+                    process.createdby = userid
+                    process.modifieddt = datetime.now()
+                    process.modifiedby = userid
+                    process.deleted = 0
+                    process.clientid = clientid
+                    process.save()
+                else:
+                    process.totalweight = process_weight
+                    process.modifieddt = datetime.now()
+                    process.modifiedby = userid
+                    process.save()
+
+                rubric.maxscalevalue = maxscalevalue
+                rubric.modifieddt = datetime.now()
+                rubric.modifiedby = userid
+                rubric.save()
+
+                assignment.goaloftask = goal
+                if maxwords == False or maxwords == '':
+                    assignment.maxwords = 0
+                else:
+                    assignment.maxwords = maxwords
+                if minwords == False or minwords == '':
+                    assignment.minwords = 0
+                else:
+                    assignment.minwords = minwords
+                assignment.audience = audience
+                assignment.contextsituation = context
+                if revisions == False or revisions == '':
+                    assignment.revisions = 0
+                else:
+                    assignment.revisions = revisions  
+                assignment.modifieddt = datetime.now()
+                assignment.modifiedby = userid
+                assignment.save()
+                
+                data_json = { 'status': 'success' }
+                data = simplejson.dumps(data_json)
+                return HttpResponse(data, mimetype='application/json')
+            
+
+    def addPerformance(self,request):
+        DATE_FORMAT = "%d-%m-%Y" 
+        try:
+            userid = request.session['userid']
+            login = Login.objects.get(id=userid)
+            clientid = login.clientid
+            unitid = request.POST.get('unitid', False)
+            name = request.POST.get('name', False)
+            assignmentid = request.POST.get('assignment', False)
+            maxwords = request.POST.get('maxwords', False)
+            minwords = request.POST.get('minwords', False)
+            audience = request.POST.get('audience', False)
+            context = request.POST.get('context', False)
+            goal = request.POST.get('goal-of-task', False)
+            revisions = request.POST.get('revisions', False)
+            maxscalevalue = request.POST.get('maxscale', False)
+            impact_weight = request.POST.get('impact_weight', False)
+            quality_weight = request.POST.get('quality_weight', False)
+            content_weight = request.POST.get('content_weight', False)
+            process_weight = request.POST.get('process_weight', False)
+            impact_criteria = request.POST.get('impact_criteria', False)
+            quality_criteria = request.POST.get('quality_criteria', False)
+            content_criteria = request.POST.get('content_criteria', False)
+            process_criteria = request.POST.get('process_criteria', False)
+        except KeyError:
+            data_json = { 'status': 'error' }
+            data = simplejson.dumps(data_json)
+            return HttpResponse(data, mimetype='application/json')
+        else:
+            if assignmentid == False or assignmentid == '':
+                try:
+                    Assignment.objects.get(name=name,clientid=clientid,deleted=0)
+                except Assignment.DoesNotExist:
+                    rubrictypeint = Selectionlist.objects.get(id=1)
+                    rubric = Rubric()
+                    rubric.name = name
+                    rubric.entityid = 3
+                    rubric.typeid = rubrictypeint
+                    rubric.maxscalevalue = maxscalevalue
+                    rubric.createddt = datetime.now()
+                    rubric.createdby = userid
+                    rubric.modifieddt = datetime.now()
+                    rubric.modifiedby = userid
+                    rubric.disabled = 0
+                    rubric.deleted = 0
+                    rubric.clientid = clientid
+                    rubric.system = 0
+                    rubric.save()
+
+                    rubriclist = Rubric.objects.latest("id")
+                    
+                    assignment = Assignment()
+                    assignment.name = name
+                    assignment.goaloftask = goal
+                    if maxwords == False or maxwords == '':
+                        assignment.maxwords = 0
+                    else:
+                        assignment.maxwords = maxwords
+                    if minwords == False or minwords == '':
+                        assignment.minwords = 0
+                    else:
+                        assignment.minwords = minwords
+                    assignment.rubricid = rubriclist
+                    assignment.audience = audience
+                    assignment.contextsituation = context
+                    assignment.duedate = datetime.now()
+                    if revisions == False or revisions == '':
+                        assignment.revisions = 0
+                    else:
+                        assignment.revisions = revisions  
+                    assignment.modifieddt = datetime.now()
+                    assignment.modifiedby = userid
+                    assignment.createddt = datetime.now()
+                    assignment.createdby = userid
+                    assignment.disabled = 0
+                    assignment.deleted = 0
+                    assignment.clientid = clientid
+                    assignment.save()
+
+                    assignmentlist = Assignment.objects.latest("id")
+
+                    unit = Unit.objects.get(id=unitid)
+                    unitassignment = UnitAssignment()
+                    unitassignment.unitid = unit
+                    unitassignment.assignmentid = assignmentlist
+                    unitassignment.createddt = datetime.now()
+                    unitassignment.createdby = userid
+                    unitassignment.modifieddt = datetime.now()
+                    unitassignment.modifiedby = userid
+                    unitassignment.deleted = 0
+                    unitassignment.clientid = clientid
+                    unitassignment.save()
+
+                    entityid = Entity.objects.get(id=6)
+                    c1 = Category.objects.get(id=1)
+                    impact = Categorylink()
+                    impact.entityid = entityid
+                    impact.recid = rubriclist.id
+                    impact.categoryid = c1
+                    impact.totalweight = impact_weight
+                    impact.createddt = datetime.now()
+                    impact.createdby = userid
+                    impact.modifieddt = datetime.now()
+                    impact.modifiedby = userid
+                    impact.deleted = 0
+                    impact.clientid = clientid
+                    impact.save()
+
+                    c2 = Category.objects.get(id=2)
+                    quality = Categorylink()
+                    quality.entityid = entityid
+                    quality.recid = rubriclist.id
+                    quality.categoryid = c2
+                    quality.totalweight = quality_weight
+                    quality.createddt = datetime.now()
+                    quality.createdby = userid
+                    quality.modifieddt = datetime.now()
+                    quality.modifiedby = userid
+                    quality.deleted = 0
+                    quality.clientid = clientid
+                    quality.save()
+
+                    c3 = Category.objects.get(id=3)
+                    content = Categorylink()
+                    content.entityid = entityid
+                    content.recid = rubriclist.id
+                    content.categoryid = c3
+                    content.totalweight = content_weight
+                    content.createddt = datetime.now()
+                    content.createdby = userid
+                    content.modifieddt = datetime.now()
+                    content.modifiedby = userid
+                    content.deleted = 0
+                    content.clientid = clientid
+                    content.save()
+
+                    c4 = Category.objects.get(id=4)
+                    process = Categorylink()
+                    process.entityid = entityid
+                    process.recid = rubriclist.id
+                    process.categoryid = c4
+                    process.totalweight = process_weight
+                    process.createddt = datetime.now()
+                    process.createdby = userid
+                    process.modifieddt = datetime.now()
+                    process.modifiedby = userid
+                    process.deleted = 0
+                    process.clientid = clientid
+                    process.save()
+
+                    impactcriterialist = json.JSONDecoder().decode(impact_criteria)
+                    qualitycriterialist = json.JSONDecoder().decode(quality_criteria)
+                    contentcriterialist = json.JSONDecoder().decode(content_criteria)
+                    processcriterialist = json.JSONDecoder().decode(process_criteria)
+
+                    order = 1
+                    for r in impactcriterialist:
+                        impactcriteria = Rubriccriteria()
+                        impactcriteria.rubricid = rubriclist
+                        impactcriteria.criteria = r['criteria']
+                        impactcriteria.categoryid = c1
+                        if r['weight'] == '':
+                            impactcriteria.weight = 0
+                        else:
+                            impactcriteria.weight = int(r['weight'])
+                        impactcriteria.hashtag = r['tag']
+                        impactcriteria.order = order
+                        impactcriteria.createddt = datetime.now()
+                        impactcriteria.createdby = userid
+                        impactcriteria.modifieddt = datetime.now()
+                        impactcriteria.modifiedby = userid
+                        impactcriteria.disabled = 0
+                        impactcriteria.deleted = 0
+                        impactcriteria.clientid = clientid
+                        impactcriteria.save()
+                        order = order + 1
+
+                    order = 1
+                    for r in qualitycriterialist:
+                        qualitycriteria = Rubriccriteria()
+                        qualitycriteria.rubricid = rubriclist
+                        qualitycriteria.criteria = r['criteria']
+                        qualitycriteria.categoryid = c2
+                        if r['weight'] == '':
+                            qualitycriteria.weight = 0
+                        else:
+                            qualitycriteria.weight = int(r['weight'])
+                        qualitycriteria.hashtag = r['tag']
+                        qualitycriteria.order = order
+                        qualitycriteria.createddt = datetime.now()
+                        qualitycriteria.createdby = userid
+                        qualitycriteria.modifieddt = datetime.now()
+                        qualitycriteria.modifiedby = userid
+                        qualitycriteria.disabled = 0
+                        qualitycriteria.deleted = 0
+                        qualitycriteria.clientid = clientid
+                        qualitycriteria.save()
+                        order = order + 1
+
+                    order = 1
+                    for r in contentcriterialist:
+                        contentcriteria = Rubriccriteria()
+                        contentcriteria.rubricid = rubriclist
+                        contentcriteria.criteria = r['criteria']
+                        contentcriteria.categoryid = c3
+                        if r['weight'] == '':
+                            contentcriteria.weight = 0
+                        else:
+                            contentcriteria.weight = int(r['weight'])
+                        contentcriteria.hashtag = r['tag']
+                        contentcriteria.order = order
+                        contentcriteria.createddt = datetime.now()
+                        contentcriteria.createdby = userid
+                        contentcriteria.modifieddt = datetime.now()
+                        contentcriteria.modifiedby = userid
+                        contentcriteria.disabled = 0
+                        contentcriteria.deleted = 0
+                        contentcriteria.clientid = clientid
+                        contentcriteria.save()
+                        order = order + 1
+
+                    order = 1
+                    for r in processcriterialist:
+                        processcriteria = Rubriccriteria()
+                        processcriteria.rubricid = rubriclist
+                        processcriteria.criteria = r['criteria']
+                        processcriteria.categoryid = c4
+                        if r['weight'] == '':
+                            processcriteria.weight = 0
+                        else:
+                            processcriteria.weight = int(r['weight'])
+                        processcriteria.hashtag = r['tag']
+                        processcriteria.order = order
+                        processcriteria.createddt = datetime.now()
+                        processcriteria.createdby = userid
+                        processcriteria.modifieddt = datetime.now()
+                        processcriteria.modifiedby = userid
+                        processcriteria.disabled = 0
+                        processcriteria.deleted = 0
+                        processcriteria.clientid = clientid
+                        processcriteria.save()
+                        order = order + 1
+
+                    lesson = Lesson()
+                    lesson.name = name
+                    lesson.lessontype = 25
+                    lesson.abilitylevel = 0
+                    lesson.goaloftask = goal
+                    lesson.createddt = datetime.now()
+                    lesson.createdby = userid
+                    lesson.modifieddt = datetime.now()
+                    lesson.modifiedby = userid
+                    lesson.disabled = 0
+                    lesson.deleted = 0
+                    lesson.clientid = clientid
+                    lesson.save()
+
+                    lessonlist = Lesson.objects.latest("id")
+
+                    unitlesson = Unitlessonlnk()
+                    unitlesson.unitid = unit
+                    unitlesson.assignmentid = assignmentlist
+                    unitlesson.lessonid = lessonlist
+                    unitlesson.createddt = datetime.now()
+                    unitlesson.createdby = userid
+                    unitlesson.modifieddt = datetime.now()
+                    unitlesson.modifiedby = userid
+                    unitlesson.deleted = 0
+                    unitlesson.order = 1
+                    unitlesson.save()
+
+                    impactlist = Rubriccriteria.objects.filter(disabled = 0, deleted = 0, rubricid = rubriclist.id, categoryid = 1)
+                    order = 1
+                    for r in impactlist:
+                        lessonrubriccriterialnk = Lessonrubriccriterialnk()
+                        lessonrubriccriterialnk.unitid = unit
+                        lessonrubriccriterialnk.lessonid = lessonlist
+                        lessonrubriccriterialnk.criteriaid = r
+                        lessonrubriccriterialnk.createddt = datetime.now()
+                        lessonrubriccriterialnk.createdby = userid
+                        lessonrubriccriterialnk.modifieddt = datetime.now()
+                        lessonrubriccriterialnk.modifiedby = userid
+                        lessonrubriccriterialnk.deleted = 0
+                        lessonrubriccriterialnk.order = order
+                        lessonrubriccriterialnk.clientid = clientid
+                        lessonrubriccriterialnk.save()
+                        order = order + 1
+                        
+                    qualitylist = Rubriccriteria.objects.filter(disabled = 0, deleted = 0, rubricid = rubriclist.id, categoryid = 2)
+                    order = 1
+                    for r in qualitylist:
+                        lessonrubriccriterialnk = Lessonrubriccriterialnk()
+                        lessonrubriccriterialnk.unitid = unit
+                        lessonrubriccriterialnk.lessonid = lessonlist
+                        lessonrubriccriterialnk.criteriaid = r
+                        lessonrubriccriterialnk.createddt = datetime.now()
+                        lessonrubriccriterialnk.createdby = userid
+                        lessonrubriccriterialnk.modifieddt = datetime.now()
+                        lessonrubriccriterialnk.modifiedby = userid
+                        lessonrubriccriterialnk.deleted = 0
+                        lessonrubriccriterialnk.order = order
+                        lessonrubriccriterialnk.clientid = clientid
+                        lessonrubriccriterialnk.save()
+                        order = order + 1
+                        
+                    contentlist = Rubriccriteria.objects.filter(disabled = 0, deleted = 0, rubricid = rubriclist.id, categoryid = 3)
+                    order = 1
+                    for r in contentlist:
+                        lessonrubriccriterialnk = Lessonrubriccriterialnk()
+                        lessonrubriccriterialnk.unitid = unit
+                        lessonrubriccriterialnk.lessonid = lessonlist
+                        lessonrubriccriterialnk.criteriaid = r
+                        lessonrubriccriterialnk.createddt = datetime.now()
+                        lessonrubriccriterialnk.createdby = userid
+                        lessonrubriccriterialnk.modifieddt = datetime.now()
+                        lessonrubriccriterialnk.modifiedby = userid
+                        lessonrubriccriterialnk.deleted = 0
+                        lessonrubriccriterialnk.order = order
+                        lessonrubriccriterialnk.clientid = clientid
+                        lessonrubriccriterialnk.save()
+                        order = order + 1
+                        
+                    processlist = Rubriccriteria.objects.filter(disabled = 0, deleted = 0, rubricid = rubriclist.id, categoryid = 4)
+                    order = 1
+                    for r in processlist:
+                        lessonrubriccriterialnk = Lessonrubriccriterialnk()
+                        lessonrubriccriterialnk.unitid = unit
+                        lessonrubriccriterialnk.lessonid = lessonlist
+                        lessonrubriccriterialnk.criteriaid = r
+                        lessonrubriccriterialnk.createddt = datetime.now()
+                        lessonrubriccriterialnk.createdby = userid
+                        lessonrubriccriterialnk.modifieddt = datetime.now()
+                        lessonrubriccriterialnk.modifiedby = userid
+                        lessonrubriccriterialnk.deleted = 0
+                        lessonrubriccriterialnk.order = order
+                        lessonrubriccriterialnk.clientid = clientid
+                        lessonrubriccriterialnk.save()
+                        order = order + 1
+                    
+                    activity = Lessonactivity()
+                    activity.name = name
+                    activity.activitytype = 26
+                    activity.assignmentid = assignmentlist.id
+                    activity.createddt = datetime.now()
+                    activity.createdby = userid
+                    activity.modifieddt = datetime.now()
+                    activity.modifiedby  = userid
+                    activity.deleted = 0
+                    activity.order = 100
+                    activity.clientid = clientid
+                    activity.abilitylevel = 0
+                    activity.criteriaid = 0
+                    activity.save()
+
+                    activitylist = Lessonactivity.objects.latest("id")
+
+                    lessonactivity = Lessonactivitylnk()
+                    lessonactivity.lessonid = lessonlist
+                    lessonactivity.activityid = activitylist
+                    lessonactivity.createddt = datetime.now()
+                    lessonactivity.createdby = userid
+                    lessonactivity.modifieddt = datetime.now()
+                    lessonactivity.modifiedby = userid
+                    lessonactivity.deleted = 0
+                    lessonactivity.lessonrubriccriterialnkid = 0
+                    lessonactivity.save()
+                    
+                    data_json = { 'status': 'success' }
+                else:
+                    data_json = { 'status': 'duplicate' }
+            else:
+                try:
+                    unitassignment = UnitAssignment.objects.get(unitid__id=unitid,assignmentid__id=assignmentid,deleted=0)
+                except UnitAssignment.DoesNotExist:
+                    unit = Unit.objects.get(id=unitid)
+                    assignment = Assignment.objects.get(id=assignmentid)
+                    rubriclist = Rubric.objects.get(id=assignment.rubricid.id)
+                    unitassignment = UnitAssignment()
+                    unitassignment.unitid = unit
+                    unitassignment.assignmentid = assignment
+                    unitassignment.createddt = datetime.now()
+                    unitassignment.createdby = userid
+                    unitassignment.modifieddt = datetime.now()
+                    unitassignment.modifiedby = userid
+                    unitassignment.deleted = 0
+                    unitassignment.clientid = clientid
+                    unitassignment.save()
+
+                    impactcriterialist = json.JSONDecoder().decode(impact_criteria)
+                    qualitycriterialist = json.JSONDecoder().decode(quality_criteria)
+                    contentcriterialist = json.JSONDecoder().decode(content_criteria)
+                    processcriterialist = json.JSONDecoder().decode(process_criteria)
+                    Rubriccriteria.objects.filter(Q(rubricid = rubriclist.id) & (Q(categoryid = 1) | Q(categoryid = 2) | Q(categoryid = 3) | Q(categoryid = 4))).update(deleted=1,modifiedby=userid,modifieddt = datetime.now())
+                    c1 = Category.objects.get(id=1)
+                    c2 = Category.objects.get(id=2)
+                    c3 = Category.objects.get(id=3)
+                    c4 = Category.objects.get(id=4)
+                    
+                    order = 1
+                    for r in impactcriterialist:
+                        if r['id'] == '':
+                            impactcriteria = Rubriccriteria()
+                            impactcriteria.rubricid = rubriclist
+                            impactcriteria.criteria = r['criteria']
+                            impactcriteria.categoryid = c1
+                            if r['weight'] == '':
+                                impactcriteria.weight = 0
+                            else:
+                                impactcriteria.weight = int(r['weight'])
+                            impactcriteria.hashtag = r['tag']
+                            impactcriteria.order = order
+                            impactcriteria.createddt = datetime.now()
+                            impactcriteria.createdby = userid
+                            impactcriteria.modifieddt = datetime.now()
+                            impactcriteria.modifiedby = userid
+                            impactcriteria.disabled = 0
+                            impactcriteria.deleted = 0
+                            impactcriteria.clientid = clientid
+                            impactcriteria.save()
+                            order = order + 1
+                        else:
+                            try:
+                                impactcriteria = Rubriccriteria.objects.get(id=int(r['id']))
+                            except ValueError:
+                                impactcriteria = Rubriccriteria()
+                                impactcriteria.rubricid = rubriclist
+                                impactcriteria.criteria = r['criteria']
+                                impactcriteria.categoryid = c1
+                                if r['weight'] == '':
+                                    impactcriteria.weight = 0
+                                else:
+                                    impactcriteria.weight = int(r['weight'])
+                                impactcriteria.hashtag = r['tag']
+                                impactcriteria.order = order
+                                impactcriteria.createddt = datetime.now()
+                                impactcriteria.createdby = userid
+                                impactcriteria.modifieddt = datetime.now()
+                                impactcriteria.modifiedby = userid
+                                impactcriteria.disabled = 0
+                                impactcriteria.deleted = 0
+                                impactcriteria.clientid = clientid
+                                impactcriteria.save()
+                                order = order + 1
+                            except Rubriccriteria.DoesNotExist:
+                                impactcriteria = Rubriccriteria()
+                                impactcriteria.rubricid = rubriclist
+                                impactcriteria.criteria = r['criteria']
+                                impactcriteria.categoryid = c1
+                                if r['weight'] == '':
+                                    impactcriteria.weight = 0
+                                else:
+                                    impactcriteria.weight = int(r['weight'])
+                                impactcriteria.hashtag = r['tag']
+                                impactcriteria.order = order
+                                impactcriteria.createddt = datetime.now()
+                                impactcriteria.createdby = userid
+                                impactcriteria.modifieddt = datetime.now()
+                                impactcriteria.modifiedby = userid
+                                impactcriteria.disabled = 0
+                                impactcriteria.deleted = 0
+                                impactcriteria.clientid = clientid
+                                impactcriteria.save()
+                                order = order + 1
+                            else:
+                                impactcriteria.rubricid = rubriclist
+                                if r['weight'] == '':
+                                    impactcriteria.weight = 0
+                                else:
+                                    impactcriteria.weight = int(r['weight'])
+                                impactcriteria.hashtag = r['tag']
+                                impactcriteria.order = order
+                                impactcriteria.modifieddt = datetime.now()
+                                impactcriteria.modifiedby = userid
+                                impactcriteria.deleted = 0
+                                impactcriteria.save()
+                                order = order + 1
+
+                    order = 1
+                    for r in qualitycriterialist:
+                        if r['id'] == '':
+                            qualitycriteria = Rubriccriteria()
+                            qualitycriteria.rubricid = rubriclist
+                            qualitycriteria.criteria = r['criteria']
+                            qualitycriteria.categoryid = c2
+                            if r['weight'] == '':
+                                qualitycriteria.weight = 0
+                            else:
+                                qualitycriteria.weight = int(r['weight'])
+                            qualitycriteria.hashtag = r['tag']
+                            qualitycriteria.order = order
+                            qualitycriteria.createddt = datetime.now()
+                            qualitycriteria.createdby = userid
+                            qualitycriteria.modifieddt = datetime.now()
+                            qualitycriteria.modifiedby = userid
+                            qualitycriteria.disabled = 0
+                            qualitycriteria.deleted = 0
+                            qualitycriteria.clientid = clientid
+                            qualitycriteria.save()
+                            order = order + 1
+                        else:
+                            try:
+                                qualitycriteria = Rubriccriteria.objects.get(id=int(r['id']))
+                            except ValueError:
+                                qualitycriteria = Rubriccriteria()
+                                qualitycriteria.rubricid = rubriclist
+                                qualitycriteria.criteria = r['criteria']
+                                qualitycriteria.categoryid = c2
+                                if r['weight'] == '':
+                                    qualitycriteria.weight = 0
+                                else:
+                                    qualitycriteria.weight = int(r['weight'])
+                                qualitycriteria.hashtag = r['tag']
+                                qualitycriteria.order = order
+                                qualitycriteria.createddt = datetime.now()
+                                qualitycriteria.createdby = userid
+                                qualitycriteria.modifieddt = datetime.now()
+                                qualitycriteria.modifiedby = userid
+                                qualitycriteria.disabled = 0
+                                qualitycriteria.deleted = 0
+                                qualitycriteria.clientid = clientid
+                                qualitycriteria.save()
+                                order = order + 1
+                            except Rubriccriteria.DoesNotExist:
+                                qualitycriteria = Rubriccriteria()
+                                qualitycriteria.rubricid = rubriclist
+                                qualitycriteria.criteria = r['criteria']
+                                qualitycriteria.categoryid = c2
+                                if r['weight'] == '':
+                                    qualitycriteria.weight = 0
+                                else:
+                                    qualitycriteria.weight = int(r['weight'])
+                                qualitycriteria.hashtag = r['tag']
+                                qualitycriteria.order = order
+                                qualitycriteria.createddt = datetime.now()
+                                qualitycriteria.createdby = userid
+                                qualitycriteria.modifieddt = datetime.now()
+                                qualitycriteria.modifiedby = userid
+                                qualitycriteria.disabled = 0
+                                qualitycriteria.deleted = 0
+                                qualitycriteria.clientid = clientid
+                                qualitycriteria.save()
+                                order = order + 1
+                            else:
+                                qualitycriteria.rubricid = rubriclist
+                                if r['weight'] == '':
+                                    qualitycriteria.weight = 0
+                                else:
+                                    qualitycriteria.weight = int(r['weight'])
+                                qualitycriteria.hashtag = r['tag']
+                                qualitycriteria.order = order
+                                qualitycriteria.modifieddt = datetime.now()
+                                qualitycriteria.modifiedby = userid
+                                qualitycriteria.deleted = 0
+                                qualitycriteria.save()
+                                order = order + 1
+
+                    order = 1
+                    for r in contentcriterialist:
+                        if r['id'] == '':
+                            contentcriteria = Rubriccriteria()
+                            contentcriteria.rubricid = rubriclist
+                            contentcriteria.criteria = r['criteria']
+                            contentcriteria.categoryid = c3
+                            if r['weight'] == '':
+                                contentcriteria.weight = 0
+                            else:
+                                contentcriteria.weight = int(r['weight'])
+                            contentcriteria.hashtag = r['tag']
+                            contentcriteria.order = order
+                            contentcriteria.createddt = datetime.now()
+                            contentcriteria.createdby = userid
+                            contentcriteria.modifieddt = datetime.now()
+                            contentcriteria.modifiedby = userid
+                            contentcriteria.disabled = 0
+                            contentcriteria.deleted = 0
+                            contentcriteria.clientid = clientid
+                            contentcriteria.save()
+                            order = order + 1
+                        else:
+                            try:
+                                contentcriteria = Rubriccriteria.objects.get(id=int(r['id']))
+                            except ValueError:
+                                contentcriteria = Rubriccriteria()
+                                contentcriteria.rubricid = rubriclist
+                                contentcriteria.criteria = r['criteria']
+                                contentcriteria.categoryid = c3
+                                if r['weight'] == '':
+                                    contentcriteria.weight = 0
+                                else:
+                                    contentcriteria.weight = int(r['weight'])
+                                contentcriteria.hashtag = r['tag']
+                                contentcriteria.order = order
+                                contentcriteria.createddt = datetime.now()
+                                contentcriteria.createdby = userid
+                                contentcriteria.modifieddt = datetime.now()
+                                contentcriteria.modifiedby = userid
+                                contentcriteria.disabled = 0
+                                contentcriteria.deleted = 0
+                                contentcriteria.clientid = clientid
+                                contentcriteria.save()
+                                order = order + 1
+                            except Rubriccriteria.DoesNotExist:
+                                contentcriteria = Rubriccriteria()
+                                contentcriteria.rubricid = rubriclist
+                                contentcriteria.criteria = r['criteria']
+                                contentcriteria.categoryid = c3
+                                if r['weight'] == '':
+                                    contentcriteria.weight = 0
+                                else:
+                                    contentcriteria.weight = int(r['weight'])
+                                contentcriteria.hashtag = r['tag']
+                                contentcriteria.order = order
+                                contentcriteria.createddt = datetime.now()
+                                contentcriteria.createdby = userid
+                                contentcriteria.modifieddt = datetime.now()
+                                contentcriteria.modifiedby = userid
+                                contentcriteria.disabled = 0
+                                contentcriteria.deleted = 0
+                                contentcriteria.clientid = clientid
+                                contentcriteria.save()
+                                order = order + 1
+                            else:
+                                contentcriteria.rubricid = rubriclist
+                                if r['weight'] == '':
+                                    contentcriteria.weight = 0
+                                else:
+                                    contentcriteria.weight = int(r['weight'])
+                                contentcriteria.hashtag = r['tag']
+                                contentcriteria.order = order
+                                contentcriteria.modifieddt = datetime.now()
+                                contentcriteria.modifiedby = userid
+                                contentcriteria.deleted = 0
+                                contentcriteria.save()
+                                order = order + 1
+
+                    order = 1
+                    for r in processcriterialist:
+                        if r['id'] == '':
+                            processcriteria = Rubriccriteria()
+                            processcriteria.rubricid = rubriclist
+                            processcriteria.criteria = r['criteria']
+                            processcriteria.categoryid = c4
+                            if r['weight'] == '':
+                                processcriteria.weight = 0
+                            else:
+                                processcriteria.weight = int(r['weight'])
+                            processcriteria.hashtag = r['tag']
+                            processcriteria.order = order
+                            processcriteria.createddt = datetime.now()
+                            processcriteria.createdby = userid
+                            processcriteria.modifieddt = datetime.now()
+                            processcriteria.modifiedby = userid
+                            processcriteria.disabled = 0
+                            processcriteria.deleted = 0
+                            processcriteria.clientid = clientid
+                            processcriteria.save()
+                            order = order + 1
+                        else:
+                            try:
+                                processcriteria = Rubriccriteria.objects.get(id=int(r['id']))
+                            except ValueError:
+                                processcriteria = Rubriccriteria()
+                                processcriteria.rubricid = rubriclist
+                                processcriteria.criteria = r['criteria']
+                                processcriteria.categoryid = c4
+                                if r['weight'] == '':
+                                    processcriteria.weight = 0
+                                else:
+                                    processcriteria.weight = int(r['weight'])
+                                processcriteria.hashtag = r['tag']
+                                processcriteria.order = order
+                                processcriteria.createddt = datetime.now()
+                                processcriteria.createdby = userid
+                                processcriteria.modifieddt = datetime.now()
+                                processcriteria.modifiedby = userid
+                                processcriteria.disabled = 0
+                                processcriteria.deleted = 0
+                                processcriteria.clientid = clientid
+                                processcriteria.save()
+                                order = order + 1
+                            except Rubriccriteria.DoesNotExist:
+                                processcriteria = Rubriccriteria()
+                                processcriteria.rubricid = rubriclist
+                                processcriteria.criteria = r['criteria']
+                                processcriteria.categoryid = c4
+                                if r['weight'] == '':
+                                    processcriteria.weight = 0
+                                else:
+                                    processcriteria.weight = int(r['weight'])
+                                processcriteria.hashtag = r['tag']
+                                processcriteria.order = order
+                                processcriteria.createddt = datetime.now()
+                                processcriteria.createdby = userid
+                                processcriteria.modifieddt = datetime.now()
+                                processcriteria.modifiedby = userid
+                                processcriteria.disabled = 0
+                                processcriteria.deleted = 0
+                                processcriteria.clientid = clientid
+                                processcriteria.save()
+                                order = order + 1
+                            else:
+                                processcriteria.rubricid = rubriclist
+                                if r['weight'] == '':
+                                    processcriteria.weight = 0
+                                else:
+                                    processcriteria.weight = int(r['weight'])
+                                processcriteria.hashtag = r['tag']
+                                processcriteria.order = order
+                                processcriteria.modifieddt = datetime.now()
+                                processcriteria.modifiedby = userid
+                                processcriteria.deleted = 0
+                                processcriteria.save()
+                                order = order + 1
+
+                    entityid = Entity.objects.get(id=6)
+                    try:
+                        impact = Categorylink.objects.get(entityid = 6,recid = assignment.rubricid.id, categoryid = 1)
+                    except Categorylink.DoesNotExist:
+                        impact = Categorylink()
+                        impact.entityid = entityid
+                        impact.recid = rubriclist.id
+                        impact.categoryid = c1
+                        impact.totalweight = impact_weight
+                        impact.createddt = datetime.now()
+                        impact.createdby = userid
+                        impact.modifieddt = datetime.now()
+                        impact.modifiedby = userid
+                        impact.deleted = 0
+                        impact.clientid = clientid
+                        impact.save()
+                    else:
+                        impact.totalweight = impact_weight
+                        impact.modifieddt = datetime.now()
+                        impact.modifiedby = userid
+                        impact.save()
+
+                    try:
+                        quality = Categorylink.objects.get(entityid = 6,recid = assignment.rubricid.id, categoryid = 2)
+                    except Categorylink.DoesNotExist:
+                        quality = Categorylink()
+                        quality.entityid = entityid
+                        quality.recid = rubriclist.id
+                        quality.categoryid = c2
+                        quality.totalweight = quality_weight
+                        quality.createddt = datetime.now()
+                        quality.createdby = userid
+                        quality.modifieddt = datetime.now()
+                        quality.modifiedby = userid
+                        quality.deleted = 0
+                        quality.clientid = clientid
+                        quality.save()
+                    else:
+                        quality.totalweight = quality_weight
+                        quality.modifieddt = datetime.now()
+                        quality.modifiedby = userid
+                        quality.save()
+
+                    try:
+                        content = Categorylink.objects.get(entityid = 6,recid = assignment.rubricid.id, categoryid = 3)
+                    except Categorylink.DoesNotExist:
+                        content = Categorylink()
+                        content.entityid = entityid
+                        content.recid = rubriclist.id
+                        content.categoryid = c3
+                        content.totalweight = content_weight
+                        content.createddt = datetime.now()
+                        content.createdby = userid
+                        content.modifieddt = datetime.now()
+                        content.modifiedby = userid
+                        content.deleted = 0
+                        content.clientid = clientid
+                        content.save()
+                    else:
+                        content.totalweight = content_weight
+                        content.modifieddt = datetime.now()
+                        content.modifiedby = userid
+                        content.save()
+
+                    try:
+                        process = Categorylink.objects.get(entityid = 6,recid = assignment.rubricid.id, categoryid = 4)
+                    except Categorylink.DoesNotExist:
+                        process = Categorylink()
+                        process.entityid = entityid
+                        process.recid = rubriclist.id
+                        process.categoryid = c4
+                        process.totalweight = process_weight
+                        process.createddt = datetime.now()
+                        process.createdby = userid
+                        process.modifieddt = datetime.now()
+                        process.modifiedby = userid
+                        process.deleted = 0
+                        process.clientid = clientid
+                        process.save()
+                    else:
+                        process.totalweight = process_weight
+                        process.modifieddt = datetime.now()
+                        process.modifiedby = userid
+                        process.save()
+
+                    rubric = Rubric.objects.get(id=assignment.rubricid.id)
+                    rubric.maxscalevalue = maxscalevalue
+                    rubric.modifieddt = datetime.now()
+                    rubric.modifiedby = userid
+                    rubric.save()
+
+                    lesson = Lesson()
+                    lesson.name = name
+                    lesson.lessontype = 25
+                    lesson.abilitylevel = 0
+                    lesson.goaloftask = goal
+                    lesson.createddt = datetime.now()
+                    lesson.createdby = userid
+                    lesson.modifieddt = datetime.now()
+                    lesson.modifiedby = userid
+                    lesson.disabled = 0
+                    lesson.deleted = 0
+                    lesson.clientid = clientid
+                    lesson.save()
+
+                    lessonlist = Lesson.objects.latest("id")
+
+                    unitlesson = Unitlessonlnk()
+                    unitlesson.unitid = unit
+                    unitlesson.assignmentid = assignment
+                    unitlesson.lessonid = lessonlist
+                    unitlesson.createddt = datetime.now()
+                    unitlesson.createdby = userid
+                    unitlesson.modifieddt = datetime.now()
+                    unitlesson.modifiedby = userid
+                    unitlesson.deleted = 0
+                    unitlesson.order = 1
+                    unitlesson.save()
+
+                    impactlist = Rubriccriteria.objects.filter(disabled = 0, deleted = 0, rubricid = rubriclist.id, categoryid = 1)
+                    order = 1
+                    for r in impactlist:
+                        lessonrubriccriterialnk = Lessonrubriccriterialnk()
+                        lessonrubriccriterialnk.unitid = unit
+                        lessonrubriccriterialnk.lessonid = lessonlist
+                        lessonrubriccriterialnk.criteriaid = r
+                        lessonrubriccriterialnk.createddt = datetime.now()
+                        lessonrubriccriterialnk.createdby = userid
+                        lessonrubriccriterialnk.modifieddt = datetime.now()
+                        lessonrubriccriterialnk.modifiedby = userid
+                        lessonrubriccriterialnk.deleted = 0
+                        lessonrubriccriterialnk.order = order
+                        lessonrubriccriterialnk.clientid = clientid
+                        lessonrubriccriterialnk.save()
+                        order = order + 1
+                        
+                    qualitylist = Rubriccriteria.objects.filter(disabled = 0, deleted = 0, rubricid = rubriclist.id, categoryid = 2)
+                    order = 1
+                    for r in qualitylist:
+                        lessonrubriccriterialnk = Lessonrubriccriterialnk()
+                        lessonrubriccriterialnk.unitid = unit
+                        lessonrubriccriterialnk.lessonid = lessonlist
+                        lessonrubriccriterialnk.criteriaid = r
+                        lessonrubriccriterialnk.createddt = datetime.now()
+                        lessonrubriccriterialnk.createdby = userid
+                        lessonrubriccriterialnk.modifieddt = datetime.now()
+                        lessonrubriccriterialnk.modifiedby = userid
+                        lessonrubriccriterialnk.deleted = 0
+                        lessonrubriccriterialnk.order = order
+                        lessonrubriccriterialnk.clientid = clientid
+                        lessonrubriccriterialnk.save()
+                        order = order + 1
+                        
+                    contentlist = Rubriccriteria.objects.filter(disabled = 0, deleted = 0, rubricid = rubriclist.id, categoryid = 3)
+                    order = 1
+                    for r in contentlist:
+                        lessonrubriccriterialnk = Lessonrubriccriterialnk()
+                        lessonrubriccriterialnk.unitid = unit
+                        lessonrubriccriterialnk.lessonid = lessonlist
+                        lessonrubriccriterialnk.criteriaid = r
+                        lessonrubriccriterialnk.createddt = datetime.now()
+                        lessonrubriccriterialnk.createdby = userid
+                        lessonrubriccriterialnk.modifieddt = datetime.now()
+                        lessonrubriccriterialnk.modifiedby = userid
+                        lessonrubriccriterialnk.deleted = 0
+                        lessonrubriccriterialnk.order = order
+                        lessonrubriccriterialnk.clientid = clientid
+                        lessonrubriccriterialnk.save()
+                        order = order + 1
+                        
+                    processlist = Rubriccriteria.objects.filter(disabled = 0, deleted = 0, rubricid = rubriclist.id, categoryid = 4)
+                    order = 1
+                    for r in processlist:
+                        lessonrubriccriterialnk = Lessonrubriccriterialnk()
+                        lessonrubriccriterialnk.unitid = unit
+                        lessonrubriccriterialnk.lessonid = lessonlist
+                        lessonrubriccriterialnk.criteriaid = r
+                        lessonrubriccriterialnk.createddt = datetime.now()
+                        lessonrubriccriterialnk.createdby = userid
+                        lessonrubriccriterialnk.modifieddt = datetime.now()
+                        lessonrubriccriterialnk.modifiedby = userid
+                        lessonrubriccriterialnk.deleted = 0
+                        lessonrubriccriterialnk.order = order
+                        lessonrubriccriterialnk.clientid = clientid
+                        lessonrubriccriterialnk.save()
+                        order = order + 1
+                    
+                    activity = Lessonactivity()
+                    activity.name = name
+                    activity.activitytype = 26
+                    activity.assignmentid = assignment.id
+                    activity.createddt = datetime.now()
+                    activity.createdby = userid
+                    activity.modifieddt = datetime.now()
+                    activity.modifiedby  = userid
+                    activity.deleted = 0
+                    activity.order = 100
+                    activity.clientid = clientid
+                    activity.abilitylevel = 0
+                    activity.criteriaid = 0
+                    activity.save()
+
+                    activitylist = Lessonactivity.objects.latest("id")
+
+                    lessonactivity = Lessonactivitylnk()
+                    lessonactivity.lessonid = lessonlist
+                    lessonactivity.activityid = activitylist
+                    lessonactivity.createddt = datetime.now()
+                    lessonactivity.createdby = userid
+                    lessonactivity.modifieddt = datetime.now()
+                    lessonactivity.modifiedby = userid
+                    lessonactivity.deleted = 0
+                    lessonactivity.lessonrubriccriterialnkid = 0
+                    lessonactivity.save()
+
+                    assignment.goaloftask = goal
+                    if maxwords == False or maxwords == '':
+                        assignment.maxwords = 0
+                    else:
+                        assignment.maxwords = maxwords
+                    if minwords == False or minwords == '':
+                        assignment.minwords = 0
+                    else:
+                        assignment.minwords = minwords
+                    assignment.audience = audience
+                    assignment.contextsituation = context
+                    if revisions == False or revisions == '':
+                        assignment.revisions = 0
+                    else:
+                        assignment.revisions = revisions  
+                    assignment.modifieddt = datetime.now()
+                    assignment.modifiedby = userid
+                    assignment.save()
+                    
+                    data_json = { 'status': 'success' }
+                else:
+                    data_json = { 'status': 'duplicate' }
+
             data = simplejson.dumps(data_json)
             return HttpResponse(data, mimetype='application/json')
         

@@ -77,7 +77,8 @@ class Rubric(models.Model):
     modifiedby = models.IntegerField(db_column='ModifiedBy') # Field name made lowercase.
     disabled = models.IntegerField(db_column='Disabled') # Field name made lowercase.
     deleted = models.IntegerField(db_column='Deleted') # Field name made lowercase.
-    clientid = models.IntegerField(db_column='ClientId') # Field name made lowercase. 
+    clientid = models.IntegerField(db_column='ClientId') # Field name made lowercase.
+    system = models.IntegerField(db_column='System') # Field name made lowercase.
     class Meta:
         db_table = 'rubric'
 
@@ -310,7 +311,7 @@ class Category(models.Model):
 
 class Rubriccriteria(models.Model):
     id = models.IntegerField(primary_key=True, db_column='ID') # Field name made lowercase.
-    rubricid = models.IntegerField(db_column='RubricId') # Field name made lowercase.
+    rubricid = models.ForeignKey(Rubric,related_name="Rubriccriteriatorubric",db_column='RubricId') # Field name made lowercase.
     criteria = models.TextField(max_length=100L, db_column='Criteria') # Field name made lowercase.
     categoryid = models.ForeignKey(Category,related_name="Rubriccriteriatocategory", db_column='CategoryId') # Field name made lowercase.
     weight = models.IntegerField(db_column='weight') # Field name made lowercase.
@@ -709,6 +710,11 @@ class Unit(models.Model):
     class Meta:
         db_table = 'unit'
 
+    def getLessonNum(self):
+        unitid = self.id
+        result = Unitlessonlnk.objects.filter(unitid = unitid, deleted = 0).count()
+        return result
+
 class UnitAssignment(models.Model):
     id = models.IntegerField(primary_key=True, db_column='ID') # Field name made lowercase.
     unitid = models.ForeignKey(Unit,related_name="Unitassignmenttounit", db_column='UnitID') # Field name made lowercase.
@@ -740,7 +746,7 @@ class Lesson(models.Model):
     id = models.IntegerField(primary_key=True, db_column='ID') # Field name made lowercase.
     name = models.CharField(max_length=100L, db_column='Name') # Field name made lowercase.
     lessontype = models.IntegerField(db_column='LessonType') # Field name made lowercase.
-    abilitylevel = models.ForeignKey(Selectionlist,related_name="Lessontoselectionlist", db_column='AbilityLevel') # Field name made lowercase.
+    abilitylevel = models.IntegerField(db_column='AbilityLevel') # Field name made lowercase.
     description = models.TextField(db_column='Description', blank=True) # Field name made lowercase.
     goaloftask = models.TextField(db_column='GoalofTask', blank=True) # Field name made lowercase.
     deliverable = models.TextField(db_column='Deliverable', blank=True) # Field name made lowercase.
@@ -757,7 +763,7 @@ class Lesson(models.Model):
 class Unitlessonlnk(models.Model):
     id = models.IntegerField(primary_key=True, db_column='ID') # Field name made lowercase.
     unitid = models.ForeignKey(Unit,related_name="Unitlessonlnktounit", db_column='UnitID') # Field name made lowercase.
-    assignmentid = models.ForeignKey(Unit,related_name="Unitlessonlnktoassignmentid", db_column='AssignmentID') # Field name made lowercase.
+    assignmentid = models.ForeignKey(Assignment,related_name="Unitlessonlnktoassignmentid", db_column='AssignmentID') # Field name made lowercase.
     lessonid = models.ForeignKey(Lesson,related_name="Unitlessonlnktolesson", db_column='LessonID') # Field name made lowercase.
     createddt = models.DateTimeField(db_column='CreatedDT') # Field name made lowercase.
     createdby = models.IntegerField(db_column='CreatedBy') # Field name made lowercase.
@@ -789,8 +795,8 @@ class Lessonactivity(models.Model):
     activitytype = models.IntegerField(db_column='ActivityType') # Field name made lowercase.
     abilitylevel = models.IntegerField(db_column='AbilityLevel') # Field name made lowercase.
     description = models.TextField(db_column='Description', blank=True) # Field name made lowercase.
-    criteriaid = models.ForeignKey(Rubriccriteria,related_name="Lessonactivitytorubriccriteria", db_column='CriteriaID') # Field name made lowercase.
-    assignmentid = models.ForeignKey(Assignment,related_name="Lessonactivitytoassignment",db_column='AssignmentId') # Field name made lowercase.
+    criteriaid = models.IntegerField(db_column='CriteriaID') # Field name made lowercase.
+    assignmentid = models.IntegerField(db_column='AssignmentId') # Field name made lowercase.
     createddt = models.DateTimeField(db_column='CreatedDT') # Field name made lowercase.
     createdby = models.IntegerField(db_column='CreatedBy') # Field name made lowercase.
     modifieddt = models.DateTimeField(db_column='ModifiedDT') # Field name made lowercase.
@@ -805,7 +811,7 @@ class Lessonactivitylnk(models.Model):
     id = models.IntegerField(primary_key=True, db_column='ID') # Field name made lowercase.
     lessonid = models.ForeignKey(Lesson,related_name="Lessonactivitylnktolesson", db_column='LessonID') # Field name made lowercase.
     activityid = models.ForeignKey(Lessonactivity,related_name="Lessonactivitylnktolessonactivity", db_column='ActivityID') # Field name made lowercase.
-    lessonrubriccriterialnkid = models.ForeignKey(Lessonrubriccriterialnk,related_name="Lessonactivitylnktolessonrubriccriterialnk", db_column='LessonRubricCriteriaLnkID') # Field name made lowercase.
+    lessonrubriccriterialnkid = models.IntegerField(db_column='LessonRubricCriteriaLnkID') # Field name made lowercase.
     createddt = models.DateTimeField(db_column='CreatedDT') # Field name made lowercase.
     createdby = models.IntegerField(db_column='CreatedBy') # Field name made lowercase.
     modifieddt = models.DateTimeField(db_column='ModifiedDT') # Field name made lowercase.

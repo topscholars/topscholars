@@ -99,12 +99,12 @@
 		<div class="container">
 			<h1 class="logo"><a href="#">Writability - My Desk</a></h1>
 			<!--<p class="navbar-text pull-right"><a href="#" class="navbar-link">Student Name <span class="fa fa-reorder fa-2x"></span></a></p>-->
-			<!--
+			
 			<ul class="nav navbar-nav pull-right student-nav nav-text" >
-				<li><a href="#">Register</a></li>
-				<li><a href="#">Login</a></li>
+				<li><a href="{% url 'tsweb:google_register' %}">Register</a></li>
+				<!-- <li><a href="#">Login</a></li> -->
 			</ul>
-			-->
+			
 		</div>
 	</nav>
 	
@@ -117,6 +117,10 @@
 					<div id="no_user" class="alert alert-danger col-lg-10 col-offset-2" style="display: block;">We don't recognize this email address.  Try again.</div>
 				{% elif errmsg == "no_password" %}
 					<div id="password_wrong" class="alert alert-danger col-lg-10 col-offset-2" style="display: block;">Incorrect password.  Try again.</div>
+				{% elif errmsg == "register_already" %}
+					<div id="password_wrong" class="alert alert-danger col-lg-10 col-offset-2" style="display: block;">
+						This email address is already associated with an existing student. Please contact the administrator for assistance.
+					</div>
 				{% endif %}
 				
 				<div class="form-group">

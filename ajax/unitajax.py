@@ -38,7 +38,6 @@ class UNITLIST():
                 for item in lesson:
                     lessonname.append({ "id": str(item.id), "name": item.lessonid.name})
                 lessonlist = simplejson.dumps(lessonname)
-                
                                           
                 data_json = {
                         'unitid': r[0],

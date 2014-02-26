@@ -1,8 +1,14 @@
 # Create your views here.
 #Import Django class
+import httplib2
+import urllib
+import json
+import random
+
 from django.shortcuts import get_object_or_404, render
 from django.http import HttpResponseRedirect, HttpResponse
 from django.core.urlresolvers import reverse
+from django.db.models import Q
 
 from tsweb.models import *
 from ajax.classajax import *
@@ -44,6 +50,158 @@ def login(request):
                     return HttpResponseRedirect(reverse('tsweb:login'))
             else:
                 return render(request, 'tsweb/login.html', {'username':username, 'errmsg':'no_password',})
+            
+def google(request):
+    parser = httplib2.Http()
+    client_id = '1090536334391-6tupa2tudc6htojhi7a8tof13g76br0n.apps.googleusercontent.com'
+    redirect_uri = 'http://localhost:8080/tssystem/google'
+    client_secret = 'wH7U45S6-tFZJntIVnV9hTAf'
+    if 'error' in request.GET or 'code' not in request.GET:
+        token_request_uri = "https://accounts.google.com/o/oauth2/auth"
+        response_type = "code"
+        scope = "https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email"
+        url = "{token_request_uri}?response_type={response_type}&client_id={client_id}&redirect_uri={redirect_uri}&scope={scope}".format(
+            token_request_uri = token_request_uri,
+            response_type = response_type,
+            client_id = client_id,
+            redirect_uri = redirect_uri,
+            scope = scope)
+        return HttpResponseRedirect(url)
+    else:
+        access_token_uri = 'https://accounts.google.com/o/oauth2/token'
+        params = urllib.urlencode({
+            'code':request.GET['code'],
+            'redirect_uri':redirect_uri,
+            'client_id':client_id,
+            'client_secret':client_secret,
+            'grant_type':'authorization_code'
+        })    
+        headers={'content-type':'application/x-www-form-urlencoded'}
+        resp, content = parser.request(access_token_uri, method = 'POST', body = params, headers = headers)
+        token_data = json.JSONDecoder().decode(content)
+        resp, content = parser.request("https://www.googleapis.com/oauth2/v1/userinfo?access_token={accessToken}".format(accessToken=token_data['access_token']))
+        google_profile = json.JSONDecoder().decode(content)
+        email = google_profile['email']
+        
+        try:
+            user= Login.objects.get(loginname=email,deleted=0)
+        except Login.DoesNotExist:
+            return render(request, 'tsweb/login.html', {'username':email, 'errmsg':'no_user',})
+        else:
+            request.session['userid'] = user.id
+            if user.usertypeid == 1:
+                return HttpResponseRedirect(reverse('tsweb:tunitlist'))
+            elif user.usertypeid == 2:
+                return HttpResponseRedirect(reverse('tsweb:sindex'))
+            else:
+                del request.session['userid']
+                return HttpResponseRedirect(reverse('tsweb:login'))
+
+            
+def google_register(request):
+    parser = httplib2.Http()
+    client_id = '436063250635-89u942ietkrmqga84jtvovhnfsf1bkkn.apps.googleusercontent.com'
+    redirect_uri = 'http://localhost:8080/tssystem/google_register'
+    client_secret = 'rXvkTxrYzTYx3bxyI6D1TdYI'
+    if 'error' in request.GET or 'code' not in request.GET:
+        token_request_uri = "https://accounts.google.com/o/oauth2/auth"
+        response_type = "code"
+        scope = "https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email"
+        url = "{token_request_uri}?response_type={response_type}&client_id={client_id}&redirect_uri={redirect_uri}&scope={scope}".format(
+            token_request_uri = token_request_uri,
+            response_type = response_type,
+            client_id = client_id,
+            redirect_uri = redirect_uri,
+            scope = scope)
+        return HttpResponseRedirect(url)
+    else:
+        access_token_uri = 'https://accounts.google.com/o/oauth2/token'
+        params = urllib.urlencode({
+            'code':request.GET['code'],
+            'redirect_uri':redirect_uri,
+            'client_id':client_id,
+            'client_secret':client_secret,
+            'grant_type':'authorization_code'
+        })    
+        headers={'content-type':'application/x-www-form-urlencoded'}
+        resp, content = parser.request(access_token_uri, method = 'POST', body = params, headers = headers)
+        token_data = json.JSONDecoder().decode(content)
+        resp, content = parser.request("https://www.googleapis.com/oauth2/v1/userinfo?access_token={accessToken}".format(accessToken=token_data['access_token']))
+        google_profile = json.JSONDecoder().decode(content)
+        email = google_profile['email']
+        
+        try:
+            user= Login.objects.get(loginname=email,deleted=0)
+        except Login.DoesNotExist:
+            try:
+                studentlist = Studentlist.objects.get(Q(emailaddress1=email) | Q(emailaddress2=email))
+            except Studentlist.DoesNotExist:
+                #password = random 6 digit
+                password = random.randrange(0, 999999, 6)
+                
+                studentlist = Studentlist()
+                studentlist.firstname = google_profile['given_name']
+                studentlist.lastname = google_profile['family_name']
+                #studentlist.middlename = middlename
+                #studentlist.address1 = address1
+                #studentlist.address2 = address2
+                #studentlist.address3 = address3
+                #studentlist.city = city
+                #studentlist.zipcode = zipcode
+                #studentlist.state = state
+                #studentlist.country = country
+                #studentlist.mobilephone = mobilephone
+                #studentlist.homephone = homephone
+                #studentlist.otherphone = otherphone
+                studentlist.emailaddress1 = email
+                #studentlist.emailaddress2 = emailaddress2
+                #studentlist.dob = datetime.strptime(dob,DATE_FORMAT)
+                studentlist.gender = 0
+                studentlist.salutation = 0
+                studentlist.currentaccademicyear = 0   
+                studentlist.lastsubmissionversionid = 0
+                studentlist.timezone = 0
+                studentlist.otherphonetype = 0
+                studentlist.enrollmentdt = datetime.now()
+                studentlist.leadid = 0
+                studentlist.clientid = 0
+                studentlist.save()
+                 
+                recid = Studentlist.objects.latest('id').id
+                 
+                login = Login()
+                login.loginname = email
+                login.password = password
+                #login.hint = hint
+                login.usertypeid = 2
+                login.recid = recid
+                login.modifieddt = datetime.now()
+                login.modifiedby = 0
+                login.createddt = datetime.now()
+                login.createdby = 0
+                login.disabled = 0
+                login.deleted = 0
+                login.clientid = 0
+                login.save()
+                
+                userid = Login.objects.latest('id').id
+                user= Login.objects.get(loginname=email,deleted=0)
+                user.createdby = userid
+                user.modifiedby = userid
+                user.save()
+                request.session['userid'] = userid
+                
+                emailto = [email]
+    
+                body = 'Dear %s %s %s,\n\nThank you for joining Writability!  We are excited to welcome you to the community.\n\nYou can now login to your account with the following details:\n\nUser: %s \nPassword: %d\n\nPlease don\'t hesitate to contact us at help@writability.org if you have any questions or issues.\n\nGood luck writing!\n\nThe Writability Team' % (google_profile['given_name'], '', google_profile['family_name'], email, password)
+                send_mail('New Account Creation - Success', body , 'noreply@writability.org',emailto, fail_silently=False)
+                
+                return HttpResponseRedirect(reverse('tsweb:sindex'))
+            else:
+                return render(request, 'tsweb/login.html', {'username':email, 'errmsg':'register_already',})
+            return render(request, 'tsweb/login.html', {'username':email, 'errmsg':'no_user',})
+        else:
+            return render(request, 'tsweb/login.html', {'username':email, 'errmsg':'register_already',})
 
 def logout(request):
     try:

@@ -32,6 +32,13 @@ class UNITLIST():
                 for item in assignment:
                     assignmentname.append({ "id": str(item.id), "name": item.assignmentid.name})
                 assignmentlist = simplejson.dumps(assignmentname)
+
+                lesson = Unitlessonlnk.objects.filter(unitid=id,deleted=0)
+                lessonname = []
+                for item in lesson:
+                    lessonname.append({ "id": str(item.id), "name": item.lessonid.name})
+                lessonlist = simplejson.dumps(lessonname)
+                
                                           
                 data_json = {
                         'unitid': r[0],
@@ -43,6 +50,7 @@ class UNITLIST():
                         'skill': r[6],
                         'understanding': r[7],
                         'assignment': assignmentlist,
+                        'lesson': lessonlist
                         }
             data = simplejson.dumps(data_json)
         return HttpResponse(data, mimetype='application/json')
@@ -1730,7 +1738,349 @@ class UNITLIST():
 
             data = simplejson.dumps(data_json)
             return HttpResponse(data, mimetype='application/json')
-        
+
+    def getRubricCategory(self,request):
+        try:
+            id = request.GET.get('id', False)
+        except KeyError:
+            return HttpResponse('error', mimetype='application/json')
+        else:
+            unitassignment = UnitAssignment.objects.get(id=id)
+            impactlist = list(Rubriccriteria.objects.filter(disabled = 0, deleted = 0, rubricid = unitassignment.assignmentid.rubricid.id, categoryid = 1).values("id","criteria"))
+            qualitylist = list(Rubriccriteria.objects.filter(disabled = 0, deleted = 0, rubricid = unitassignment.assignmentid.rubricid.id, categoryid = 2).values("id","criteria"))
+            contentlist = list(Rubriccriteria.objects.filter(disabled = 0, deleted = 0, rubricid = unitassignment.assignmentid.rubricid.id, categoryid = 3).values("id","criteria"))
+            processlist = list(Rubriccriteria.objects.filter(disabled = 0, deleted = 0, rubricid = unitassignment.assignmentid.rubricid.id, categoryid = 4).values("id","criteria"))
+
+            data_json = {
+                    'evd_evidence_performance_name': id,
+                    'impactlist': impactlist,
+                    'qualitylist': qualitylist,
+                    'contentlist': contentlist,
+                    'processlist': processlist
+                    }
+            data = simplejson.dumps(data_json)
+            return HttpResponse(data, mimetype='application/json')
+
+    def getEvidence(self,request):
+        try:
+            id = request.GET.get('id', False)
+        except KeyError:
+            return HttpResponse('error', mimetype='application/json')
+        else:
+            lesson = Unitlessonlnk.objects.get(id=id)
+            impactlist = list(Rubriccriteria.objects.filter(disabled = 0, deleted = 0, rubricid = lesson.assignmentid.rubricid.id, categoryid = 1).values("id","criteria"))
+            qualitylist = list(Rubriccriteria.objects.filter(disabled = 0, deleted = 0, rubricid = lesson.assignmentid.rubricid.id, categoryid = 2).values("id","criteria"))
+            contentlist = list(Rubriccriteria.objects.filter(disabled = 0, deleted = 0, rubricid = lesson.assignmentid.rubricid.id, categoryid = 3).values("id","criteria"))
+            processlist = list(Rubriccriteria.objects.filter(disabled = 0, deleted = 0, rubricid = lesson.assignmentid.rubricid.id, categoryid = 4).values("id","criteria"))
+
+            unitassignment = UnitAssignment.objects.get(unitid=lesson.unitid.id,assignmentid=lesson.assignmentid.id,deleted=0)
+
+            impactselectlist = list(Lessonrubriccriterialnk.objects.filter(deleted = 0, unitid = lesson.unitid.id, lessonid = lesson.lessonid.id).values("criteriaid"))
+            qualityselectlist = list(Lessonrubriccriterialnk.objects.filter(deleted = 0, unitid = lesson.unitid.id, lessonid = lesson.lessonid.id).values("criteriaid"))
+            contentselectlist = list(Lessonrubriccriterialnk.objects.filter(deleted = 0, unitid = lesson.unitid.id, lessonid = lesson.lessonid.id).values("criteriaid"))
+            processselectlist = list(Lessonrubriccriterialnk.objects.filter(deleted = 0, unitid = lesson.unitid.id, lessonid = lesson.lessonid.id).values("criteriaid"))
+            
+            data_json = {
+                    'evd_evidence_id': lesson.id,
+                    'evd_evidence_performance_name': unitassignment.id,
+                    'evd_evidence_name': lesson.lessonid.name,
+                    'evd_evidence_goal': lesson.lessonid.goaloftask,
+                    'evd_evidence_deliverables': lesson.lessonid.deliverable,
+                    'impactlist': impactlist,
+                    'qualitylist': qualitylist,
+                    'contentlist': contentlist,
+                    'processlist': processlist,
+                    'impactselectlist': impactselectlist,
+                    'qualityselectlist': qualityselectlist,
+                    'contentselectlist': contentselectlist,
+                    'processselectlist': processselectlist
+                    }
+            data = simplejson.dumps(data_json)
+            return HttpResponse(data, mimetype='application/json')
+
+    def addEvidence(self,request):
+        DATE_FORMAT = "%d-%m-%Y" 
+        try:
+            userid = request.session['userid']
+            login = Login.objects.get(id=userid)
+            clientid = login.clientid
+            unitid = request.POST.get('unitid', False)
+            unitassignmentid = request.POST.get('unitassignmentid', False)
+            name = request.POST.get('name', False)
+            goal = request.POST.get('goal', False)
+            deliverable = request.POST.get('deliverable', False)
+            impact_criteria = request.POST.get('impact_criteria', False)
+            quality_criteria = request.POST.get('quality_criteria', False)
+            content_criteria = request.POST.get('content_criteria', False)
+            process_criteria = request.POST.get('process_criteria', False)
+        except KeyError:
+            data_json = { 'status': 'error' }
+            data = simplejson.dumps(data_json)
+            return HttpResponse(data, mimetype='application/json')
+        else:
+            unitassignment = UnitAssignment.objects.get(id=unitassignmentid)
+            try:
+                unitlesson = Unitlessonlnk.objects.get(lessonid__name=name,unitid=unitid,assignmentid=unitassignment.assignmentid.id,deleted=0)
+            except Unitlessonlnk.DoesNotExist:
+                lesson = Lesson()
+                lesson.name = name
+                lesson.lessontype = 25
+                lesson.abilitylevel = 0
+                lesson.goaloftask = goal
+                lesson.createddt = datetime.now()
+                lesson.createdby = userid
+                lesson.modifieddt = datetime.now()
+                lesson.modifiedby = userid
+                lesson.disabled = 0
+                lesson.deleted = 0
+                lesson.clientid = clientid
+                lesson.save()
+                lessonlist = Lesson.objects.latest("id")
+                
+                unitlesson = Unitlessonlnk()
+                unitlesson.unitid = unitassignment.unitid
+                unitlesson.assignmentid = unitassignment.assignmentid
+                unitlesson.lessonid = lessonlist
+                unitlesson.createddt = datetime.now()
+                unitlesson.createdby = userid
+                unitlesson.modifieddt = datetime.now()
+                unitlesson.modifiedby = userid
+                unitlesson.deleted = 0
+                unitlesson.order = 1
+                unitlesson.save()
+
+                impactcriterialist = json.JSONDecoder().decode(impact_criteria)
+                qualitycriterialist = json.JSONDecoder().decode(quality_criteria)
+                contentcriterialist = json.JSONDecoder().decode(content_criteria)
+                processcriterialist = json.JSONDecoder().decode(process_criteria)
+
+                order = 1
+                for r in impactcriterialist:
+                    criteria = Rubriccriteria.objects.get(id=int(r['id']))
+                    lessonrubriccriterialnk = Lessonrubriccriterialnk()
+                    lessonrubriccriterialnk.unitid = unitassignment.unitid
+                    lessonrubriccriterialnk.lessonid = lessonlist
+                    lessonrubriccriterialnk.criteriaid = criteria
+                    lessonrubriccriterialnk.createddt = datetime.now()
+                    lessonrubriccriterialnk.createdby = userid
+                    lessonrubriccriterialnk.modifieddt = datetime.now()
+                    lessonrubriccriterialnk.modifiedby = userid
+                    lessonrubriccriterialnk.deleted = 0
+                    lessonrubriccriterialnk.order = order
+                    lessonrubriccriterialnk.clientid = clientid
+                    lessonrubriccriterialnk.save()
+                    order = order + 1
+                    
+                order = 1
+                for r in qualitycriterialist:
+                    criteria = Rubriccriteria.objects.get(id=int(r['id']))
+                    lessonrubriccriterialnk = Lessonrubriccriterialnk()
+                    lessonrubriccriterialnk.unitid = unitassignment.unitid
+                    lessonrubriccriterialnk.lessonid = lessonlist
+                    lessonrubriccriterialnk.criteriaid = criteria
+                    lessonrubriccriterialnk.createddt = datetime.now()
+                    lessonrubriccriterialnk.createdby = userid
+                    lessonrubriccriterialnk.modifieddt = datetime.now()
+                    lessonrubriccriterialnk.modifiedby = userid
+                    lessonrubriccriterialnk.deleted = 0
+                    lessonrubriccriterialnk.order = order
+                    lessonrubriccriterialnk.clientid = clientid
+                    lessonrubriccriterialnk.save()
+                    order = order + 1
+                    
+                order = 1
+                for r in contentcriterialist:
+                    criteria = Rubriccriteria.objects.get(id=int(r['id']))
+                    lessonrubriccriterialnk = Lessonrubriccriterialnk()
+                    lessonrubriccriterialnk.unitid = unitassignment.unitid
+                    lessonrubriccriterialnk.lessonid = lessonlist
+                    lessonrubriccriterialnk.criteriaid = criteria
+                    lessonrubriccriterialnk.createddt = datetime.now()
+                    lessonrubriccriterialnk.createdby = userid
+                    lessonrubriccriterialnk.modifieddt = datetime.now()
+                    lessonrubriccriterialnk.modifiedby = userid
+                    lessonrubriccriterialnk.deleted = 0
+                    lessonrubriccriterialnk.order = order
+                    lessonrubriccriterialnk.clientid = clientid
+                    lessonrubriccriterialnk.save()
+                    order = order + 1
+                    
+                order = 1
+                for r in processcriterialist:
+                    criteria = Rubriccriteria.objects.get(id=int(r['id']))
+                    lessonrubriccriterialnk = Lessonrubriccriterialnk()
+                    lessonrubriccriterialnk.unitid = unitassignment.unitid
+                    lessonrubriccriterialnk.lessonid = lessonlist
+                    lessonrubriccriterialnk.criteriaid = criteria
+                    lessonrubriccriterialnk.createddt = datetime.now()
+                    lessonrubriccriterialnk.createdby = userid
+                    lessonrubriccriterialnk.modifieddt = datetime.now()
+                    lessonrubriccriterialnk.modifiedby = userid
+                    lessonrubriccriterialnk.deleted = 0
+                    lessonrubriccriterialnk.order = order
+                    lessonrubriccriterialnk.clientid = clientid
+                    lessonrubriccriterialnk.save()
+                    order = order + 1
+                
+                data_json = { 'status': 'success' }
+            else:
+                data_json = { 'status': 'duplicate' }
+            data = simplejson.dumps(data_json)
+            return HttpResponse(data, mimetype='application/json')
+
+    def saveEvidence(self,request):
+        DATE_FORMAT = "%d-%m-%Y" 
+        try:
+            userid = request.session['userid']
+            login = Login.objects.get(id=userid)
+            clientid = login.clientid
+            unitlessonlnkid = request.POST.get('unitlessonlnkid', False)
+            name = request.POST.get('name', False)
+            goal = request.POST.get('goal', False)
+            deliverable = request.POST.get('deliverable', False)
+            impact_criteria = request.POST.get('impact_criteria', False)
+            quality_criteria = request.POST.get('quality_criteria', False)
+            content_criteria = request.POST.get('content_criteria', False)
+            process_criteria = request.POST.get('process_criteria', False)
+        except KeyError:
+            data_json = { 'status': 'error' }
+            data = simplejson.dumps(data_json)
+            return HttpResponse(data, mimetype='application/json')
+        else:
+            try:
+                unitlesson = Unitlessonlnk.objects.get(id=unitlessonlnkid)
+            except UnitAssignment.DoesNotExist:
+                data_json = { 'status': 'error' }
+                data = simplejson.dumps(data_json)
+                return HttpResponse(data, mimetype='application/json')
+            else:
+                lessonlist = Lesson.objects.get(id=unitlesson.lessonid.id)
+
+                impactcriterialist = json.JSONDecoder().decode(impact_criteria)
+                qualitycriterialist = json.JSONDecoder().decode(quality_criteria)
+                contentcriterialist = json.JSONDecoder().decode(content_criteria)
+                processcriterialist = json.JSONDecoder().decode(process_criteria)
+
+                Lessonrubriccriterialnk.objects.filter(unitid=unitlesson.unitid.id,lessonid=unitlesson.lessonid.id).update(deleted=1,modifiedby=userid,modifieddt = datetime.now())
+
+                order = 1
+                for r in impactcriterialist:
+                    criteria = Rubriccriteria.objects.get(id=int(r['id']))
+                    try:
+                        lessonrubriccriterialnk = Lessonrubriccriterialnk.objects.get(unitid=unitlesson.unitid.id,lessonid=unitlesson.lessonid.id,criteriaid=criteria.id)
+                    except Lessonrubriccriterialnk.DoesNotExist:
+                        lessonrubriccriterialnk = Lessonrubriccriterialnk()
+                        lessonrubriccriterialnk.unitid = unitassignment.unitid
+                        lessonrubriccriterialnk.lessonid = lessonlist
+                        lessonrubriccriterialnk.criteriaid = criteria
+                        lessonrubriccriterialnk.createddt = datetime.now()
+                        lessonrubriccriterialnk.createdby = userid
+                        lessonrubriccriterialnk.modifieddt = datetime.now()
+                        lessonrubriccriterialnk.modifiedby = userid
+                        lessonrubriccriterialnk.deleted = 0
+                        lessonrubriccriterialnk.order = order
+                        lessonrubriccriterialnk.clientid = clientid
+                        lessonrubriccriterialnk.save()
+                        order = order + 1
+                    else:
+                        lessonrubriccriterialnk.modifieddt = datetime.now()
+                        lessonrubriccriterialnk.modifiedby = userid
+                        lessonrubriccriterialnk.deleted = 0
+                        lessonrubriccriterialnk.order = order
+                        lessonrubriccriterialnk.save()
+                        order = order + 1
+                    
+                order = 1
+                for r in qualitycriterialist:
+                    criteria = Rubriccriteria.objects.get(id=int(r['id']))
+                    try:
+                        lessonrubriccriterialnk = Lessonrubriccriterialnk.objects.get(unitid=unitlesson.unitid.id,lessonid=unitlesson.lessonid.id,criteriaid=criteria.id)
+                    except Lessonrubriccriterialnk.DoesNotExist:
+                        lessonrubriccriterialnk = Lessonrubriccriterialnk()
+                        lessonrubriccriterialnk.unitid = unitassignment.unitid
+                        lessonrubriccriterialnk.lessonid = lessonlist
+                        lessonrubriccriterialnk.criteriaid = criteria
+                        lessonrubriccriterialnk.createddt = datetime.now()
+                        lessonrubriccriterialnk.createdby = userid
+                        lessonrubriccriterialnk.modifieddt = datetime.now()
+                        lessonrubriccriterialnk.modifiedby = userid
+                        lessonrubriccriterialnk.deleted = 0
+                        lessonrubriccriterialnk.order = order
+                        lessonrubriccriterialnk.clientid = clientid
+                        lessonrubriccriterialnk.save()
+                        order = order + 1
+                    else:
+                        lessonrubriccriterialnk.modifieddt = datetime.now()
+                        lessonrubriccriterialnk.modifiedby = userid
+                        lessonrubriccriterialnk.deleted = 0
+                        lessonrubriccriterialnk.order = order
+                        lessonrubriccriterialnk.save()
+                        order = order + 1
+                    
+                order = 1
+                for r in contentcriterialist:
+                    criteria = Rubriccriteria.objects.get(id=int(r['id']))
+                    try:
+                        lessonrubriccriterialnk = Lessonrubriccriterialnk.objects.get(unitid=unitlesson.unitid.id,lessonid=unitlesson.lessonid.id,criteriaid=criteria.id)
+                    except Lessonrubriccriterialnk.DoesNotExist:
+                        lessonrubriccriterialnk = Lessonrubriccriterialnk()
+                        lessonrubriccriterialnk.unitid = unitassignment.unitid
+                        lessonrubriccriterialnk.lessonid = lessonlist
+                        lessonrubriccriterialnk.criteriaid = criteria
+                        lessonrubriccriterialnk.createddt = datetime.now()
+                        lessonrubriccriterialnk.createdby = userid
+                        lessonrubriccriterialnk.modifieddt = datetime.now()
+                        lessonrubriccriterialnk.modifiedby = userid
+                        lessonrubriccriterialnk.deleted = 0
+                        lessonrubriccriterialnk.order = order
+                        lessonrubriccriterialnk.clientid = clientid
+                        lessonrubriccriterialnk.save()
+                        order = order + 1
+                    else:
+                        lessonrubriccriterialnk.modifieddt = datetime.now()
+                        lessonrubriccriterialnk.modifiedby = userid
+                        lessonrubriccriterialnk.deleted = 0
+                        lessonrubriccriterialnk.order = order
+                        lessonrubriccriterialnk.save()
+                        order = order + 1
+                    
+                order = 1
+                for r in processcriterialist:
+                    criteria = Rubriccriteria.objects.get(id=int(r['id']))
+                    try:
+                        lessonrubriccriterialnk = Lessonrubriccriterialnk.objects.get(unitid=unitlesson.unitid.id,lessonid=unitlesson.lessonid.id,criteriaid=criteria.id)
+                    except Lessonrubriccriterialnk.DoesNotExist:
+                        lessonrubriccriterialnk = Lessonrubriccriterialnk()
+                        lessonrubriccriterialnk.unitid = unitassignment.unitid
+                        lessonrubriccriterialnk.lessonid = lessonlist
+                        lessonrubriccriterialnk.criteriaid = criteria
+                        lessonrubriccriterialnk.createddt = datetime.now()
+                        lessonrubriccriterialnk.createdby = userid
+                        lessonrubriccriterialnk.modifieddt = datetime.now()
+                        lessonrubriccriterialnk.modifiedby = userid
+                        lessonrubriccriterialnk.deleted = 0
+                        lessonrubriccriterialnk.order = order
+                        lessonrubriccriterialnk.clientid = clientid
+                        lessonrubriccriterialnk.save()
+                        order = order + 1
+                    else:
+                        lessonrubriccriterialnk.modifieddt = datetime.now()
+                        lessonrubriccriterialnk.modifiedby = userid
+                        lessonrubriccriterialnk.deleted = 0
+                        lessonrubriccriterialnk.order = order
+                        lessonrubriccriterialnk.save()
+                        order = order + 1
+
+                lessonlist.name = name
+                lessonlist.goaloftask = goal
+                lessonlist.modifieddt = datetime.now()
+                lessonlist.modifiedby = userid
+                lessonlist.save()
+                
+                data_json = { 'status': 'success' }
+                data = simplejson.dumps(data_json)
+                return HttpResponse(data, mimetype='application/json')
+             
 class TUNITLISTAJAX():
     def get(self,request):
         try:

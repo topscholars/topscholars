@@ -58,9 +58,33 @@ function EDITTABLE(){
 				            $('#performancebtngrp').remove();
 				            $('#performancebtnclr').remove();
 				        }
+				        var option = '';
+				        $("#evd_evidence_performance_name option").remove();
+				        option += '<option value="">Select Performance Task</option>';
 				        for (var i = 0; i < performance.length; i++) {
 				            var html = '<button class="btn" data-toggle="modal" data-target="#new_pt_details_modal" style="border:1px black solid;" onclick="var event = new EDITTABLE();event.getPerformanceData(' + performance[i].id + ',1);">' + performance[i].name + '</button>';
 				            $('#performancebtngrp').append(html);
+
+				            option += '<option value="' + performance[i].id + '">' + performance[i].name + '</option>';
+				        }
+				        $("#evd_evidence_performance_name").append(option);
+				    }
+				    else if (ini == "lesson") {
+				        var evidence = eval(val);
+				        if (evidence.length > 0) {
+				            $('#lessonbtngrp').remove();
+				            $('#lessonbtnclr').remove();
+				            var html = '<div id="lessonbtngrp" class="btn-group-vertical" style="width:100%;"></div>';
+				            html += '<div id="lessonbtnclr" class="clearfix" style="height:10px;"></div>';
+				            $(html).insertBefore("#btnAddEvidence");
+				        }
+				        else {
+				            $('#lessonbtngrp').remove();
+				            $('#lessonbtnclr').remove();
+				        }
+				        for (var i = 0; i < evidence.length; i++) {
+				            var html = '<button class="btn" data-toggle="modal" data-target="#new_evidence_details_modal" style="border:1px black solid;" onclick="var event = new EDITTABLE();event.getEvidenceData(' + evidence[i].id + ',1);">' + evidence[i].name + '</button>';
+				            $('#lessonbtngrp').append(html);
 				        }
 				    }
 				    else {
@@ -516,10 +540,162 @@ function EDITTABLE(){
 	        }
 	    }
 	}
-	this.getEvidenceData = function (id) {
+	this.clearEvidenceValue = function () {
+	    $("[id^='evd_']").each(function () {
+	        $(this).val('');
+	    });
+
+	    $('#evd_evidence_performance_name').removeAttr("disabled");
+	    $('#impact_list li').remove();
+	    $('#quality_list li').remove();
+	    $('#content_list li').remove();
+	    $('#process_list li').remove();
+	}
+	this.getEvidenceData = function (id, type) {
+	    var method = 'getRubricCategory';
+	    if (type == 1) {
+	        method = 'getEvidence'
+	        thisClass.clearEvidenceValue();
+	        $('#evd_evidence_performance_name').attr("disabled", true);
+	    }
+	    else {
+	        $('#evd_evidence_performance_name').removeAttr('disabled');
+	        $('#impact_list li').remove();
+	        $('#quality_list li').remove();
+	        $('#content_list li').remove();
+	        $('#process_list li').remove();
+	    }
+	    if (id != '') {
+	        $.getJSON(
+                url,
+                {
+                    'class': evalClass,
+                    'method': method,
+                    'id': id,
+                },
+                function (result) {
+                    $.each(result, function (ini, val) {
+                        if ((ini != 'impactlist') && (ini != 'qualitylist') && (ini != 'contentlist') && (ini != 'processlist') && (ini != 'impactselectlist') && (ini != 'qualityselectlist') && (ini != 'contentselectlist') && (ini != 'processselectlist')) {
+                            $('#' + ini).val(val);
+                        }
+                        if ((ini == 'impactlist') || (ini == 'qualitylist') || (ini == 'contentlist') || (ini == 'processlist')) {
+                            for (var i = 0; i < val.length; i++) {
+                                var html = '<li>';
+                                html += '<label for="impact_criteria"><input type="checkbox" name="' + val[i].id + '" /> ' + val[i].criteria + '</label>';
+                                html += '</li>';
+                                if (ini == 'impactlist') { $('#impact_list').append(html); }
+                                if (ini == 'qualitylist') { $('#quality_list').append(html); }
+                                if (ini == 'contentlist') { $('#content_list').append(html); }
+                                if (ini == 'processlist') { $('#process_list').append(html); }
+                            }
+                        }
+                        if (ini == 'impactselectlist') {
+                            for (var i = 0; i < val.length; i++) {
+                                $('#impact_list input[name=' + val[i].criteriaid + ']').attr("checked", true);
+                            }
+                        }
+                        if (ini == 'qualityselectlist') {
+                            for (var i = 0; i < val.length; i++) {
+                                $('#quality_list input[name=' + val[i].criteriaid + ']').attr("checked", true);
+                            }
+                        }
+                        if (ini == 'contentselectlist') {
+                            for (var i = 0; i < val.length; i++) {
+                                $('#content_list input[name=' + val[i].criteriaid + ']').attr("checked", true);
+                            }
+                        }
+                        if (ini == 'processselectlist') {
+                            for (var i = 0; i < val.length; i++) {
+                                $('#process_list input[name=' + val[i].criteriaid + ']').attr("checked", true);
+                            }
+                        }
+                    });
+                }).error(function (xhr, status, error) {
+                    alert('Error occur. Please contact the administrator.');
+                });
+	    }
 	}
 	this.saveEvidence = function () {
-	    if ($('#evidence_name').val() != '') {
+	    var impact_criteria_list = [];
+	    var quality_criteria_list = [];
+	    var content_criteria_list = [];
+	    var process_criteria_list = [];
+	    $('#impact_list li input:checked').each(function () {
+	        var data = {
+	            'id': $(this).attr('name'),
+	        };
+	        impact_criteria_list.push(data);
+	    });
+	    $('#quality_list li input:checked').each(function () {
+	        var data = {
+	            'id': $(this).attr('name'),
+	        };
+	        quality_criteria_list.push(data);
+	    });
+	    $('#content_list li input:checked').each(function () {
+	        var data = {
+	            'id': $(this).attr('name'),
+	        };
+	        content_criteria_list.push(data);
+	    });
+	    $('#process_list li input:checked').each(function () {
+	        var data = {
+	            'id': $(this).attr('name'),
+	        };
+	        process_criteria_list.push(data);
+	    });
+	    var recid = $('#evd_evidence_id').val();
+	    $('#new_evidence_details_modal .error').remove();
+	    if ($('#evd_evidence_name').val() != '') {
+	        if (recid == '') {
+	            $.post(
+                url,
+                {
+                    'class': evalClass,
+                    'method': 'addEvidence',
+                    'unitid': $("#ele_unitid").val(),
+                    'unitassignmentid': $('#evd_evidence_performance_name').val(),
+                    'name': $('#evd_evidence_name').val(),
+                    'goal': $('#evd_evidence_goal').val(),
+                    'deliverable': $('#evd_evidence_deliverables').val(),
+                    'impact_criteria': JSON.stringify(impact_criteria_list),
+                    'quality_criteria': JSON.stringify(quality_criteria_list),
+                    'content_criteria': JSON.stringify(content_criteria_list),
+                    'process_criteria': JSON.stringify(process_criteria_list),
+                },
+                function (result) {
+                    if (result.status == 'duplicate') {
+                        $('<label class="error exist" for="evd_evidence_name">This Name have existed!!.</label>').insertAfter("#evd_evidence_name");
+                    }
+                    else {
+                        thisClass.editTable($("#ele_unitid").val());
+                        $('#new_evidence_details_modal').modal('hide');
+                    }
+                }).error(function (xhr, status, error) {
+                    alert('Error occur. Please contact the administrator.');
+                });
+	        }
+	        else {
+	            $.post(
+                url,
+                {
+                    'class': evalClass,
+                    'method': 'saveEvidence',
+                    'unitlessonlnkid': recid,
+                    'name': $('#evd_evidence_name').val(),
+                    'goal': $('#evd_evidence_goal').val(),
+                    'deliverable': $('#evd_evidence_deliverables').val(),
+                    'impact_criteria': JSON.stringify(impact_criteria_list),
+                    'quality_criteria': JSON.stringify(quality_criteria_list),
+                    'content_criteria': JSON.stringify(content_criteria_list),
+                    'process_criteria': JSON.stringify(process_criteria_list),
+                },
+                function (result) {
+                    $('#new_evidence_details_modal').modal('hide');
+                }).error(function (xhr, status, error) {
+                    alert('Error occur. Please contact the administrator.');
+                });
+	        }
 	    }
 	}
 	this.iniControl = function () {
@@ -576,10 +752,6 @@ function EDITTABLE(){
 	    $('#goStage2').attr('href', 'javascript:var event = new EDITTABLE();event.DisplayStage2();');
 	    $('#btnAddPerformance').click(function () {
 	        thisClass.clearPerformanceValue();
-	        $("[id^='pfm_']").each(function () {
-	            $(this).val('');
-	            $(this).parent().parent().find(".highlighter").html('');
-	        });
 	    });
 	    $('#new_pt_details_modal').on('show.bs.modal', function (e) {
 	        $('#criteria_tabs a:first').tab('show');
@@ -589,7 +761,7 @@ function EDITTABLE(){
 	        $('#show_rubric_btn').addClass('hide');
 	        $('#new_pt_details_modal .error').remove();
 	        thisClass.getAssignmentList();
-	    })
+	    });
 	    $('#show-category-btn').click(function () {
 	        $('.rubric-categories').addClass('hide');
 	        $('.criteria-section').removeClass('hide');
@@ -681,11 +853,15 @@ function EDITTABLE(){
 	    $('#btnSavePerformance').click(function () {
 	        thisClass.savePerformance();
 	    });
+	    $('#btnAddEvidence').click(function () {
+	        thisClass.clearEvidenceValue();
+	    });
 	    $('#new_evidence_details_modal').on('show.bs.modal', function (e) {
 	        $('#evidencecategorytab a:first').tab('show');
-	        thisClass.getEvidenceData('');
+	        $('#new_evidence_details_modal .error').remove();
 	    })
-	    $('#evidence_performance_name').change(function() {
+	    $('#evd_evidence_performance_name').change(function () {
+	        thisClass.getEvidenceData($('#evd_evidence_performance_name').val(), 0);
 	    });
 	    $('#btnSaveEvidence').click(function () {
 	        thisClass.saveEvidence();
@@ -1181,28 +1357,29 @@ $(function() {
 			        	<div class="row">
 			        		<div class="col-lg-7">
 			        			<div class="form-group">
-			        				<label for="evidence_performance_name" class="col-sm-4 control-label">Performance Task</label>
+			        				<label for="evd_evidence_performance_name" class="col-sm-4 control-label">Performance Task</label>
 			        				<div class="col-sm-8">
-			        					<select name="evidence_performance_name" id="evidence_performance_name" class="form-control input-small">
+			        					<select name="evd_evidence_performance_name" id="evd_evidence_performance_name" class="form-control input-small" required>
 			        					</select>
 			        				</div>
 			        			</div>
 				        		<div class="form-group">
-				        			<label for="evidence_name" class="col-sm-4 control-label">Name</label>
+				        			<label for="evd_evidence_name" class="col-sm-4 control-label">Name</label>
 				        			<div class="col-sm-8">
-					        			<input type="text" name="evidence_name" id="evidence_name" class="form-control input-small" required />
+                                        <input type="hidden" name="evd_evidence_id" class="form-control input-small" id="evd_evidence_id"/>
+					        			<input type="text" name="evd_evidence_name" id="evd_evidence_name" class="form-control input-small" required />
 					        		</div>
 				        		</div>
 				        		<div class="form-group">
-				        			<label for="evidence_goal" class="control-label col-sm-4">Goal</label>
+				        			<label for="evd_evidence_goal" class="control-label col-sm-4">Goal</label>
 					        		<div class="col-sm-8">
-					        			<input type="text" name="evidence_goal" id="evidence_goal" class="form-control input-small" />
+					        			<input type="text" name="evd_evidence_goal" id="evd_evidence_goal" class="form-control input-small" />
 					        		</div>
 				        		</div>
 					        	<div class="form-group">
-					        		<label for="evidence_deliverables" class="control-label col-sm-4">Deliverables</label>
+					        		<label for="evd_evidence_deliverables" class="control-label col-sm-4">Deliverables</label>
 					        		<div class="col-sm-8">
-						        		<input type="text" name="evidence_deliverables" id="evidence_deliverables" class="form-control input-small" />
+						        		<input type="text" name="evd_evidence_deliverables" id="evd_evidence_deliverables" class="form-control input-small" />
 						        	</div>
 					        	</div>
 					        </div><!-- col-lg-5 -->

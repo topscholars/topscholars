@@ -33,11 +33,23 @@ class UNITLIST():
                     assignmentname.append({ "id": str(item.id), "name": item.assignmentid.name})
                 assignmentlist = simplejson.dumps(assignmentname)
 
-                lesson = Unitlessonlnk.objects.filter(unitid=id,deleted=0)
+                lesson = Unitlessonlnk.objects.filter(unitid=id,deleted=0).order_by('order')
                 lessonname = []
+                activity = []
                 for item in lesson:
                     lessonname.append({ "id": str(item.id), "name": item.lessonid.name})
+                    lessonactivitylnk = Lessonactivitylnk.objects.filter(lessonid=item.id,deleted=0,activityid__deleted=0).order_by('activityid__order')
+                    activityname = []
+                    activityobj = ''
+                    for lessonactivity in lessonactivitylnk:
+                        acttype = "manual"
+                        if lessonactivity.activityid.activitytype == 27:
+                            acttype = "auto"
+                        activityname.append({ "id": str(lessonactivity.activityid.id), "name": lessonactivity.activityid.name, "type": acttype})
+                        activityobj = simplejson.dumps(activityname)
+                    activity.append({ "id": str(item.id), "name": item.lessonid.name, "activity": activityobj})
                 lessonlist = simplejson.dumps(lessonname)
+                activitylist = simplejson.dumps(activity)
                                           
                 data_json = {
                         'unitid': r[0],
@@ -49,7 +61,8 @@ class UNITLIST():
                         'skill': r[6],
                         'understanding': r[7],
                         'assignment': assignmentlist,
-                        'lesson': lessonlist
+                        'lesson': lessonlist,
+                        'activity': activitylist
                         }
             data = simplejson.dumps(data_json)
         return HttpResponse(data, mimetype='application/json')
@@ -302,6 +315,55 @@ class UNITLIST():
                     'contentlist': contentlist,
                     'processlist': processlist
                     }
+            data = simplejson.dumps(data_json)
+            return HttpResponse(data, mimetype='application/json')
+
+    def saveActivityOrder(self,request):
+        try:
+            userid = request.session['userid']
+            strlesson = request.POST.get('lessonlist', False)
+        except KeyError:
+            data_json = { 'status': 'error' }
+            data = simplejson.dumps(data_json)
+            return HttpResponse(data, mimetype='application/json')
+        else:
+            lessonlist = json.JSONDecoder().decode(strlesson)
+            for r in lessonlist: 
+                if r['id'] != '':
+                    try:
+                        lessonorder = int(r['order'])
+                    except ValueError:
+                        lessonorder = 0
+                    try:
+                        lesson = Unitlessonlnk.objects.get(id=int(r['id']))
+                    except ValueError:
+                        continue
+                    else:
+                        lesson.order = lessonorder
+                        lesson.modifieddt = datetime.now()
+                        lesson.modifiedby = userid
+                        lesson.save()
+
+                        if r['activity'] != '':
+##                            activitylist = json.JSONDecoder().decode(r['activity'])
+                            activitylist = r['activity']
+                            for a in activitylist:
+                                if a['id'] != '':
+                                    try:
+                                        activityorder = int(a['order'])
+                                    except ValueError:
+                                        activityorder = 0
+                                    try:
+                                        activity = Lessonactivity.objects.get(id=int(a['id']))
+                                    except ValueError:
+                                        continue
+                                    else:
+                                        activity.order = activityorder
+                                        activity.modifieddt = datetime.now()
+                                        activity.modifiedby = userid
+                                        activity.save()
+
+            data_json = { 'status': 'success' }
             data = simplejson.dumps(data_json)
             return HttpResponse(data, mimetype='application/json')
 
@@ -1042,6 +1104,7 @@ class UNITLIST():
 
                     lessonlist = Lesson.objects.latest("id")
 
+                    unitnum = Unitlessonlnk.objects.filter(unitid=unit.id,deleted=0).count()
                     unitlesson = Unitlessonlnk()
                     unitlesson.unitid = unit
                     unitlesson.assignmentid = assignmentlist
@@ -1051,7 +1114,7 @@ class UNITLIST():
                     unitlesson.modifieddt = datetime.now()
                     unitlesson.modifiedby = userid
                     unitlesson.deleted = 0
-                    unitlesson.order = 1
+                    unitlesson.order = unitnum + 1
                     unitlesson.save()
 
                     impactlist = Rubriccriteria.objects.filter(disabled = 0, deleted = 0, rubricid = rubriclist.id, categoryid = 1)
@@ -1604,6 +1667,7 @@ class UNITLIST():
 
                     lessonlist = Lesson.objects.latest("id")
 
+                    unitnum = Unitlessonlnk.objects.filter(unitid=unit.id,deleted=0).count()
                     unitlesson = Unitlessonlnk()
                     unitlesson.unitid = unit
                     unitlesson.assignmentid = assignment
@@ -1613,7 +1677,7 @@ class UNITLIST():
                     unitlesson.modifieddt = datetime.now()
                     unitlesson.modifiedby = userid
                     unitlesson.deleted = 0
-                    unitlesson.order = 1
+                    unitlesson.order = unitnum + 1
                     unitlesson.save()
 
                     impactlist = Rubriccriteria.objects.filter(disabled = 0, deleted = 0, rubricid = rubriclist.id, categoryid = 1)
@@ -1835,7 +1899,8 @@ class UNITLIST():
                 lesson.clientid = clientid
                 lesson.save()
                 lessonlist = Lesson.objects.latest("id")
-                
+
+                unitnum = Unitlessonlnk.objects.filter(unitid=unit.id,deleted=0).count()
                 unitlesson = Unitlessonlnk()
                 unitlesson.unitid = unitassignment.unitid
                 unitlesson.assignmentid = unitassignment.assignmentid
@@ -1845,7 +1910,7 @@ class UNITLIST():
                 unitlesson.modifieddt = datetime.now()
                 unitlesson.modifiedby = userid
                 unitlesson.deleted = 0
-                unitlesson.order = 1
+                unitlesson.order = unitnum + 1
                 unitlesson.save()
 
                 impactcriterialist = json.JSONDecoder().decode(impact_criteria)

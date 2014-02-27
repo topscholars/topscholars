@@ -87,6 +87,38 @@ function EDITTABLE(){
 				            $('#lessonbtngrp').append(html);
 				        }
 				    }
+				    else if (ini == "activity") {
+				        var lesson = eval(val);
+				        $('#sortable li').remove();
+				        if (lesson.length > 0) {
+				            for (var i = 0; i < lesson.length; i++) {
+				                var activity = eval(lesson[i].activity);
+				                var html = '<li name="lessonid" class="panel panel-success">';
+				                html += '<input type="hidden" name="lessonid" value="' + lesson[i].id  + '">';
+				                html += '<div class="panel-heading"><div class="panel-title">';
+				                html += '<a data-toggle="collapse" data-parent="sortable" href="#collapse' + lesson[i].id + '" class="lesson-title">' + lesson[i].name + '</a>';
+				                html += '<i class="fa fa-sort pull-right"></i></div></div>';
+				                html += '<div id="collapse' + lesson[i].id + '" class="panel-collapse in"><div class="panel-body">';
+				                html += '<ul id="sortableActivities' + lesson[i].id + '" style="list-style: none;">';
+				                if ((activity != null) && (activity.length > 0)) {
+				                    for (var j = 0; j < activity.length; j++) {
+				                        var type = '';
+				                        if (activity[j].type == 'auto') { type = 'checked'; }
+				                        html += '<li class="well well-small"><input type="hidden" name="activityid" value="' + activity[j].id + '"><div class="row"><div class="col-lg-6 col-md-6 col-sm-6"><input type="text" class="form-control input-small" placeholder="Add Activity Here" value="' + activity[j].name + '" disabled></div><div class="col-lg-3 col-md-3 col-sm-3"><div class="onoffswitch"><input type="checkbox" name="onoffswitch2" class="onoffswitch-checkbox" id="myonoffswitch' + activity[j].id + '" ' + type + ' disabled><label class="onoffswitch-label" for="myonoffswitch' + activity[j].id + '"><div class="onoffswitch-inner"></div><div class="onoffswitch-switch"></div></label></div></div><div class="col-lg-3 col-md-3 col-sm-3"><a href="javascript:alert(' + activity[j].id + ');" class="btn btn-small btn-success pull-right">Go to activity <i class="fa fa-arrow-right"></i></a></div></div></li>';
+				                    }
+				                }
+				                html += '</ul>';
+				                html += '<button role="button" class="btn btn-small pull-right" onclick="alert(' + lesson[i].id + ')">Add Activity <i class="fa fa-plus"></i></button>';
+				                html += '</div></div></li>';
+				                $('#sortable').append(html);
+				            }
+				            if (lesson.length > 0) {
+				                for (var i = 0; i < lesson.length; i++) {
+				                    $("#sortableActivities" + lesson[i].id).sortable();
+				                }
+				            }
+				        }
+				    }
 				    else {
 				        thisClass.seperateElement($("#ele_" + ini), val);
 				        thisClass.seperateView(ini, val);
@@ -141,6 +173,44 @@ function EDITTABLE(){
                 alert('Error occur. Please contact the administrator.');
             });
 	    }
+	}
+	this.savestage3 = function () {
+	    var lessonlist = [];
+	    var lessonorder = 1;
+	    $('#sortable li[name=lessonid]').each(function () {
+	        var lessonid = $(this).find('input[name=lessonid]').val();
+	        var activityorder = 1;
+	        var activitylist = []; 
+	        $(this).find('ul li').each(function () {
+	            activityid = $(this).find('input[name=activityid]').val();
+	            var activitydata = {
+	                'id': activityid,
+                    'order': activityorder,
+	            }
+	            activitylist.push(activitydata);
+	            activityorder = activityorder + 1;
+	        });
+	        var lessondata = {
+	            'id': lessonid,
+	            'order': lessonorder,
+	            'activity': activitylist,
+	        };
+	        lessonlist.push(lessondata);
+	        lessonorder = lessonorder + 1;
+	    });
+	    console.log(lessonlist);
+	    $.post(
+               url,
+               {
+                   'class': evalClass,
+                   'method': 'saveActivityOrder',
+                   'lessonlist': JSON.stringify(lessonlist),
+               },
+               function (result) {
+                   
+               }).error(function (xhr, status, error) {
+                   alert('Error occur. Please contact the administrator.');
+               });
 	}
 	this.loadAvailableTags = function(){
 		var obj;
@@ -740,6 +810,7 @@ function EDITTABLE(){
 		        thisClass.savestage1(false);
 		    }
 		    else if (currentstage == 3) {
+		        thisClass.savestage3();
 		    }
 		});
 		$('#stage2Btn').click(function () {
@@ -831,10 +902,6 @@ function EDITTABLE(){
 	    	$('#processCollapse').addClass('active');
 	    	$('#show-category-btn').addClass('hide');
 	    });	
-	    $('#addActivityBtn').click(function (event) {
-	    	$('#sortableActivities').append('<li class="well well-small"><div class="row"><div class="col-lg-6 col-md-6 col-sm-6"><input type="text" class="form-control input-small" placeholder="Add Activity Here" value="{# activity_title #}"></div><div class="col-lg-3 col-md-3 col-sm-3"><div class="onoffswitch"><input type="checkbox" name="onoffswitch2" class="onoffswitch-checkbox" id="myonoffswitch2" checked><label class="onoffswitch-label" for="myonoffswitch2"><div class="onoffswitch-inner"></div><div class="onoffswitch-switch"></div></label></div></div><div class="col-lg-3 col-md-3 col-sm-3"><a href="submissionReview.html" class="btn btn-small btn-success pull-right">Go to activity <i class="fa fa-arrow-right"></i></a></div></div></li>');
-	    	event.preventDefault();
-	    });
 	    $('#add_impact_criteria_btn').click(function () {
 	        thisClass.addImpactCriteria();
 	    });
@@ -867,7 +934,6 @@ function EDITTABLE(){
 	        thisClass.saveEvidence();
 	    });
 	    $("#sortable").sortable();
-	    $("#sortableActivities").sortable();
 	    $('#impact_criteria_list').sortable();
 	    $('#quality_criteria_list').sortable();
 	    $('#content_criteria_list').sortable();
@@ -1050,40 +1116,6 @@ $(function() {
 			        	<p class="text-muted">You may reorder your activities &amp; lessons by clicking an dragging to the position most desirable</p>
 			        	<p class="text-muted">The Auto - Manual switch controls the grading type for each activity</p>
 			        	<ul id="sortable" class="panel-group">
-			        	  <li class="panel panel-success">
-			        	  	<div class="panel-heading">
-			        	  		<div class="panel-title">
-			        	  			<a data-toggle="collapse" data-parent="sortable" href="#collapseEight" class="lesson-title">title {# lesson_title #}</a>
-			        	  			<i class="fa fa-sort pull-right"></i>
-			        	  		</div>
-			        	  	</div>
-			        	  	<div id="collapseEight" class="panel-collapse in">
-			        	  		<div class="panel-body">
-		        	  				<ul id="sortableActivities" style="list-style: none;">
-		        	  					<li class="well well-small">
-		        	  						<div class="row">
-		        	  							<div class="col-lg-6 col-md-6 col-sm-6">
-	        	  							 		<input type="text" class="form-control input-small" placeholder="Add Activity Here" value="{# activity_title #}">
-	        	  							 	</div>
-	        	  							 	<div class="col-lg-3 col-md-3 col-sm-3">
-	        	  							   	<div class="onoffswitch">
-	        	  							     	<input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="myonoffswitch" checked>
-	        	  							     	<label class="onoffswitch-label" for="myonoffswitch">
-	        	  							         <div class="onoffswitch-inner"></div>
-	        	  							         <div class="onoffswitch-switch"></div>
-	        	  							     	</label>
-	        	  							   	</div> 
-        	  							   </div>
-        	  							   <div class="col-lg-3 col-md-3 col-sm-3">
-	        	  							   <a href="submissionReview.html" class="btn btn-small btn-success pull-right">Go to activity <i class="fa fa-arrow-right"></i></a>
-        	  							  	</div>
-        	  							  </div>
-		        	  					</li>	        	  					
-		        	  				</ul> <!-- /#sortableActivities -->
-		        	  				<button role="button" class="btn btn-small pull-right" id="addActivityBtn">Add Activity <i class="fa fa-plus"></i></button>
-			        	  		</div>
-			        	  	</div>
-			        	 	</li>
 			        	</ul> <!-- #sortable -->
 			        </div> <!-- /.col-lg-12 STAGE THREE -->
 		        </div> <!-- /.row -->

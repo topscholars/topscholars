@@ -1999,6 +1999,7 @@ class UNITLIST():
             login = Login.objects.get(id=userid)
             clientid = login.clientid
             unitlessonlnkid = request.POST.get('unitlessonlnkid', False)
+            unitassignmentid = request.POST.get('unitassignmentid', False)
             name = request.POST.get('name', False)
             goal = request.POST.get('goal', False)
             deliverable = request.POST.get('deliverable', False)
@@ -2026,7 +2027,7 @@ class UNITLIST():
                 processcriterialist = json.JSONDecoder().decode(process_criteria)
 
                 Lessonrubriccriterialnk.objects.filter(unitid=unitlesson.unitid.id,lessonid=unitlesson.lessonid.id).update(deleted=1,modifiedby=userid,modifieddt = datetime.now())
-
+                unitassignment = UnitAssignment.objects.get(id=unitassignmentid)
                 order = 1
                 for r in impactcriterialist:
                     criteria = Rubriccriteria.objects.get(id=int(r['id']))

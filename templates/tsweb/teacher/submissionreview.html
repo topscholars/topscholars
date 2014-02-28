@@ -786,7 +786,7 @@
             });
             $('#sent-comment').attr('href', 'javascript:var gen = new EDITTABLE();gen.addComment();');
 
-            $('#btnStpSave').click(function () {
+            $('#btnStpSave, #exitBtn').click(function () {
                 $(".submit_criteria").each(function () {
                     id = $(this).attr('id');
                     value = $(this).val();
@@ -809,6 +809,7 @@
                 .error(function (xhr, status, error) {
                     alert('Error occur. Please contact the administrator.');
                 });
+                return false;
             });
 
             thisClass.initValidateForm();

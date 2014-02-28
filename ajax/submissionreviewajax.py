@@ -300,6 +300,8 @@ class SUBMISSIONREVIEW():
                     categoryweight.actualweight = process
                 else:
                     categoryweight.actualweight = 0
+                categoryweight.createddt = datetime.now()
+                categoryweight.createdby = userid
                 categoryweight.modifieddt = datetime.now()
                 categoryweight.modifiedby = userid
                 categoryweight.deleted = 0

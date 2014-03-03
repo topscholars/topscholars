@@ -482,6 +482,7 @@ class UNITLIST():
                             order = order + 1
                         else:
                             impactcriteria.rubricid = rubric
+                            impactcriteria.criteria = r['criteria']
                             if r['weight'] == '':
                                 impactcriteria.weight = 0
                             else:
@@ -561,6 +562,7 @@ class UNITLIST():
                             order = order + 1
                         else:
                             qualitycriteria.rubricid = rubric
+                            qualitycriteria.criteria = r['criteria']
                             if r['weight'] == '':
                                 qualitycriteria.weight = 0
                             else:
@@ -640,6 +642,7 @@ class UNITLIST():
                             order = order + 1
                         else:
                             contentcriteria.rubricid = rubric
+                            contentcriteria.criteria = r['criteria']
                             if r['weight'] == '':
                                 contentcriteria.weight = 0
                             else:
@@ -719,6 +722,7 @@ class UNITLIST():
                             order = order + 1
                         else:
                             processcriteria.rubricid = rubric
+                            processcriteria.criteria = r['criteria']
                             if r['weight'] == '':
                                 processcriteria.weight = 0
                             else:

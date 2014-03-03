@@ -35,20 +35,25 @@ class UNITLIST():
 
                 lesson = Unitlessonlnk.objects.filter(unitid=id,deleted=0).order_by('order')
                 lessonname = []
-                activity = []
                 for item in lesson:
                     lessonname.append({ "id": str(item.id), "name": item.lessonid.name})
-                    lessonactivitylnk = Lessonactivitylnk.objects.filter(lessonid=item.id,deleted=0,activityid__deleted=0).order_by('activityid__order')
-                    activityname = []
-                    activityobj = ''
-                    for lessonactivity in lessonactivitylnk:
-                        acttype = "manual"
-                        if lessonactivity.activityid.activitytype == 27:
-                            acttype = "auto"
-                        activityname.append({ "id": str(lessonactivity.activityid.id), "name": lessonactivity.activityid.name, "type": acttype})
-                        activityobj = simplejson.dumps(activityname)
-                    activity.append({ "id": str(item.id), "name": item.lessonid.name, "activity": activityobj})
                 lessonlist = simplejson.dumps(lessonname)
+
+                activity = []
+                lesson = Unitlessonlnk.objects.filter(unitid=id,deleted=0,lessonid__name__isnull=False,lessonid__goaloftask__isnull=False,lessonid__deliverable__isnull=False).exclude(lessonid__name__exact='').exclude(lessonid__goaloftask__exact='').exclude(lessonid__deliverable__exact='').order_by('order')
+                for item in lesson:
+                    numberofcriteria = Lessonrubriccriterialnk.objects.filter(unitid=id,lessonid=item.lessonid.id,deleted=0).count()
+                    if(numberofcriteria > 0):
+                        lessonactivitylnk = Lessonactivitylnk.objects.filter(lessonid=item.lessonid.id,deleted=0,activityid__deleted=0).order_by('activityid__order')
+                        activityname = []
+                        activityobj = ''
+                        for lessonactivity in lessonactivitylnk:
+                            acttype = "manual"
+                            if lessonactivity.activityid.activitytype == 27:
+                                acttype = "auto"
+                            activityname.append({ "id": str(lessonactivity.activityid.id), "name": lessonactivity.activityid.name, "type": acttype})
+                            activityobj = simplejson.dumps(activityname)
+                        activity.append({ "id": str(item.id), "name": item.lessonid.name, "goaloftask": item.lessonid.goaloftask, "activity": activityobj})
                 activitylist = simplejson.dumps(activity)
                                           
                 data_json = {
@@ -1894,6 +1899,7 @@ class UNITLIST():
                 lesson.lessontype = 25
                 lesson.abilitylevel = 0
                 lesson.goaloftask = goal
+                lesson.deliverable = deliverable
                 lesson.createddt = datetime.now()
                 lesson.createdby = userid
                 lesson.modifieddt = datetime.now()
@@ -2142,11 +2148,30 @@ class UNITLIST():
 
                 lessonlist.name = name
                 lessonlist.goaloftask = goal
+                lessonlist.deliverable = deliverable
                 lessonlist.modifieddt = datetime.now()
                 lessonlist.modifiedby = userid
                 lessonlist.save()
+
+                activity = []
+                lesson = Unitlessonlnk.objects.filter(unitid=unitlesson.unitid.id,deleted=0,lessonid__name__isnull=False,lessonid__goaloftask__isnull=False,lessonid__deliverable__isnull=False).exclude(lessonid__name__exact='').exclude(lessonid__goaloftask__exact='').exclude(lessonid__deliverable__exact='').order_by('order')
+                for item in lesson:
+                    numberofcriteria = Lessonrubriccriterialnk.objects.filter(unitid=unitlesson.unitid.id,lessonid=item.lessonid.id,deleted=0).count()
+                    if(numberofcriteria > 0):
+                        lessonactivitylnk = Lessonactivitylnk.objects.filter(lessonid=item.lessonid.id,deleted=0,activityid__deleted=0).order_by('activityid__order')
+                        activityname = []
+                        activityobj = ''
+                        for lessonactivity in lessonactivitylnk:
+                            acttype = "manual"
+                            if lessonactivity.activityid.activitytype == 27:
+                                acttype = "auto"
+                            activityname.append({ "id": str(lessonactivity.activityid.id), "name": lessonactivity.activityid.name, "type": acttype})
+                            activityobj = simplejson.dumps(activityname)
+                        activity.append({ "id": str(item.id), "name": item.lessonid.name, "goaloftask": item.lessonid.goaloftask, "activity": activityobj})
+                activitylist = simplejson.dumps(activity)
                 
-                data_json = { 'status': 'success' }
+                data_json = { 'status': 'success', 
+                              'activity': activitylist }
                 data = simplejson.dumps(data_json)
                 return HttpResponse(data, mimetype='application/json')
              

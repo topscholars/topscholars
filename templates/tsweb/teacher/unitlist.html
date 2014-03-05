@@ -26,6 +26,7 @@
     EDITTABLE.prototype = new GridBase();
     var currentstage;
     var taglist;
+    var editcategory = '';
 function EDITTABLE(){
 	var thisClass = this;
 	var url = "{% url 'tsweb:tprocessajax' %}";
@@ -52,11 +53,13 @@ function EDITTABLE(){
 				            $('#performancebtnclr').remove();
 				            var html = '<div id="performancebtngrp" class="btn-group-vertical" style="width:100%;"></div>';
                             html += '<div id="performancebtnclr" class="clearfix" style="height:10px;"></div>';
-				            $(html).insertBefore("#btnAddPerformance");
+                            $(html).insertBefore("#btnAddPerformance");
+                            $('#btnAddEvidence').show();
 				        }
 				        else {
 				            $('#performancebtngrp').remove();
 				            $('#performancebtnclr').remove();
+				            $('#btnAddEvidence').hide();
 				        }
 				        var option = '';
 				        $("#evd_evidence_performance_name option").remove();
@@ -96,7 +99,7 @@ function EDITTABLE(){
 				                var html = '<li name="lessonid" class="panel panel-success">';
 				                html += '<input type="hidden" name="lessonid" value="' + lesson[i].id  + '">';
 				                html += '<div class="panel-heading"><div class="panel-title">';
-				                html += '<a data-toggle="collapse" data-parent="sortable" href="#collapse' + lesson[i].id + '" class="lesson-title">' + lesson[i].name + '</a>';
+				                html += '<a data-toggle="collapse" data-parent="sortable" href="#collapse' + lesson[i].id + '" class="lesson-title">' + lesson[i].name + ' ' + lesson[i].goaloftask + '</a>';
 				                html += '<i class="fa fa-sort pull-right"></i></div></div>';
 				                html += '<div id="collapse' + lesson[i].id + '" class="panel-collapse in"><div class="panel-body">';
 				                html += '<ul id="sortableActivities' + lesson[i].id + '" style="list-style: none;">';
@@ -281,6 +284,7 @@ function EDITTABLE(){
 	    $('#btnSave').show();
 	}
 	this.clearPerformanceValue = function () {
+	    editcategory = '';
 	    $("[id^='pfm_']").each(function () {
 	        $(this).val('');
 	    });
@@ -345,11 +349,24 @@ function EDITTABLE(){
                             $('#' + ini).val(val);
                         }
                         if ((ini == 'impactlist') || (ini == 'qualitylist') || (ini == 'contentlist') || (ini == 'processlist')) {
+                            var tab;
+                            if (ini == 'impactlist') {
+                                tab = 1;
+                            }
+                            else if (ini == 'qualitylist') {
+                                tab = 2;
+                            }
+                            else if (ini == 'contentlist') {
+                                tab = 3;
+                            }
+                            else if (ini == 'processlist') {
+                                tab = 4;
+                            }
                             for (var i = 0; i < val.length; i++) {
                                 var html = '<li class="well well-small">';
                                 html += '<span class="pull-left" style="margin-top:5px;margin-bottom:0px;">' + val[i].criteria + '&nbsp;&#124;&nbsp;' + val[i].weight + '</span>';
                                 html += '<button type="button" class="btn btn-danger btn-small pull-right" onclick="var event = new EDITTABLE();event.removecriteria(this);">Remove</button>';
-                                html += '<button type="button" class="btn btn-default btn-small pull-right">Edit</button>';
+                                html += '<button type="button" class="btn btn-default btn-small pull-right" onclick="var event = new EDITTABLE();event.editCriteria(this,' + tab + ');">Edit</button>';
                                 html += '<input type="hidden" name="id" class="form-control input-small" value="' + val[i].id + '" />';
                                 html += '<input type="hidden" name="name" class="form-control input-small" value="' + val[i].criteria + '" />';
                                 html += '<input type="hidden" name="tag" class="form-control input-small" value="' + val[i].hashtag + '" />';
@@ -371,30 +388,97 @@ function EDITTABLE(){
 	this.removecriteria = function (element) {
 	    $(element).parent().remove();
 	}
-	this.editImpactCriteria = function (element) {
-	    //$(element).parent().find('input[name=name]').val();
+	this.clearCriteria = function () {
+	    editcategory = '';
+	    $('#pfm_add_impact_criteria').val('');
+	    $('#pfm_add_impact_tag').val('');
+	    $('#pfm_add_impact_weight').val('');
+	    $('#pfm_add_quality_criteria').val('');
+	    $('#pfm_add_quality_tag').val('');
+	    $('#pfm_add_quality_weight').val('');
+	    $('#pfm_add_content_criteria').val('');
+	    $('#pfm_add_content_tag').val('');
+	    $('#pfm_add_content_weight').val('');
+	    $('#pfm_add_process_criteria').val('');
+	    $('#pfm_add_process_tag').val('');
+	    $('#pfm_add_process_weight').val('');
+	    $('#pfm_add_impact_tag').parent().parent().find(".highlighter").html('');
+	    $('#pfm_add_quality_tag').parent().parent().find(".highlighter").html('');
+	    $('#pfm_add_content_tag').parent().parent().find(".highlighter").html('');
+	    $('#pfm_add_process_tag').parent().parent().find(".highlighter").html('');
+	}
+	this.editCriteria = function (element, tab) {
+	    $('#new_pt_details_modal .error').remove();
+	    editcategory = $(element).parent();
+	    var name = editcategory.find('input[name=name]').val();
+	    var tag = editcategory.find('input[name=tag]').val();
+	    var weight = editcategory.find('input[name=weight]').val();
+	    if (tab == 1) {
+	        $('#pfm_add_impact_criteria').val(name);
+	        $('#pfm_add_impact_tag').val(tag);
+	        $('#pfm_add_impact_weight').val(weight);
+	        $("#pfm_add_impact_tag").hashtags({ refresh: true, autocompleteURL: taglist });
+
+	    }
+	    else if (tab == 2) {
+	        $('#pfm_add_quality_criteria').val(name);
+	        $('#pfm_add_quality_tag').val(tag);
+	        $('#pfm_add_quality_weight').val(weight);
+	        $("#pfm_add_quality_tag").hashtags({ refresh: true, autocompleteURL: taglist });
+	    }
+	    else if (tab == 3) {
+	        $('#pfm_add_content_criteria').val(name);
+	        $('#pfm_add_content_tag').val(tag);
+	        $('#pfm_add_content_weight').val(weight);
+	        $("#pfm_add_content_tag").hashtags({ refresh: true, autocompleteURL: taglist });
+	    }
+	    else if (tab == 4) {
+	        $('#pfm_add_process_criteria').val(name);
+	        $('#pfm_add_process_tag').val(tag);
+	        $('#pfm_add_process_weight').val(weight);
+	        $("#pfm_add_process_tag").hashtags({ refresh: true, autocompleteURL: taglist });
+	    }
 	}
 	this.addImpactCriteria = function () {
 	    var isduplicate = false;
 	    $('#new_pt_details_modal .error').remove();
 	    if ($('#pfm_add_impact_criteria').val() != '') {
-	        $('#impact_criteria_list li').each(function () {
-	            if ($('#pfm_add_impact_criteria').val() == $(this).find('input[name=name]').val()) {
-	                isduplicate = true;
-	            }
-	        });
+	            $('#impact_criteria_list li').each(function () {
+	                if ($('#pfm_add_impact_criteria').val() == $(this).find('input[name=name]').val()) {
+	                    if (editcategory == '') {
+	                        isduplicate = true;
+	                    }
+	                    else {
+	                        if ((editcategory.find('input[name=id]').val() == '') || (editcategory.find('input[name=id]').val() != $(this).find('input[name=id]').val())) {
+	                            isduplicate = true;
+	                        }
+	                    }
+	                }
+	            });
 	        if (!isduplicate) {
-	            var html = '<li class="well well-small">';
-	            html += '<span class="pull-left" style="margin-top:5px;margin-bottom:0px;">' + $('#pfm_add_impact_criteria').val() + '&nbsp;&#124;&nbsp;' + $('#pfm_add_impact_weight').val() + '</span>';
-	            html += '<button type="button" class="btn btn-danger btn-small pull-right" onclick="var event = new EDITTABLE();event.removecriteria(this);">Remove</button>';
-	            html += '<button type="button" class="btn btn-default btn-small pull-right">Edit</button>';
-	            html += '<input type="hidden" name="id" class="form-control input-small" value="" />';
-	            html += '<input type="hidden" name="name" class="form-control input-small" value="' + $('#pfm_add_impact_criteria').val() + '" />';
-	            html += '<input type="hidden" name="tag" class="form-control input-small" value="' + $('#pfm_add_impact_tag').val() + '" />';
-	            html += '<input type="hidden" name="weight" class="form-control input-small" value="' + $('#pfm_add_impact_weight').val() + '" />';
-	            html += '<div class="clearfix"></div>';
-	            html += '</li>';
-	            $('#impact_criteria_list').append(html);
+	            if (editcategory != '') {
+	                var name = $('#pfm_add_impact_criteria').val();
+	                var tag = $('#pfm_add_impact_tag').val();
+	                var weight = $('#pfm_add_impact_weight').val();
+	                editcategory.find('span').html(name + '&nbsp;&#124;&nbsp;' + weight);
+	                editcategory.find('input[name=name]').val(name);
+	                editcategory.find('input[name=tag]').val(tag);
+	                editcategory.find('input[name=weight]').val(weight);
+	                editcategory = '';
+	            }
+	            else {
+	                var html = '<li class="well well-small">';
+	                html += '<span class="pull-left" style="margin-top:5px;margin-bottom:0px;">' + $('#pfm_add_impact_criteria').val() + '&nbsp;&#124;&nbsp;' + $('#pfm_add_impact_weight').val() + '</span>';
+	                html += '<button type="button" class="btn btn-danger btn-small pull-right" onclick="var event = new EDITTABLE();event.removecriteria(this);">Remove</button>';
+	                //html += '<button type="button" class="btn btn-default btn-small pull-right"  onclick="var event = new EDITTABLE();event.editCriteria(this, 1);">Edit</button>';
+	                html += '<input type="hidden" name="id" class="form-control input-small" value="" />';
+	                html += '<input type="hidden" name="name" class="form-control input-small" value="' + $('#pfm_add_impact_criteria').val() + '" />';
+	                html += '<input type="hidden" name="tag" class="form-control input-small" value="' + $('#pfm_add_impact_tag').val() + '" />';
+	                html += '<input type="hidden" name="weight" class="form-control input-small" value="' + $('#pfm_add_impact_weight').val() + '" />';
+	                html += '<div class="clearfix"></div>';
+	                html += '</li>';
+	                $('#impact_criteria_list').append(html);
+	            }
 	            $('#pfm_add_impact_criteria').val('');
 	            $('#pfm_add_impact_tag').val('');
 	            $('#pfm_add_impact_tag').parent().parent().find(".highlighter").html('');
@@ -409,23 +493,44 @@ function EDITTABLE(){
 	    var isduplicate = false;
 	    $('#new_pt_details_modal .error').remove();
 	    if ($('#pfm_add_quality_criteria').val() != '') {
-	        $('#quality_criteria_list li').each(function () {
-	            if ($('#pfm_add_quality_criteria').val() == $(this).find('input[name=name]').val()) {
-	                isduplicate = true;
-	            }
-	        });
+	        if (editcategory == '') {
+	            $('#quality_criteria_list li').each(function () {
+	                if ($('#pfm_add_quality_criteria').val() == $(this).find('input[name=name]').val()) {
+	                    if (editcategory == '') {
+	                        isduplicate = true;
+	                    }
+	                    else {
+	                        if ((editcategory.find('input[name=id]').val() == '') || (editcategory.find('input[name=id]').val() != $(this).find('input[name=id]').val())) {
+	                            isduplicate = true;
+	                        }
+	                    }
+	                }
+	            });
+	        }
 	        if (!isduplicate) {
-	            var html = '<li class="well well-small">';
-	            html += '<span class="pull-left" style="margin-top:5px;margin-bottom:0px;">' + $('#pfm_add_quality_criteria').val() + '&nbsp;&#124;&nbsp;' + $('#pfm_add_quality_weight').val() + '</span>';
-	            html += '<button type="button" class="btn btn-danger btn-small pull-right" onclick="var event = new EDITTABLE();event.removecriteria(this);">Remove</button>';
-	            html += '<button type="button" class="btn btn-default btn-small pull-right">Edit</button>';
-	            html += '<input type="hidden" name="id" class="form-control input-small" value="" />';
-	            html += '<input type="hidden" name="name" class="form-control input-small" value="' + $('#pfm_add_quality_criteria').val() + '" />';
-	            html += '<input type="hidden" name="tag" class="form-control input-small" value="' + $('#pfm_add_quality_tag').val() + '" />';
-	            html += '<input type="hidden" name="weight" class="form-control input-small" value="' + $('#pfm_add_quality_weight').val() + '" />';
-	            html += '<div class="clearfix"></div>';
-	            html += '</li>';
-	            $('#quality_criteria_list').append(html);
+	            if (editcategory != '') {
+	                var name = $('#pfm_add_quality_criteria').val();
+	                var tag = $('#pfm_add_quality_tag').val();
+	                var weight = $('#pfm_add_quality_weight').val();
+	                editcategory.find('span').html(name + '&nbsp;&#124;&nbsp;' + weight);
+	                editcategory.find('input[name=name]').val(name);
+	                editcategory.find('input[name=tag]').val(tag);
+	                editcategory.find('input[name=weight]').val(weight);
+	                editcategory = '';
+	            }
+	            else {
+	                var html = '<li class="well well-small">';
+	                html += '<span class="pull-left" style="margin-top:5px;margin-bottom:0px;">' + $('#pfm_add_quality_criteria').val() + '&nbsp;&#124;&nbsp;' + $('#pfm_add_quality_weight').val() + '</span>';
+	                html += '<button type="button" class="btn btn-danger btn-small pull-right" onclick="var event = new EDITTABLE();event.removecriteria(this);">Remove</button>';
+	                //html += '<button type="button" class="btn btn-default btn-small pull-right" onclick="var event = new EDITTABLE();event.editCriteria(this, 2);">Edit</button>';
+	                html += '<input type="hidden" name="id" class="form-control input-small" value="" />';
+	                html += '<input type="hidden" name="name" class="form-control input-small" value="' + $('#pfm_add_quality_criteria').val() + '" />';
+	                html += '<input type="hidden" name="tag" class="form-control input-small" value="' + $('#pfm_add_quality_tag').val() + '" />';
+	                html += '<input type="hidden" name="weight" class="form-control input-small" value="' + $('#pfm_add_quality_weight').val() + '" />';
+	                html += '<div class="clearfix"></div>';
+	                html += '</li>';
+	                $('#quality_criteria_list').append(html);
+	            }
 	            $('#pfm_add_quality_criteria').val('');
 	            $('#pfm_add_quality_tag').val('');
 	            $('#pfm_add_quality_tag').parent().parent().find(".highlighter").html('');
@@ -440,23 +545,44 @@ function EDITTABLE(){
 	    var isduplicate = false;
 	    $('#new_pt_details_modal .error').remove();
 	    if ($('#pfm_add_content_criteria').val() != '') {
-	        $('#content_criteria_list li').each(function () {
-	            if ($('#pfm_add_content_criteria').val() == $(this).find('input[name=name]').val()) {
-	                isduplicate = true;
-	            }
-	        });
+	        if (editcategory == '') {
+	            $('#content_criteria_list li').each(function () {
+	                if ($('#pfm_add_content_criteria').val() == $(this).find('input[name=name]').val()) {
+	                    if (editcategory == '') {
+	                        isduplicate = true;
+	                    }
+	                    else {
+	                        if ((editcategory.find('input[name=id]').val() == '') || (editcategory.find('input[name=id]').val() != $(this).find('input[name=id]').val())) {
+	                            isduplicate = true;
+	                        }
+	                    }
+	                }
+	            });
+	        }
 	        if (!isduplicate) {
-	            var html = '<li class="well well-small">';
-	            html += '<span class="pull-left" style="margin-top:5px;margin-bottom:0px;">' + $('#pfm_add_content_criteria').val() + '&nbsp;&#124;&nbsp;' + $('#pfm_add_content_weight').val() + '</span>';
-	            html += '<button type="button" class="btn btn-danger btn-small pull-right" onclick="var event = new EDITTABLE();event.removecriteria(this);">Remove</button>';
-	            html += '<button type="button" class="btn btn-default btn-small pull-right">Edit</button>';
-	            html += '<input type="hidden" name="id" class="form-control input-small" value="" />';
-	            html += '<input type="hidden" name="name" class="form-control input-small" value="' + $('#pfm_add_content_criteria').val() + '" />';
-	            html += '<input type="hidden" name="tag" class="form-control input-small" value="' + $('#pfm_add_content_tag').val() + '" />';
-	            html += '<input type="hidden" name="weight" class="form-control input-small" value="' + $('#pfm_add_content_weight').val() + '" />';
-	            html += '<div class="clearfix"></div>';
-	            html += '</li>';
-	            $('#content_criteria_list').append(html);
+	            if (editcategory != '') {
+	                var name = $('#pfm_add_content_criteria').val();
+	                var tag = $('#pfm_add_content_tag').val();
+	                var weight = $('#pfm_add_content_weight').val();
+	                editcategory.find('span').html(name + '&nbsp;&#124;&nbsp;' + weight);
+	                editcategory.find('input[name=name]').val(name);
+	                editcategory.find('input[name=tag]').val(tag);
+	                editcategory.find('input[name=weight]').val(weight);
+	                editcategory = '';
+	            }
+	            else {
+	                var html = '<li class="well well-small">';
+	                html += '<span class="pull-left" style="margin-top:5px;margin-bottom:0px;">' + $('#pfm_add_content_criteria').val() + '&nbsp;&#124;&nbsp;' + $('#pfm_add_content_weight').val() + '</span>';
+	                html += '<button type="button" class="btn btn-danger btn-small pull-right" onclick="var event = new EDITTABLE();event.removecriteria(this);">Remove</button>';
+	                //html += '<button type="button" class="btn btn-default btn-small pull-right" onclick="var event = new EDITTABLE();event.editCriteria(this, 3);">Edit</button>';
+	                html += '<input type="hidden" name="id" class="form-control input-small" value="" />';
+	                html += '<input type="hidden" name="name" class="form-control input-small" value="' + $('#pfm_add_content_criteria').val() + '" />';
+	                html += '<input type="hidden" name="tag" class="form-control input-small" value="' + $('#pfm_add_content_tag').val() + '" />';
+	                html += '<input type="hidden" name="weight" class="form-control input-small" value="' + $('#pfm_add_content_weight').val() + '" />';
+	                html += '<div class="clearfix"></div>';
+	                html += '</li>';
+	                $('#content_criteria_list').append(html);
+	            }
 	            $('#pfm_add_content_criteria').val('');
 	            $('#pfm_add_content_tag').val('');
 	            $('#pfm_add_content_tag').parent().parent().find(".highlighter").html('');
@@ -471,23 +597,44 @@ function EDITTABLE(){
 	    var isduplicate = false;
 	    $('#new_pt_details_modal .error').remove();
 	    if ($('#pfm_add_process_criteria').val() != '') {
-	        $('#process_criteria_list li').each(function () {
-	            if ($('#pfm_add_process_criteria').val() == $(this).find('input[name=name]').val()) {
-	                isduplicate = true;
-	            }
-	        });
+	        if (editcategory == '') {
+	            $('#process_criteria_list li').each(function () {
+	                if ($('#pfm_add_process_criteria').val() == $(this).find('input[name=name]').val()) {
+	                    if (editcategory == '') {
+	                        isduplicate = true;
+	                    }
+	                    else {
+	                        if ((editcategory.find('input[name=id]').val() == '') || (editcategory.find('input[name=id]').val() != $(this).find('input[name=id]').val())) {
+	                            isduplicate = true;
+	                        }
+	                    }
+	                }
+	            });
+	        }
 	        if (!isduplicate) {
-	            var html = '<li class="well well-small">';
-	            html += '<span class="pull-left" style="margin-top:5px;margin-bottom:0px;">' + $('#pfm_add_process_criteria').val() + '&nbsp;&#124;&nbsp;' + $('#pfm_add_process_weight').val() + '</span>';
-	            html += '<button type="button" class="btn btn-danger btn-small pull-right" onclick="var event = new EDITTABLE();event.removecriteria(this);">Remove</button>';
-	            html += '<button type="button" class="btn btn-default btn-small pull-right">Edit</button>';
-	            html += '<input type="hidden" name="id" class="form-control input-small" value="" />';
-	            html += '<input type="hidden" name="name" class="form-control input-small" value="' + $('#pfm_add_process_criteria').val() + '" />';
-	            html += '<input type="hidden" name="tag" class="form-control input-small" value="' + $('#pfm_add_process_tag').val() + '" />';
-	            html += '<input type="hidden" name="weight" class="form-control input-small" value="' + $('#pfm_add_process_weight').val() + '" />';
-	            html += '<div class="clearfix"></div>';
-	            html += '</li>';
-	            $('#process_criteria_list').append(html);
+	            if (editcategory != '') {
+	                var name = $('#pfm_add_process_criteria').val();
+	                var tag = $('#pfm_add_process_tag').val();
+	                var weight = $('#pfm_add_process_weight').val();
+	                editcategory.find('span').html(name + '&nbsp;&#124;&nbsp;' + weight);
+	                editcategory.find('input[name=name]').val(name);
+	                editcategory.find('input[name=tag]').val(tag);
+	                editcategory.find('input[name=weight]').val(weight);
+	                editcategory = '';
+	            }
+	            else {
+	                var html = '<li class="well well-small">';
+	                html += '<span class="pull-left" style="margin-top:5px;margin-bottom:0px;">' + $('#pfm_add_process_criteria').val() + '&nbsp;&#124;&nbsp;' + $('#pfm_add_process_weight').val() + '</span>';
+	                html += '<button type="button" class="btn btn-danger btn-small pull-right" onclick="var event = new EDITTABLE();event.removecriteria(this);">Remove</button>';
+	                //html += '<button type="button" class="btn btn-default btn-small pull-right" onclick="var event = new EDITTABLE();event.editCriteria(this, 4);">Edit</button>';
+	                html += '<input type="hidden" name="id" class="form-control input-small" value="" />';
+	                html += '<input type="hidden" name="name" class="form-control input-small" value="' + $('#pfm_add_process_criteria').val() + '" />';
+	                html += '<input type="hidden" name="tag" class="form-control input-small" value="' + $('#pfm_add_process_tag').val() + '" />';
+	                html += '<input type="hidden" name="weight" class="form-control input-small" value="' + $('#pfm_add_process_weight').val() + '" />';
+	                html += '<div class="clearfix"></div>';
+	                html += '</li>';
+	                $('#process_criteria_list').append(html);
+	            }
 	            $('#pfm_add_process_criteria').val('');
 	            $('#pfm_add_process_tag').val('');
 	            $('#pfm_add_process_tag').parent().parent().find(".highlighter").html('');
@@ -539,9 +686,26 @@ function EDITTABLE(){
 	        };
 	        process_criteria_list.push(data);
 	    });
-	    var recid = $('#pfm_rubric_id').val();
 	    $('#new_pt_details_modal .error').remove();
-	    if ($('#pfm_rubric_name').val() != '') {
+	    var isvalid = true;
+	    if ((parseInt($('#pfmi_process_weight_input').val()) > 0) && (process_criteria_list.length == 0)) {
+	        isvalid = false;
+	        $('<label class="error" for="pfmi_process_weight_input">Process need a criteria!!.</label>').insertBefore("#pfm_add_process_criteria");
+	    }
+	    if ((parseInt($('#pfmi_content_weight_input').val()) > 0) && (content_criteria_list.length == 0)) {
+	        isvalid = false;
+	        $('<label class="error" for="pfmi_content_weight_input">Content need a criteria!!.</label>').insertBefore("#pfm_add_content_criteria");
+	    }
+	    if ((parseInt($('#pfmi_quality_weight_input').val()) > 0) && (quality_criteria_list.length == 0)) {
+	        isvalid = false;
+	        $('<label class="error" for="pfmi_quality_weight_input">Quality need a criteria!!.</label>').insertBefore("#pfm_add_quality_criteria");
+	    }
+	    if ((parseInt($('#pfmi_impact_weight_input').val()) > 0) && (impact_criteria_list.length == 0)) {
+	        isvalid = false;
+	        $('<label class="error" for="pfmi_impact_weight_input">Impact need a criteria!!.</label>').insertBefore("#pfm_add_impact_criteria");
+	    }
+	    var recid = $('#pfm_rubric_id').val();
+	    if (($('#pfm_rubric_name').val() != '') && (isvalid)) {
 	        if (recid == '') {
 	            $.post(
                 url,
@@ -762,6 +926,40 @@ function EDITTABLE(){
                     'process_criteria': JSON.stringify(process_criteria_list),
                 },
                 function (result) {
+                    $.each(result, function (ini, val) {
+                        if (ini == "activity") {
+                            var lesson = eval(val);
+                            $('#sortable li').remove();
+                            if (lesson.length > 0) {
+                                for (var i = 0; i < lesson.length; i++) {
+                                    var activity = eval(lesson[i].activity);
+                                    var html = '<li name="lessonid" class="panel panel-success">';
+                                    html += '<input type="hidden" name="lessonid" value="' + lesson[i].id + '">';
+                                    html += '<div class="panel-heading"><div class="panel-title">';
+                                    html += '<a data-toggle="collapse" data-parent="sortable" href="#collapse' + lesson[i].id + '" class="lesson-title">' + lesson[i].name + ' ' + lesson[i].goaloftask + '</a>';
+                                    html += '<i class="fa fa-sort pull-right"></i></div></div>';
+                                    html += '<div id="collapse' + lesson[i].id + '" class="panel-collapse in"><div class="panel-body">';
+                                    html += '<ul id="sortableActivities' + lesson[i].id + '" style="list-style: none;">';
+                                    if ((activity != null) && (activity.length > 0)) {
+                                        for (var j = 0; j < activity.length; j++) {
+                                            var type = '';
+                                            if (activity[j].type == 'auto') { type = 'checked'; }
+                                            html += '<li class="well well-small"><input type="hidden" name="activityid" value="' + activity[j].id + '"><div class="row"><div class="col-lg-6 col-md-6 col-sm-6"><input type="text" class="form-control input-small" placeholder="Add Activity Here" value="' + activity[j].name + '" disabled></div><div class="col-lg-3 col-md-3 col-sm-3"><div class="onoffswitch"><input type="checkbox" name="onoffswitch2" class="onoffswitch-checkbox" id="myonoffswitch' + activity[j].id + '" ' + type + ' disabled><label class="onoffswitch-label" for="myonoffswitch' + activity[j].id + '"><div class="onoffswitch-inner"></div><div class="onoffswitch-switch"></div></label></div></div><div class="col-lg-3 col-md-3 col-sm-3"><a href="javascript:alert(' + activity[j].id + ');" class="btn btn-small btn-success pull-right">Go to activity <i class="fa fa-arrow-right"></i></a></div></div></li>';
+                                        }
+                                    }
+                                    html += '</ul>';
+                                    html += '<button role="button" class="btn btn-small pull-right" onclick="alert(' + lesson[i].id + ')">Add Activity <i class="fa fa-plus"></i></button>';
+                                    html += '</div></div></li>';
+                                    $('#sortable').append(html);
+                                }
+                                if (lesson.length > 0) {
+                                    for (var i = 0; i < lesson.length; i++) {
+                                        $("#sortableActivities" + lesson[i].id).sortable();
+                                    }
+                                }
+                            }
+                        }
+                    });
                     $('#new_evidence_details_modal').modal('hide');
                 }).error(function (xhr, status, error) {
                     alert('Error occur. Please contact the administrator.');
@@ -902,7 +1100,28 @@ function EDITTABLE(){
 	    	$('#impactCollapse, #qualityCollapse, #contentCollapse').removeClass('active');
 	    	$('#processCollapse').addClass('active');
 	    	$('#show-category-btn').addClass('hide');
-	    });	
+	    });
+	    $('a[data-toggle="tab"]').on('show.bs.tab', function (e) {
+	        var prevtab = e.relatedTarget;
+	        if (prevtab != null) {
+	            var paneid = $(prevtab).attr('href');
+	            var hasvalue = false;
+	            $(paneid).find("[id^='pfm_']").each(function () {
+	                if ($(this).val() != '') {
+	                    hasvalue = true;
+	                }
+	            });
+	            if (hasvalue) {
+	                var discard = confirm('Discard All Changes?');
+	                if (!discard) {
+	                    e.preventDefault();
+	                }
+	            }
+	        }
+	    });
+	    $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+	        thisClass.clearCriteria();
+	    })
 	    $('#add_impact_criteria_btn').click(function () {
 	        thisClass.addImpactCriteria();
 	    });
@@ -1200,7 +1419,7 @@ $(function() {
 				        	<div class="form-group">
 				        		<label for="pfm_rubric_scale" class="control-label col-sm-4">Scale</label>
 				        		<div class="col-sm-8">
-					        		<input type="number" min="1" max="100" name="pfm_rubric_scale" id="pfm_rubric_scale" class="form-control input-small" placeholder="1 - 100"/>
+					        		<input type="number" min="1" max="100" name="pfm_rubric_scale" id="pfm_rubric_scale" class="form-control input-small" placeholder="1 - 100" required/>
 					        	</div>
 				        	</div>
 				        </div><!-- col-lg-5 -->
@@ -1243,7 +1462,7 @@ $(function() {
   		  				    	<div class="form-group">
   						    			<label class="control-label col-sm-4">Category Weight</label>
   						    			<div class="col-sm-2">
-  		  				    			<input class="form-control input-small" type="number" id="pfmi_impact_weight_input" value="0" min="0" max="100"/>
+  		  				    			<input class="form-control input-small" type="number" id="pfmi_impact_weight_input" value="0" min="0" max="100" required/>
   		  				    		</div>
   		  				    		<div class="col-sm-2">
   		  				    			<input type="button" class="btn btn-blue" value="+" id="add_impact_criteria_btn"/>
@@ -1273,7 +1492,7 @@ $(function() {
   		    				    	<div class="form-group">
   		    				    		<label for="" class="control-label col-sm-4">Category Weight</label>
   		    				    		<div class="col-sm-2">
-  		    				    			<input class="form-control input-small" type="number" id="pfmi_quality_weight_input" value="0" min="0" max="100"/>
+  		    				    			<input class="form-control input-small" type="number" id="pfmi_quality_weight_input" value="0" min="0" max="100" required/>
   		    				    		</div>
   		    				    		<div class="col-sm-2">
   		    				    			<input type="button" class="btn btn-green" value="+" id="add_quality_criteria_btn"/>
@@ -1304,7 +1523,7 @@ $(function() {
   		    				    	<div class="form-group">
   		    				    		<label for="" class="control-label col-sm-4">Category Weight</label>
   		    				    		<div class="col-sm-2">
-  		    				    			<input class="form-control input-small" type="number" id="pfmi_content_weight_input" value="0" min="0" max="100"/>
+  		    				    			<input class="form-control input-small" type="number" id="pfmi_content_weight_input" value="0" min="0" max="100" required/>
   		    				    		</div>
   		    				    		<div class="col-sm-2">
   		    				    			<input type="button" class="btn btn-purple" value="+" id="add_content_criteria_btn"/>
@@ -1335,7 +1554,7 @@ $(function() {
   		  				    	<div class="form-group">
   		  				    		<label for="" class="control-label col-sm-4">Category Weight</label>
   		  				    		<div class="col-sm-2">
-  		  				    			<input class="form-control input-small" type="number" id="pfmi_process_weight_input" value="0" min="0" max="100"/>
+  		  				    			<input class="form-control input-small" type="number" id="pfmi_process_weight_input" value="0" min="0" max="100" required/>
   		  				    		</div>
   		  				    		<div class="col-sm-2">
   		  				    			<input type="button" class="btn btn-red" value="+" id="add_process_criteria_btn"/>

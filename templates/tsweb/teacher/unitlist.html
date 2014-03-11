@@ -227,7 +227,7 @@ function EDITTABLE(){
 	                success: function(result)
 	                {
 						$.each(result, function(ini,val){
-							obj = { id : 1 , value: '#'+val.name};
+							obj = { id : 1 , value: '#'+val.hashtag};
 							thisClass.availableTags.push(obj);
 						});
 						taglist = thisClass.availableTags;

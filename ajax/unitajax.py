@@ -163,7 +163,7 @@ class UNITLIST():
             login = Login.objects.get(id=userid)
             clientid = login.clientid
             tagidlist = TagEntity.objects.filter(entityid=17,tagid__deleted = 0).values('tagid')
-            taglist = list(Tag.objects.filter(id__in = tagidlist).values('name'))
+            taglist = list(Tag.objects.filter(id__in = tagidlist).values('hashtag'))
         except Tag.DoesNotExist:
             data_json = { 'status': 'error' }
             data = simplejson.dumps(data_json)

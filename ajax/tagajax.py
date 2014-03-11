@@ -22,7 +22,7 @@ class TAGLIST():
             return HttpResponse('error', mimetype='application/json')
         else:
             #classlist = Classschedule.objects.filter(id=id)
-            cursor.execute("SELECT tag.id, tag.name, tag.description, tag.parentid, cl.categoryid, tag.tagcolor FROM tag as tag left join categorylink as cl on tag.id = cl.recid and cl.entityid = '12' WHERE tag.id = %s", [id])
+            cursor.execute("SELECT tag.id, tag.name, tag.description, tag.parentid, cl.categoryid, tag.tagcolor, tag.hash FROM tag as tag left join categorylink as cl on tag.id = cl.recid and cl.entityid = '12' WHERE tag.id = %s", [id])
             results = cursor.fetchall()
             for r in results:
                     
@@ -32,7 +32,8 @@ class TAGLIST():
                         'descriptions': r[2],
                         'parentid': r[3],
                         'categoryid': r[4],
-                        'tagcolor': r[5]
+                        'tagcolor': r[5],
+                        'hashtag': r[6],
                         }
             data = simplejson.dumps(data_json)
         return HttpResponse(data, mimetype='application/json')
@@ -76,6 +77,7 @@ class TAGLIST():
             
             id = request.POST.get('id', False)
             name = request.POST.get('name', False)
+            hashtag = request.POST.get('hashtag', False)
             descriptions = request.POST.get('descriptions', False)
             categoryid = request.POST.get('categoryid', False)
             parentid = request.POST.get('parentid', False)
@@ -92,6 +94,7 @@ class TAGLIST():
             except Tag.DoesNotExist:
                 taglist = Tag.objects.get(id=id)
                 taglist.name = name
+                taglist.hashtag = hashtag
                 if parentid == False:
                     taglist.parentid = 0
                 else:
@@ -191,6 +194,7 @@ class TAGLIST():
             
             id = request.POST.get('id', False)
             name = request.POST.get('name', False)
+            hashtag = request.POST.get('hashtag', False)
             descriptions = request.POST.get('descriptions', False)
             categoryid = request.POST.get('categoryid', False)
             parentid = request.POST.get('parentid', False)
@@ -207,6 +211,7 @@ class TAGLIST():
             except Tag.DoesNotExist:
                 taglist = Tag()
                 taglist.name = name
+                taglist.hashtag = hashtag
                 if parentid == False:
                     taglist.parentid = 0
                 else:

@@ -1138,7 +1138,8 @@ function EDITTABLE(){
 	        thisClass.getPerformanceData($('#pfm_rubric_assignment').val(),0);
 	    });
 	    $('#btnSavePerformance').click(function () {
-	        thisClass.savePerformance();
+	    	if($('#pfm_rubric_name').val() !== '' && $('#pfm_rubric_scale').val() !== '')
+	        	thisClass.savePerformance();
 	    });
 	    $('#btnAddEvidence').click(function () {
 	        thisClass.clearEvidenceValue();

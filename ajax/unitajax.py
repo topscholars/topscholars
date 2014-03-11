@@ -1910,7 +1910,7 @@ class UNITLIST():
                 lesson.save()
                 lessonlist = Lesson.objects.latest("id")
 
-                unitnum = Unitlessonlnk.objects.filter(unitid=unit.id,deleted=0).count()
+                unitnum = Unitlessonlnk.objects.filter(unitid=unitid,deleted=0).count()
                 unitlesson = Unitlessonlnk()
                 unitlesson.unitid = unitassignment.unitid
                 unitlesson.assignmentid = unitassignment.assignmentid

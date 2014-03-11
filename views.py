@@ -54,7 +54,7 @@ def login(request):
 def google(request):
     parser = httplib2.Http()
     client_id = '1090536334391-6tupa2tudc6htojhi7a8tof13g76br0n.apps.googleusercontent.com'
-    redirect_uri = 'http://localhost:8080/tssystem/google'
+    redirect_uri = 'http://www.trueclarity.co.th:82/tssystem/google'
     client_secret = 'wH7U45S6-tFZJntIVnV9hTAf'
     if 'error' in request.GET or 'code' not in request.GET:
         token_request_uri = "https://accounts.google.com/o/oauth2/auth"
@@ -101,7 +101,7 @@ def google(request):
 def google_register(request):
     parser = httplib2.Http()
     client_id = '436063250635-89u942ietkrmqga84jtvovhnfsf1bkkn.apps.googleusercontent.com'
-    redirect_uri = 'http://localhost:8080/tssystem/google_register'
+    redirect_uri = 'http://www.trueclarity.co.th:82/tssystem/google_register'
     client_secret = 'rXvkTxrYzTYx3bxyI6D1TdYI'
     if 'error' in request.GET or 'code' not in request.GET:
         token_request_uri = "https://accounts.google.com/o/oauth2/auth"

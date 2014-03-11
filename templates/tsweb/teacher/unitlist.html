@@ -1151,7 +1151,8 @@ function EDITTABLE(){
 	        thisClass.getEvidenceData($('#evd_evidence_performance_name').val(), 0);
 	    });
 	    $('#btnSaveEvidence').click(function () {
-	        thisClass.saveEvidence();
+	    	if($('#evd_evidence_performance_name').val() !== '')
+	        	thisClass.saveEvidence();
 	    });
 	    $("#sortable").sortable();
 	    $('#impact_criteria_list').sortable();

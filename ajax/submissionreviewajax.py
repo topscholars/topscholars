@@ -524,80 +524,80 @@ class SUBMISSIONREVIEW():
 
             submission = Submission.objects.get(id=submissionvs.submissionid.id)
 
-            if submission.progress < 100:
-                newversion = Submissionversion()
-                newversion.submissionid = submission
-                newversion.version = submissionvs.version + 1
-                newversion.essay = submissionrv.essay
-                newversion.studentstatus = 0
-                newversion.teacherstatus = 0
-                newversion.stage = 0
-                newversion.createddt = datetime.now()
-                newversion.createdby = userid
-                newversion.modifieddt = datetime.now()
-                newversion.modifiedby = userid
-                newversion.disabled = 0
-                newversion.deleted = 0
-                newversion.save()
+##            if submission.progress < 100:
+            newversion = Submissionversion()
+            newversion.submissionid = submission
+            newversion.version = submissionvs.version + 1
+            newversion.essay = submissionrv.essay
+            newversion.studentstatus = 0
+            newversion.teacherstatus = 0
+            newversion.stage = 0
+            newversion.createddt = datetime.now()
+            newversion.createdby = userid
+            newversion.modifieddt = datetime.now()
+            newversion.modifiedby = userid
+            newversion.disabled = 0
+            newversion.deleted = 0
+            newversion.save()
 
-                essay = submissionrv.essay
-                newid = Submissionversion.objects.latest("id")
+            essay = submissionrv.essay
+            newid = Submissionversion.objects.latest("id")
 
-                textcommentlist = Textcomment.objects.filter(entityid=15,recid=submissionreviewerid,deleted=0,disabled=0)
-                entity = Entity.objects.get(id=16)
-                for row in textcommentlist:
-                    newtextcomment = Textcomment()
-                    newtextcomment.entityid = entity
-                    newtextcomment.recid = newid.id
-                    newtextcomment.comment = row.comment
-                    newtextcomment.weight = row.weight
-                    newtextcomment.createddt = row.createddt
-                    newtextcomment.createdbyentity = row.createdbyentity
-                    newtextcomment.createdby = row.createdby
-                    newtextcomment.modifieddt = row.modifieddt
-                    newtextcomment.modifiedby = row.modifiedby
-                    newtextcomment.disabled = 0
-                    newtextcomment.deleted = 0
-                    newtextcomment.save()
+            textcommentlist = Textcomment.objects.filter(entityid=15,recid=submissionreviewerid,deleted=0,disabled=0)
+            entity = Entity.objects.get(id=16)
+            for row in textcommentlist:
+                newtextcomment = Textcomment()
+                newtextcomment.entityid = entity
+                newtextcomment.recid = newid.id
+                newtextcomment.comment = row.comment
+                newtextcomment.weight = row.weight
+                newtextcomment.createddt = row.createddt
+                newtextcomment.createdbyentity = row.createdbyentity
+                newtextcomment.createdby = row.createdby
+                newtextcomment.modifieddt = row.modifieddt
+                newtextcomment.modifiedby = row.modifiedby
+                newtextcomment.disabled = 0
+                newtextcomment.deleted = 0
+                newtextcomment.save()
 
-                    newtcid = Textcomment.objects.latest("id")
-                    essay = essay.replace ('name="' + str(row.id) + '"', 'name="' + str(newtcid.id) + '"').replace('openHighlightDialog(' + str(row.id) + ')','openHighlightDialog(' + str(newtcid.id) + ')')
+                newtcid = Textcomment.objects.latest("id")
+                essay = essay.replace ('name="' + str(row.id) + '"', 'name="' + str(newtcid.id) + '"').replace('openHighlightDialog(' + str(row.id) + ')','openHighlightDialog(' + str(newtcid.id) + ')')
 
-                    tllist = Taglink.objects.filter(recid=row.id,entityid=14,deleted=0)
-                    for tl in tllist:
-                        newtl = Taglink()
-                        newtl.entityid = tl.entityid
-                        newtl.recid = newtcid.id
-                        newtl.createddt = tl.createddt
-                        newtl.createdby = tl.createdby
-                        newtl.modifieddt = tl.modifieddt
-                        newtl.modifiedby = tl.modifiedby
-                        newtl.deleted = tl.deleted
-                        newtl.clientid = tl.clientid
-                        newtl.tagid = tl.tagid
-                        newtl.save()
+                tllist = Taglink.objects.filter(recid=row.id,entityid=14,deleted=0)
+                for tl in tllist:
+                    newtl = Taglink()
+                    newtl.entityid = tl.entityid
+                    newtl.recid = newtcid.id
+                    newtl.createddt = tl.createddt
+                    newtl.createdby = tl.createdby
+                    newtl.modifieddt = tl.modifieddt
+                    newtl.modifiedby = tl.modifiedby
+                    newtl.deleted = tl.deleted
+                    newtl.clientid = tl.clientid
+                    newtl.tagid = tl.tagid
+                    newtl.save()
 
-                    try:
-                        cl = Categorylink.objects.get(recid=row.id,entityid=14,deleted=0)
-                    except Categorylink.DoesNotExist:
-                        cl = ''
-                    else:
-                        newcl = Categorylink()
-                        newcl.entityid = cl.entityid
-                        newcl.recid = newtcid.id
-                        newcl.totalweight = cl.totalweight
-                        newcl.categoryid = cl.categoryid
-                        newcl.createddt = cl.createddt
-                        newcl.createdby = cl.createdby
-                        newcl.modifieddt = cl.modifieddt
-                        newcl.modifiedby = cl.modifiedby
-                        newcl.deleted = cl.deleted
-                        newcl.clientid = cl.clientid
-                        newcl.save()
+                try:
+                    cl = Categorylink.objects.get(recid=row.id,entityid=14,deleted=0)
+                except Categorylink.DoesNotExist:
+                    cl = ''
+                else:
+                    newcl = Categorylink()
+                    newcl.entityid = cl.entityid
+                    newcl.recid = newtcid.id
+                    newcl.totalweight = cl.totalweight
+                    newcl.categoryid = cl.categoryid
+                    newcl.createddt = cl.createddt
+                    newcl.createdby = cl.createdby
+                    newcl.modifieddt = cl.modifieddt
+                    newcl.modifiedby = cl.modifiedby
+                    newcl.deleted = cl.deleted
+                    newcl.clientid = cl.clientid
+                    newcl.save()
 
-                newversion = Submissionversion.objects.get(id=newid.id)
-                newversion.essay = essay
-                newversion.save()
+            newversion = Submissionversion.objects.get(id=newid.id)
+            newversion.essay = essay
+            newversion.save()
     
 ##            i=0
 ##            for criteria in criteriaid:

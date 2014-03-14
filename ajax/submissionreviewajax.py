@@ -62,6 +62,21 @@ class SUBMISSIONREVIEW():
             else:
                 Process = categoryweight.actualweight
                 
+            try:
+                rubriclink = Rubriclink.objects.get(entityid=entity, recid=submissionreviewerid)
+            except Rubriclink.DoesNotExist:
+                rubricid = submissionreviewer.submissionversionid.submissionid.assignmentid.rubricid
+                rubriclink = Rubriclink()
+                rubriclink.entityid = entity
+                rubriclink.recid = submissionreviewerid
+                rubriclink.rubricid = rubricid
+                rubriclink.totalscore =0
+                rubriclink.save()
+                rubriclinkid = Rubriclink.objects.latest("id").id
+            else:
+                rubriclinkid = rubriclink.id
+                
+                
             data_json = ''
             data_json = {
                 'essay' : submissionreviewer.essay,
@@ -69,7 +84,8 @@ class SUBMISSIONREVIEW():
                 'Impact': Impact,
                 'Content': Content,
                 'Quality': Quality,
-                'Process': Process
+                'Process': Process,
+                'rubriclinkid': rubriclinkid
                 }
             data = simplejson.dumps(data_json)
             return HttpResponse(data, mimetype='application/json')
@@ -792,6 +808,102 @@ class SUBMISSIONREVIEW():
         data_json = { 'recid': submissionreviewerid, }
         data = simplejson.dumps(data_json)
         return HttpResponse(data, mimetype='application/json')
+    
+    def getRubricCriteria(self, request):
+        try:
+            cursor = connection.cursor()
+            userid = request.session['userid']
+            login = Login.objects.get(id=userid)
+            clientid = login.clientid
+            submissionreviewerid = request.GET.get('submissionreviewerid', False)
+        except KeyError:
+            return HttpResponse('error', mimetype='application/json')
+        else:
+            data_json = []
+            cursor.execute("SELECT ru.id, ru.name, ruc.id, ruc.criteria, ruc.categoryid, ruc.weight, rul.totalscore, ruls.selectedvalue, ru.maxscalevalue from assignment as asm  join submission as sub on (sub.assignmentid = asm.id) join submissionversion as subv on (subv.submissionid = sub.id) join submissionreviewer as subr on (subr.submissionversionid = subv.id) join rubric as ru on (ru.id = asm.rubricid and ru.entityid = 3) join rubriccriteria as ruc on (ruc.rubricid = ru.id) join category as cat on (cat.id = ruc.categoryid) left join rubriclink as rul on (rul.rubricid = ru.id and rul.entityid = 15) left join rubriclinkselectedscale as ruls on (ruls.rubriclinkid = rul.id and ruls.rubiccriteriaid = ruc.id) where subr.id = %s order by cat.id,ruc.id, ru.id", [submissionreviewerid]) 
+
+            results = cursor.fetchall()         
+            for row in results:
+                data_json.append({ 
+                                  "rubricid": row[0],
+                                  "rubricname": row[1],
+                                  "criteriaid": row[2],
+                                  "criteria": row[3],
+                                  "categoryid": row[4],
+                                  "weight": row[5],
+                                  "totalscore": row[6],
+                                  "value": row[7],
+                                  "max": row[8]
+                                  })
+            data = simplejson.dumps(data_json)
+            return HttpResponse(data, mimetype='application/json')
+    
+    def getCategoryTotalWeight(self,request):
+        try:
+            cursor = connection.cursor()
+            userid = request.session['userid']
+            submissionreviewerid = request.GET.get('submissionreviewerid', False)
+        except KeyError:
+            return HttpResponse('error', mimetype='application/json')
+        else:
+            data_json = []
+            cursor.execute("select cat.id, cal.totalweight from assignment as asm  join submission as sub on (sub.assignmentid = asm.id) join submissionversion as subv on (subv.submissionid = sub.id) join submissionreviewer as subr on (subr.submissionversionid = subv.id) join rubric as ru on (ru.id = asm.rubricid and ru.entityid = 3) join categorylink as cal on (cal.recid = ru.id and cal.entityid= 6) join category as cat on (cat.id = cal.categoryid) where subr.id = %s order by cat.id", [submissionreviewerid])
+            results = cursor.fetchall()
+            for row in results:
+                data_json.append({ 
+                                  "categoryid": row[0],
+                                  "totalweight": row[1],
+                                  })
+            data = simplejson.dumps(data_json)
+            return HttpResponse(data, mimetype='application/json')
+        
+    def saveRubriclinkTotalScore(self,request):
+        try:
+            rubriclinkid = request.POST.get('rubriclinkid', False)
+            submissionreviewerid = request.POST.get('submissionreviewerid', False)
+            totalscore = request.POST.get('totalscore', False)
+        except KeyError:
+            return HttpResponse('error', mimetype='application/json')
+        else:
+            submissionreviewer = Submissionreviewer.objects.get(id = submissionreviewerid)
+            rubricid = submissionreviewer.submissionversionid.submissionid.assignmentid.rubricid
+            entity = Entity.objects.get(id=15)
+            rubriclink = Rubriclink.objects.get(id=rubriclinkid,entityid=entity, recid=submissionreviewer.id)
+            rubriclink.rubricid = rubricid
+            rubriclink.totalscore = totalscore
+            rubriclink.save()
+            data_json = { 'status': 'success', }
+            data = simplejson.dumps(data_json)
+            return HttpResponse(data, mimetype='application/json')
+        
+    def saveRubriclinkSelectScale(self,request):
+        try:
+            rubriclinkid = request.POST.get('rubriclinkid', False)
+            criteriaid = request.POST.get('criteriaid', False)
+            criteriaValue = request.POST.get('criteriaValue', False)
+        except KeyError:
+            return HttpResponse('error', mimetype='application/json')
+        else:
+            rubriccriteria = Rubriccriteria.objects.get(id=criteriaid)
+            try:
+                rubriclink = Rubriclink.objects.get(id=rubriclinkid)
+                rubriccriteria = Rubriccriteria.objects.get(id=criteriaid)
+                rlss = Rubriclinkselectedscale.objects.get(rubriclinkid=rubriclink, rubiccriteriaid=rubriccriteria)
+            except Rubriclinkselectedscale.DoesNotExist:
+                rlss = Rubriclinkselectedscale()
+                rlss.rubriclinkid = rubriclink
+                rlss.rubiccriteriaid = rubriccriteria
+                rlss.selectedvalue = criteriaValue
+                rlss.save()
+                recid = Rubriclinkselectedscale.objects.latest('id').id
+                data_json = { 'recid': recid, }
+            else:
+                rlss.selectedvalue = criteriaValue
+                rlss.save()
+                recid = rlss.id
+                data_json = { 'recid': recid, }
+            data = simplejson.dumps(data_json)
+            return HttpResponse(data, mimetype='application/json')
 
     def tagHighlightList(self,request):
         try:

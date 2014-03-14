@@ -126,9 +126,230 @@ class CLASSLIST():
             data = simplejson.dumps(unitstorelist)
             return HttpResponse(data, mimetype='application/json')
 
+    def saveUnit(self, request, id, unit, studentid):
+        try:
+            userid = request.session['userid']
+            login = Login.objects.get(id=userid)
+            clientid = login.clientid
+            userlist = Userlist.objects.get(id=login.recid)
+            unitclasslist = Unitclass.objects.filter(classscheduleid=id)
+        except Unitclass.DoesNotExist:
+            data_json = { 'status': 'blank', }
+        except Unitclass.MultipleObjectsReturned:
+            for unitclassstore in unitclasslist:
+                unitclassstore.disabled = 1
+                unitclassstore.save()
+        else:
+            for unitclassstore in unitclasslist:
+                unitclassstore.disabled = 1
+                unitclassstore.save()      
+                
+        classschedule = Classschedule.objects.get(id=id)
+         
+        if unit != False:
+ 
+            unitcheck = unit.find(',')
+            if unitcheck > -1:
+                unitids= unit.split(',')
+                for unitid in unitids:
+                    unitlist = Unit.objects.get(id=unitid)
+ 
+                    try:
+                        u = Unitclass.objects.get(unitid = unitlist,classscheduleid = classschedule)
+                    except Unitclass.DoesNotExist:
+                        u = Unitclass()
+                        u.unitid = unitlist
+                        u.classscheduleid = classschedule
+                        u.createddt = datetime.now()
+                        u.createdby = userid
+                        u.modifieddt = datetime.now()
+                        u.modifiedby = userid
+                        u.disabled = 0
+                        u.deleted = 0
+                        u.clientid = clientid
+                        u.save()
+                    else:
+                        u.disabled = 0
+                        u.save()
+                        
+                    assignmentlist = UnitAssignment.objects.filter(unitid=unitid).values_list('assignmentid')
+                    
+                    for assignmentid in assignmentlist:
+                        assigmentobj = Assignment.objects.get(id=assignmentid[0])
+                        if studentid != False:
+                            studentcheck = studentid.find(',')
+                            if studentcheck > -1:
+                                studentid = studentid.split(',')
+                                for studentids in studentid:
+                                    try:
+                                        studentlist = Studentlist.objects.get(id=studentids)
+                                        submissionlist = Submission.objects.get(studentid=studentids, assignmentid=assignmentid[0], disabled=0,deleted=0)
+                                    except Submission.DoesNotExist:
+                                        submission = Submission()
+                                        submission.studentid = studentlist
+                                        submission.teacherid=userlist
+                                        submission.assignmentid=assigmentobj
+                                        submission.duedate= assigmentobj.duedate
+                                        submission.progress=0
+                                        submission.createddt=datetime.now()
+                                        submission.createdby=userid
+                                        submission.modifieddt=datetime.now()
+                                        submission.modifiedby=userid
+                                        submission.deleted=0
+                                        submission.disabled=0
+                                        submission.save()
+                                        
+                                        newid = Submission.objects.latest("id")
+                            
+                                        newversion = Submissionversion()
+                                        newversion.submissionid = newid
+                                        newversion.version = 1
+                                        newversion.studentstatus = 0
+                                        newversion.teacherstatus = 0
+                                        newversion.stage = 0
+                                        newversion.createddt = datetime.now()
+                                        newversion.createdby = userid
+                                        newversion.modifieddt = datetime.now()
+                                        newversion.modifiedby = userid
+                                        newversion.disabled = 0
+                                        newversion.deleted = 0
+                                        newversion.save()
+                            else:
+                                try:
+                                    studentlist = Studentlist.objects.get(id=studentid)
+                                    submissionlist = Submission.objects.get(studentid=studentid, assignmentid=assignmentid[0], disabled=0,deleted=0)
+                                except Submission.DoesNotExist:
+                                    submission = Submission()
+                                    submission.studentid = studentlist
+                                    submission.teacherid=userlist
+                                    submission.assignmentid=assigmentobj
+                                    submission.duedate= assigmentobj.duedate
+                                    submission.progress=0
+                                    submission.createddt=datetime.now()
+                                    submission.createdby=userid
+                                    submission.modifieddt=datetime.now()
+                                    submission.modifiedby=userid
+                                    submission.deleted=0
+                                    submission.disabled=0
+                                    submission.save()
+                                    
+                                    newid = Submission.objects.latest("id")
+                            
+                                    newversion = Submissionversion()
+                                    newversion.submissionid = newid
+                                    newversion.version = 1
+                                    newversion.studentstatus = 0
+                                    newversion.teacherstatus = 0
+                                    newversion.stage = 0
+                                    newversion.createddt = datetime.now()
+                                    newversion.createdby = userid
+                                    newversion.modifieddt = datetime.now()
+                                    newversion.modifiedby = userid
+                                    newversion.disabled = 0
+                                    newversion.deleted = 0
+                                    newversion.save()                            
+                        
+            else:
+                unitlist = Unit.objects.get(id=unit)
+                try:
+                    u = Unitclass.objects.get(unitid = unitlist,classscheduleid = classschedule)
+                except Unitclass.DoesNotExist:
+                    u = Unitclass()
+                    u.unitid = unitlist
+                    u.classscheduleid = classschedule
+                    u.createddt = datetime.now()
+                    u.createdby = userid
+                    u.modifieddt = datetime.now()
+                    u.modifiedby = userid
+                    u.disabled = 0
+                    u.deleted = 0
+                    u.clientid = clientid
+                    u.save()
+                else:
+                    u.disabled = 0
+                    u.save()
+                    
+                assignmentlist = UnitAssignment.objects.filter(unitid=unit).values_list('assignmentid')
+                    
+                for assignmentid in assignmentlist:
+                    assigmentobj = Assignment.objects.get(id=assignmentid[0])
+                    if studentid != False:
+                        studentcheck = studentid.find(',')
+                        if studentcheck > -1:
+                            studentid = studentid.split(',')
+                            for studentids in studentid:
+                                try:
+                                    studentlist = Studentlist.objects.get(id=studentids)
+                                    submissionlist = Submission.objects.get(studentid=studentids, assignmentid=assignmentid[0], disabled=0,deleted=0)
+                                except Submission.DoesNotExist:
+                                    submission = Submission()
+                                    submission.studentid = studentlist
+                                    submission.teacherid=userlist
+                                    submission.assignmentid=assigmentobj
+                                    submission.duedate= assigmentobj.duedate
+                                    submission.progress=0
+                                    submission.createddt=datetime.now()
+                                    submission.createdby=userid
+                                    submission.modifieddt=datetime.now()
+                                    submission.modifiedby=userid
+                                    submission.deleted=0
+                                    submission.disabled=0
+                                    submission.save()
+                                    
+                                    newid = Submission.objects.latest("id")
+                        
+                                    newversion = Submissionversion()
+                                    newversion.submissionid = newid
+                                    newversion.version = 1
+                                    newversion.studentstatus = 0
+                                    newversion.teacherstatus = 0
+                                    newversion.stage = 0
+                                    newversion.createddt = datetime.now()
+                                    newversion.createdby = userid
+                                    newversion.modifieddt = datetime.now()
+                                    newversion.modifiedby = userid
+                                    newversion.disabled = 0
+                                    newversion.deleted = 0
+                                    newversion.save()
+                        else:
+                            try:
+                                studentlist = Studentlist.objects.get(id=studentid)
+                                submissionlist = Submission.objects.get(studentid=studentid, assignmentid=assignmentid[0], disabled=0,deleted=0)
+                            except Submission.DoesNotExist:
+                                submission = Submission()
+                                submission.studentid = studentlist
+                                submission.teacherid=userlist
+                                submission.assignmentid=assigmentobj
+                                submission.duedate= assigmentobj.duedate
+                                submission.progress=0
+                                submission.createddt=datetime.now()
+                                submission.createdby=userid
+                                submission.modifieddt=datetime.now()
+                                submission.modifiedby=userid
+                                submission.deleted=0
+                                submission.disabled=0
+                                submission.save()
+                                
+                                newid = Submission.objects.latest("id")
+                        
+                                newversion = Submissionversion()
+                                newversion.submissionid = newid
+                                newversion.version = 1
+                                newversion.studentstatus = 0
+                                newversion.teacherstatus = 0
+                                newversion.stage = 0
+                                newversion.createddt = datetime.now()
+                                newversion.createdby = userid
+                                newversion.modifieddt = datetime.now()
+                                newversion.modifiedby = userid
+                                newversion.disabled = 0
+                                newversion.deleted = 0
+                                newversion.save()
+        return
+        
     
     def save(self,request):
-        DATE_FORMAT = "%d-%m-%Y" 
+        DATE_FORMAT = "%d-%m-%Y"
         try:
             userid = request.session['userid']
             login = Login.objects.get(id=userid)
@@ -172,64 +393,8 @@ class CLASSLIST():
                 classschedule.modifieddt = datetime.now()
                 classschedule.modifiedby = userid
                 classschedule.save()
-                
-                try:
-                    unitclasslist = Unitclass.objects.filter(classscheduleid=id)
-                except Unitclass.DoesNotExist:
-                    data_json = { 'status': 'blank', }
-                except Unitclass.MultipleObjectsReturned:
-                    for unitclassstore in unitclasslist:
-                        unitclassstore.disabled = 1
-                        unitclassstore.save()
-                else:
-                    for unitclassstore in unitclasslist:
-                        unitclassstore.disabled = 1
-                        unitclassstore.save()      
-                
-                if unit != False:
 
-                    unitcheck = unit.find(',')
-                    if unitcheck > -1:
-                        unitids= unit.split(',')
-                        for unitid in unitids:
-                            unitlist = Unit.objects.get(id=unitid)
-        
-                            try:
-                                u = Unitclass.objects.get(unitid = unitlist,classscheduleid = classschedule)
-                            except Unitclass.DoesNotExist:
-                                u = Unitclass()
-                                u.unitid = unitlist
-                                u.classscheduleid = classschedule
-                                u.createddt = datetime.now()
-                                u.createdby = userid
-                                u.modifieddt = datetime.now()
-                                u.modifiedby = userid
-                                u.disabled = 0
-                                u.deleted = 0
-                                u.clientid = clientid
-                                u.save()
-                            else:
-                                u.disabled = 0
-                                u.save()
-                    else:
-                        unitlist = Unit.objects.get(id=unit)
-                        try:
-                            u = Unitclass.objects.get(unitid = unitlist,classscheduleid = classschedule)
-                        except Unitclass.DoesNotExist:
-                            u = Unitclass()
-                            u.unitid = unitlist
-                            u.classscheduleid = classschedule
-                            u.createddt = datetime.now()
-                            u.createdby = userid
-                            u.modifieddt = datetime.now()
-                            u.modifiedby = userid
-                            u.disabled = 0
-                            u.deleted = 0
-                            u.clientid = clientid
-                            u.save()
-                        else:
-                            u.disabled = 0
-                            u.save()
+                CLASSLIST.saveUnit(self, request, id, unit, studentid)
                 
                 try:
                     studentclasslist = Studentclass.objects.filter(classscheduleid=id)

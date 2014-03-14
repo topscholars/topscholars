@@ -20,6 +20,7 @@
 <link rel="stylesheet" href="{% static 'tsweb/css/topscholars.css' %}" type="text/css"/>
 <link rel="stylesheet" href="{% static 'tsweb/css/redactor.css' %}" type="text/css"/>
 <link rel="stylesheet" href="{% static 'tsweb/css/jquery.comment.css' %}" type="text/css"/>
+<link rel="stylesheet" href="{% static 'tsweb/css/slider.css' %}" type="text/css"/>
 <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
 <!--        <script src="{% static 'tsweb/js/jQuery1.10.1.js' %}"></script>
         <script src="{% static 'tsweb/js/jquery-ui-1.10.3.custom.min.js' %}"></script>-->
@@ -40,6 +41,7 @@
 <script src="{% static 'tsweb/js/fontfamily.js' %}"></script>
 <script src="{% static 'tsweb/js/fontsize.js' %}"></script>
 <script src="{% static 'tsweb/js/jquery.validate.js' %}"></script>
+<script src="{% static 'tsweb/js/bootstrap-slider.js' %}"></script>
 <!--DELETE BEFORE DEPLOYMENT-->
 <!--<link rel="stylesheet" href="../../../static/tsweb/css/bootstrap.css" type="text/css"/>
 <link rel="stylesheet" href="../../../static/tsweb/css/topscholars.css" type="text/css"/>
@@ -200,9 +202,18 @@
                     $('#ele_submissionversionessay').redactor('set', result.essay);
 
                     $(".impact_criteria").val(result.Impact);
-                    $(".quality_criteria").val(result.Content);
-                    $(".content_criteria").val(result.Quality);
+                    $("#impact_percent").text(result.Impact+" %");
+                    
+                    $(".quality_criteria").val(result.Quality);
+                    $("#quality_percent").text(result.Quality+" %");
+                    
+                    $(".content_criteria").val(result.Content);
+                    $("#content_percent").text(result.Content+" %");
+                    
                     $(".process_criteria").val(result.Process);
+                    $("#process_percent").text(result.Process+" %");
+                    
+                    $(".rubriclinkId").val(result.rubriclinkid)
 
                     if (result.status == 0) {
                         $('#btnedithighlight').show();
@@ -558,6 +569,7 @@
                      };
             $.post(url,odata,
                     function(result){
+                    		thisClass.saveRubriclink();
                             window.location = "{% url 'tsweb:tsubmissionlist' %}";
                     })
             .error(function(xhr, status, error) {
@@ -714,6 +726,176 @@
                 alert('Error occur. Please contact the administrator.');
             });
 		}
+		
+		this.getRubricCriteria = function(){
+		    odata = {
+		        'class': 'SUBMISSIONREVIEW',
+		        'method': 'getRubricCriteria',
+		        'submissionreviewerid': submissionreviewerid
+		    };
+		    $.getJSON(url, odata,
+		    	function(result){
+					
+		    		$.each(result, function (i, val) {
+		    			if(val.value == null){
+		    				value = 0;
+		    			}else{
+		    				value = val.value;
+		    			}
+		    			html = '<div class="form-group">';
+		    			html += '<label for="sliderCriteria">'+val.criteria+'</label><br>';
+		    			html += '<input type="text" data-id="'+val.criteriaid+'" class="form-control sliderCriteria">';
+		    			html += '<input type="hidden" data-id="'+val.criteriaid+'" class="criteriaValue" value="'+value+'">';
+		    			html += '<input type="hidden" data-id="'+val.criteriaid+'" class="criteriaWeight" value="'+val.weight+'">';
+		    			html += '<input type="hidden" data-id="'+val.criteriaid+'" class="criteriaMax" value="'+val.max+'">';
+		    			html += '</div>';
+		    			
+		    			$(".categoryRubricScale[data-id='"+val.categoryid+"']").append(html);
+		    			
+			            $(".sliderCriteria[data-id='"+val.criteriaid+"']").slider({
+			            	orientation: 'horizontal',
+			            	min:0,
+			            	max:val.max,
+			            	value:value,
+			            	width:250,
+			            	scale:true,
+			            });
+		    		});
+		    		
+		    		
+					$(".categoryRubricScale").each(function(i,v){
+						categoryid = $(this).data('id');
+						//thisClass.calculateActualWeight(categoryid);
+		    			actualWeight =  $(".actualWeight[data-id='"+categoryid+"']").val();
+		    			thisClass.calculateTotalScore(categoryid, actualWeight);
+					});
+					
+		    		
+		    		//event when slider
+		    		$(".sliderCriteria").on('slideStop',function(){
+		    			criteriaid = $(this).data('id');
+		    			categoryid = $(this).parents('.categoryRubricScale').data('id');
+		    			$(".criteriaValue[data-id='"+criteriaid+"']").val($(this).slider('getValue').val());
+		    			
+		    			thisClass.calculateActualWeight(categoryid);
+		    			
+		    			actualWeight =  $(".actualWeight[data-id='"+categoryid+"']").val();
+		    			
+		    			thisClass.calculateTotalScore(categoryid, actualWeight);
+
+		    		});
+		    	}
+		    );
+		}
+		
+		this.getCategoryTotalWeight = function(){
+			odata = {	
+		        'class': 'SUBMISSIONREVIEW',
+		        'method': 'getCategoryTotalWeight',
+		        'submissionreviewerid': submissionreviewerid
+			}
+			$.getJSON(url, odata, function(result){
+				thisClass.CategoryTotalWeight = result;
+			});
+		}
+		
+		this.calculateTotalScore = function(categoryid, actualWeight){
+			//summary totalweight
+			var categoryTotalWeightSelect;
+			summaryTotalWeight = 0;
+			$.each(thisClass.CategoryTotalWeight,function(i,v){
+				summaryTotalWeight += parseInt(v.totalweight);
+				if(v.categoryid == categoryid)
+					categoryTotalWeightSelect = i;
+			});
+			
+			if(categoryTotalWeightSelect !== undefined){
+				categoryTotalWeight = thisClass.CategoryTotalWeight[categoryTotalWeightSelect].totalweight;
+				categoryTotalScore = actualWeight * categoryTotalWeight / summaryTotalWeight;
+				$(".totalScore[data-id='"+categoryid+"']").val(categoryTotalScore);
+			}
+		}
+		
+		this.calculateActualWeight = function(categoryid){
+			sumWeight = 0;
+			//summary weight
+			$(".categoryRubricScale[data-id='"+categoryid+"'] .criteriaWeight").each(function(i, v){
+				sumWeight += parseInt($(this).val());
+			});
+			actualWeight = 0;
+			$(".categoryRubricScale[data-id='"+categoryid+"'] .sliderCriteria").each(function(i, v){
+				criteriaid = $(this).data('id');
+				criteriaValue = $(".criteriaValue[data-id='"+criteriaid+"']").val();
+				max = $(".criteriaMax[data-id='"+criteriaid+"']").val();
+				weight = $(".criteriaWeight[data-id='"+criteriaid+"']").val();
+				if(criteriaValue == '')
+					criteriaValue = 0;
+				
+				actualWeight += ((criteriaValue/max) * 100 * (weight / sumWeight) * 100) /100 ;
+			});
+
+			$(".actualWeight[data-id='"+categoryid+"']").val(parseInt(actualWeight));
+		}
+		
+		this.saveRubriclink = function(){
+			thisClass.saveRubriclinkTotalScore();
+			$(".categoryRubricScale").each(function(i,v){
+				categoryid = $(this).data('id');
+				
+    			$(".categoryRubricScale[data-id='"+categoryid+"'] .sliderCriteria").each(function(i, v){
+    				criteriaid = $(this).data('id');
+    				criteriaValue = $(".criteriaValue[data-id='"+criteriaid+"']").val();
+    				max = $(".criteriaMax[data-id='"+criteriaid+"']").val();
+    				weight = $(".criteriaWeight[data-id='"+criteriaid+"']").val();
+    				if(criteriaValue == '')
+    					criteriaValue = 0;
+    					
+    				thisClass.saveRubriclinkSelectScale(criteriaid, criteriaValue);
+    			});
+				
+			});
+		}
+		
+		this.saveRubriclinkSelectScale = function(criteriaid, criteriaValue)
+		{
+		    odata = {
+		        'class': 'SUBMISSIONREVIEW',
+		        'method': 'saveRubriclinkSelectScale',
+		        'rubriclinkid': $(".rubriclinkId").val(),
+		        'criteriaid': criteriaid,
+		        'criteriaValue': criteriaValue,
+		    };
+            $.ajax({
+                    type: "POST",
+                    url: url,
+                    dataType: "json",
+                    async: false,
+                    data:odata
+                 });
+		}
+		
+		this.saveRubriclinkTotalScore = function(){
+			totalscore = 0;
+			$(".totalScore").each(function(i,v){
+				console.log($(this).val());
+				totalscore += parseInt($(this).val());
+			});
+			odata = {
+		        'class': 'SUBMISSIONREVIEW',
+		        'method': 'saveRubriclinkTotalScore',
+		        'rubriclinkid': $(".rubriclinkId").val(),
+		        'submissionreviewerid': submissionreviewerid,
+		        'totalscore': totalscore
+	      	};
+            $.ajax({
+                type: "POST",
+                url: url,
+                dataType: "json",
+                async: false,
+                data:odata
+             });
+		}
+		
         this.initContent = function () {
             submissionreviewerid = '{{ id }}';
             $('#ele_submissionversionessay').redactor({ toolbar: false });
@@ -803,19 +985,48 @@
                     'process': $(".process_criteria").val()
                 };
                 $.post(url, odata,
-                        function (result) {
+                        function (result) { 
+                        	thisClass.saveRubriclink();
                             window.location = "{% url 'tsweb:tsubmissionlist' %}";
                         })
                 .error(function (xhr, status, error) {
                     alert('Error occur. Please contact the administrator.');
                 });
+                
+                
                 return false;
             });
+            
+            $(".actualWeight").change(function(){
+            	categoryid = $(this).data('id');
+    			$(".categoryRubricScale[data-id='"+categoryid+"'] .sliderCriteria").each(function(i, v){
+					$(this).slider('setValue', 0);
+    			});
+            });
+            
+    	    $('#show_rubric_btn').click(function () {
+		        $(this).addClass('hide');
+		        $('.rubric-categories-sm').removeClass('hide');
+		        $('.impact-list').addClass('hide');
+		        $('.quality-list').addClass('hide');
+		        $('.content-list').addClass('hide');
+		        $('.process-list').addClass('hide');
+		        $('.objective-list').addClass('hide');
+		        
+		        $(".actualWeight").each(function(){
+		        	categoryid = $(this).data('id');
+		        	value = $(this).val();
+		        	
+		        	$(".categoryWeightPercent[data-id='"+categoryid+"']").text(value+" %");
+		        });
+		    });
 
             thisClass.initValidateForm();
             thisClass.essayEvent();
             thisClass.showHighlightDialog(false);
             thisClass.getData();
+            thisClass.getCategoryTotalWeight();
+            thisClass.getRubricCriteria();
         }
     }
     $(function () {
@@ -920,6 +1131,7 @@
 				<h3 class="panel-title">
 				<a href="#collapseFour" data-toggle="collapse"> Rubric </a>
 				</h3>
+				<input type="hidden" class="rubriclinkId" />
 			</div>
 			<div id="collapseFour" class="panel-collapse collapse in">
 				<div class="block-body" style="height: 280px;">
@@ -929,7 +1141,7 @@
 							<p>
 								Impact
 							</p>
-							<div class="weight-percent circle-val" id="impact_percent">
+							<div class="weight-percent circle-val categoryWeightPercent" id="impact_percent" data-id="1">
 								{# val #} %
 							</div>
 						</div>
@@ -937,7 +1149,7 @@
 							<p>
 								Quality
 							</p>
-							<div class="weight-percent circle-val" id="quality_percent">
+							<div class="weight-percent circle-val categoryWeightPercent" id="quality_percent" data-id="2">
 								{# val #} %
 							</div>
 						</div>
@@ -950,7 +1162,7 @@
 							<p>
 								Content
 							</p>
-							<div class="weight-percent circle-val" id="content_percent">
+							<div class="weight-percent circle-val categoryWeightPercent" id="content_percent" data-id="3">
 								{# val #} %
 							</div>
 						</div>
@@ -958,7 +1170,7 @@
 							<p>
 								Process
 							</p>
-							<div class="weight-percent circle-val" id="process_percent">
+							<div class="weight-percent circle-val categoryWeightPercent" id="process_percent" data-id="4">
 								{# val #} %
 							</div>
 						</div>
@@ -970,7 +1182,13 @@
 							<li>{{ criteria.name }}</li>
 							<li>{{ criteria.tag }}</li>
 							<li>{{ criteria.weight }}</li>
-							<li><input type="text" class="form-control input-small impact_criteria" value="{{ Impact }}" placeholder="Grade 1-10"/></li>
+							<li>
+								<div class="form-group">
+									<input type="text" class="form-control input-small impact_criteria actualWeight" data-id="1" value="{{ Impact }}" placeholder="Grade 1-10"/>
+									<input type="hidden" class="totalScore" data-id="1" />
+								</div>
+								<div class="categoryRubricScale" data-id="1"></div>
+							</li>
 						</ul>
 						<hr/>
 					</div>
@@ -980,7 +1198,13 @@
 							<li>{{ criteria.name }}</li>
 							<li>{{ criteria.tag }}</li>
 							<li>{{ criteria.weight }}</li>
-							<li><input type="text" class="form-control input-small quality_criteria" value="{{ Content }}" placeholder="1-100"/></li>
+							<li>
+								<div class="form-group">
+									<input type="text" class="form-control input-small quality_criteria actualWeight" data-id="2" value="{{ Content }}" placeholder="1-100"/>
+									<input type="hidden" class="totalScore" data-id="2" />
+								</div>
+								<div class="categoryRubricScale" data-id="2"></div>
+							</li>
 						</ul>
 						<hr/>
 					</div>
@@ -990,7 +1214,13 @@
 							<li>{{ criteria.name }}</li>
 							<li>{{ criteria.tag }}</li>
 							<li>{{ criteria.weight }}</li>
-							<li><input type="text" class="form-control input-small content_criteria" value="{{ Quality }}" placeholder="1-100"/></li>
+							<li>
+								<div class="form-group">
+									<input type="text" class="form-control input-small content_criteria actualWeight"  data-id="3" value="{{ Quality }}" placeholder="1-100"/>
+									<input type="hidden" class="totalScore" data-id="3" />
+								</div>
+								<div class="categoryRubricScale" data-id="3"></div>
+							</li>
 						</ul>
 						<hr/>
 					</div>
@@ -1000,7 +1230,13 @@
 							<li>{{ criteria.name }}</li>
 							<li>{{ criteria.tag }}</li>
 							<li>{{ criteria.weight }}</li>
-							<li><input type="text" class="form-control input-small process_criteria" value="{{ Process }}" placeholder="1-100"/></li>
+							<li>
+								<div class="form-group">
+									<input type="text" class="form-control input-small process_criteria actualWeight" data-id="4" value="{{ Process }}" placeholder="1-100"/>
+									<input type="hidden" class="totalScore" data-id="4" />
+								</div>
+								<div class="categoryRubricScale" data-id="4"></div>
+							</li>
 						</ul>
 						<hr/>
 					</div>
@@ -1534,8 +1770,8 @@
 
 
 
-<div class="tag-list-dropdown" id="divedithighlight" style="width: 300px;z-index:2;">
-	<button type="button" class="close" id="close_tag_list" aria-hidden="true" style="margin-top: -5px; color: white;">&times;</button>
+<div class="tag-list-dropdown" id="divedithighlight" style="width: 300px; padding-top:20px; z-index:2;">
+	<button type="button" class="close" id="close_tag_list" aria-hidden="true" style="margin-top: -20px; color: white;">&times;</button>
 	<!--<form class="form" role="form">-->
 	
 		<div class="form-group">
@@ -1616,15 +1852,6 @@
 	        $('#rubric-categories-sm').addClass('hide');
 	        $('.objective-list').removeClass('hide');
 	        $('#show_rubric_btn').removeClass('hide');
-	    });
-	    $('#show_rubric_btn').click(function () {
-	        $(this).addClass('hide');
-	        $('.rubric-categories-sm').removeClass('hide');
-	        $('.impact-list').addClass('hide');
-	        $('.quality-list').addClass('hide');
-	        $('.content-list').addClass('hide');
-	        $('.process-list').addClass('hide');
-	        $('.objective-list').addClass('hide');
 	    });
   		function openDynamicLesson() {
   			$('#lessonSmall').toggle(1000, 'easeOutExpo');

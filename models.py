@@ -561,6 +561,7 @@ class Submissionreviewer(models.Model):
 class Tag(models.Model):
     id = models.IntegerField(primary_key=True, db_column='ID') # Field name made lowercase.
     name = models.CharField(max_length=100L, db_column='Name') # Field name made lowercase.
+    hashtag = models.CharField(max_length=100L, db_column='hash', blank=True) # Field name made lowercase.
     parentid = models.IntegerField(db_column='ParentId') # Field name made lowercase.
     tagcolor = models.CharField(max_length=7L,db_column='TagColor') # Field name made lowercase.
     abilitylevel = models.ForeignKey(Selectionlist,related_name="Tagtoselectionlist",db_column='AbilityLevel') # Field name made lowercase.

@@ -219,12 +219,14 @@
                         $('#btnedithighlight').show();
                         $('#saveAssignment').show();
                         $('#btnStpSave').show();
+                        thisClass.accessSaveRubric = true;
                     }
                     else {
                         $('#btnedithighlight').hide();
                         $('#saveAssignment').hide();
                         $('#btnStpSave').hide();
                         $('#ele_submissionversionessay').unbind('mouseup');
+                        thisClass.accessSaveRubric = false;
                     }
                     thisClass.tagHighlightList();
                 })
@@ -877,7 +879,6 @@
 		this.saveRubriclinkTotalScore = function(){
 			totalscore = 0;
 			$(".totalScore").each(function(i,v){
-				console.log($(this).val());
 				totalscore += parseInt($(this).val());
 			});
 			odata = {
@@ -984,14 +985,18 @@
                     'content': $(".content_criteria").val(),
                     'process': $(".process_criteria").val()
                 };
-                $.post(url, odata,
-                        function (result) { 
-                        	thisClass.saveRubriclink();
-                            window.location = "{% url 'tsweb:tsubmissionlist' %}";
-                        })
-                .error(function (xhr, status, error) {
-                    alert('Error occur. Please contact the administrator.');
-                });
+                if(thisClass.accessSaveRubric){
+	                $.post(url, odata,
+	                        function (result) { 
+                        		thisClass.saveRubriclink();
+	                            window.location = "{% url 'tsweb:tsubmissionlist' %}";
+	                        })
+	                .error(function (xhr, status, error) {
+	                    alert('Error occur. Please contact the administrator.');
+	                });
+                }else{
+                	window.location = "{% url 'tsweb:tsubmissionlist' %}";
+                }
                 
                 
                 return false;

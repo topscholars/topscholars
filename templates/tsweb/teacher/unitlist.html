@@ -8,6 +8,7 @@
 	<link rel="stylesheet" type="text/css" href="{% static 'tsweb/css/smoothness/jquery-ui-1.10.3.custom-edited.css' %}" />
 	<link rel="stylesheet" type="text/css" href="{% static 'tsweb/css/bootstrap.css' %}" />
 	<link rel="stylesheet" type="text/css" href="{% static 'tsweb/css/topscholars.css' %}" />
+    <link rel="stylesheet" href="{% static 'tsweb/css/redactor.css' %}" type="text/css"/>
 	<link rel="stylesheet" href="{% static 'tsweb/css/bootstrap-glyphicons.css' %}" type="text/css" />
 	<link rel="stylesheet" href="{% static 'tsweb/css/hashtag.css' %}" type="text/css" />
 	<link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
@@ -22,6 +23,10 @@
 	<script src="{% static 'tsweb/js/jquery.autosize.js' %}"></script>
 	<script src="{% static 'tsweb/js/rangyinputs-jquery-1.1.2.min.js' %}"></script>
 	<script src="{% static 'tsweb/js/hashtag.js' %}"></script>	
+    <script src="{% static 'tsweb/js/redactor.min.js' %}"></script>
+    <script src="{% static 'tsweb/js/fontcolor.js' %}"></script>
+    <script src="{% static 'tsweb/js/fontfamily.js' %}"></script>
+    <script src="{% static 'tsweb/js/fontsize.js' %}"></script>
 <script>
     EDITTABLE.prototype = new GridBase();
     var currentstage;
@@ -1155,6 +1160,9 @@ function EDITTABLE(){
 	    	if($('#evd_evidence_performance_name').val() !== '')
 	        	thisClass.saveEvidence();
 	    });
+        $('#st4_content').redactor({ plugins: ['fontcolor', 'fontfamily', 'fontsize'] });
+        $('#st4_activity_tooltip').redactor({ plugins: ['fontcolor', 'fontfamily', 'fontsize'] });
+        $('#st4_question').redactor({ plugins: ['fontcolor', 'fontfamily', 'fontsize'] });
 	    $("#sortable").sortable();
 	    $('#impact_criteria_list').sortable();
 	    $('#quality_criteria_list').sortable();
@@ -1380,7 +1388,7 @@ $(function() {
 				        			<select class="form-control input-small" id="pfm_rubric_assignment">
                                         <option value="">New Assignment</option>
                                         {% for row in assignmentlist %}
-				                            <option value="{{ row.id }}">{{ row.name }}</option>
+				                            <option value="{# row.id #}">{# row.name #}</option>
 				                        {% endfor %}
 				        			</select>
 				        		</div>
@@ -1688,6 +1696,7 @@ $(function() {
                                         <!-- Nav tabs -->
                                         <ul class="nav nav-tabs">
                                           <li class="active"><a href="#st4_contenttb" data-toggle="tab">Content</a></li>
+                                          <li><a href="#st4_revisiontb" data-toggle="tab">Revision</a></li>
                                           <li><a href="#st4_questiontb" data-toggle="tab">Question</a></li>
                                           <li><a href="#st4_answertb" data-toggle="tab">Answer</a></li>
                                           <li><a href="#st4_resulttb" data-toggle="tab">Result</a></li>
@@ -1696,22 +1705,375 @@ $(function() {
                                         <!-- Tab panes -->
                                         <div class="tab-content">
                                           <div class="tab-pane active" id="st4_contenttb" style="border-left:1px #dddddd solid;border-right:1px #dddddd solid;border-bottom:1px #dddddd solid;">
-                                            <div class="form-group">
-                                            <br /><textarea name="st4_content" id="st4_content" class="form-control" style="width:96%;margin:auto;"></textarea>
+                                            <textarea name="st4_content" id="st4_content" class="form-control input-small" style="width:96%;margin:auto;margin-top:5px;"></textarea>
+                                            <span style="margin-top:5px;margin-left:5px;">Content Upload</span>
+                                            <input type="file" style="width:96%;margin:auto;margin-top:5px;margin-bottom:5px;" />
+                                          </div>
+                                          <div class="tab-pane" id="st4_revisiontb" style="border-left:1px #dddddd solid;border-right:1px #dddddd solid;border-bottom:1px #dddddd solid;">
+                                            <div class="row">
+                                                <div class="col-lg-5">
+                                                    <select class="form-control input-small">
+                                                        <option>Review Type</option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-lg-3">
+                                                    <input type="text" class="form-control input-small" placeholder="#Student Days"/>
+                                                </div>
+                                                <div class="col-lg-3">
+                                                    <input type="text" class="form-control input-small" placeholder="Days to Review"/>
+                                                </div>
+                                                <div class="col-lg-1">
+                                                    <button type="button" class="btn btn-info btn-small" role="button"><i class="fa fa-plus"></i></button>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-lg-12 text-center">
+                                                    <h4>Revision List</h4>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-lg-12">
+                                                    <table class="table table-bordered">
+                                                        <tr style="background-color:#EAEAEA;">
+                                                            <td>Select</td>
+                                                            <td>Revision Type</td>
+                                                            <td>Student Days to Complete</td>
+                                                            <td>Days to Review</td>
+                                                            <td>Order of Completion</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td><input type="checkbox"/></td>
+                                                            <td>Self Review</td>
+                                                            <td>5</td>
+                                                            <td>2</td>
+                                                            <td>1</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td><input type="checkbox"/></td>
+                                                            <td>Peer Review</td>
+                                                            <td>4</td>
+                                                            <td>2</td>
+                                                            <td>2</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td><input type="checkbox"/></td>
+                                                            <td>Teacher Review</td>
+                                                            <td>2</td>
+                                                            <td>2</td>
+                                                            <td>3</td>
+                                                        </tr>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-lg-12">
+                                                    <button type="button" class="btn btn-danger pull-right" style="margin-bottom:5px;margin-right:10px;">Danger</button>
+                                                    <em class="pull-right" style="margin-top:10px;margin-right:10px;">Check the desired item you wish to delete</em>
+                                                </div>
                                             </div>
                                           </div>
-                                          <div class="tab-pane" id="st4_questiontb">
-
+                                          <div class="tab-pane" id="st4_questiontb" style="border-left:1px #dddddd solid;border-right:1px #dddddd solid;border-bottom:1px #dddddd solid;">
+                                            <span>Question</span>
+                                            <textarea name="st4_question" id="st4_question" class="form-control input-small" style="width:96%;margin:auto;margin-top:5px;"></textarea>
+                                            <span style="margin-top:5px;">Tooltip (Explanation)</span>
+                                            <textarea name="st4_questiontooltip" id="st4_questiontooltip" class="form-control input-small" style="margin-bottom:5px;"></textarea>
                                           </div>
-                                          <div class="tab-pane" id="st4_answertb">
-
+                                          <div class="tab-pane" id="st4_answertb" style="border-left:1px #dddddd solid;border-right:1px #dddddd solid;border-bottom:1px #dddddd solid;">
+                                            <div class="row">
+                                                <div class="col-lg-4">
+                                                    <input type="text" class="form-control input-small" placeholder="Answer"/>
+                                                </div>
+                                                <div class="col-lg-2">
+                                                    <input type="text" class="form-control input-small" placeholder="Value"/>
+                                                </div>
+                                                <div class="col-lg-2">
+                                                    <input type="text" class="form-control input-small" placeholder="Weight"/>
+                                                </div>
+                                                <div class="col-lg-3">
+                                                   <label class="checkbox-inline">
+                                                      <input type="checkbox"/> Correct Answer?
+                                                    </label>
+                                                </div>
+                                                <div class="col-lg-1">
+                                                    <button type="button" class="btn btn-info btn-small" role="button"><i class="fa fa-plus"></i></button>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-lg-12 text-center">
+                                                    <h4>Answer List</h4>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-lg-12">
+                                                    <table class="table table-bordered">
+                                                        <tr style="background-color:#EAEAEA;">
+                                                            <td>Select</td>
+                                                            <td>Answer</td>
+                                                            <td>Value</td>
+                                                            <td>Weight</td>
+                                                            <td>Correct Answer</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td><input type="checkbox"/></td>
+                                                            <td>Answer 1</td>
+                                                            <td>A1</td>
+                                                            <td>50</td>
+                                                            <td><input type="checkbox"/></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td><input type="checkbox"/></td>
+                                                            <td>Answer 2</td>
+                                                            <td>A2</td>
+                                                            <td>0</td>
+                                                            <td><input type="checkbox"/></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td><input type="checkbox"/></td>
+                                                            <td>Answer 3</td>
+                                                            <td>A3</td>
+                                                            <td>50</td>
+                                                            <td><input type="checkbox"/></td>
+                                                        </tr>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-lg-12">
+                                                    <button type="button" class="btn btn-danger pull-right" style="margin-bottom:5px;margin-right:10px;">Danger</button>
+                                                    <em class="pull-right" style="margin-top:10px;margin-right:10px;">Check the desired item you wish to delete</em>
+                                                </div>
+                                            </div>
                                           </div>
-                                          <div class="tab-pane" id="st4_resulttb">
-
+                                          <div class="tab-pane" id="st4_resulttb" style="border-left:1px #dddddd solid;border-right:1px #dddddd solid;border-bottom:1px #dddddd solid;">
+                                            <div class="row">
+                                                <div class="col-lg-12">
+                                                    <span>Pass Message</span>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-lg-12">
+                                                    <textarea class="form-control input-small"></textarea>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-lg-12">
+                                                    <span>Fail Message</span>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-lg-12">
+                                                    <textarea class="form-control input-small" style="margin-bottom:5px;"></textarea>
+                                                </div>
+                                            </div>
                                           </div>
                                         </div>
                                     </div>
                                     <div class="col-lg-4" style="border:1px #dddddd solid;min-height:136px;">
+		                                <div class="panel-default block-cell block-thin block-expanded">
+			                                <div class="panel-heading block-header">
+				                                <h3 class="panel-title">
+				                                <a href="#collapseFour" data-toggle="collapse"> Rubric </a>
+				                                </h3>
+				                                <input type="hidden" class="rubriclinkId" />
+			                                </div>
+			                                <div id="Div1" class="panel-collapse collapse in">
+				                                <div class="block-body" style="height: 280px;">
+					                                <div class="rubric-categories-sm" id="rubric-categories-sm">
+						                                <div class="rubric-impact circle circle-blue">
+							                                <p>
+								                                Impact
+							                                </p>
+							                                <div class="weight-percent circle-val categoryWeightPercent" id="impact_percent" data-id="1">
+								                                {# val #} %
+							                                </div>
+						                                </div>
+						                                <div class="rubric-quality circle circle-green" data-toggle="modal" data-target="#">
+							                                <p>
+								                                Quality
+							                                </p>
+							                                <div class="weight-percent circle-val categoryWeightPercent" id="quality_percent" data-id="2">
+								                                {# val #} %
+							                                </div>
+						                                </div>
+						                                <div class="rubric-objective circle circle-grey">
+							                                <div>
+								                                Objective
+							                                </div>
+						                                </div>
+						                                <div class="rubric-content circle circle-purple">
+							                                <p>
+								                                Content
+							                                </p>
+							                                <div class="weight-percent circle-val categoryWeightPercent" id="content_percent" data-id="3">
+								                                {# val #} %
+							                                </div>
+						                                </div>
+						                                <div class="rubric-process circle circle-red">
+							                                <p>
+								                                Process
+							                                </p>
+							                                <div class="weight-percent circle-val categoryWeightPercent" id="process_percent" data-id="4">
+								                                {# val #} %
+							                                </div>
+						                                </div>
+					                                </div>
+					                                <button id="Button5" class="btn btn-small btn-default hide pull-right" style="margin-bottom: -30px; font-size: .8em;">Show Rubric</button>
+					                                <div class="impact-list hide">
+						                                <legend>Impact Criteria</legend>
+						                                <ul class="list-unstyled impact-list-item">
+							                                <li>{# criteria.name #}</li>
+							                                <li>{# criteria.tag #}</li>
+							                                <li>{# criteria.weight #}</li>
+							                                <li>
+								                                <div class="form-group">
+									                                <input type="text" class="form-control input-small impact_criteria actualWeight" data-id="1" value="{# Impact #}" placeholder="Grade 1-10"/>
+									                                <input type="hidden" class="totalScore" data-id="1" />
+								                                </div>
+								                                <div class="categoryRubricScale" data-id="1"></div>
+							                                </li>
+						                                </ul>
+						                                <hr/>
+					                                </div>
+					                                <div class="quality-list hide">
+						                                <legend>Quality Criteria</legend>
+						                                <ul class="list-unstyled quality-list-item">
+							                                <li>{# criteria.name #}</li>
+							                                <li>{# criteria.tag #}</li>
+							                                <li>{# criteria.weight #}</li>
+							                                <li>
+								                                <div class="form-group">
+									                                <input type="text" class="form-control input-small quality_criteria actualWeight" data-id="2" value="{# Content #}" placeholder="1-100"/>
+									                                <input type="hidden" class="totalScore" data-id="2" />
+								                                </div>
+								                                <div class="categoryRubricScale" data-id="2"></div>
+							                                </li>
+						                                </ul>
+						                                <hr/>
+					                                </div>
+					                                <div class="content-list hide">
+						                                <legend>Content Criteria</legend>
+						                                <ul class="list-unstyled content-list-item">
+							                                <li>{# criteria.name #}</li>
+							                                <li>{# criteria.tag #}</li>
+							                                <li>{# criteria.weight #}</li>
+							                                <li>
+								                                <div class="form-group">
+									                                <input type="text" class="form-control input-small content_criteria actualWeight"  data-id="3" value="{# Quality #}" placeholder="1-100"/>
+									                                <input type="hidden" class="totalScore" data-id="3" />
+								                                </div>
+								                                <div class="categoryRubricScale" data-id="3"></div>
+							                                </li>
+						                                </ul>
+						                                <hr/>
+					                                </div>
+					                                <div class="process-list hide">
+						                                <legend>Process Criteria</legend>
+						                                <ul class="list-unstyled process-list-item">
+							                                <li>{# criteria.name #}</li>
+							                                <li>{# criteria.tag #}</li>
+							                                <li>{# criteria.weight #}</li>
+							                                <li>
+								                                <div class="form-group">
+									                                <input type="text" class="form-control input-small process_criteria actualWeight" data-id="4" value="{#Process #}" placeholder="1-100"/>
+									                                <input type="hidden" class="totalScore" data-id="4" />
+								                                </div>
+								                                <div class="categoryRubricScale" data-id="4"></div>
+							                                </li>
+						                                </ul>
+						                                <hr/>
+					                                </div>
+					                                <div class="objective-list hide">
+						                                <legend>Objective</legend>
+						                                <ul class="list-unstyled objective-list-item">
+							                                <li>
+							                                <h5>{# assignment.name #}</h5>
+							                                <p>
+								                                <b>Goal of task:</b> {# assignment.goaloftask #}
+							                                </p>
+							                                <p class="text-scroll">
+								                                <b>Description:</b> {# assignment.description #}
+							                                </p>
+							                                <p>
+								                                <b>Audience:</b> {# assignment.audience #}
+							                                </p>
+							                                <p>
+								                                <b>Length:</b> {# assignment.minwords #} - {# assignment.maxwords #}
+							                                </p>
+							                                <p>
+								                                <b>Revisions:</b> {# assignment.revisions #}
+							                                </p>
+							                                <p>
+								                                <b>Grading Criteria:</b> {# assignment.rubricid.name #}
+							                                </p>
+							                                <p>
+								                                <b>Due Date:</b> {# assignment.duedate #}
+							                                </p>
+							                                </li>
+						                                </ul>
+						                                <hr/>
+					                                </div>
+				                                </div>
+			                                </div>
+		                                </div>
+		                                <div class="panel-default block-cell block-thin">
+			                                <div class="panel-heading block-header">
+				                                <h3 class="panel-title">
+				                                <a href="#collapseTwo" data-toggle="collapse">
+				                                Tagging </a>
+				                                </h3>
+			                                </div>
+			                                <div id="Div2" class="panel-collapse collapse in">
+				                                <div class="block-body" style="height: 100px;">
+					                                <ul class="block-list" id="Ul1">
+						                                <li class="tag">
+						                                <a href="#" id="tag-details" rel="popover" data-placement="left" data-container="body" data-toggle="popover" title data-trigger="hover" data-content="{# tag-details #} this is some more info about this tag. Of course it will be loaded dynamically.." role="button">{# tag-name #} </a>
+						                                </li>
+					                                </ul>
+				                                </div>
+			                                </div>
+		                                </div>
+		                                <div class="panel-default block-cell block-thin" >
+			                                <div class="panel-heading block-header">
+				                                <h3 class="panel-title">
+				                                <a href="#collapseThree" data-toggle="collapse"> Comments </a>
+				                                </h3>
+			                                </div>
+			                                <div id="Div3" class="panel-collapse collapse in">
+				                                <div class="block-body">
+					                                <div id="commentSection">
+						                                <form action="" role="form" class="form">
+							                                <div class="comment-header">
+							                                </div>
+							                                <div class="comment-body">
+								                                <textarea id="comment"></textarea>
+							                                </div>
+							                                <div class="comment-footer">
+								                                <a id="sent-comment" type="submit" name="sent-comment" value="Send" class="pull-right">Send</a>
+							                                </div>
+							                                <hr />
+							                                <ul id="comment-list" class="comment-list">
+                                                                {% for row in textcommentlist %}
+                                                                    <li id="{# row.id #}"
+                                                                        {% if row.entityid.id == 5 %}
+                                                                        >
+	                                                                        <i class="fa fa-file" data-toggle="tooltip" data-trigger="hover" data-placement="left" rel="tooltip" title data-original-title="Document based" data-container="body"></i>&nbsp;
+                                                                        {% else %}
+                                                                        onclick="getCommentPos('{# row.id #}');" style="cursor:pointer;">
+                                                                            <i class="fa fa-compass" data-toggle="tooltip" data-trigger="hover" data-placement="left" rel="tooltip" title data-original-title="Location based" data-container="body"></i>&nbsp;
+                                                                        {% endif %}
+                                                                        <i>{# row.getCreatorFirstname #} - </i>
+								                                        <span class="commentvalue">{# row.comment #}</span> <br /> <time class="commentDate">{# row.getFormatCreateDT #}</time>
+                                                                        {% if row.entityid.id == 5 %}
+                                                                            <a type="submit" onclick="editComment('{# row.id #}');" style="cursor:pointer;">Edit</a>&nbsp;<a type="submit" onclick="delComment('{# row.id #}');" style="cursor:pointer;">Delete</a>
+                                                                        {% endif %}
+                                                                    </li>
+							                                    {% endfor %}
+							                                </ul>
+						                                </form>
+					                                </div>
+				                                </div>
+			                                </div>
+		                                </div>
                                     </div>
                                 </div>
                                 <br />
@@ -1738,82 +2100,99 @@ $(function() {
                                         </div>
                                         <div class="form-group">
                                             <div class="col-lg-12">
-                                                <input type="text" class="form-control input-small col-lg-12" id="exampleInputEmail1" placeholder="Activity Name">
+                                                <input type="text" class="form-control input-small col-lg-12" id="exampleInputEmail1" placeholder="Activity Name"/>
                                             </div>
                                         </div>
                                         <div class="form-group">
                                             <div class="col-lg-6">
-                                                <select class="form-control">
+                                                <select class="form-control input-small">
                                                     <option>Activity Type</option>
                                                 </select>
                                             </div>
                                             <div class="col-lg-6">
-                                                <select class="form-control">
+                                                <select class="form-control input-small">
                                                     <option>Activity Stage</option>
                                                 </select>
                                             </div>
                                         </div>
                                         <div class="form-group">
                                             <div class="col-lg-12">
-                                                <select class="form-control">
+                                                <select class="form-control input-small">
                                                     <option>Associated Criteria</option>
                                                 </select>
                                             </div>
                                         </div>
                                         <div class="form-group col-lg-12 text-center">
-                                            <input type="button" id="Button1" class="btn btn-default" data-dismiss="modal" value="Back"/>
-                                            <input type="button" id="Button2" class="btn btn-default" data-dismiss="modal" value="Next"/>
-                                            <input type="button" id="Button3" class="btn btn-default" data-dismiss="modal" value="Save"/>
-                                            <input type="button" id="Button4" class="btn btn-default" data-dismiss="modal" value="Cancel"/>
+                                            <input type="button" id="Button1" class="btn btn-default btn-small col-sm-6" data-dismiss="modal" value="Back"/>
+                                            <input type="button" id="Button2" class="btn btn-default btn-small col-sm-6" data-dismiss="modal" value="Next"/>
+                                            <input type="button" id="Button3" class="btn btn-default btn-small col-sm-6" data-dismiss="modal" value="Save"/>
+                                            <input type="button" id="Button4" class="btn btn-default btn-small col-sm-6" data-dismiss="modal" value="Cancel"/>
                                         </div>
                                     </div>
                                     <div class="col-lg-4" style="border-right:1px #dddddd solid;min-height:294px;">
                                         <br />
                                         <div class="form-group">
                                             <div class="col-lg-12">
-                                                <select class="form-control">
+                                                <select class="form-control input-small">
                                                     <option>Content Type</option>
                                                 </select>
                                             </div>
                                         </div>
                                         <div class="form-group">
-                                            <div class="col-lg-4">
+                                            <div class="col-sm-12">
                                                 <label class="checkbox-inline">
-                                                  <input type="checkbox"> Rubric
+                                                  <input type="checkbox"/> Rubric
                                                 </label>
                                             </div>
-                                            <div class="col-lg-4 text-center">
+                                            <div class="col-sm-12">
                                                 <label class="checkbox-inline">
-                                                  <input type="checkbox"> Tagging
+                                                  <input type="checkbox"/> Tagging
                                                 </label>
                                             </div>
-                                            <div class="col-lg-4 text-right">
+                                            <div class="col-sm-12">
                                                 <label class="checkbox-inline">
-                                                  <input type="checkbox"> Commenting
+                                                  <input type="checkbox"/> Commenting
                                                 </label>
                                             </div>
                                         </div>
-                                         <div class="form-group">
-                                            <div class="col-lg-6">
-                                                <select class="form-control">
+                                        <div class="form-group">
+                                            <div class="col-lg-12">
+                                                <select class="form-control input-small">
                                                     <option>Question Type</option>
                                                 </select>
                                             </div>
-                                            <div class="col-lg-6">
-                                                <select class="form-control">
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="col-lg-12">
+                                                <select class="form-control input-small">
                                                     <option>Answer Type</option>
                                                 </select>
                                             </div>
                                         </div>
-                                        <div class="form-group col-lg-12">
-                                            <span>Tooltip (Explanation)</span>
-                                        </div>
-                                        <div class="form-group col-lg-12">
-                                            <textarea class="form-control"></textarea>
+                                        <div class="form-group">
+                                            <div class="col-sm-12">
+                                                <label class="checkbox-inline">
+                                                  <input type="checkbox"/> Rubric
+                                                </label>
+                                            </div>
+                                            <div class="col-sm-12">
+                                                <label class="checkbox-inline">
+                                                  <input type="checkbox"/> Tagging
+                                                </label>
+                                            </div>
+                                            <div class="col-sm-12">
+                                                <label class="checkbox-inline">
+                                                  <input type="checkbox"/> Commenting
+                                                </label>
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="col-lg-4">
-
+                                        <br />
+                                        <div class="form-group">
+                                            <span>Tooltip (Explanation)</span>
+                                            <textarea name="st4_activity_tooltip" id="st4_activity_tooltip" class="form-control input-small" style="width:96%;margin:auto;"></textarea>
+                                        </div>
                                     </div>
                                 </div>
                             </form>
